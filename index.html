@@ -720,7 +720,6 @@
             top: 0;
             left: 0;
             z-index: 1; /* Ensure canvas is behind components */
-            transform-origin: 0 0; /* Set transform origin to top-left for scaling */
             /* Do not apply transform here, it will be applied by JS */
         }
 
@@ -2193,27 +2192,27 @@
             'opamp': { name: 'Op-Amp', properties: { model: 'LM741' }, icon: 'U',
                 // Standard 8-pin DIP package for visual representation
                 pins: [
-                    { id: 'offset_null_1', label: '1', x: 10, y: 0 }, // Pin 1 (top-left)
-                    { id: 'inverting', label: '2(-)', x: 0, y: 10 }, // Pin 2 (left-top)
-                    { id: 'non_inverting', label: '3(+)', x: 0, y: 40 }, // Pin 3 (left-bottom)
+                    { id: 'offset_null_1', label: '1(Null)', x: 10, y: 0 }, // Pin 1 (top-left)
+                    { id: 'inverting', label: '2(-In)', x: 0, y: 15 }, // Pin 2 (left-top)
+                    { id: 'non_inverting', label: '3(+In)', x: 0, y: 35 }, // Pin 3 (left-bottom)
                     { id: 'vcc_neg', label: '4(V-)', x: 10, y: 50 }, // Pin 4 (bottom-left)
-                    { id: 'offset_null_2', label: '5', x: 40, y: 50 }, // Pin 5 (bottom-right)
-                    { id: 'output', label: '6(Out)', x: 50, y: 40 }, // Pin 6 (right-bottom)
-                    { id: 'vcc_pos', label: '7(V+)', x: 50, y: 10 }, // Pin 7 (right-top)
+                    { id: 'offset_null_2', label: '5(Null)', x: 40, y: 50 }, // Pin 5 (bottom-right)
+                    { id: 'output', label: '6(Out)', x: 50, y: 35 }, // Pin 6 (right-bottom)
+                    { id: 'vcc_pos', label: '7(V+)', x: 50, y: 15 }, // Pin 7 (right-top)
                     { id: 'nc', label: '8(NC)', x: 40, y: 0 } // Pin 8 (top-right)
                 ]
             },
             'timer555': { name: 'Timer 555', properties: { mode: 'Astable' }, icon: '555',
                 // Timer 555 is an 8-pin IC. Pins arranged to simulate rectangular DIP.
                 pins: [
-                    { id: 'gnd', label: '1(GND)', x: 0, y: 10 },    // Left side, top
-                    { id: 'trigger', label: '2(TRIG)', x: 0, y: 20 }, // Left side, middle-top
-                    { id: 'output', label: '3(OUT)', x: 0, y: 30 },   // Left side, middle-bottom
-                    { id: 'reset', label: '4(RST)', x: 0, y: 40 },    // Left side, bottom
-                    { id: 'control_voltage', label: '5(CV)', x: 50, y: 40 }, // Right side, bottom
-                    { id: 'threshold', label: '6(THRES)', x: 50, y: 30 }, // Right side, middle-bottom
-                    { id: 'discharge', label: '7(DISC)', x: 50, y: 20 }, // Right side, middle-top
-                    { id: 'vcc', label: '8(VCC)', x: 50, y: 10 }     // Right side, top
+                    { id: 'gnd', label: '1(GND)', x: 0, y: 50 },    // Pin 1 (Bottom-left, assuming 0,0 is top-left of component)
+                    { id: 'trigger', label: '2(TRIG)', x: 0, y: 35 }, // Pin 2 (Left side, below center)
+                    { id: 'output', label: '3(OUT)', x: 0, y: 20 },   // Pin 3 (Left side, above center)
+                    { id: 'reset', label: '4(RST)', x: 0, y: 0 },    // Pin 4 (Top-left)
+                    { id: 'control_voltage', label: '5(CV)', x: 50, y: 0 }, // Pin 5 (Top-right)
+                    { id: 'threshold', label: '6(THRES)', x: 50, y: 20 }, // Pin 6 (Right side, above center)
+                    { id: 'discharge', label: '7(DISC)', x: 50, y: 35 }, // Pin 7 (Right side, below center)
+                    { id: 'vcc', label: '8(VCC)', x: 50, y: 50 }     // Pin 8 (Bottom-right)
                 ]
             },
             'arduino': { name: 'Arduino', properties: { model: 'UNO' }, icon: 'ARD',
@@ -2225,6 +2224,18 @@
                     { id: 'gnd', label: 'GND', x: 0, y: 40 },
                     { id: '5v', label: '5V', x: 50, y: 10 },
                     { id: '3v3', label: '3.3V', x: 50, y: 20 }
+                ]
+            },
+            'thermistor': { name: 'Termistor', properties: { temp: '25°C' }, icon: 'TH',
+                pins: [
+                    { id: 'p1', label: '1', x: 0, y: 25 },
+                    { id: 'p2', label: '2', x: 50, y: 25 }
+                ]
+            },
+            'photoresistor': { name: 'LDR', properties: { light: '50%' }, icon: 'LDR',
+                pins: [
+                    { id: 'p1', label: '1', x: 0, y: 25 },
+                    { id: 'p2', label: '2', x: 50, y: 25 }
                 ]
             },
             'ultrasonic': { name: 'Ultrasónico', properties: { range: '10cm' }, icon: 'US',
@@ -2320,6 +2331,7 @@
             if (!circuitCtx) return;
             // Clear the canvas before redrawing everything
             circuitCtx.clearRect(0, 0, circuitCanvas.width, circuitCanvas.height); 
+            
             circuitCtx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
             circuitCtx.lineWidth = 0.5 / currentZoom; // Adjust line width for zoom
             
@@ -2327,9 +2339,8 @@
             
             // Save context state before scaling for grid
             circuitCtx.save();
-            // Apply inverse scale for grid lines so they appear consistent regardless of zoom
-            circuitCtx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
-            circuitCtx.scale(currentZoom, currentZoom); // Apply current zoom for drawing
+            // Apply current zoom for drawing
+            circuitCtx.scale(currentZoom, currentZoom); 
 
             for (let x = 0; x <= circuitCanvas.width; x += gridSize) {
                 circuitCtx.beginPath();
@@ -2358,8 +2369,7 @@
             // Save context state before scaling for wires
             circuitCtx.save();
             // Apply current zoom for drawing wires
-            circuitCtx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
-            circuitCtx.scale(currentZoom, currentZoom); // Apply current zoom for drawing
+            circuitCtx.scale(currentZoom, currentZoom); 
 
             connections.forEach(conn => {
                 const startComp = document.querySelector(`.placed-component[data-id="${conn.startPin.componentId}"]`);
@@ -2420,7 +2430,7 @@
                 if (prevSelectedPin) {
                     prevSelectedPin.classList.remove('selected-for-wire');
                     const label = prevSelectedPin.querySelector('.pin-label');
-                    if (label) label.remove();
+                    if (label) label.remove(); // Remove the label element
                 }
             }
             startPin = null; // Reset wire tool state
@@ -2725,7 +2735,7 @@
                 if (prevSelectedPinElement) {
                     prevSelectedPinElement.classList.remove('selected-for-wire');
                     const label = prevSelectedPinElement.querySelector('.pin-label');
-                    if (label) label.style.opacity = '0';
+                    if (label) label.style.opacity = '0'; // Hide the label element
                 }
 
                 // Prevent connecting a pin to itself or to another pin on the same component
@@ -3036,14 +3046,9 @@
 
             // Process explicit connections (wires) first to ensure connected pins share the same node
             connections.forEach(conn => {
-                const node1 = getNode(conn.startPin.componentId, conn.startPin.pinId);
-                const node2 = getNode(conn.endPin.componentId, conn.endPin.pinId);
-                // Ensure they are the same node if they are connected
-                if (node1 !== node2) {
-                    // This is a simplification. In a full SPICE netlister,
-                    // you'd merge nodes or use a Union-Find data structure.
-                    // For this demo, we'll just ensure they are assigned.
-                }
+                // Ensure nodes are created for both ends of the connection
+                getNode(conn.startPin.componentId, conn.startPin.pinId);
+                getNode(conn.endPin.componentId, conn.endPin.pinId);
             });
 
             // Add components to netlist
@@ -3060,66 +3065,90 @@
                     return; // Ground components don't need a line in SPICE like R, C, V
                 }
 
-                // Get node numbers for component pins
-                const componentPinNodes = pins.map(pin => getNode(id, pin.id));
+                // Get node numbers for component pins based on their logical IDs
+                const pinNodes = {};
+                pins.forEach(pin => {
+                    pinNodes[pin.id] = getNode(id, pin.id);
+                });
 
                 switch (type) {
                     case 'resistor':
-                        if (componentPinNodes.length >= 2) {
-                            spiceNetlist += `R${id} ${componentPinNodes[0]} ${componentPinNodes[1]} ${properties.value}\n`;
+                        if (pinNodes.p1 && pinNodes.p2) {
+                            spiceNetlist += `R${id} ${pinNodes.p1} ${pinNodes.p2} ${properties.value}\n`;
                         }
                         break;
                     case 'capacitor':
-                        if (componentPinNodes.length >= 2) {
-                            spiceNetlist += `C${id} ${componentPinNodes[0]} ${componentPinNodes[1]} ${properties.value}\n`;
+                        if (pinNodes.p1 && pinNodes.p2) {
+                            spiceNetlist += `C${id} ${pinNodes.p1} ${pinNodes.p2} ${properties.value}\n`;
                         }
                         break;
                     case 'inductor':
-                        if (componentPinNodes.length >= 2) {
-                            spiceNetlist += `L${id} ${componentPinNodes[0]} ${componentPinNodes[1]} ${properties.value}\n`;
+                        if (pinNodes.p1 && pinNodes.p2) {
+                            spiceNetlist += `L${id} ${pinNodes.p1} ${pinNodes.p2} ${properties.value}\n`;
                         }
                         break;
                     case 'battery':
                     case 'voltage-source':
-                        // Assuming positive and negative pins are defined
-                        if (componentPinNodes.length >= 2) {
-                            const posNode = getNode(id, 'positive'); // Assuming 'positive' is the first pin logically
-                            const negNode = getNode(id, 'negative'); // Assuming 'negative' is the second pin logically
-                            spiceNetlist += `V${id} ${posNode} ${negNode} DC ${properties.voltage}\n`;
+                        if (pinNodes.positive && pinNodes.negative) {
+                            spiceNetlist += `V${id} ${pinNodes.positive} ${pinNodes.negative} DC ${properties.voltage}\n`;
                         }
                         break;
                     case 'diode':
-                        if (componentPinNodes.length >= 2) {
-                            const anodeNode = getNode(id, 'anode');
-                            const cathodeNode = getNode(id, 'cathode');
-                            spiceNetlist += `D${id} ${anodeNode} ${cathodeNode} Dmodel\n`; // Dmodel needs to be defined
+                        if (pinNodes.anode && pinNodes.cathode) {
+                            spiceNetlist += `D${id} ${pinNodes.anode} ${pinNodes.cathode} Dmodel\n`; // Dmodel needs to be defined
                         }
                         break;
                     case 'led':
-                        if (componentPinNodes.length >= 2) {
-                            const anodeNode = getNode(id, 'anode');
-                            const cathodeNode = getNode(id, 'cathode');
-                            spiceNetlist += `D${id} ${anodeNode} ${cathodeNode} LEDmodel\n`; // LEDmodel needs to be defined
+                        if (pinNodes.anode && pinNodes.cathode) {
+                            spiceNetlist += `D${id} ${pinNodes.anode} ${pinNodes.cathode} LEDmodel\n`; // LEDmodel needs to be defined
                         }
                         break;
                     case 'transistor': // NPN BJT example
-                        if (componentPinNodes.length >= 3) {
-                            const baseNode = getNode(id, 'base');
-                            const collectorNode = getNode(id, 'collector');
-                            const emitterNode = getNode(id, 'emitter');
-                            spiceNetlist += `Q${id} ${collectorNode} ${baseNode} ${emitterNode} NPNmodel\n`; // NPNmodel needs to be defined
+                        if (pinNodes.collector && pinNodes.base && pinNodes.emitter) {
+                            spiceNetlist += `Q${id} ${pinNodes.collector} ${pinNodes.base} ${pinNodes.emitter} NPNmodel\n`; // NPNmodel needs to be defined
                         }
                         break;
                     case 'opamp': // Very simplified Op-Amp model
-                        if (componentPinNodes.length >= 3) { // Need at least non-inverting, inverting, output
-                            const invNode = getNode(id, 'inverting');
-                            const nonInvNode = getNode(id, 'non_inverting');
-                            const outNode = getNode(id, 'output');
-                            // Simplified Op-Amp model (ideal)
-                            spiceNetlist += `X${id} ${nonInvNode} ${invNode} ${outNode} ideal_opamp\n`;
+                        if (pinNodes.non_inverting && pinNodes.inverting && pinNodes.output) {
+                            spiceNetlist += `X${id} ${pinNodes.non_inverting} ${pinNodes.inverting} ${pinNodes.output} ideal_opamp\n`;
                         }
                         break;
-                    // Add more component types as needed
+                    case 'timer555': // Placeholder for 555 - complex, usually subcircuit
+                        // For a basic SPICE export, we might just list its pins as nodes
+                        // A full 555 model would be a .SUBCKT
+                        spiceNetlist += `* Timer 555 (ID: ${id})\n`;
+                        pins.forEach(pin => {
+                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
+                        });
+                        break;
+                    case 'arduino': // Placeholder for Arduino
+                        spiceNetlist += `* Arduino (ID: ${id})\n`;
+                        pins.forEach(pin => {
+                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
+                        });
+                        break;
+                    case 'ultrasonic': // Placeholder for Ultrasonic
+                        spiceNetlist += `* Ultrasonic Sensor (ID: ${id})\n`;
+                        pins.forEach(pin => {
+                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
+                        });
+                        break;
+                    case 'thermistor':
+                    case 'photoresistor':
+                        if (pinNodes.p1 && pinNodes.p2) {
+                            spiceNetlist += `R${id} ${pinNodes.p1} ${pinNodes.p2} 1k ; Placeholder for sensor resistance\n`;
+                        }
+                        break;
+                    case 'switch':
+                        if (pinNodes.in && pinNodes.out) {
+                            spiceNetlist += `S${id} ${pinNodes.in} ${pinNodes.out} ${id}_control_node 0 Smodel\n`; // Need a control node and model
+                        }
+                        break;
+                    case 'motor':
+                        if (pinNodes.A && pinNodes.B) {
+                            spiceNetlist += `V_motor_${id} ${pinNodes.A} ${pinNodes.B} DC 0 ; Placeholder for motor voltage\n`;
+                        }
+                        break;
                     default:
                         spiceNetlist += `* Unsupported component: ${type} (ID: ${id})\n`;
                 }
@@ -3133,6 +3162,7 @@
             spiceNetlist += "Rin 1 2 1G ; High input impedance\n";
             spiceNetlist += "Eout 3 0 1 2 100k ; High gain voltage controlled voltage source\n";
             spiceNetlist += ".ENDS\n";
+            spiceNetlist += ".MODEL Smodel VSWITCH (RON=10m ROFF=1G VON=1V VOFF=0V)\n"; // Example switch model
 
 
             spiceNetlist += ".END\n";
@@ -3151,13 +3181,6 @@
 
         // --- Zoom Functions ---
         function applyZoom() {
-            if (circuitCanvas) {
-                // Apply scale directly to the canvas context for drawing
-                // This means all drawing operations will be scaled automatically
-                // We reset and reapply the transform in drawGrid and drawWires
-                // The CSS transform is no longer needed on the canvas element itself
-                // circuitCanvas.style.transform = `scale(${currentZoom})`; // REMOVED THIS LINE
-            }
             // Update zoom level display
             document.querySelector('.zoom-level').textContent = `${Math.round(currentZoom * 100)}%`;
             // Redraw wires to adjust their thickness based on new zoom and re-apply context scale
@@ -3183,16 +3206,14 @@
         // --- Scroll Canvas for Mobile ---
         function scrollCanvas(direction) {
             let scrollTarget = null;
-            let targetId = '';
+            let scrollAmount = 150; // Increased for better visibility
 
             // Determine which element to scroll based on the active screen
             // The canvasArea is the primary scrollable element for the circuit design
             if (currentActiveScreenId === 'appContainer') {
                 scrollTarget = document.getElementById('canvasArea');
-                targetId = 'canvasArea';
             } else { // This covers startScreen, calfluxSection, tutorialSection
                 scrollTarget = document.getElementById(currentActiveScreenId);
-                targetId = currentActiveScreenId;
             }
 
             if (!scrollTarget) {
@@ -3200,10 +3221,6 @@
                 showModal('Error de Desplazamiento', 'No se pudo encontrar el área de desplazamiento para esta pantalla.');
                 return;
             }
-
-            const initialScrollTop = scrollTarget.scrollTop;
-            const initialScrollLeft = scrollTarget.scrollLeft;
-            const scrollAmount = 150; // Increased for better visibility
 
             if (direction === 'up') {
                 scrollTarget.scrollTop -= scrollAmount;
@@ -3213,18 +3230,6 @@
                 scrollTarget.scrollLeft -= scrollAmount;
             } else if (direction === 'right') { // Added horizontal scroll
                 scrollTarget.scrollLeft += scrollAmount;
-            }
-
-            console.log(`Intento de desplazamiento en: ${targetId}`);
-            console.log(`Dirección: ${direction}, Cantidad: ${scrollAmount}`);
-            console.log(`Scroll inicial (Top, Left): (${initialScrollTop}, ${initialScrollLeft}), Scroll final: (${scrollTarget.scrollTop}, ${scrollTarget.scrollLeft})`);
-            console.log(`ScrollHeight: ${scrollTarget.scrollHeight}, ClientHeight: ${scrollTarget.clientHeight}`);
-            console.log(`ScrollWidth: ${scrollTarget.scrollWidth}, ClientWidth: ${scrollTarget.clientWidth}`);
-
-            if (scrollTarget.scrollHeight <= scrollTarget.clientHeight && scrollTarget.scrollWidth <= scrollTarget.clientWidth) {
-                console.warn(`El elemento ${targetId} no tiene suficiente contenido para desplazarse (scrollHeight <= clientHeight && scrollWidth <= clientWidth).`);
-            } else if (initialScrollTop === scrollTarget.scrollTop && initialScrollLeft === scrollTarget.scrollLeft) {
-                console.warn(`El desplazamiento no tuvo efecto en ${targetId}. Posiblemente ya esté al límite.`);
             }
         }
 
