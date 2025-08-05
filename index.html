@@ -622,6 +622,8 @@
             position: relative;
             overflow: auto; /* Allow scrolling for canvas area */
             -webkit-overflow-scrolling: touch; /* For smoother iOS scrolling */
+            /* Ensure it takes full height on mobile to allow scrolling */
+            min-height: 100vh; /* Set a large enough min-height to ensure scrollability on mobile */
         }
         
         .placed-component {
@@ -692,6 +694,11 @@
         .pin-right { top: 50%; right: -5px; transform: translateY(-50%); }
         .pin-bottom { bottom: -5px; left: 50%; transform: translateX(-50%); }
         .pin-left { top: 50%; left: -5px; transform: translateY(-50%); }
+
+        .component-pin.selected-for-wire {
+            background-color: #00d4ff; /* Highlight color for selected start pin */
+            box-shadow: 0 0 10px #00d4ff;
+        }
         
         #circuitCanvas {
             /* This canvas will now be explicitly large to force scrolling */
@@ -2217,10 +2224,8 @@
         }
 
         function getPinCoordinates(componentElement, pinId) {
-            const compRect = componentElement.getBoundingClientRect();
-            const canvasArea = document.getElementById('canvasArea');
-            
-            // Use offsetLeft/Top for position relative to parent (canvasArea)
+            // These coordinates are relative to the component's parent (canvasArea),
+            // which is what the canvas drawing needs.
             const compX = componentElement.offsetLeft; 
             const compY = componentElement.offsetTop;
 
@@ -2250,7 +2255,6 @@
                 default:
                     return null;
             }
-            // These coordinates are relative to the canvasArea's top-left, which is what the canvas drawing needs.
             return { x: x, y: y };
         }
 
@@ -2265,24 +2269,30 @@
             currentTool = tool;
             
             const canvasArea = document.getElementById('canvasArea');
+            // Remove any selected start pin highlight
+            if (startPin) {
+                const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
+                if (prevSelectedPin) {
+                    prevSelectedPin.classList.remove('selected-for-wire');
+                }
+            }
+            startPin = null; // Reset wire tool state
+
             switch(tool) {
                 case 'select':
                     canvasArea.style.cursor = 'default';
                     selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
-                    startPin = null; // Reset wire tool state
                     break;
                 case 'wire':
                     canvasArea.style.cursor = 'crosshair';
                     selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
-                    startPin = null; // Reset wire tool state
                     break;
                 case 'delete':
                     canvasArea.style.cursor = 'not-allowed';
                     selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
-                    startPin = null; // Reset wire tool state
                     break;
             }
         }
@@ -2528,6 +2538,7 @@
                     x: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).x,
                     y: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).y
                 };
+                clickedPin.classList.add('selected-for-wire'); // Highlight the selected start pin
                 console.log('Start pin selected:', startPin);
             } else {
                 // Second pin clicked, complete the connection
@@ -2541,6 +2552,11 @@
                 // Prevent connecting a pin to itself or to another pin on the same component (for simple demo)
                 if (startPin.componentId === endPin.componentId && startPin.pinId === endPin.pinId) {
                     showModal('Conexión Inválida', 'No puedes conectar un pin a sí mismo o a otro pin en el mismo componente.');
+                    // Remove highlight from previous start pin
+                    const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
+                    if (prevSelectedPin) {
+                        prevSelectedPin.classList.remove('selected-for-wire');
+                    }
                     startPin = null; // Reset
                     return;
                 }
@@ -2555,6 +2571,11 @@
 
                 if (isDuplicate) {
                     showModal('Conexión Existente', 'Esta conexión ya existe.');
+                    // Remove highlight from previous start pin
+                    const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
+                    if (prevSelectedPin) {
+                        prevSelectedPin.classList.remove('selected-for-wire');
+                    }
                     startPin = null; // Reset
                     return;
                 }
@@ -2562,6 +2583,11 @@
                 connections.push({ startPin: startPin, endPin: endPin });
                 console.log('Connection established:', connections[connections.length - 1]);
                 drawWires(); // Redraw all wires
+                // Remove highlight from previous start pin
+                const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
+                if (prevSelectedPin) {
+                    prevSelectedPin.classList.remove('selected-for-wire');
+                }
                 startPin = null; // Reset for next connection
             }
         }
@@ -3189,3 +3215,4 @@
     </script>
 </body>
 </html>
+
