@@ -614,7 +614,7 @@
         .canvas-area {
             flex: 1;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Default to hidden, will be set to 'auto' for mobile */
         }
         
         .placed-component {
@@ -658,6 +658,38 @@
                 radial-gradient(circle at 20px 20px, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
                 radial-gradient(circle at 0px 0px, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
             background-size: 20px 20px;
+        }
+
+        /* Scroll Arrows for Mobile */
+        .scroll-arrows {
+            position: fixed;
+            right: 10px;
+            bottom: 80px; /* Adjust based on status bar height */
+            display: none; /* Hidden by default, shown on mobile */
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .scroll-arrow-btn {
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: #00d4ff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .scroll-arrow-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            transform: scale(1.1);
         }
 
         .grid-overlay {
@@ -1332,7 +1364,7 @@
         <div class="logo-container">
             <div class="main-logo" id="mainLogo"></div>
             <div class="app-title-container">
-                <span class="beta-badge" id="betaBadgeStart">Beta</span>
+                <span class="beta-badge">Beta</span> <!-- Beta badge for start screen -->
                 <h1 class="app-title">FLUXIONICS</h1>
             </div>
             <p class="app-subtitle">Simulador Profesional de Circuitos</p>
@@ -1861,6 +1893,16 @@
                     <!-- Grid overlay is handled by canvas drawing now, but keeping div for potential future use or fallback -->
                     <!-- <div class="grid-overlay"></div> --> 
                 </div>
+
+                <!-- Scroll Arrows (for mobile) -->
+                <div class="scroll-arrows" id="scrollArrows">
+                    <button class="scroll-arrow-btn" onclick="scrollCanvas('up')">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                    <button class="scroll-arrow-btn" onclick="scrollCanvas('down')">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
                 
                 <div class="status-bar">
                     <div class="status-info">
@@ -1960,12 +2002,13 @@
     <script>
         // Global variables
         let currentTool = 'select';
-        let selectedComponentType = null;
-        let selectedComponentElement = null;
+        let selectedComponentTypeForPlacement = null; // Used for mobile click-to-place
+        let selectedComponentElement = null; // Used for editing properties and AI explanation
         let componentsCount = 0;
         let isSimulationRunning = false;
         let simulationInterval;
-        
+        let isMobileDevice = false; // Flag to detect mobile devices
+
         // Component data for properties panel
         const componentData = {
             'resistor': { name: 'Resistor', properties: { value: '1kΩ', tolerance: '5%', power: '0.25W' }, icon: 'R' },
@@ -2003,6 +2046,19 @@
             'violet': '±0.1%', 'gray': '±0.05%', 'gold': '±5%', 'silver': '±10%'
         };
         
+        // --- Device Detection ---
+        function detectMobile() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            // Basic user agent check
+            if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) || /windows phone/i.test(userAgent) || /BlackBerry/.test(userAgent) || /Opera Mini/.test(userAgent) || /IEMobile/i.test(userAgent)) {
+                isMobileDevice = true;
+            }
+            // Check for touch events support
+            if ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) {
+                isMobileDevice = true;
+            }
+        }
+
         // --- Screen Management Functions ---
         let currentActiveScreenId = 'startScreen'; // Keep track of the currently active screen
 
@@ -2021,6 +2077,7 @@
                 // Special handling for appContainer to initialize canvas
                 if (screenId === 'appContainer') {
                     initializeCanvas();
+                    setupCanvasInteraction(); // Set up interaction based on device
                 }
                 // Special handling for calfluxSection to initialize calculator
                 if (screenId === 'calfluxSection') {
@@ -2081,7 +2138,6 @@
         // --- Tool Functions ---
         function selectTool(tool) {
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-            // Check if the tool button exists before adding active class
             const toolButton = document.querySelector(`[data-tool="${tool}"]`);
             if (toolButton) {
                 toolButton.classList.add('active');
@@ -2092,17 +2148,17 @@
             switch(tool) {
                 case 'select':
                     canvasArea.style.cursor = 'default';
-                    selectedComponentType = null; // Deselect component type when tool changes
+                    selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
                     break;
                 case 'wire':
                     canvasArea.style.cursor = 'crosshair';
-                    selectedComponentType = null; // Deselect component type when tool changes
+                    selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
                     break;
                 case 'delete':
                     canvasArea.style.cursor = 'not-allowed';
-                    selectedComponentType = null; // Deselect component type when tool changes
+                    selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
                     break;
             }
@@ -2175,8 +2231,8 @@
             newY = Math.round(newY / gridSize) * gridSize;
 
             // Keep component within canvas boundaries
-            newX = Math.max(0, Math.min(newX, canvasArea.offsetWidth - draggedComponent.offsetWidth));
-            newY = Math.max(0, Math.min(newY, canvasArea.offsetHeight - draggedComponent.offsetHeight));
+            newX = Math.max(0, Math.min(newX, canvasArea.scrollWidth - draggedComponent.offsetWidth)); // Use scrollWidth/Height
+            newY = Math.max(0, Math.min(newY, canvasArea.scrollHeight - draggedComponent.offsetHeight));
 
             draggedComponent.style.left = `${newX}px`;
             draggedComponent.style.top = `${newY}px`;
@@ -2198,7 +2254,7 @@
         function selectComponent(type) {
             document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
             document.querySelector(`[data-component="${type}"]`).classList.add('selected');
-            selectedComponentType = type;
+            selectedComponentTypeForPlacement = type; // Set for mobile click-to-place
             selectTool('select'); // Automatically switch to select tool after choosing a component
             // On mobile, close components sidebar after selecting a component
             if (window.innerWidth <= 768) {
@@ -2206,17 +2262,18 @@
             }
         }
         
-        function placeComponent(x, y) {
-            if (!selectedComponentType) {
+        function placeComponent(x, y, componentTypeToPlace) { // New argument
+            const type = componentTypeToPlace || selectedComponentTypeForPlacement; // Use provided type or global
+            if (!type) {
                 console.log("No component type selected to place.");
-                return; // No component type selected
+                return;
             }
             
             componentsCount++;
             
             const componentElement = document.createElement('div');
             componentElement.classList.add('placed-component');
-            componentElement.setAttribute('data-component-type', selectedComponentType);
+            componentElement.setAttribute('data-component-type', type); // Use 'type' here
             componentElement.setAttribute('data-id', componentsCount);
             
             // Snap to grid (20px grid size)
@@ -2230,7 +2287,7 @@
             // Icono del componente
             const icon = document.createElement('div');
             icon.classList.add('icon');
-            icon.textContent = componentData[selectedComponentType].icon;
+            icon.textContent = componentData[type].icon; // Use 'type' here
             componentElement.appendChild(icon);
             
             // Attach drag listeners
@@ -2256,23 +2313,24 @@
             document.getElementById('canvasArea').appendChild(componentElement);
             
             selectPlacedComponent(componentElement);
-            console.log(`Component '${selectedComponentType}' placed at (${snappedX}, ${snappedY})`); // Debug log
+            console.log(`Component '${type}' placed at (${snappedX}, ${snappedY})`); // Debug log
         }
         
         function selectPlacedComponent(element) {
             document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
             element.classList.add('selected');
-            selectedComponentElement = element;
+            selectedComponentElement = element; // Set the currently selected component for properties/AI
             showPropertiesPanel(element);
         }
         
         function deletePlacedComponent(element) {
-            // Using a custom confirmation instead of alert/confirm
-            const confirmDelete = window.confirm('¿Estás seguro de que quieres eliminar este componente?');
-            if (confirmDelete) {
+            showModalConfirm('Eliminar Componente', '¿Estás seguro de que quieres eliminar este componente?', () => {
                 element.remove();
                 closePropertiesPanel();
-            }
+                if (selectedComponentElement === element) { // Clear if the deleted one was selected
+                    selectedComponentElement = null;
+                }
+            });
         }
         
         function showPropertiesPanel(componentElement) {
@@ -2544,6 +2602,18 @@
             }
         }
 
+        // --- Scroll Canvas for Mobile ---
+        function scrollCanvas(direction) {
+            const canvasArea = document.getElementById('canvasArea');
+            const scrollAmount = 100; // Pixels to scroll
+            if (direction === 'up') {
+                canvasArea.scrollTop -= scrollAmount;
+            } else {
+                canvasArea.scrollTop += scrollAmount;
+            }
+        }
+
+
         // --- Other Functions (Placeholders) ---
         function showAnalysis() {
             showModal('Análisis de Circuitos', '<p>La función de análisis de circuitos está próxima a ser implementada.</p>');
@@ -2683,45 +2753,97 @@
             document.getElementById('customModalBody').innerHTML = '<p>Se excedió el número máximo de reintentos. Por favor, inténtalo de nuevo más tarde.</p>';
         }
 
+        // --- Setup Canvas Interaction based on Device ---
+        function setupCanvasInteraction() {
+            const canvasArea = document.getElementById('canvasArea');
+            const scrollArrows = document.getElementById('scrollArrows');
+
+            if (isMobileDevice) {
+                canvasArea.style.overflowY = 'auto'; // Enable scrolling for mobile
+                scrollArrows.style.display = 'flex'; // Show scroll arrows
+            } else {
+                canvasArea.style.overflowY = 'hidden'; // Keep hidden for desktop
+                scrollArrows.style.display = 'none'; // Hide scroll arrows
+            }
+        }
+
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
+            detectMobile(); // Detect device type first
+            setupCanvasInteraction(); // Apply initial overflow and arrow visibility
+
             // Initialize resistor calculator on load
             calculateResistance();
 
-            // Event listener for component selection in sidebar
+            // Event listeners for component selection in sidebar
             document.querySelectorAll('.component-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    selectComponent(this.dataset.component);
-                });
-            });
-
-            // Event listener for placing components on canvas area with single click
-            document.getElementById('canvasArea').addEventListener('click', (event) => {
-                // Only place component if the click target is the canvas itself or its direct children (like grid overlay)
-                // and not on an already placed component. Also ensure it's not a drag event.
-                if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) && !isDragging) {
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    const x = event.clientX - rect.left;
-                    const y = event.clientY - rect.top;
-                    
-                    if (selectedComponentType && currentTool === 'select') {
-                        placeComponent(x, y);
-                    } else if (currentTool === 'select' && !selectedComponentType) {
-                        // If select tool is active but no component type selected, deselect any placed component
-                        document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
-                        closePropertiesPanel();
-                    }
+                if (isMobileDevice) {
+                    item.addEventListener('click', function() {
+                        selectComponent(this.dataset.component);
+                    });
+                } else { // Desktop: enable drag for placement
+                    item.setAttribute('draggable', 'true');
+                    item.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', item.dataset.component);
+                        // No visual 'selected' state on dragstart for desktop, it's a drag operation
+                        // Clear any previous selection when starting a drag
+                        selectedComponentTypeForPlacement = null;
+                        document.querySelectorAll('.component-item').forEach(compItem => compItem.classList.remove('selected'));
+                    });
                 }
             });
-            
-            // Event listener for clicking on empty canvas area to deselect
+
+            // Canvas area interaction for placing components
+            const canvasArea = document.getElementById('canvasArea');
+            if (isMobileDevice) {
+                // Mobile: click to place
+                canvasArea.addEventListener('click', (event) => {
+                    // Only place component if the click target is the canvas itself or its direct children (like grid overlay)
+                    // and not on an already placed component. Also ensure it's not a drag event.
+                    if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) && !isDragging) {
+                        const rect = event.currentTarget.getBoundingClientRect();
+                        const x = event.clientX - rect.left;
+                        const y = event.clientY - rect.top;
+                        if (selectedComponentTypeForPlacement && currentTool === 'select') {
+                            placeComponent(x, y, selectedComponentTypeForPlacement); // Pass the type
+                            selectedComponentTypeForPlacement = null; // Deselect component type after placing
+                            document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                        } else if (currentTool === 'select' && !selectedComponentTypeForPlacement) {
+                            // If select tool is active but no component type selected, deselect any placed component
+                            document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
+                            closePropertiesPanel();
+                        }
+                    }
+                });
+            } else { // Desktop: handle drag and drop for placement
+                canvasArea.addEventListener('dragover', (e) => {
+                    e.preventDefault(); // Allow drop
+                    e.dataTransfer.dropEffect = 'move';
+                });
+
+                canvasArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const componentType = e.dataTransfer.getData('text/plain');
+                    if (componentType && currentTool === 'select') {
+                        const rect = canvasArea.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        placeComponent(x, y, componentType); // Pass the type
+                        // No need to reset selectedComponentTypeForPlacement here as it's for mobile
+                        document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected')); // Visual cleanup
+                    }
+                });
+            }
+
+            // Event listener for clicking on empty canvas area to deselect (common for both)
             document.getElementById('canvasArea').addEventListener('click', (event) => {
                 // If click is on the canvas element itself or its parent container (canvasArea)
                 // and it's not a drag event
                 if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea') && !isDragging) {
                     document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
                     closePropertiesPanel();
+                    selectedComponentElement = null; // Clear selected component
                 }
             });
 
@@ -2793,7 +2915,7 @@
                 showProtectedAlert(e.target);
             });
             // Add event listener for the new beta badge on start screen
-            document.getElementById('betaBadgeStart').addEventListener('mousedown', function(e) {
+            document.querySelector('#startScreen .beta-badge').addEventListener('mousedown', function(e) {
                 showProtectedAlert(e.target);
             });
             // Add event listener for the beta badge in the header
