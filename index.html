@@ -305,6 +305,24 @@
             text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
         }
 
+        .beta-badge {
+            background-color: #ffffff;
+            color: #0a0e14;
+            font-size: 0.7em;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 5px;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+
         .simulation-controls {
             display: flex;
             gap: 10px;
@@ -1525,6 +1543,7 @@
                 <div class="logo">
                     <div class="logo-img" id="smallLogo"></div>
                     <span class="logo-text">FLUXIONICS</span>
+                    <span class="beta-badge" id="betaBadge">Beta</span>
                 </div>
             </div>
             
@@ -1854,6 +1873,8 @@
         };
         
         // --- Screen Management Functions ---
+        let currentActiveScreenId = 'startScreen'; // Keep track of the currently active screen
+
         function showScreen(screenId) {
             // Hide all screens
             document.querySelectorAll('.screen').forEach(screen => {
@@ -1864,6 +1885,8 @@
             const targetScreen = document.getElementById(screenId);
             if (targetScreen) {
                 targetScreen.classList.add('active');
+                currentActiveScreenId = screenId; // Update active screen ID
+
                 // Special handling for appContainer to initialize canvas
                 if (screenId === 'appContainer') {
                     initializeCanvas();
@@ -2171,7 +2194,7 @@
 
         function closeSidebar() {
             document.getElementById('sidebarMenu').classList.remove('open');
-            // Also close components sidebar if open on mobile
+            // Also close components sidebar if open on mobile (if it's a separate sidebar)
             if (window.innerWidth <= 768) {
                 document.getElementById('componentsSidebar').classList.remove('open');
             }
@@ -2354,13 +2377,21 @@
 
             // Event listener for placing components on canvas area
             document.getElementById('canvasArea').addEventListener('click', (event) => {
-                // Get coordinates relative to the canvas area
-                const rect = event.currentTarget.getBoundingClientRect();
-                const x = event.clientX - rect.left;
-                const y = event.clientY - rect.top;
-                
-                if (selectedComponentType && currentTool === 'select') {
-                    placeComponent(x, y);
+                // Only place component if the click target is the canvas itself or its direct children (like grid overlay)
+                // and not on an already placed component.
+                if (event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    const x = event.clientX - rect.left;
+                    const y = event.clientY - rect.top;
+                    
+                    if (selectedComponentType && currentTool === 'select') {
+                        placeComponent(x, y);
+                        console.log(`Placed component: ${selectedComponentType} at (${x}, ${y})`); // Debug log
+                    } else if (currentTool === 'select' && !selectedComponentType) {
+                        // If select tool is active but no component type selected, deselect any placed component
+                        document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
+                        closePropertiesPanel();
+                    }
                 }
             });
             
@@ -2435,12 +2466,25 @@
             document.querySelector('.app-subtitle').addEventListener('mousedown', function(e) {
                 showProtectedAlert(e.target);
             });
+            document.getElementById('betaBadge').addEventListener('mousedown', function(e) {
+                showProtectedAlert(e.target);
+            });
 
-            // Aggressive debugger check (can be bypassed, but a deterrent)
-            // This will try to open dev tools if they are not already open and the user tries to interact.
-            // This is generally not recommended for production but requested by user.
+
+            // Aggressive debugger check (can be bypassed, but a strong deterrent)
             let devtoolsAreOpen = false;
             const checkDevTools = () => {
+                try {
+                    // This line will pause execution if dev tools are open
+                    // and the "Pause on caught exceptions" is enabled.
+                    // It's a common trick to detect dev tools.
+                    (function() {}.constructor('debugger')());
+                } catch (e) {
+                    // If an error is caught here, it might mean dev tools are NOT open
+                    // or that the debugger statement was ignored.
+                }
+
+                // Heuristic check based on window size (less reliable)
                 const threshold = 160; // Approximate threshold for dev tools height/width
                 if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
                     if (!devtoolsAreOpen) {
