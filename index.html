@@ -660,12 +660,12 @@
             background-size: 20px 20px;
         }
 
-        /* Scroll Arrows for Mobile */
+        /* Scroll Arrows for Mobile (Global positioning) */
         .scroll-arrows {
             position: fixed;
             right: 10px;
             bottom: 80px; /* Adjust based on status bar height */
-            display: none; /* Hidden by default, shown on mobile */
+            display: none; /* Hidden by default, shown on mobile via JS */
             flex-direction: column;
             gap: 10px;
             z-index: 1000;
@@ -1893,16 +1893,6 @@
                     <!-- Grid overlay is handled by canvas drawing now, but keeping div for potential future use or fallback -->
                     <!-- <div class="grid-overlay"></div> --> 
                 </div>
-
-                <!-- Scroll Arrows (for mobile) -->
-                <div class="scroll-arrows" id="scrollArrows">
-                    <button class="scroll-arrow-btn" onclick="scrollCanvas('up')">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                    <button class="scroll-arrow-btn" onclick="scrollCanvas('down')">
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                </div>
                 
                 <div class="status-bar">
                     <div class="status-info">
@@ -1979,6 +1969,16 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Scroll Arrows (for mobile) - Moved outside appContainer -->
+    <div class="scroll-arrows" id="scrollArrows">
+        <button class="scroll-arrow-btn" onclick="scrollCanvas('up')">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+        <button class="scroll-arrow-btn" onclick="scrollCanvas('down')">
+            <i class="fas fa-chevron-down"></i>
+        </button>
     </div>
 
     <!-- Protected Content Alert -->
@@ -2077,7 +2077,7 @@
                 // Special handling for appContainer to initialize canvas
                 if (screenId === 'appContainer') {
                     initializeCanvas();
-                    setupCanvasInteraction(); // Set up interaction based on device
+                    // Canvas area overflow is managed by CSS based on isMobileDevice in setupCanvasInteraction
                 }
                 // Special handling for calfluxSection to initialize calculator
                 if (screenId === 'calfluxSection') {
@@ -2604,12 +2604,24 @@
 
         // --- Scroll Canvas for Mobile ---
         function scrollCanvas(direction) {
-            const canvasArea = document.getElementById('canvasArea');
+            // Determine which element to scroll based on the active screen
+            let scrollTarget = null;
+            if (currentActiveScreenId === 'appContainer') {
+                scrollTarget = document.getElementById('canvasArea');
+            } else if (currentActiveScreenId === 'calfluxSection' || currentActiveScreenId === 'tutorialSection') {
+                scrollTarget = document.getElementById(currentActiveScreenId); // These screens are themselves scrollable
+            } else {
+                // For startScreen, it's not designed to scroll, so arrows won't have effect
+                // Can add a message here if needed.
+                console.log("Scroll arrows are visible but this screen is not designed for scrolling.");
+                return;
+            }
+
             const scrollAmount = 100; // Pixels to scroll
             if (direction === 'up') {
-                canvasArea.scrollTop -= scrollAmount;
+                scrollTarget.scrollTop -= scrollAmount;
             } else {
-                canvasArea.scrollTop += scrollAmount;
+                scrollTarget.scrollTop += scrollAmount;
             }
         }
 
@@ -2753,25 +2765,15 @@
             document.getElementById('customModalBody').innerHTML = '<p>Se excedió el número máximo de reintentos. Por favor, inténtalo de nuevo más tarde.</p>';
         }
 
-        // --- Setup Canvas Interaction based on Device ---
-        function setupCanvasInteraction() {
-            const canvasArea = document.getElementById('canvasArea');
-            const scrollArrows = document.getElementById('scrollArrows');
-
-            if (isMobileDevice) {
-                canvasArea.style.overflowY = 'auto'; // Enable scrolling for mobile
-                scrollArrows.style.display = 'flex'; // Show scroll arrows
-            } else {
-                canvasArea.style.overflowY = 'hidden'; // Keep hidden for desktop
-                scrollArrows.style.display = 'none'; // Hide scroll arrows
-            }
-        }
-
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
             detectMobile(); // Detect device type first
-            setupCanvasInteraction(); // Apply initial overflow and arrow visibility
+
+            // Show scroll arrows if on mobile, regardless of current screen
+            if (isMobileDevice) {
+                document.getElementById('scrollArrows').style.display = 'flex';
+            }
 
             // Initialize resistor calculator on load
             calculateResistance();
