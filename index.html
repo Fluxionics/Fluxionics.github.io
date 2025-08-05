@@ -14,6 +14,10 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%; /* Ensure html and body take full height */
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0a0e14;
@@ -1123,7 +1127,7 @@
             padding-bottom: 10px;
         }
         
-        .tutorial-content h3 {
+.tutorial-content h3 {
             font-size: 1.5em;
             color: #c9d1d9;
             margin-top: 30px;
@@ -1323,7 +1327,6 @@
             #calfluxSection, #tutorialSection {
                 width: 95%; /* More space for content */
                 margin: 0 auto; /* Center with auto margin */
-                /* max-height is now handled by .screen's height: 100% and overflow-y: auto */
                 top: 50%; /* Re-center after width change */
                 left: 50%; /* Re-center after width change */
                 transform: translate(-50%, -50%); /* Re-center with transform */
@@ -1356,9 +1359,19 @@
                 padding: 20px;
             }
 
-            /* Mobile specific overflow for canvas-area */
+            /* Mobile specific overflow and min-height for scrollable areas */
             .canvas-area {
                 overflow-y: auto; /* Enable scrolling for mobile */
+                min-height: 150vh; /* TEMPORARY: Ensure canvas area is scrollable on mobile for testing */
+            }
+            #startScreen {
+                min-height: 120vh; /* TEMPORARY: Ensure start screen is scrollable on mobile for testing */
+            }
+            #calfluxSection {
+                min-height: 120vh; /* TEMPORARY: Ensure calflux section is scrollable on mobile for testing */
+            }
+            #tutorialSection {
+                min-height: 120vh; /* TEMPORARY: Ensure tutorial section is scrollable on mobile for testing */
             }
         }
     </style>
@@ -2062,6 +2075,7 @@
             if ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) {
                 isMobileDevice = true;
             }
+            console.log("Es dispositivo móvil:", isMobileDevice);
         }
 
         // --- Screen Management Functions ---
@@ -2608,24 +2622,44 @@
 
         // --- Scroll Canvas for Mobile ---
         function scrollCanvas(direction) {
-            // Determine which element to scroll based on the active screen
             let scrollTarget = null;
+            let targetId = '';
+
+            // Determine which element to scroll based on the active screen
             if (currentActiveScreenId === 'appContainer') {
                 scrollTarget = document.getElementById('canvasArea');
-            } else if (currentActiveScreenId === 'calfluxSection' || currentActiveScreenId === 'tutorialSection') {
-                scrollTarget = document.getElementById(currentActiveScreenId); // These screens are themselves scrollable
-            } else if (currentActiveScreenId === 'startScreen') {
-                scrollTarget = document.getElementById('startScreen');
-            } else {
-                console.log("Scroll arrows are visible but this screen is not designed for scrolling.");
+                targetId = 'canvasArea';
+            } else { // This covers startScreen, calfluxSection, tutorialSection
+                scrollTarget = document.getElementById(currentActiveScreenId);
+                targetId = currentActiveScreenId;
+            }
+
+            if (!scrollTarget) {
+                console.error("Error: Elemento de desplazamiento no encontrado para la pantalla activa:", currentActiveScreenId);
+                showModal('Error de Desplazamiento', 'No se pudo encontrar el área de desplazamiento para esta pantalla.');
                 return;
             }
 
-            const scrollAmount = 100; // Pixels to scroll
+            const initialScrollTop = scrollTarget.scrollTop;
+            const scrollAmount = 150; // Aumentado para una mayor visibilidad
+
             if (direction === 'up') {
                 scrollTarget.scrollTop -= scrollAmount;
             } else {
                 scrollTarget.scrollTop += scrollAmount;
+            }
+
+            console.log(`Intento de desplazamiento en: ${targetId}`);
+            console.log(`Dirección: ${direction}, Cantidad: ${scrollAmount}`);
+            console.log(`Scroll inicial: ${initialScrollTop}, Scroll final: ${scrollTarget.scrollTop}`);
+            console.log(`ScrollHeight: ${scrollTarget.scrollHeight}, ClientHeight: ${scrollTarget.clientHeight}`);
+
+            if (scrollTarget.scrollHeight <= scrollTarget.clientHeight) {
+                console.warn(`El elemento ${targetId} no tiene suficiente contenido para desplazarse (scrollHeight <= clientHeight).`);
+                // Optionally show a modal to the user if they try to scroll a non-scrollable area
+                // showModal('Sin Contenido Desplazable', 'Esta sección no tiene suficiente contenido para desplazarse.');
+            } else if (initialScrollTop === scrollTarget.scrollTop) {
+                console.warn(`El desplazamiento no tuvo efecto en ${targetId}. Posiblemente ya esté al límite.`);
             }
         }
 
