@@ -994,100 +994,154 @@
         }
 
         /* Nuevos estilos para las tarjetas de Cal Flux */
-        .component-cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+        .calflux-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 15px;
         }
 
-        .component-card {
+        .calflux-nav-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(48, 54, 61, 0.8);
+            color: #e6edf3;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        .calflux-nav-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .calflux-nav-btn.active {
+            background: #00d4ff;
+            color: #0a0e14;
+            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .calflux-calculator-area {
             background: rgba(33, 38, 45, 0.8);
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px;
             border: 1px solid #30363d;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
         }
 
-        .component-card:hover {
-            background: rgba(0, 212, 255, 0.05);
-            border-color: #00d4ff;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
+        .calculator-section h3 {
+            font-size: 1.8em;
+            color: #00d4ff;
+            margin-bottom: 20px;
             border-bottom: 2px solid rgba(0, 212, 255, 0.3);
             padding-bottom: 10px;
         }
 
-        .card-header h3 {
-            font-size: 18px;
-            color: #00d4ff;
-            font-weight: 700;
+        .calculator-section p {
+            font-size: 1em;
+            color: #c9d1d9;
+            margin-bottom: 15px;
         }
 
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 212, 255, 0.1);
+        .calculator-section .formula {
+            background: #1a1f2e;
+            padding: 15px;
             border-radius: 8px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00d4ff;
+            font-size: 1.1em;
+            overflow-x: auto; /* For long formulas */
+        }
+
+        .calculator-section .example {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid #00d4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #c9d1d9;
+        }
+
+        .calculator-input-group {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00d4ff;
-            font-size: 16px;
+            flex-direction: column;
+            margin-bottom: 15px;
         }
 
-        .card-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .calculator-input-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #c9d1d9;
+        }
+
+        .calculator-input-group input,
+        .calculator-input-group select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444c56;
+            background-color: #30363d;
+            color: #e6edf3;
+            font-size: 1em;
+        }
+
+        .calculator-input-group input:focus,
+        .calculator-input-group select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .calculator-results {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+        }
+
+        .calculator-results p {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #e6edf3;
+            margin-bottom: 10px;
+        }
+
+        .calculator-results p:last-child {
+            margin-bottom: 0;
+        }
+
+        .calculator-results span {
+            color: #00d4ff;
+            font-size: 1.2em;
+        }
+
+        .action-buttons {
+            display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-top: 20px;
+            justify-content: flex-end;
         }
 
-        .detail-item {
-            font-size: 13px;
-            color: #c9d1d9;
+        .action-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #00d4ff;
+            color: #0a0e14;
         }
 
-        .detail-item strong {
-            color: #8b949e;
-        }
-        
-        .card-list {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 15px;
-        }
-        
-        .card-list li {
-            margin-bottom: 8px;
-            padding-left: 15px;
-            position: relative;
-            font-size: 14px;
-            color: #c9d1d9;
-        }
-        
-        .card-list li::before {
-            content: "\f058"; /* Check icon */
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            color: #00d4ff;
-            position: absolute;
-            left: 0;
-        }
-
-        .card-description p {
-            font-style: italic;
-            font-size: 14px;
-            color: #8b949e;
-            border-left: 3px solid #30363d;
-            padding-left: 10px;
+        .action-buttons button:hover {
+            background: #00e6ff;
+            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
         }
         
         .resistor-bands-display {
@@ -1485,230 +1539,24 @@
     <div class="screen" id="calfluxSection">
         <div class="calflux-header">
             <i class="fas fa-table"></i>
-            <h2>Cal Flux - Documentación de Componentes</h2>
+            <h2>Cal Flux - Herramientas de Cálculo</h2>
             <button class="start-button secondary" onclick="showScreen('startScreen')" style="margin-left: auto;">
                 <i class="fas fa-arrow-left"></i>
                 Volver
             </button>
         </div>
 
-        <div class="component-cards-container" id="componentCardsContainer">
-            <!-- Card para Resistor -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Resistor</h3>
-                    <div class="card-icon"><i class="fas fa-ohm"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Referencia:</strong> R1</div>
-                    <div class="detail-item"><strong>Valor:</strong> 1kΩ</div>
-                    <div class="detail-item"><strong>Tolerancia:</strong> 5%</div>
-                    <div class="detail-item"><strong>Potencia:</strong> 0.25W</div>
-                    <div class="detail-item"><strong>Voltaje:</strong> -</div>
-                </div>
-                <div class="card-description">
-                    <p>Resistor de propósito general</p>
-                </div>
-            </div>
+        <div class="calflux-navigation">
+            <button class="calflux-nav-btn active" data-calculator-type="ohm" onclick="renderCalculator('ohm')">Ley de Ohm</button>
+            <button class="calflux-nav-btn" data-calculator-type="dividers" onclick="renderCalculator('dividers')">Divisores</button>
+            <button class="calflux-nav-btn" data-calculator-type="rcrlFilter" onclick="renderCalculator('rcrlFilter')">Filtros RC/RL</button>
+            <button class="calflux-nav-btn" data-calculator-type="lcResonance" onclick="renderCalculator('lcResonance')">Resonancia LC</button>
+            <button class="calflux-nav-btn" data-calculator-type="transformers" onclick="renderCalculator('transformers')">Transformadores</button>
+            <button class="calflux-nav-btn" data-calculator-type="resistorCode" onclick="renderCalculator('resistorCode')">Código de Colores Resistencia</button>
+        </div>
 
-            <!-- Card para Capacitor -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Capacitor</h3>
-                    <div class="card-icon"><i class="fas fa-bolt"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Referencia:</strong> C1</div>
-                    <div class="detail-item"><strong>Valor:</strong> 100µF</div>
-                    <div class="detail-item"><strong>Tolerancia:</strong> 20%</div>
-                    <div class="detail-item"><strong>Potencia:</strong> -</div>
-                    <div class="detail-item"><strong>Voltaje:</strong> 25V</div>
-                </div>
-                <div class="card-description">
-                    <p>Capacitor electrolítico</p>
-                </div>
-            </div>
-
-            <!-- Card para LED -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>LED</h3>
-                    <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Referencia:</strong> D1</div>
-                    <div class="detail-item"><strong>Valor:</strong> -</div>
-                    <div class="detail-item"><strong>Tolerancia:</strong> -</div>
-                    <div class="detail-item"><strong>Potencia:</strong> 0.1W</div>
-                    <div class="detail-item"><strong>Voltaje:</strong> 2.1V</div>
-                </div>
-                <div class="card-description">
-                    <p>LED rojo estándar</p>
-                </div>
-            </div>
-            
-            <!-- Card para Batería -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Batería</h3>
-                    <div class="card-icon"><i class="fas fa-battery-three-quarters"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Referencia:</strong> BAT1</div>
-                    <div class="detail-item"><strong>Valor:</strong> 9V</div>
-                    <div class="detail-item"><strong>Tolerancia:</strong> -</div>
-                    <div class="detail-item"><strong>Potencia:</strong> -</div>
-                    <div class="detail-item"><strong>Voltaje:</strong> 9V</div>
-                </div>
-                <div class="card-description">
-                    <p>Batería alcalina</p>
-                </div>
-            </div>
-
-            <!-- Card para Colores de Resistencia (Interactive Calculator) -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Calculadora de Resistencia</h3>
-                    <div class="card-icon"><i class="fas fa-calculator"></i></div>
-                </div>
-                <div class="resistor-calculator">
-                    <h4>Código de Colores de Resistencia</h4>
-                    <div class="resistor-input-group">
-                        <label for="band1">Banda 1:</label>
-                        <select id="band1" onchange="calculateResistance()">
-                            <option value="black" style="background-color: black; color: white;">Negro (0)</option>
-                            <option value="brown" style="background-color: brown; color: white;">Marrón (1)</option>
-                            <option value="red" style="background-color: red; color: white;">Rojo (2)</option>
-                            <option value="orange" style="background-color: orange; color: black;">Naranja (3)</option>
-                            <option value="yellow" style="background-color: yellow; color: black;">Amarillo (4)</option>
-                            <option value="green" style="background-color: green; color: white;">Verde (5)</option>
-                            <option value="blue" style="background-color: blue; color: white;">Azul (6)</option>
-                            <option value="violet" style="background-color: violet; color: white;">Violeta (7)</option>
-                            <option value="gray" style="background-color: gray; color: black;">Gris (8)</option>
-                            <option value="white" style="background-color: white; color: black;">Blanco (9)</option>
-                        </select>
-                    </div>
-                    <div class="resistor-input-group">
-                        <label for="band2">Banda 2:</label>
-                        <select id="band2" onchange="calculateResistance()">
-                            <option value="black" style="background-color: black; color: white;">Negro (0)</option>
-                            <option value="brown" style="background-color: brown; color: white;">Marrón (1)</option>
-                            <option value="red" style="background-color: red; color: white;">Rojo (2)</option>
-                            <option value="orange" style="background-color: orange; color: black;">Naranja (3)</option>
-                            <option value="yellow" style="background-color: yellow; color: black;">Amarillo (4)</option>
-                            <option value="green" style="background-color: green; color: white;">Verde (5)</option>
-                            <option value="blue" style="background-color: blue; color: white;">Azul (6)</option>
-                            <option value="violet" style="background-color: violet; color: white;">Violeta (7)</option>
-                            <option value="gray" style="background-color: gray; color: black;">Gris (8)</option>
-                            <option value="white" style="background-color: white; color: black;">Blanco (9)</option>
-                        </select>
-                    </div>
-                    <div class="resistor-input-group">
-                        <label for="multiplier">Multiplicador:</label>
-                        <select id="multiplier" onchange="calculateResistance()">
-                            <option value="black" style="background-color: black; color: white;">Negro (x1)</option>
-                            <option value="brown" style="background-color: brown; color: white;">Marrón (x10)</option>
-                            <option value="red" style="background-color: red; color: white;">Rojo (x100)</option>
-                            <option value="orange" style="background-color: orange; color: black;">Naranja (x1k)</option>
-                            <option value="yellow" style="background-color: yellow; color: black;">Amarillo (x10k)</option>
-                            <option value="green" style="background-color: green; color: white;">Verde (x100k)</option>
-                            <option value="blue" style="background-color: blue; color: white;">Azul (x1M)</option>
-                            <option value="violet" style="background-color: violet; color: white;">Violeta (x10M)</option>
-                            <option value="gold" style="background-color: gold; color: black;">Dorado (x0.1)</option>
-                            <option value="silver" style="background-color: silver; color: black;">Plateado (x0.01)</option>
-                        </select>
-                    </div>
-                    <div class="resistor-input-group">
-                        <label for="tolerance">Tolerancia:</label>
-                        <select id="tolerance" onchange="calculateResistance()">
-                            <option value="brown" style="background-color: brown; color: white;">Marrón (±1%)</option>
-                            <option value="red" style="background-color: red; color: white;">Rojo (±2%)</option>
-                            <option value="green" style="background-color: green; color: white;">Verde (±0.5%)</option>
-                            <option value="blue" style="background-color: blue; color: white;">Azul (±0.25%)</option>
-                            <option value="violet" style="background-color: violet; color: white;">Violeta (±0.1%)</option>
-                            <option value="gray" style="background-color: gray; color: black;">Gris (±0.05%)</option>
-                            <option value="gold" style="background-color: gold; color: black;">Dorado (±5%)</option>
-                            <option value="silver" style="background-color: silver; color: black;">Plateado (±10%)</option>
-                        </select>
-                    </div>
-                    <div class="resistor-result">
-                        <p>Valor de Resistencia: <span id="resistanceValue">0 Ω</span></p>
-                        <div class="resistor-bands-display">
-                            <div id="displayBand1" class="resistor-band-color"></div>
-                            <div id="displayBand2" class="resistor-band-color"></div>
-                            <div id="displayMultiplier" class="resistor-band-color"></div>
-                            <div id="displayTolerance" class="resistor-band-color"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Card para Voltaje Sinusoidal -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Voltaje Sinusoidal</h3>
-                    <div class="card-icon"><i class="fas fa-wave-square"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Valor Pico (Vp):</strong> Máxima amplitud de la onda.</div>
-                    <div class="detail-item"><strong>Valor RMS (Vrms):</strong> Equivalente a la potencia de DC.</div>
-                    <div class="detail-item"><strong>Frecuencia (f):</strong> Número de ciclos por segundo (Hz).</div>
-                    <div class="detail-item"><strong>Período (T):</strong> Duración de un ciclo completo (T = 1/f).</div>
-                </div>
-                <div class="card-description">
-                    <p>Fórmula: V(t) = Vp * sin(2πft)</p>
-                </div>
-            </div>
-            
-            <!-- Card para Códigos de SMD -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Código de Resistencias SMD</h3>
-                    <div class="card-icon"><i class="fas fa-barcode"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Código de 3 dígitos:</strong> Los primeros 2 son el valor, el 3ro es el multiplicador (número de ceros). Ej: 102 = 1000 Ω (1kΩ).</div>
-                    <div class="detail-item"><strong>Código de 4 dígitos:</strong> Los primeros 3 son el valor, el 4to es el multiplicador. Ej: 4702 = 47kΩ.</div>
-                    <div class="detail-item"><strong>Código EIA-96:</strong> Combina 2 dígitos para el valor y una letra para el multiplicador.</div>
-                </div>
-                <div class="card-description">
-                    <p>Guía rápida para la lectura de resistencias de montaje superficial.</p>
-                </div>
-            </div>
-            
-            <!-- Card para Códigos de Inductores -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Código de Inductores</h3>
-                    <div class="card-icon"><i class="fas fa-magnet"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Primeros 2 dígitos:</strong> Valor numérico.</div>
-                    <div class="detail-item"><strong>Tercer dígito:</strong> Multiplicador (en µH).</div>
-                </div>
-                <div class="card-description">
-                    <p>Ejemplo: Un código 102 significa 10 x 10^2 = 1000 µH (1 mH).</p>
-                </div>
-            </div>
-
-            <!-- Card para Pin-outs -->
-            <div class="component-card">
-                <div class="card-header">
-                    <h3>Pin-outs (Op-Amp)</h3>
-                    <div class="card-icon"><i class="fas fa-microchip"></i></div>
-                </div>
-                <div class="card-details">
-                    <div class="detail-item"><strong>Pin 2:</strong> Entrada Inversora (-)</div>
-                    <div class="detail-item"><strong>Pin 3:</strong> Entrada No Inversora (+)</div>
-                    <div class="detail-item"><strong>Pin 4:</strong> V- (Voltaje Negativo)</div>
-                    <div class="detail-item"><strong>Pin 6:</strong> Salida</div>
-                    <div class="detail-item"><strong>Pin 7:</strong> V+ (Voltaje Positivo)</div>
-                </div>
-                <div class="card-description">
-                    <p>Configuración básica del popular amplificador operacional LM741.</p>
-                </div>
-            </div>
-
+        <div class="calflux-calculator-area" id="calfluxCalculatorArea">
+            <!-- Calculator content will be loaded here by JavaScript -->
         </div>
     </div>
     
@@ -2191,6 +2039,7 @@
             },
             'opamp': { name: 'Op-Amp', properties: { model: 'LM741' }, icon: 'U',
                 // Standard 8-pin DIP package for visual representation
+                // Corrected pin positions for visual clarity on a 50x50px square
                 pins: [
                     { id: 'offset_null_1', label: '1(Null)', x: 10, y: 0 }, // Pin 1 (top-left)
                     { id: 'inverting', label: '2(-In)', x: 0, y: 15 }, // Pin 2 (left-top)
@@ -2204,15 +2053,16 @@
             },
             'timer555': { name: 'Timer 555', properties: { mode: 'Astable' }, icon: '555',
                 // Timer 555 is an 8-pin IC. Pins arranged to simulate rectangular DIP.
+                // Adjusted positions to better represent a standard DIP layout within a 50x50px square
                 pins: [
-                    { id: 'gnd', label: '1(GND)', x: 0, y: 50 },    // Pin 1 (Bottom-left, assuming 0,0 is top-left of component)
-                    { id: 'trigger', label: '2(TRIG)', x: 0, y: 35 }, // Pin 2 (Left side, below center)
-                    { id: 'output', label: '3(OUT)', x: 0, y: 20 },   // Pin 3 (Left side, above center)
+                    { id: 'gnd', label: '1(GND)', x: 0, y: 45 },    // Pin 1 (Bottom-left)
+                    { id: 'trigger', label: '2(TRIG)', x: 0, y: 30 }, // Pin 2 (Left side, below center)
+                    { id: 'output', label: '3(OUT)', x: 0, y: 15 },   // Pin 3 (Left side, above center)
                     { id: 'reset', label: '4(RST)', x: 0, y: 0 },    // Pin 4 (Top-left)
                     { id: 'control_voltage', label: '5(CV)', x: 50, y: 0 }, // Pin 5 (Top-right)
-                    { id: 'threshold', label: '6(THRES)', x: 50, y: 20 }, // Pin 6 (Right side, above center)
-                    { id: 'discharge', label: '7(DISC)', x: 50, y: 35 }, // Pin 7 (Right side, below center)
-                    { id: 'vcc', label: '8(VCC)', x: 50, y: 50 }     // Pin 8 (Bottom-right)
+                    { id: 'threshold', label: '6(THRES)', x: 50, y: 15 }, // Pin 6 (Right side, above center)
+                    { id: 'discharge', label: '7(DISC)', x: 50, y: 30 }, // Pin 7 (Right side, below center)
+                    { id: 'vcc', label: '8(VCC)', x: 50, y: 45 }     // Pin 8 (Bottom-right)
                 ]
             },
             'arduino': { name: 'Arduino', properties: { model: 'UNO' }, icon: 'ARD',
@@ -2297,7 +2147,7 @@
                 }
                 // Special handling for calfluxSection to initialize calculator
                 if (screenId === 'calfluxSection') {
-                    calculateResistance();
+                    renderCalculator('ohm'); // Default to Ohm's Law calculator
                 }
             }
             // Close sidebars if open when switching screens
@@ -2601,8 +2451,9 @@
                 pin.setAttribute('data-pin-id', pinInfo.id); // Store logical pin ID
                 pin.setAttribute('data-component-id', componentId); // Link pin to its component
                 
-                // Position pin relative to component (50x50px box)
-                // Pin element is 10x10px, so subtract 5 to center it on the defined x,y
+                // Position pin relative to component (10x10px pin, 50x50px component)
+                // pinInfo.x, pinInfo.y are center points of the pin on the 50x50 component
+                // Subtract 5 to get the top-left corner of the 10x10px pin element
                 pin.style.left = `${pinInfo.x - 5}px`;
                 pin.style.top = `${pinInfo.y - 5}px`;
 
@@ -3375,9 +3226,6 @@
             if (isMobileDevice) {
                 document.getElementById('scrollArrows').style.display = 'flex';
             }
-
-            // Initialize resistor calculator on load
-            calculateResistance();
 
             // Event listeners for component selection in sidebar
             document.querySelectorAll('.component-item').forEach(item => {
