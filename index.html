@@ -18,7 +18,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0a0e14;
             color: #e6edf3;
-            overflow: hidden;
+            overflow: hidden; /* Keep body hidden to prevent main scrollbar, individual screens will scroll */
             line-height: 1.6;
         }
 
@@ -30,7 +30,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Prevent body scroll */
+            overflow-y: auto; /* Allow individual screens to scroll if content overflows */
+            -webkit-overflow-scrolling: touch; /* For smoother iOS scrolling */
+            flex-direction: column; /* Default to column for content layout */
         }
 
         .screen.active {
@@ -39,14 +41,13 @@
 
         /* Start Screen Styles */
         #startScreen {
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0e14 100%);
             padding: 40px;
             text-align: center;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Keep hidden for this screen as it doesn't scroll internally */
         }
 
         #startScreen::before {
@@ -90,12 +91,19 @@
             50% { transform: translateY(-15px) rotate(3deg); }
         }
 
+        .app-title-container { /* New container for title and beta badge on start screen */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
         .app-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 4.5em;
             font-weight: 900;
             color: #00d4ff;
-            margin-bottom: 10px;
             text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
             letter-spacing: 4px;
             background: linear-gradient(45deg, #00d4ff, #ffffff, #00d4ff);
@@ -297,6 +305,14 @@
             border-radius: 8px;
         }
 
+        .logo-text-container { /* New container for text and badge */
+            position: relative;
+            display: flex;
+            flex-direction: column; /* Stack beta on top of text */
+            align-items: center; /* Center beta and text horizontally */
+            line-height: 1; /* Adjust line height to bring them closer */
+        }
+
         .logo-text {
             font-family: 'Orbitron', sans-serif;
             font-size: 24px;
@@ -312,7 +328,6 @@
             font-weight: 700;
             padding: 2px 6px;
             border-radius: 5px;
-            margin-left: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
@@ -321,6 +336,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             cursor: default;
+            margin-bottom: 2px; /* Small margin between badge and text */
         }
 
         .simulation-controls {
@@ -547,6 +563,7 @@
             border-radius: 6px;
             transition: all 0.2s;
             color: #e6edf3;
+            font-size: 16px;
         }
 
         .tool-btn:hover {
@@ -849,8 +866,7 @@
             background: rgba(22, 27, 34, 0.95);
             border-radius: 12px;
             margin: 20px;
-            overflow-y: auto;
-            max-height: calc(100vh - 40px);
+            /* max-height is now handled by .screen's height: 100% and overflow-y: auto */
             position: absolute; /* Changed to absolute for overlay */
             top: 50%;
             left: 50%;
@@ -1049,11 +1065,12 @@
         /* Tutorial Section */
         #tutorialSection {
             flex-direction: column;
+            padding: 20px;
             background: rgba(13, 17, 23, 0.95);
             backdrop-filter: blur(15px);
             z-index: 3000;
             color: #e6edf3;
-            overflow-y: auto;
+            /* max-height is now handled by .screen's height: 100% and overflow-y: auto */
         }
         
         .tutorial-content {
@@ -1119,6 +1136,91 @@
         }
         .protected-alert.show {
             opacity: 1;
+        }
+
+        /* Custom Modal Styles */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-content {
+            background: #1a1f2e;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            position: relative;
+            max-height: 80vh; /* Limit height for scrollable content */
+            overflow-y: auto; /* Enable scrolling for modal content */
+        }
+
+        .custom-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 10px;
+        }
+
+        .custom-modal-header h3 {
+            color: #00d4ff;
+            font-size: 1.5em;
+        }
+
+        .custom-modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #8b949e;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .custom-modal-close-btn:hover {
+            color: #ff6b6b;
+        }
+
+        .custom-modal-body {
+            color: #c9d1d9;
+            line-height: 1.6;
+        }
+
+        .custom-modal-body p {
+            margin-bottom: 10px;
+        }
+
+        .custom-modal-body .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            color: #00d4ff;
+            font-size: 2em;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
 
@@ -1189,7 +1291,7 @@
             #calfluxSection, #tutorialSection {
                 width: 95%; /* More space for content */
                 margin: 0 auto; /* Center with auto margin */
-                max-height: calc(100vh - 20px);
+                /* max-height is now handled by .screen's height: 100% and overflow-y: auto */
                 top: 50%; /* Re-center after width change */
                 left: 50%; /* Re-center after width change */
                 transform: translate(-50%, -50%); /* Re-center with transform */
@@ -1216,6 +1318,11 @@
             .detail-item {
                 font-size: 12px;
             }
+
+            .custom-modal-content {
+                width: 95%;
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -1224,7 +1331,10 @@
     <div class="screen active" id="startScreen">
         <div class="logo-container">
             <div class="main-logo" id="mainLogo"></div>
-            <h1 class="app-title">FLUXIONICS</h1>
+            <div class="app-title-container">
+                <span class="beta-badge" id="betaBadgeStart">Beta</span>
+                <h1 class="app-title">FLUXIONICS</h1>
+            </div>
             <p class="app-subtitle">Simulador Profesional de Circuitos</p>
         </div>
         
@@ -1542,8 +1652,10 @@
                 
                 <div class="logo">
                     <div class="logo-img" id="smallLogo"></div>
-                    <span class="logo-text">FLUXIONICS</span>
-                    <span class="beta-badge" id="betaBadge">Beta</span>
+                    <div class="logo-text-container">
+                        <span class="beta-badge">Beta</span>
+                        <span class="logo-text">FLUXIONICS</span>
+                    </div>
                 </div>
             </div>
             
@@ -1727,6 +1839,10 @@
                         <button class="tool-btn" data-tool="delete" onclick="selectTool('delete')">
                             <i class="fas fa-trash"></i>
                         </button>
+                        <button class="tool-btn" onclick="explainComponentWithAI()">
+                            <i class="fas fa-magic"></i> <!-- Sparkle icon -->
+                            Explicar Componente ✨
+                        </button>
                     </div>
                     
                     <div class="zoom-controls">
@@ -1825,6 +1941,21 @@
 
     <!-- Protected Content Alert -->
     <div class="protected-alert" id="protectedAlert">Contenido protegido</div>
+
+    <!-- Custom Modal Structure -->
+    <div class="custom-modal-overlay" id="customModalOverlay">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <h3 id="customModalTitle"></h3>
+                <button class="custom-modal-close-btn" onclick="hideModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="custom-modal-body" id="customModalBody">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
 
     <script>
         // Global variables
@@ -1950,7 +2081,11 @@
         // --- Tool Functions ---
         function selectTool(tool) {
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            // Check if the tool button exists before adding active class
+            const toolButton = document.querySelector(`[data-tool="${tool}"]`);
+            if (toolButton) {
+                toolButton.classList.add('active');
+            }
             currentTool = tool;
             
             const canvasArea = document.getElementById('canvasArea');
@@ -1973,20 +2108,109 @@
             }
         }
 
+        // Global variables for drag functionality
+        let isDragging = false;
+        let draggedComponent = null;
+        let dragOffsetX, dragOffsetY; // Offset from mouse/touch to component's top-left
+        const gridSize = 20; // Define gridSize globally or pass it
+
+        // Function to start dragging
+        function startDrag(e) {
+            // Only allow dragging with 'select' tool
+            if (currentTool !== 'select') return;
+
+            draggedComponent = this; // 'this' refers to the componentElement
+            isDragging = true;
+
+            // Prevent default touch behavior (scrolling, zooming)
+            e.preventDefault();
+
+            let clientX, clientY;
+            if (e.type === 'touchstart') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else { // mousedown
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const rect = draggedComponent.getBoundingClientRect();
+            dragOffsetX = clientX - rect.left;
+            dragOffsetY = clientY - rect.top;
+
+            // Add global listeners for dragging
+            document.addEventListener('mousemove', doDrag);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchmove', doDrag, { passive: false }); // passive: false for preventDefault
+            document.addEventListener('touchend', stopDrag);
+
+            // Select the component when dragging starts
+            selectPlacedComponent(draggedComponent);
+        }
+
+        // Function to handle dragging
+        function doDrag(e) {
+            if (!isDragging || !draggedComponent) return;
+
+            e.preventDefault(); // Prevent default scrolling/selection during drag
+
+            let clientX, clientY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else { // mousemove
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const canvasArea = document.getElementById('canvasArea');
+            const canvasRect = canvasArea.getBoundingClientRect();
+
+            // Calculate new position relative to canvasArea
+            let newX = clientX - canvasRect.left - dragOffsetX;
+            let newY = clientY - canvasRect.top - dragOffsetY;
+
+            // Snap to grid
+            newX = Math.round(newX / gridSize) * gridSize;
+            newY = Math.round(newY / gridSize) * gridSize;
+
+            // Keep component within canvas boundaries
+            newX = Math.max(0, Math.min(newX, canvasArea.offsetWidth - draggedComponent.offsetWidth));
+            newY = Math.max(0, Math.min(newY, canvasArea.offsetHeight - draggedComponent.offsetHeight));
+
+            draggedComponent.style.left = `${newX}px`;
+            draggedComponent.style.top = `${newY}px`;
+        }
+
+        // Function to stop dragging
+        function stopDrag() {
+            isDragging = false;
+            draggedComponent = null;
+
+            // Remove global listeners
+            document.removeEventListener('mousemove', doDrag);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchmove', doDrag);
+            document.removeEventListener('touchend', stopDrag);
+        }
+
         // --- Component Functions ---
         function selectComponent(type) {
             document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
             document.querySelector(`[data-component="${type}"]`).classList.add('selected');
             selectedComponentType = type;
             selectTool('select'); // Automatically switch to select tool after choosing a component
-            // On mobile, close sidebar after selecting a component
+            // On mobile, close components sidebar after selecting a component
             if (window.innerWidth <= 768) {
                 document.getElementById('componentsSidebar').classList.remove('open');
             }
         }
         
         function placeComponent(x, y) {
-            if (!selectedComponentType) return; // No component type selected
+            if (!selectedComponentType) {
+                console.log("No component type selected to place.");
+                return; // No component type selected
+            }
             
             componentsCount++;
             
@@ -1996,7 +2220,6 @@
             componentElement.setAttribute('data-id', componentsCount);
             
             // Snap to grid (20px grid size)
-            const gridSize = 20;
             // Calculate top-left position to center the 50x50 component on the grid point
             const snappedX = Math.round(x / gridSize) * gridSize - (50 / 2);
             const snappedY = Math.round(y / gridSize) * gridSize - (50 / 2);
@@ -2010,10 +2233,14 @@
             icon.textContent = componentData[selectedComponentType].icon;
             componentElement.appendChild(icon);
             
-            // Eventos para el componente
+            // Attach drag listeners
+            componentElement.addEventListener('mousedown', startDrag);
+            componentElement.addEventListener('touchstart', startDrag, { passive: false }); // passive: false for preventDefault
+            
+            // Existing click and dblclick listeners
             componentElement.addEventListener('click', (event) => {
                 event.stopPropagation(); // Prevent canvas click event from firing
-                if (currentTool === 'select') {
+                if (currentTool === 'select' && !isDragging) { // Only select if not dragging
                     selectPlacedComponent(componentElement);
                 } else if (currentTool === 'delete') {
                     deletePlacedComponent(componentElement);
@@ -2029,6 +2256,7 @@
             document.getElementById('canvasArea').appendChild(componentElement);
             
             selectPlacedComponent(componentElement);
+            console.log(`Component '${selectedComponentType}' placed at (${snappedX}, ${snappedY})`); // Debug log
         }
         
         function selectPlacedComponent(element) {
@@ -2190,11 +2418,15 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebarMenu');
             sidebar.classList.toggle('open');
+            // Also toggle components sidebar on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('componentsSidebar').classList.toggle('open');
+            }
         }
 
         function closeSidebar() {
             document.getElementById('sidebarMenu').classList.remove('open');
-            // Also close components sidebar if open on mobile (if it's a separate sidebar)
+            // Also close components sidebar if open on mobile
             if (window.innerWidth <= 768) {
                 document.getElementById('componentsSidebar').classList.remove('open');
             }
@@ -2207,9 +2439,7 @@
 
         // --- File Functions ---
         function newCircuit() {
-            // Using a custom confirmation instead of alert/confirm
-            const confirmNew = window.confirm('¿Crear un nuevo circuito? Se perderán los cambios no guardados.');
-            if (confirmNew) {
+            showModalConfirm('Nuevo Circuito', '¿Crear un nuevo circuito? Se perderán los cambios no guardados.', () => {
                 // Clear all placed components
                 const canvasArea = document.getElementById('canvasArea');
                 Array.from(canvasArea.children).forEach(child => {
@@ -2222,18 +2452,12 @@
                 closeSidebar();
                 resetSimulation(); // Reset simulation values
                 initializeCanvas(); // Re-initialize canvas to redraw grid
-            }
+            });
         }
 
         function openCircuit() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json, .xml';
-            input.click();
+            showModal('Abrir Circuito', '<p>La función para abrir circuitos está próxima a ser implementada.</p>');
             closeSidebar();
-            // In a real app, you would add an event listener to 'input' for 'change' event
-            // to read the file content and load the circuit.
-            alert('Función de abrir circuito pendiente.'); // Placeholder
         }
 
         function saveCircuit() {
@@ -2260,8 +2484,7 @@
         }
 
         function exportCircuit() {
-            // Placeholder for export image function
-            alert('Función de exportar imagen pendiente.');
+            showModal('Exportar Imagen', '<p>La función para exportar imágenes está próxima a ser implementada.</p>');
             closeSidebar();
         }
 
@@ -2323,17 +2546,17 @@
 
         // --- Other Functions (Placeholders) ---
         function showAnalysis() {
-            alert('Análisis de circuitos próximamente disponible');
+            showModal('Análisis de Circuitos', '<p>La función de análisis de circuitos está próxima a ser implementada.</p>');
             closeSidebar();
         }
 
         function showSettings() {
-            alert('Configuración próximamente disponible');
+            showModal('Configuración', '<p>La sección de configuración está próxima a ser implementada.</p>');
             closeSidebar();
         }
 
         function showHelp() {
-            alert('Ayuda próximamente disponible');
+            showModal('Ayuda', '<p>La sección de ayuda está próxima a ser implementada.</p>');
             closeSidebar();
         }
 
@@ -2363,6 +2586,104 @@
             }, 1500); // Hide after 1.5 seconds
         }
 
+        // --- Custom Modal Functions ---
+        function showModal(title, contentHtml) {
+            const modalOverlay = document.getElementById('customModalOverlay');
+            const modalTitle = document.getElementById('customModalTitle');
+            const modalBody = document.getElementById('customModalBody');
+
+            modalTitle.textContent = title;
+            modalBody.innerHTML = contentHtml;
+            modalOverlay.classList.add('show');
+        }
+
+        function showModalConfirm(title, message, onConfirm) {
+            const modalOverlay = document.getElementById('customModalOverlay');
+            const modalTitle = document.getElementById('customModalTitle');
+            const modalBody = document.getElementById('customModalBody');
+
+            modalTitle.textContent = title;
+            modalBody.innerHTML = `
+                <p>${message}</p>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button class="start-button secondary" onclick="hideModal()">Cancelar</button>
+                    <button class="start-button primary" onclick="hideModal(); ${onConfirm.name}();">Confirmar</button>
+                </div>
+            `;
+            modalOverlay.classList.add('show');
+        }
+
+        function hideModal() {
+            const modalOverlay = document.getElementById('customModalOverlay');
+            modalOverlay.classList.remove('show');
+        }
+
+        // --- Gemini API Integration ---
+        async function explainComponentWithAI() {
+            if (!selectedComponentElement) {
+                showModal('Explicar Componente', '<p>Por favor, selecciona un componente en el lienzo para que la IA lo explique.</p>');
+                return;
+            }
+
+            const componentType = selectedComponentElement.getAttribute('data-component-type');
+            const componentName = componentData[componentType] ? componentData[componentType].name : componentType;
+
+            showModal('Explicar Componente', '<div class="loading-spinner"><i class="fas fa-spinner"></i> Cargando explicación...</div>');
+
+            const prompt = `Explica la función básica y los usos comunes de un(a) ${componentName} en un circuito electrónico, adecuado para un principiante. Mantén la explicación concisa y fácil de entender.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // If you want to use models other than gemini-2.5-flash-preview-05-20 or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let retryCount = 0;
+            const maxRetries = 3;
+            const baseDelay = 1000; // 1 second
+
+            while (retryCount < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        // Handle HTTP errors
+                        if (response.status === 429) { // Too Many Requests
+                            const delay = baseDelay * Math.pow(2, retryCount) + Math.random() * 500;
+                            console.warn(`Rate limit exceeded. Retrying in ${delay / 1000}s... (Attempt ${retryCount + 1})`);
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            retryCount++;
+                            continue; // Retry the request
+                        } else {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        document.getElementById('customModalBody').innerHTML = `<p>${text}</p>`;
+                    } else {
+                        document.getElementById('customModalBody').innerHTML = '<p>No se pudo obtener una explicación. La IA no devolvió contenido.</p>';
+                    }
+                    return; // Exit loop on success
+                } catch (error) {
+                    console.error('Error al llamar a la API de Gemini:', error);
+                    document.getElementById('customModalBody').innerHTML = '<p>Error al conectar con la IA. Por favor, inténtalo de nuevo más tarde.</p>';
+                    return; // Exit loop on unrecoverable error
+                }
+            }
+            document.getElementById('customModalBody').innerHTML = '<p>Se excedió el número máximo de reintentos. Por favor, inténtalo de nuevo más tarde.</p>';
+        }
+
+
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize resistor calculator on load
@@ -2375,18 +2696,17 @@
                 });
             });
 
-            // Event listener for placing components on canvas area
+            // Event listener for placing components on canvas area with single click
             document.getElementById('canvasArea').addEventListener('click', (event) => {
                 // Only place component if the click target is the canvas itself or its direct children (like grid overlay)
-                // and not on an already placed component.
-                if (event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) {
+                // and not on an already placed component. Also ensure it's not a drag event.
+                if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) && !isDragging) {
                     const rect = event.currentTarget.getBoundingClientRect();
                     const x = event.clientX - rect.left;
                     const y = event.clientY - rect.top;
                     
                     if (selectedComponentType && currentTool === 'select') {
                         placeComponent(x, y);
-                        console.log(`Placed component: ${selectedComponentType} at (${x}, ${y})`); // Debug log
                     } else if (currentTool === 'select' && !selectedComponentType) {
                         // If select tool is active but no component type selected, deselect any placed component
                         document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
@@ -2398,7 +2718,8 @@
             // Event listener for clicking on empty canvas area to deselect
             document.getElementById('canvasArea').addEventListener('click', (event) => {
                 // If click is on the canvas element itself or its parent container (canvasArea)
-                if (event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea') {
+                // and it's not a drag event
+                if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea') && !isDragging) {
                     document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
                     closePropertiesPanel();
                 }
@@ -2451,6 +2772,11 @@
                     e.preventDefault();
                     showProtectedAlert(document.body, 'Contenido protegido');
                 }
+                // Alt+Cmd+I (Safari Dev Tools)
+                if ((e.altKey || e.metaKey) && e.key === 'i') {
+                    e.preventDefault();
+                    showProtectedAlert(document.body, 'Contenido protegido');
+                }
             });
 
             // Add protected alert to logos on interaction (mousedown)
@@ -2466,7 +2792,12 @@
             document.querySelector('.app-subtitle').addEventListener('mousedown', function(e) {
                 showProtectedAlert(e.target);
             });
-            document.getElementById('betaBadge').addEventListener('mousedown', function(e) {
+            // Add event listener for the new beta badge on start screen
+            document.getElementById('betaBadgeStart').addEventListener('mousedown', function(e) {
+                showProtectedAlert(e.target);
+            });
+            // Add event listener for the beta badge in the header
+            document.querySelector('.header .beta-badge').addEventListener('mousedown', function(e) {
                 showProtectedAlert(e.target);
             });
 
@@ -2474,17 +2805,6 @@
             // Aggressive debugger check (can be bypassed, but a strong deterrent)
             let devtoolsAreOpen = false;
             const checkDevTools = () => {
-                try {
-                    // This line will pause execution if dev tools are open
-                    // and the "Pause on caught exceptions" is enabled.
-                    // It's a common trick to detect dev tools.
-                    (function() {}.constructor('debugger')());
-                } catch (e) {
-                    // If an error is caught here, it might mean dev tools are NOT open
-                    // or that the debugger statement was ignored.
-                }
-
-                // Heuristic check based on window size (less reliable)
                 const threshold = 160; // Approximate threshold for dev tools height/width
                 if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
                     if (!devtoolsAreOpen) {
