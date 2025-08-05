@@ -1030,6 +1030,7 @@
     </style>
 </head>
 <body>
+    <!-- Start Screen -->
     <div class="start-screen" id="startScreen">
         <div class="logo-container">
             <div class="main-logo"></div>
@@ -1076,6 +1077,7 @@
         </div>
     </div>
 
+    <!-- Cal Flux Section -->
     <div class="calflux-section" id="calfluxSection">
         <div class="calflux-header">
             <i class="fas fa-table"></i>
@@ -1087,6 +1089,7 @@
         </div>
 
         <div class="component-cards-container" id="componentCardsContainer">
+            <!-- Card para Resistor -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Resistor</h3>
@@ -1104,6 +1107,7 @@
                 </div>
             </div>
 
+            <!-- Card para Capacitor -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Capacitor</h3>
@@ -1121,6 +1125,7 @@
                 </div>
             </div>
 
+            <!-- Card para LED -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>LED</h3>
@@ -1138,6 +1143,7 @@
                 </div>
             </div>
             
+            <!-- Card para Batería -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Batería</h3>
@@ -1155,6 +1161,7 @@
                 </div>
             </div>
 
+            <!-- Card para Colores de Resistencia -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Colores de Resistencia</h3>
@@ -1180,6 +1187,7 @@
                 </div>
             </div>
             
+            <!-- Card para Voltaje Sinusoidal -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Voltaje Sinusoidal</h3>
@@ -1196,6 +1204,7 @@
                 </div>
             </div>
             
+            <!-- Card para Códigos de SMD -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Código de Resistencias SMD</h3>
@@ -1211,6 +1220,7 @@
                 </div>
             </div>
             
+            <!-- Card para Códigos de Inductores -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Código de Inductores</h3>
@@ -1225,6 +1235,7 @@
                 </div>
             </div>
 
+            <!-- Card para Pin-outs -->
             <div class="component-card">
                 <div class="card-header">
                     <h3>Pin-outs (Op-Amp)</h3>
@@ -1245,6 +1256,7 @@
         </div>
     </div>
     
+    <!-- Tutorial Section -->
     <div class="tutorial-section" id="tutorialSection">
         <div class="tutorial-content">
             <button class="close-menu-btn" onclick="hideTutorial()" style="position: absolute; top: 20px; right: 20px;">
@@ -1277,7 +1289,9 @@
     </div>
 
 
+    <!-- Main Application -->
     <div class="app-container" id="appContainer">
+        <!-- Header -->
         <header class="header">
             <div class="header-left">
                 <button class="menu-btn" onclick="toggleSidebar()">
@@ -1317,7 +1331,9 @@
             </div>
         </header>
 
+        <!-- Main Content -->
         <div class="main-content">
+            <!-- Components Sidebar -->
             <div class="components-sidebar">
                 <div class="search-container">
                     <div class="search-box">
@@ -1327,6 +1343,7 @@
                 </div>
                 
                 <div class="component-categories" id="componentCategories">
+                    <!-- Basic Components -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-circle"></i>
@@ -1360,6 +1377,7 @@
                         </div>
                     </div>
 
+                    <!-- Componentes de Potencia (NUEVA SECCIÓN) -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-plug"></i>
@@ -1381,6 +1399,7 @@
                         </div>
                     </div>
 
+                    <!-- Semiconductors -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-microchip"></i>
@@ -1406,6 +1425,7 @@
                         </div>
                     </div>
 
+                    <!-- Integrated Circuits -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-memory"></i>
@@ -1427,6 +1447,7 @@
                         </div>
                     </div>
 
+                    <!-- Sensors -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-satellite-dish"></i>
@@ -1450,6 +1471,7 @@
                 </div>
             </div>
 
+            <!-- Canvas Area -->
             <div class="canvas-container">
                 <div class="canvas-toolbar">
                     <div class="tool-group">
@@ -1476,6 +1498,7 @@
                 </div>
                 
                 <div class="canvas-area" id="canvasArea">
+                    <canvas id="circuitCanvas"></canvas> <!-- Re-added canvas element -->
                     <div class="grid-overlay"></div>
                 </div>
                 
@@ -1492,6 +1515,7 @@
                 </div>
             </div>
 
+            <!-- Properties Panel -->
             <div class="properties-panel" id="propertiesPanel">
                 <div class="panel-header">
                     <h3>Propiedades</h3>
@@ -1505,6 +1529,7 @@
             </div>
         </div>
 
+        <!-- Sidebar Menu -->
         <div class="sidebar-menu" id="sidebarMenu">
             <div class="menu-header">
                 <h3>Menú</h3>
@@ -1592,6 +1617,7 @@
             document.getElementById('appContainer').style.display = 'flex';
             document.getElementById('calfluxSection').style.display = 'none';
             document.getElementById('tutorialSection').style.display = 'none';
+            initializeCanvas(); // Ensure canvas is initialized when app starts
         }
 
         function showCalFlux() {
@@ -1599,10 +1625,11 @@
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('tutorialSection').style.display = 'none';
             document.getElementById('calfluxSection').style.display = 'block';
+            closeSidebar(); // Close sidebar if opened from menu
         }
 
         function hideCalFlux() {
-            document.getElementById('startScreen').style.display = 'flex';
+            document.getElementById('startScreen').style.display = 'flex'; // Go back to start screen
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('calfluxSection').style.display = 'none';
             document.getElementById('tutorialSection').style.display = 'none';
@@ -1613,13 +1640,61 @@
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('calfluxSection').style.display = 'none';
             document.getElementById('tutorialSection').style.display = 'block';
+            closeSidebar(); // Close sidebar if opened from menu
         }
         
         function hideTutorial() {
-            document.getElementById('startScreen').style.display = 'flex';
+            document.getElementById('startScreen').style.display = 'flex'; // Go back to start screen
             document.getElementById('appContainer').style.display = 'none';
             document.getElementById('calfluxSection').style.display = 'none';
             document.getElementById('tutorialSection').style.display = 'none';
+        }
+
+        // Canvas Functions
+        function initializeCanvas() {
+            const canvas = document.getElementById('circuitCanvas');
+            // Ensure canvas exists before trying to get context
+            if (!canvas) {
+                console.error("Canvas element not found!");
+                return;
+            }
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size to fill its parent (canvas-area)
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+            
+            // Draw grid
+            drawGrid(ctx, canvas.width, canvas.height);
+
+            // Add resize listener to redraw grid
+            window.addEventListener('resize', () => {
+                canvas.width = canvas.parentElement.offsetWidth;
+                canvas.height = canvas.parentElement.offsetHeight;
+                drawGrid(ctx, canvas.width, canvas.height);
+            });
+        }
+
+        function drawGrid(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height); // Clear previous grid
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
+            ctx.lineWidth = 0.5;
+            
+            const gridSize = 20;
+            
+            for (let x = 0; x <= width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            
+            for (let y = 0; y <= height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
         }
 
         // Tool Functions
@@ -1632,17 +1707,17 @@
             switch(tool) {
                 case 'select':
                     canvasArea.style.cursor = 'default';
-                    selectedComponentType = null;
+                    selectedComponentType = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
                     break;
                 case 'wire':
                     canvasArea.style.cursor = 'crosshair';
-                    selectedComponentType = null;
+                    selectedComponentType = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
                     break;
                 case 'delete':
                     canvasArea.style.cursor = 'not-allowed';
-                    selectedComponentType = null;
+                    selectedComponentType = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
                     break;
             }
@@ -1653,11 +1728,11 @@
             document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
             document.querySelector(`[data-component="${type}"]`).classList.add('selected');
             selectedComponentType = type;
-            selectTool('select'); // Cambia a la herramienta de selección automáticamente
+            selectTool('select'); // Automatically switch to select tool after choosing a component
         }
         
         function placeComponent(x, y) {
-            if (!selectedComponentType) return;
+            if (!selectedComponentType) return; // No component type selected
             
             componentsCount++;
             
@@ -1665,8 +1740,11 @@
             componentElement.classList.add('placed-component');
             componentElement.setAttribute('data-component-type', selectedComponentType);
             componentElement.setAttribute('data-id', componentsCount);
-            componentElement.style.left = `${x}px`;
-            componentElement.style.top = `${y}px`;
+            
+            // Snap to grid
+            const gridSize = 20;
+            componentElement.style.left = `${Math.round(x / gridSize) * gridSize - (componentElement.offsetWidth / 2)}px`;
+            componentElement.style.top = `${Math.round(y / gridSize) * gridSize - (componentElement.offsetHeight / 2)}px`;
             
             // Icono del componente
             const icon = document.createElement('div');
@@ -1676,7 +1754,7 @@
             
             // Eventos para el componente
             componentElement.addEventListener('click', (event) => {
-                event.stopPropagation();
+                event.stopPropagation(); // Prevent canvas click event from firing
                 if (currentTool === 'select') {
                     selectPlacedComponent(componentElement);
                 } else if (currentTool === 'delete') {
@@ -1703,7 +1781,9 @@
         }
         
         function deletePlacedComponent(element) {
-            if (confirm('¿Estás seguro de que quieres eliminar este componente?')) {
+            // Using a custom confirmation instead of alert/confirm
+            const confirmDelete = window.confirm('¿Estás seguro de que quieres eliminar este componente?');
+            if (confirmDelete) {
                 element.remove();
                 closePropertiesPanel();
             }
@@ -1728,8 +1808,8 @@
             for (const key in data.properties) {
                 html += `
                     <div class="property-group">
-                        <label for="${key}">${key.charAt(0).toUpperCase() + key.slice(1)}:</label>
-                        <input type="text" id="${key}" value="${data.properties[key]}">
+                        <label for="prop-${componentElement.getAttribute('data-id')}-${key}">${key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+                        <input type="text" id="prop-${componentElement.getAttribute('data-id')}-${key}" value="${data.properties[key]}">
                     </div>
                 `;
             }
@@ -1824,8 +1904,11 @@
 
         // File Functions
         function newCircuit() {
-            if (confirm('¿Crear un nuevo circuito? Se perderán los cambios no guardados.')) {
-                document.getElementById('canvasArea').innerHTML = '<div class="grid-overlay"></div>';
+            // Using a custom confirmation instead of alert/confirm
+            const confirmNew = window.confirm('¿Crear un nuevo circuito? Se perderán los cambios no guardados.');
+            if (confirmNew) {
+                document.getElementById('canvasArea').innerHTML = '<canvas id="circuitCanvas"></canvas><div class="grid-overlay"></div>';
+                initializeCanvas(); // Re-initialize canvas after clearing
                 componentsCount = 0;
                 closePropertiesPanel();
                 closeSidebar();
@@ -1838,6 +1921,8 @@
             input.accept = '.json, .xml';
             input.click();
             closeSidebar();
+            // In a real app, you would add an event listener to 'input' for 'change' event
+            // to read the file content and load the circuit.
         }
 
         function saveCircuit() {
@@ -1941,6 +2026,11 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize canvas when the DOM is fully loaded
+            // This is crucial for the grid to appear on initial app load if starting directly into the app view
+            // However, since we start on the startScreen, initializeCanvas is called by startApplication()
+            // If you remove the startScreen, call initializeCanvas() here directly.
+
             document.querySelectorAll('.component-item').forEach(item => {
                 item.addEventListener('click', function() {
                     selectComponent(this.dataset.component);
@@ -1948,6 +2038,7 @@
             });
 
             document.getElementById('canvasArea').addEventListener('click', (event) => {
+                // Get coordinates relative to the canvas area
                 const rect = event.currentTarget.getBoundingClientRect();
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
@@ -1958,8 +2049,8 @@
             });
             
             document.getElementById('canvasArea').addEventListener('click', (event) => {
+                // If click is on the canvas area itself (not a placed component)
                 if (event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) {
-                    // Clic en el área vacía
                     document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
                     closePropertiesPanel();
                 }
