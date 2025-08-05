@@ -1216,6 +1216,54 @@
             font-size: 1.2em;
         }
 
+        /* Component Guide Styles */
+        .component-guide-section {
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #30363d;
+        }
+
+        .component-guide-section h3 {
+            font-size: 1.8em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .component-guide-section h4 {
+            font-size: 1.4em;
+            color: #c9d1d9;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed rgba(0, 212, 255, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .component-guide-section h5 {
+            font-size: 1.1em;
+            color: #00d4ff;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .component-guide-section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: #8b949e;
+        }
+
+        .component-guide-section li {
+            margin-bottom: 5px;
+        }
+
+        .component-guide-section p {
+            color: #c9d1d9;
+            margin-bottom: 10px;
+        }
+
 
         /* Tutorial Section */
         #tutorialSection {
@@ -1539,7 +1587,7 @@
     <div class="screen" id="calfluxSection">
         <div class="calflux-header">
             <i class="fas fa-table"></i>
-            <h2>Cal Flux - Herramientas de Cálculo</h2>
+            <h2>Cal Flux - Herramientas de Cálculo y Guía</h2>
             <button class="start-button secondary" onclick="showScreen('startScreen')" style="margin-left: auto;">
                 <i class="fas fa-arrow-left"></i>
                 Volver
@@ -1553,6 +1601,7 @@
             <button class="calflux-nav-btn" data-calculator-type="lcResonance" onclick="renderCalculator('lcResonance')">Resonancia LC</button>
             <button class="calflux-nav-btn" data-calculator-type="transformers" onclick="renderCalculator('transformers')">Transformadores</button>
             <button class="calflux-nav-btn" data-calculator-type="resistorCode" onclick="renderCalculator('resistorCode')">Código de Colores Resistencia</button>
+            <button class="calflux-nav-btn" data-calculator-type="componentGuide" onclick="renderCalculator('componentGuide')">Guía de Componentes</button>
         </div>
 
         <div class="calflux-calculator-area" id="calfluxCalculatorArea">
@@ -1684,7 +1733,33 @@
                         </div>
                     </div>
 
-                    <!-- Componentes de Potencia (NUEVA SECCIÓN) -->
+                    <!-- Componentes Analógicos -->
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-wave-square"></i>
+                            Componentes Analógicos
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="opamp">
+                                <div class="component-icon">U</div>
+                                <div class="component-name">Op-Amp</div>
+                            </div>
+                            <div class="component-item" data-component="voltage-reference">
+                                <div class="component-icon">VR</div>
+                                <div class="component-name">Ref. Voltaje</div>
+                            </div>
+                            <div class="component-item" data-component="adc">
+                                <div class="component-icon">ADC</div>
+                                <div class="component-name">Convertidor A/D</div>
+                            </div>
+                            <div class="component-item" data-component="dac">
+                                <div class="component-icon">DAC</div>
+                                <div class="component-name">Convertidor D/A</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Componentes de Potencia -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-plug"></i>
@@ -1702,6 +1777,22 @@
                             <div class="component-item" data-component="motor">
                                 <div class="component-icon">M</div>
                                 <div class="component-name">Motor</div>
+                            </div>
+                            <div class="component-item" data-component="bjt">
+                                <div class="component-icon">BJT</div>
+                                <div class="component-name">Transistor BJT</div>
+                            </div>
+                            <div class="component-item" data-component="mosfet">
+                                <div class="component-icon">MOS</div>
+                                <div class="component-name">MOSFET</div>
+                            </div>
+                             <div class="component-item" data-component="igbt">
+                                <div class="component-icon">IGBT</div>
+                                <div class="component-name">IGBT</div>
+                            </div>
+                            <div class="component-item" data-component="driver">
+                                <div class="component-icon">DRV</div>
+                                <div class="component-name">Driver</div>
                             </div>
                         </div>
                     </div>
@@ -1725,23 +1816,31 @@
                                 <div class="component-icon">Q</div>
                                 <div class="component-name">Transistor</div>
                             </div>
-                            <div class="component-item" data-component="mosfet">
-                                <div class="component-icon">M</div>
-                                <div class="component-name">MOSFET</div>
-                            </div>
                         </div>
                     </div>
 
-                    <!-- Integrated Circuits -->
+                    <!-- Circuitos Integrados Digitales -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-memory"></i>
-                            Circuitos Integrados
+                            Circuitos Integrados Digitales
                         </div>
                         <div class="component-grid">
-                            <div class="component-item" data-component="opamp">
-                                <div class="component-icon">U</div>
-                                <div class="component-name">Op-Amp</div>
+                            <div class="component-item" data-component="microcontroller">
+                                <div class="component-icon">MCU</div>
+                                <div class="component-name">Microcontrolador</div>
+                            </div>
+                            <div class="component-item" data-component="cpld">
+                                <div class="component-icon">CPLD</div>
+                                <div class="component-name">CPLD</div>
+                            </div>
+                            <div class="component-item" data-component="fpga">
+                                <div class="component-icon">FPGA</div>
+                                <div class="component-name">FPGA</div>
+                            </div>
+                            <div class="component-item" data-component="dsp">
+                                <div class="component-icon">DSP</div>
+                                <div class="component-name">DSP</div>
                             </div>
                             <div class="component-item" data-component="timer555">
                                 <div class="component-icon">555</div>
@@ -1754,7 +1853,7 @@
                         </div>
                     </div>
 
-                    <!-- Sensors -->
+                    <!-- Sensores -->
                     <div class="component-category">
                         <div class="category-title">
                             <i class="fas fa-satellite-dish"></i>
@@ -1773,8 +1872,77 @@
                                 <div class="component-icon">US</div>
                                 <div class="component-name">Ultrasónico</div>
                             </div>
+                            <div class="component-item" data-component="temp-sensor">
+                                <div class="component-icon">TS</div>
+                                <div class="component-name">Sensor Temp.</div>
+                            </div>
+                            <div class="component-item" data-component="pressure-sensor">
+                                <div class="component-icon">PS</div>
+                                <div class="component-name">Sensor Presión</div>
+                            </div>
+                            <div class="component-item" data-component="imu">
+                                <div class="component-icon">IMU</div>
+                                <div class="component-name">IMU</div>
+                            </div>
+                            <div class="component-item" data-component="light-sensor">
+                                <div class="component-icon">LS</div>
+                                <div class="component-name">Sensor Luz</div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- RF y Comunicaciones -->
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-wifi"></i>
+                            RF y Comunicaciones
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="rf-transceiver">
+                                <div class="component-icon">RF</div>
+                                <div class="component-name">Transceptor RF</div>
+                            </div>
+                            <div class="component-item" data-component="bluetooth-module">
+                                <div class="component-icon">BT</div>
+                                <div class="component-name">Módulo Bluetooth</div>
+                            </div>
+                            <div class="component-item" data-component="ethernet-phy">
+                                <div class="component-icon">ETH</div>
+                                <div class="component-name">Ethernet PHY</div>
+                            </div>
+                            <div class="component-item" data-component="rf-amplifier">
+                                <div class="component-icon">AMP</div>
+                                <div class="component-name">Amplificador RF</div>
+                            </div>
+                            <div class="component-item" data-component="mixer">
+                                <div class="component-icon">MIX</div>
+                                <div class="component-name">Mezclador RF</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Protección y Gestión Térmica -->
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Protección y Gestión Térmica
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="fuse">
+                                <div class="component-icon">F</div>
+                                <div class="component-name">Fusible</div>
+                            </div>
+                            <div class="component-item" data-component="tvs-diode">
+                                <div class="component-icon">TVS</div>
+                                <div class="component-name">Diodo TVS</div>
+                            </div>
+                            <div class="component-item" data-component="peltier-cooler">
+                                <div class="component-icon">PEL</div>
+                                <div class="component-name">Enfriador Peltier</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -2030,7 +2198,7 @@
                     { id: 'emitter', label: 'E', x: 50, y: 25 } // Right
                 ]
             },
-            'mosfet': { name: 'MOSFET', properties: { type: 'N-Channel' }, icon: 'M',
+            'mosfet': { name: 'MOSFET', properties: { type: 'N-Channel' }, icon: 'MOS', // Changed icon to MOS for clarity
                 pins: [
                     { id: 'gate', label: 'G', x: 0, y: 25 }, // Left
                     { id: 'drain', label: 'D', x: 25, y: 0 }, // Top
@@ -2094,6 +2262,185 @@
                     { id: 'gnd', label: 'GND', x: 25, y: 50 }, // Bottom
                     { id: 'trig', label: 'Trig', x: 0, y: 25 }, // Left
                     { id: 'echo', label: 'Echo', x: 50, y: 25 } // Right
+                ]
+            },
+            // --- New Components from PDF ---
+            'voltage-reference': { name: 'Ref. Voltaje', properties: { value: '2.5V', drift: '5ppm/°C' }, icon: 'VR',
+                pins: [
+                    { id: 'out', label: 'Out', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'adc': { name: 'Convertidor A/D', properties: { bits: '16', channels: '4', interface: 'I2C' }, icon: 'ADC',
+                pins: [
+                    { id: 'vin1', label: 'IN1', x: 0, y: 10 },
+                    { id: 'vin2', label: 'IN2', x: 0, y: 20 },
+                    { id: 'scl', label: 'SCL', x: 50, y: 10 },
+                    { id: 'sda', label: 'SDA', x: 50, y: 20 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 }
+                ]
+            },
+            'dac': { name: 'Convertidor D/A', properties: { bits: '12', interface: 'I2C' }, icon: 'DAC',
+                pins: [
+                    { id: 'dout', label: 'Out', x: 50, y: 25 },
+                    { id: 'scl', label: 'SCL', x: 0, y: 10 },
+                    { id: 'sda', label: 'SDA', x: 0, y: 20 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 }
+                ]
+            },
+            'bjt': { name: 'Transistor BJT', properties: { type: 'NPN', Ic_max: '3A', Vce_max: '100V' }, icon: 'BJT',
+                pins: [
+                    { id: 'base', label: 'B', x: 0, y: 25 },
+                    { id: 'collector', label: 'C', x: 25, y: 0 },
+                    { id: 'emitter', label: 'E', x: 50, y: 25 }
+                ]
+            },
+            'igbt': { name: 'IGBT', properties: { Vce_max: '600V', Ic_max: '96A' }, icon: 'IGBT',
+                pins: [
+                    { id: 'gate', label: 'G', x: 0, y: 25 },
+                    { id: 'collector', label: 'C', x: 25, y: 0 },
+                    { id: 'emitter', label: 'E', x: 50, y: 25 }
+                ]
+            },
+            'driver': { name: 'Driver', properties: { type: 'MOSFET Driver', peak_current: '6A' }, icon: 'DRV',
+                pins: [
+                    { id: 'in', label: 'In', x: 0, y: 15 },
+                    { id: 'out', label: 'Out', x: 50, y: 15 },
+                    { id: 'vcc', label: 'VCC', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'microcontroller': { name: 'Microcontrolador', properties: { model: 'STM32F103', flash: '128KB', ram: '20KB' }, icon: 'MCU',
+                pins: [
+                    { id: 'pa0', label: 'PA0', x: 0, y: 10 },
+                    { id: 'pa1', label: 'PA1', x: 0, y: 20 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 },
+                    { id: 'pb0', label: 'PB0', x: 50, y: 10 },
+                    { id: 'pb1', label: 'PB1', x: 50, y: 20 }
+                ]
+            },
+            'cpld': { name: 'CPLD', properties: { macrocells: '72', voltage: '5V' }, icon: 'CPLD',
+                pins: [
+                    { id: 'io1', label: 'IO1', x: 0, y: 10 },
+                    { id: 'io2', label: 'IO2', x: 0, y: 20 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 },
+                    { id: 'clk', label: 'CLK', x: 50, y: 10 }
+                ]
+            },
+            'fpga': { name: 'FPGA', properties: { family: 'Cyclone IV', logic_elements: '10k' }, icon: 'FPGA',
+                pins: [
+                    { id: 'io_a1', label: 'IO_A1', x: 0, y: 10 },
+                    { id: 'io_a2', label: 'IO_A2', x: 0, y: 20 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 },
+                    { id: 'clk', label: 'CLK', x: 50, y: 10 }
+                ]
+            },
+            'dsp': { name: 'DSP', properties: { model: 'TMS320F28335', freq: '150MHz' }, icon: 'DSP',
+                pins: [
+                    { id: 'data_in1', label: 'D_IN1', x: 0, y: 10 },
+                    { id: 'data_in2', label: 'D_IN2', x: 0, y: 20 },
+                    { id: 'data_out1', label: 'D_OUT1', x: 50, y: 10 },
+                    { id: 'data_out2', label: 'D_OUT2', x: 50, y: 20 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 }
+                ]
+            },
+            'temp-sensor': { name: 'Sensor Temp.', properties: { model: 'DS18B20', accuracy: '±0.5°C' }, icon: 'TS',
+                pins: [
+                    { id: 'data', label: 'Data', x: 0, y: 25 },
+                    { id: 'vcc', label: 'VCC', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'pressure-sensor': { name: 'Sensor Presión', properties: { model: 'BMP280', range: '300-1100hPa' }, icon: 'PS',
+                pins: [
+                    { id: 'scl', label: 'SCL', x: 0, y: 15 },
+                    { id: 'sda', label: 'SDA', x: 0, y: 35 },
+                    { id: 'vcc', label: 'VCC', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'imu': { name: 'IMU', properties: { model: 'MPU6050', dof: '6' }, icon: 'IMU',
+                pins: [
+                    { id: 'scl', label: 'SCL', x: 0, y: 15 },
+                    { id: 'sda', label: 'SDA', x: 0, y: 35 },
+                    { id: 'vcc', label: 'VCC', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'light-sensor': { name: 'Sensor Luz', properties: { model: 'TSL2561', type: 'Digital' }, icon: 'LS',
+                pins: [
+                    { id: 'scl', label: 'SCL', x: 0, y: 15 },
+                    { id: 'sda', label: 'SDA', x: 0, y: 35 },
+                    { id: 'vcc', label: 'VCC', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'rf-transceiver': { name: 'Transceptor RF', properties: { freq: '2.4GHz', data_rate: '2Mbps' }, icon: 'RF',
+                pins: [
+                    { id: 'spi_mosi', label: 'MOSI', x: 0, y: 10 },
+                    { id: 'spi_miso', label: 'MISO', x: 0, y: 20 },
+                    { id: 'spi_sck', label: 'SCK', x: 0, y: 30 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 },
+                    { id: 'ce', label: 'CE', x: 50, y: 10 },
+                    { id: 'csn', label: 'CSN', x: 50, y: 20 }
+                ]
+            },
+            'bluetooth-module': { name: 'Módulo Bluetooth', properties: { model: 'HC-05', interface: 'UART' }, icon: 'BT',
+                pins: [
+                    { id: 'tx', label: 'TX', x: 0, y: 15 },
+                    { id: 'rx', label: 'RX', x: 0, y: 35 },
+                    { id: 'vcc', label: 'VCC', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'ethernet-phy': { name: 'Ethernet PHY', properties: { model: 'ENC28J60', interface: 'SPI' }, icon: 'ETH',
+                pins: [
+                    { id: 'spi_mosi', label: 'MOSI', x: 0, y: 10 },
+                    { id: 'spi_miso', label: 'MISO', x: 0, y: 20 },
+                    { id: 'spi_sck', label: 'SCK', x: 0, y: 30 },
+                    { id: 'vcc', label: 'VCC', x: 10, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 40, y: 50 },
+                    { id: 'cs', label: 'CS', x: 50, y: 10 }
+                ]
+            },
+            'rf-amplifier': { name: 'Amplificador RF', properties: { gain: '20dB', freq_range: '1-6GHz' }, icon: 'AMP',
+                pins: [
+                    { id: 'in', label: 'In', x: 0, y: 25 },
+                    { id: 'out', label: 'Out', x: 50, y: 25 },
+                    { id: 'vcc', label: 'VCC', x: 25, y: 0 },
+                    { id: 'gnd', label: 'GND', x: 25, y: 50 }
+                ]
+            },
+            'mixer': { name: 'Mezclador RF', properties: { model: 'ADE-1', freq: '5-1000MHz' }, icon: 'MIX',
+                pins: [
+                    { id: 'rf_in', label: 'RF In', x: 0, y: 15 },
+                    { id: 'lo_in', label: 'LO In', x: 0, y: 35 },
+                    { id: 'if_out', label: 'IF Out', x: 50, y: 25 }
+                ]
+            },
+            'fuse': { name: 'Fusible', properties: { current_rating: '1A', voltage_rating: '250V' }, icon: 'F',
+                pins: [
+                    { id: 'in', label: 'In', x: 0, y: 25 },
+                    { id: 'out', label: 'Out', x: 50, y: 25 }
+                ]
+            },
+            'tvs-diode': { name: 'Diodo TVS', properties: { voltage: '5V', clamping_voltage: '7.5V' }, icon: 'TVS',
+                pins: [
+                    { id: 'p1', label: '1', x: 0, y: 25 },
+                    { id: 'p2', label: '2', x: 50, y: 25 }
+                ]
+            },
+            'peltier-cooler': { name: 'Enfriador Peltier', properties: { power: '50W', delta_temp: '60°C' }, icon: 'PEL',
+                pins: [
+                    { id: 'positive', label: '+', x: 0, y: 15 },
+                    { id: 'negative', label: '-', x: 0, y: 35 }
                 ]
             },
         };
@@ -2988,8 +3335,118 @@
                             spiceNetlist += `V_motor_${id} ${pinNodes.A} ${pinNodes.B} DC 0 ; Placeholder for motor voltage\n`;
                         }
                         break;
-                    default:
-                        spiceNetlist += `* Unsupported component: ${type} (ID: ${id})\n`;
+                    // --- New SPICE exports for added components ---
+                    case 'voltage-reference':
+                        if (pinNodes.out && pinNodes.gnd) {
+                            spiceNetlist += `Vref${id} ${pinNodes.out} ${pinNodes.gnd} DC ${properties.value}\n`;
+                        }
+                        break;
+                    case 'adc':
+                        spiceNetlist += `* ADC (ID: ${id}) - Simplified representation\n`;
+                        if (pinNodes.vin1 && pinNodes.gnd) { // Assuming a simple analog input to ground
+                            spiceNetlist += `XADC${id} ${pinNodes.vin1} ${pinNodes.gnd} ${pinNodes.scl} ${pinNodes.sda} ADC_MODEL\n`;
+                        }
+                        break;
+                    case 'dac':
+                        spiceNetlist += `* DAC (ID: ${id}) - Simplified representation\n`;
+                        if (pinNodes.dout && pinNodes.gnd) { // Assuming a simple analog output to ground
+                            spiceNetlist += `XDAC${id} ${pinNodes.scl} ${pinNodes.sda} ${pinNodes.dout} ${pinNodes.gnd} DAC_MODEL\n`;
+                        }
+                        break;
+                    case 'bjt': // NPN BJT
+                        if (pinNodes.collector && pinNodes.base && pinNodes.emitter) {
+                            spiceNetlist += `Q${id} ${pinNodes.collector} ${pinNodes.base} ${pinNodes.emitter} NPN_BJT_MODEL\n`;
+                        }
+                        break;
+                    case 'igbt':
+                        if (pinNodes.collector && pinNodes.gate && pinNodes.emitter) {
+                            spiceNetlist += `XIGBT${id} ${pinNodes.collector} ${pinNodes.gate} ${pinNodes.emitter} IGBT_MODEL\n`;
+                        }
+                        break;
+                    case 'driver':
+                        spiceNetlist += `* DRIVER (ID: ${id}) - Placeholder\n`;
+                        if (pinNodes.in && pinNodes.out) {
+                            spiceNetlist += `XDRV${id} ${pinNodes.in} ${pinNodes.out} DRIVER_MODEL\n`;
+                        }
+                        break;
+                    case 'microcontroller':
+                        spiceNetlist += `* MICROCONTROLLER (ID: ${id}) - Placeholder\n`;
+                        pins.forEach(pin => {
+                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
+                        });
+                        break;
+                    case 'cpld':
+                        spiceNetlist += `* CPLD (ID: ${id}) - Placeholder\n`;
+                        pins.forEach(pin => {
+                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
+                        });
+                        break;
+                    case 'fpga':
+                        spiceNetlist += `* FPGA (ID: ${id}) - Placeholder\n`;
+                        pins.forEach(pin => {
+                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
+                        });
+                        break;
+                    case 'dsp':
+                        spiceNetlist += `* DSP (ID: ${id}) - Placeholder\n`;
+                        pins.forEach(pin => {
+                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
+                        });
+                        break;
+                    case 'temp-sensor':
+                        if (pinNodes.data && pinNodes.gnd) {
+                            spiceNetlist += `R_TS${id} ${pinNodes.data} ${pinNodes.gnd} 10k ; Placeholder for temp sensor resistance\n`;
+                        }
+                        break;
+                    case 'pressure-sensor':
+                        if (pinNodes.scl && pinNodes.sda) {
+                            spiceNetlist += `* Pressure Sensor (ID: ${id}) - Digital, no direct SPICE model\n`;
+                        }
+                        break;
+                    case 'imu':
+                        if (pinNodes.scl && pinNodes.sda) {
+                            spiceNetlist += `* IMU (ID: ${id}) - Digital, no direct SPICE model\n`;
+                        }
+                        break;
+                    case 'light-sensor':
+                        if (pinNodes.scl && pinNodes.sda) {
+                            spiceNetlist += `* Light Sensor (ID: ${id}) - Digital, no direct SPICE model\n`;
+                        }
+                        break;
+                    case 'rf-transceiver':
+                        spiceNetlist += `* RF Transceiver (ID: ${id}) - Complex, no direct SPICE model\n`;
+                        break;
+                    case 'bluetooth-module':
+                        spiceNetlist += `* Bluetooth Module (ID: ${id}) - Complex, no direct SPICE model\n`;
+                        break;
+                    case 'ethernet-phy':
+                        spiceNetlist += `* Ethernet PHY (ID: ${id}) - Complex, no direct SPICE model\n`;
+                        break;
+                    case 'rf-amplifier':
+                        if (pinNodes.in && pinNodes.out) {
+                            spiceNetlist += `XAMP${id} ${pinNodes.in} ${pinNodes.out} RF_AMP_MODEL\n`;
+                        }
+                        break;
+                    case 'mixer':
+                        if (pinNodes.rf_in && pinNodes.lo_in && pinNodes.if_out) {
+                            spiceNetlist += `XMIX${id} ${pinNodes.rf_in} ${pinNodes.lo_in} ${pinNodes.if_out} MIXER_MODEL\n`;
+                        }
+                        break;
+                    case 'fuse':
+                        if (pinNodes.in && pinNodes.out) {
+                            spiceNetlist += `R_FUSE${id} ${pinNodes.in} ${pinNodes.out} 1m ; Ideal fuse (low resistance)\n`; // Simplified
+                        }
+                        break;
+                    case 'tvs-diode':
+                        if (pinNodes.p1 && pinNodes.p2) {
+                            spiceNetlist += `D_TVS${id} ${pinNodes.p1} ${pinNodes.p2} TVS_DIODE_MODEL\n`;
+                        }
+                        break;
+                    case 'peltier-cooler':
+                        if (pinNodes.positive && pinNodes.negative) {
+                            spiceNetlist += `V_PELTIER${id} ${pinNodes.positive} ${pinNodes.negative} DC 0 ; Placeholder for Peltier power\n`;
+                        }
+                        break;
                 }
             });
 
@@ -2997,11 +3454,19 @@
             spiceNetlist += "\n.MODEL Dmodel D\n";
             spiceNetlist += ".MODEL LEDmodel D (IS=10f RS=10 N=1.7 BV=5 IBV=10u CJO=2p TT=10n)\n"; // Example LED model
             spiceNetlist += ".MODEL NPNmodel NPN\n"; // Example NPN BJT model
+            spiceNetlist += ".MODEL NPN_BJT_MODEL NPN\n"; // General BJT model
             spiceNetlist += ".SUBCKT ideal_opamp 1 2 3 ; Non-inverting, Inverting, Output\n";
             spiceNetlist += "Rin 1 2 1G ; High input impedance\n";
             spiceNetlist += "Eout 3 0 1 2 100k ; High gain voltage controlled voltage source\n";
             spiceNetlist += ".ENDS\n";
             spiceNetlist += ".MODEL Smodel VSWITCH (RON=10m ROFF=1G VON=1V VOFF=0V)\n"; // Example switch model
+            spiceNetlist += ".SUBCKT ADC_MODEL IN OUT VCC GND\n* Simplified ADC Model\n.ENDS\n";
+            spiceNetlist += ".SUBCKT DAC_MODEL IN1 IN2 OUT GND\n* Simplified DAC Model\n.ENDS\n";
+            spiceNetlist += ".SUBCKT IGBT_MODEL C G E\n* Simplified IGBT Model\n.ENDS\n";
+            spiceNetlist += ".SUBCKT DRIVER_MODEL IN OUT\n* Simplified Driver Model\n.ENDS\n";
+            spiceNetlist += ".SUBCKT RF_AMP_MODEL IN OUT\n* Simplified RF Amplifier Model\n.ENDS\n";
+            spiceNetlist += ".SUBCKT MIXER_MODEL RF_IN LO_IN IF_OUT\n* Simplified Mixer Model\n.ENDS\n";
+            spiceNetlist += ".MODEL TVS_DIODE_MODEL D (BV=6V IBV=100m)\n"; // Simple Zener-like TVS diode model
 
 
             spiceNetlist += ".END\n";
@@ -3243,7 +3708,7 @@
          */
         function formatUnitValue(value, unitType) {
             if (isNaN(value) || !isFinite(value)) return 'N/A';
-            if (value === 0) return `0 ${getUnitSymbol(unitType, 0)}`;
+            if (value === 0) return `0 ${getUnitSymbol(unitType, '')}`; // Use empty prefix for 0
 
             const absValue = Math.abs(value);
             let prefix = '';
@@ -3593,8 +4058,177 @@
                         </div>
                     `;
                     break;
+                case 'componentGuide':
+                    html = `
+                        <div class="component-guide-section">
+                            <h3>Guía Completa de Componentes Electrónicos por Nivel Profesional</h3>
+                            <p>Esta guía te proporciona una base sólida para seleccionar componentes según el nivel de complejidad de tus proyectos.</p>
+                            
+                            <h4>1. COMPONENTES ANALÓGICOS</h4>
+                            
+                            <h5>Op-Amps (Amplificadores Operacionales)</h5>
+                            <ul>
+                                <li><strong>Nivel Básico:</strong> LM358 (dual, rail-to-rail, bajo costo), TL072 (JFET input, bajo ruido), uA741 (clásico para aprendizaje, obsoleto).</li>
+                                <li><strong>Nivel Medio:</strong> LM324 (quad LM358), TL084 (quad JFET), LF356 (mejor slew rate), LM833 (optimizado para audio).</li>
+                                <li><strong>Nivel Intermedio:</strong> OPA2134 (audio profesional, FET input), AD8628 (auto-zero, ultra-bajo offset), OPA627 (ultra-bajo ruido, alta velocidad).</li>
+                                <li><strong>Nivel Profesional:</strong> OPA827 (ultra-bajo ruido, alta precisión), AD797 (1nV/VHz ruido, 110MHz GBW), LT1028 (0.85nV/VHz), ADA4898-2 (ultra-rápido, rail-to-rail).</li>
+                            </ul>
+
+                            <h5>Referencias de Voltaje</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> LM4040 (shunt reference), TL431 (adjustable shunt regulator).</li>
+                                <li><strong>Intermedio:</strong> AD580 (precision 2.5V), REF02 (5V precision).</li>
+                                <li><strong>Profesional:</strong> LTZ1000 (ultra-precision heated), AD587 (10V precision).</li>
+                            </ul>
+
+                            <h5>Convertidores A/D</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> ADC0804 (8-bit, single channel), MCP3008 (8-channel, 10-bit, SPI).</li>
+                                <li><strong>Intermedio:</strong> ADS1115 (16-bit, 4-channel, I2C), MCP3424 (18-bit, 4-channel, I2C).</li>
+                                <li><strong>Profesional:</strong> AD7794 (24-bit, 6-channel), ADS1256 (24-bit, 8-channel, high-speed).</li>
+                            </ul>
+
+                            <h5>Convertidores D/A</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> DAC0808 (8-bit, current output), MCP4725 (12-bit, I2C).</li>
+                                <li><strong>Intermedio:</strong> MCP4922 (12-bit, dual channel, SPI), AD5693 (16-bit, I2C, nano-power).</li>
+                                <li><strong>Profesional:</strong> AD5791 (20-bit, ±10V output), DAC8881 (18-bit, low-power).</li>
+                            </ul>
+
+                            <h4>2. COMPONENTES DE POTENCIA</h4>
+
+                            <h5>Transistores de Potencia</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> TIP31C/TIP32C (NPN/PNP, 3A, 100V), 2N3055 (NPN, 15A, 60V).</li>
+                                <li><strong>Intermedio:</strong> TIP147/TIP142 (Darlington complementario), MJE340/MJE350 (complementario).</li>
+                            </ul>
+
+                            <h5>MOSFETS</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> IRF540N (N-channel, 100V, 33A), IRF9540N (P-channel).</li>
+                                <li><strong>Intermedio:</strong> IRLZ44N (Logic level), IRF3205 (Low Rds(on)).</li>
+                                <li><strong>Profesional:</strong> SIC MOSFETS (Silicon Carbide), GaN FETs (Gallium Nitride).</li>
+                            </ul>
+
+                            <h5>IGBTS</h5>
+                            <ul>
+                                <li><strong>Intermedio:</strong> IRGP4063D (600V, 96A), FGA25N120 (1200V, 25A).</li>
+                                <li><strong>Profesional:</strong> Módulos IGBT (ej. FF75R12RT4).</li>
+                            </ul>
+
+                            <h5>Drivers y Aislamiento</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> ULN2003 (Darlington array), MCP1407 (MOSFET driver).</li>
+                                <li><strong>Intermedio:</strong> IR2110 (High/low side driver).</li>
+                                <li><strong>Profesional:</strong> ACPL-332J (Isolated gate driver), Si8230 (Isolated driver con protección).</li>
+                            </ul>
+
+                            <h4>3. COMPONENTES DIGITALES</h4>
+
+                            <h5>Microcontroladores</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> Arduino Uno (ATmega328P), PIC16F877A.</li>
+                                <li><strong>Intermedio:</strong> STM32F103 (ARM Cortex-M3), ESP32 (WiFi/Bluetooth).</li>
+                                <li><strong>Profesional:</strong> STM32F407 (Cortex-M4), STM32H743 (Cortex-M7), i.MX RT1060 (Crossover processor).</li>
+                            </ul>
+
+                            <h5>Lógica Programable</h5>
+                            <ul>
+                                <li><strong>Intermedio:</strong> CPLDs (ej. XC9572XL).</li>
+                                <li><strong>Profesional:</strong> FPGAS (Cyclone IV, Spartan-7, Virtex).</li>
+                            </ul>
+
+                            <h5>DSPs (Digital Signal Processors)</h5>
+                            <ul>
+                                <li><strong>Profesional:</strong> TMS320F28335 (Fixed-point), ADSP-21489 (Floating-point SHARC), TMS320C6678 (Multi-core DSP).</li>
+                            </ul>
+
+                            <h4>4. SENSORES</h4>
+
+                            <h5>Temperatura</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> LM35 (Analog), DS18B20 (Digital, 1-Wire).</li>
+                                <li><strong>Intermedio:</strong> PT100/PT1000 (RTD), Thermocouple (K, J, T types).</li>
+                                <li><strong>Profesional:</strong> SHT30 (Humidity + Temperature, I2C), MAX31865 (RTD-to-Digital converter).</li>
+                            </ul>
+
+                            <h5>Presión</h5>
+                            <ul>
+                                <li><strong>Intermedio:</strong> BMP280 (Barometric pressure), MPX5700 (Analog absolute pressure).</li>
+                                <li><strong>Profesional:</strong> Honeywell HSC Series (High accuracy), Differential pressure sensors.</li>
+                            </ul>
+
+                            <h5>Movimiento/Orientación</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> ADXL335 (3-axis accelerometer, analog).</li>
+                                <li><strong>Intermedio:</strong> MPU6050 (6-DOF IMU), LSM9DS1 (9-DOF).</li>
+                                <li><strong>Profesional:</strong> ADIS16490 (Tactical grade IMU), Fiber optic gyros.</li>
+                            </ul>
+
+                            <h5>Ópticos</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> LDR (Light Dependent Resistor), Photodiode (BPW21).</li>
+                                <li><strong>Intermedio:</strong> TSL2561 (Digital light sensor), Color sensors (TCS3200).</li>
+                                <li><strong>Profesional:</strong> Avalanche Photodiodes (APD), PIN photodiodes, Image sensors (CCD/CMOS).</li>
+                            </ul>
+
+                            <h4>5. RF Y COMUNICACIONES</h4>
+
+                            <h5>Módulos Básicos</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> nRF24L01 (2.4GHz transceiver), HC-05/HC-06 (Bluetooth classic).</li>
+                                <li><strong>Intermedio:</strong> ESP32 (WiFi + Bluetooth), SX1278 (LoRa transceiver).</li>
+                                <li><strong>Profesional:</strong> CC1310 (Sub-1GHz transceiver), AD9361 (Wideband transceiver).</li>
+                            </ul>
+
+                            <h5>Interfaces de Comunicación</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> MAX232 (RS232 level shifter), 75176 (RS485 transceiver).</li>
+                                <li><strong>Intermedio:</strong> MCP2515 (CAN controller), FT232 (USB to UART bridge).</li>
+                                <li><strong>Profesional:</strong> Ethernet PHYs (W5500, ENC28J60), USB 3.0 controllers, PCIe interfaces.</li>
+                            </ul>
+
+                            <h5>Componentes RF Discretos</h5>
+                            <ul>
+                                <li><strong>Intermedio:</strong> RF amplifiers (MAR-6, ERA-5), Mixers (ADE-1, SA602).</li>
+                                <li><strong>Profesional:</strong> VCOs (Voltage Controlled Oscillators), Directional couplers, Baluns.</li>
+                            </ul>
+
+                            <h4>6. PROTECCIÓN Y GESTIÓN TÉRMICA</h4>
+
+                            <h5>Protección</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> Fusibles (Glass tube, ceramic), Varistores (MOV).</li>
+                                <li><strong>Intermedio:</strong> TVS diodes (Transient Voltage Suppressor), PTC Resettable fuses.</li>
+                                <li><strong>Profesional:</strong> Gas Discharge Tubes, Crowbar circuits.</li>
+                            </ul>
+
+                            <h5>Gestión Térmica</h5>
+                            <ul>
+                                <li><strong>Básico:</strong> Disipadores de Calor (Heatsinks), Materiales de Interfaz Térmica.</li>
+                                <li><strong>Intermedio:</strong> Ventiladores (Temperature controlled), Enfriadores Peltier.</li>
+                                <li><strong>Profesional:</strong> Refrigeración Líquida, Heat pipes, Simulación Térmica.</li>
+                            </ul>
+
+                            <h4>7. CRITERIOS DE SELECCIÓN</h4>
+                            <p>Esta sección cubre las consideraciones clave al seleccionar componentes, incluyendo:</p>
+                            <ul>
+                                <li><strong>Especificaciones Críticas:</strong> Voltaje de offset, Corriente de polarización de entrada, Slew rate, Ruido, CMRR, PSRR (para analógicos); Rds(on), Vce(sat), SOA, Resistencia térmica, Carga de puerta (para potencia); Frecuencia de operación, Consumo de energía, Capacidades de E/S, Memoria, Periféricos, Encapsulado (para digitales).</li>
+                                <li><strong>Consideraciones de Diseño:</strong> Fiabilidad (MTBF, rango de temperatura, tolerancia a la humedad, resistencia a vibraciones/golpes, protección ESD), Optimización de Costos (precios por volumen, ciclo de vida, segundas fuentes, estandarización de encapsulados), EMC/EMI (frecuencias de conmutación, requisitos de blindaje, diseño de PCB, requisitos de filtro).</li>
+                            </ul>
+
+                            <h4>8. TENDENCIAS FUTURAS</h4>
+                            <p>Explora las tecnologías emergentes que están dando forma al futuro de la electrónica:</p>
+                            <ul>
+                                <li><strong>Semiconductores de Banda Ancha (Wide Bandgap):</strong> Carburo de Silicio (SiC), Nitruro de Galio (GaN) - para alta temperatura, eficiencia y frecuencia.</li>
+                                <li><strong>Empaquetado Avanzado:</strong> Integración 3D (Through Silicon Vias), System in Package (SiP), Fan-out Wafer Level Packaging.</li>
+                                <li><strong>Integración IoT:</strong> Ultra-bajo consumo, Seguridad (cifrado de hardware), Edge AI (procesadores de red neuronal).</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
                 default:
-                    html = '<p>Selecciona una calculadora de la navegación superior.</p>';
+                    html = '<p>Selecciona una calculadora o guía de la navegación superior.</p>';
             }
             area.innerHTML = html;
 
@@ -3602,156 +4236,6 @@
             if (type === 'resistorCode') {
                 calculateResistance(); // Call to set initial values and colors
             }
-        }
-
-        function calculateOhm() {
-            const vInput = document.getElementById('ohm_v').value;
-            const iInput = document.getElementById('ohm_i').value;
-            const rInput = document.getElementById('ohm_r').value;
-            const pInput = document.getElementById('ohm_p').value;
-
-            let V = parseUnitValue(vInput);
-            let I = parseUnitValue(iInput);
-            let R = parseUnitValue(rInput);
-            let P = parseUnitValue(pInput);
-
-            let calculatedCount = 0;
-
-            // Count valid inputs
-            if (!isNaN(V) && vInput !== '') calculatedCount++;
-            if (!isNaN(I) && iInput !== '') calculatedCount++;
-            if (!isNaN(R) && rInput !== '') calculatedCount++;
-            if (!isNaN(P) && pInput !== '') calculatedCount++;
-
-            if (calculatedCount < 2) {
-                showModal('Entrada Insuficiente', 'Por favor, introduce al menos dos valores para calcular los demás.');
-                document.getElementById('ohm_result_v').textContent = 'N/A';
-                document.getElementById('ohm_result_i').textContent = 'N/A';
-                document.getElementById('ohm_result_r').textContent = 'N/A';
-                document.getElementById('ohm_result_p').textContent = 'N/A';
-                return;
-            }
-
-            // Attempt to calculate missing values
-            if (isNaN(V) && !isNaN(I) && !isNaN(R)) V = I * R;
-            if (isNaN(V) && !isNaN(P) && !isNaN(I)) V = P / I;
-            if (isNaN(V) && !isNaN(P) && !isNaN(R)) V = Math.sqrt(P * R);
-
-            if (isNaN(I) && !isNaN(V) && !isNaN(R)) I = V / R;
-            if (isNaN(I) && !isNaN(P) && !isNaN(V)) I = P / V;
-            if (isNaN(I) && !isNaN(P) && !isNaN(R)) I = Math.sqrt(P / R);
-
-            if (isNaN(R) && !isNaN(V) && !isNaN(I)) R = V / I;
-            if (isNaN(R) && !isNaN(V) && !isNaN(P)) R = V * V / P;
-            if (isNaN(R) && !isNaN(I) && !isNaN(P)) R = P / (I * I);
-
-            if (isNaN(P) && !isNaN(V) && !isNaN(I)) P = V * I;
-            if (isNaN(P) && !isNaN(I) && !isNaN(R)) P = I * I * R;
-            if (isNaN(P) && !isNaN(V) && !isNaN(R)) P = V * V / R;
-
-            // Display results
-            document.getElementById('ohm_result_v').textContent = formatUnitValue(V, 'voltage');
-            document.getElementById('ohm_result_i').textContent = formatUnitValue(I, 'current');
-            document.getElementById('ohm_result_r').textContent = formatUnitValue(R, 'resistance');
-            document.getElementById('ohm_result_p').textContent = formatUnitValue(P, 'power');
-        }
-
-        function calculateVoltageDivider() {
-            const vin = parseUnitValue(document.getElementById('vd_vin').value);
-            const r1 = parseUnitValue(document.getElementById('vd_r1').value);
-            const r2 = parseUnitValue(document.getElementById('vd_r2').value);
-
-            if (isNaN(vin) || isNaN(r1) || isNaN(r2) || (r1 + r2) === 0) {
-                document.getElementById('vd_result_vout').textContent = 'Entrada Inválida';
-                return;
-            }
-
-            const vout = vin * (r2 / (r1 + r2));
-            document.getElementById('vd_result_vout').textContent = formatUnitValue(vout, 'voltage');
-        }
-
-        function calculateCurrentDivider() {
-            const itotal = parseUnitValue(document.getElementById('cd_itotal').value);
-            const r1 = parseUnitValue(document.getElementById('cd_r1').value);
-            const r2 = parseUnitValue(document.getElementById('cd_r2').value);
-
-            if (isNaN(itotal) || isNaN(r1) || isNaN(r2) || (r1 + r2) === 0) {
-                document.getElementById('cd_result_ir2').textContent = 'Entrada Inválida';
-                return;
-            }
-
-            const i_r2 = itotal * (r1 / (r1 + r2));
-            document.getElementById('cd_result_ir2').textContent = formatUnitValue(i_r2, 'current');
-        }
-
-        function calculateRcFilter() {
-            const r = parseUnitValue(document.getElementById('rc_r').value);
-            const c = parseUnitValue(document.getElementById('rc_c').value);
-
-            if (isNaN(r) || isNaN(c) || r <= 0 || c <= 0) {
-                document.getElementById('rc_result_fc').textContent = 'Entrada Inválida';
-                return;
-            }
-
-            const fc = 1 / (2 * Math.PI * r * c);
-            document.getElementById('rc_result_fc').textContent = formatUnitValue(fc, 'frequency');
-        }
-
-        function calculateRlFilter() {
-            const r = parseUnitValue(document.getElementById('rl_r').value);
-            const l = parseUnitValue(document.getElementById('rl_l').value);
-
-            if (isNaN(r) || isNaN(l) || r <= 0 || l <= 0) {
-                document.getElementById('rl_result_fc').textContent = 'Entrada Inválida';
-                return;
-            }
-
-            const fc = r / (2 * Math.PI * l);
-            document.getElementById('rl_result_fc').textContent = formatUnitValue(fc, 'frequency');
-        }
-
-        function calculateLcResonance() {
-            const l = parseUnitValue(document.getElementById('lc_l').value);
-            const c = parseUnitValue(document.getElementById('lc_c').value);
-
-            if (isNaN(l) || isNaN(c) || l <= 0 || c <= 0) {
-                document.getElementById('lc_result_fr').textContent = 'Entrada Inválida';
-                return;
-            }
-
-            const fr = 1 / (2 * Math.PI * Math.sqrt(l * c));
-            document.getElementById('lc_result_fr').textContent = formatUnitValue(fr, 'frequency');
-        }
-
-        function calculateTransformer() {
-            const vprim = parseUnitValue(document.getElementById('xf_vprim').value);
-            const iprim = parseUnitValue(document.getElementById('xf_iprim').value);
-            const nprim = parseFloat(document.getElementById('xf_nprim').value);
-            const nsec = parseFloat(document.getElementById('xf_nsec').value);
-
-            let vsec = NaN;
-            let isec = NaN;
-
-            // Calculate Vsec
-            if (!isNaN(vprim) && !isNaN(nprim) && !isNaN(nsec) && nprim !== 0) {
-                vsec = vprim * (nsec / nprim);
-            } else if (!isNaN(iprim) && !isNaN(nprim) && !isNaN(nsec) && nsec !== 0) {
-                // If Vprim is unknown but Iprim is known, we can't directly calculate Vsec without Zprim/Zsec or P
-                // For an ideal transformer, Pprim = Psec, so Vprim * Iprim = Vsec * Isec
-                // This path is more complex without more inputs, so we'll prioritize Vprim.
-            }
-
-            // Calculate Isec
-            if (!isNaN(iprim) && !isNaN(nprim) && !isNaN(nsec) && nsec !== 0) {
-                isec = iprim * (nprim / nsec);
-            } else if (!isNaN(vprim) && !isNaN(nprim) && !isNaN(nsec) && nprim !== 0) {
-                // If Iprim is unknown but Vprim is known, we need a load impedance to calculate Isec
-                // For an ideal transformer, Vprim * Iprim = Vsec * Isec, so Isec = (Vprim * Iprim) / Vsec
-                // This path is also more complex without more inputs.
-            }
-
-            document.getElementById('xf_result_vsec').textContent = formatUnitValue(vsec, 'voltage');
-            document.getElementById('xf_result_isec').textContent = formatUnitValue(isec, 'current');
         }
 
 
