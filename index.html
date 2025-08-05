@@ -2624,7 +2624,7 @@
         }
 
 
-        // --- Resistor Calculator Functions ---
+        // --- Resistor Color Code Calculator Functions (Moved to CalFlux) ---
         function calculateResistance() {
             const band1Color = document.getElementById('band1').value;
             const band2Color = document.getElementById('band2').value;
@@ -2642,20 +2642,8 @@
             }
 
             let resistance = (digit1 * 10 + digit2) * multiplier;
-            let unit = 'Ω';
-
-            if (resistance >= 1000000000) {
-                resistance /= 1000000000;
-                unit = 'GΩ';
-            } else if (resistance >= 1000000) {
-                resistance /= 1000000;
-                unit = 'MΩ';
-            } else if (resistance >= 1000) {
-                resistance /= 1000;
-                unit = 'kΩ';
-            }
-
-            document.getElementById('resistanceValue').textContent = `${resistance.toFixed(2)} ${unit} ${tolerance}`;
+            
+            document.getElementById('resistanceValue').textContent = `${formatUnitValue(resistance, 'resistance')} ${tolerance}`;
 
             // Update display bands
             document.getElementById('displayBand1').style.backgroundColor = band1Color;
@@ -3217,6 +3205,555 @@
             const modalOverlay = document.getElementById('customModalOverlay');
             modalOverlay.classList.remove('show');
         }
+
+        // --- Cal Flux Calculator Functions ---
+
+        /**
+         * Parses a string value with units (e.g., "10k", "2.2u", "5m") into its base numeric value.
+         * @param {string} valueString The input string.
+         * @returns {number} The base numeric value.
+         */
+        function parseUnitValue(valueString) {
+            if (!valueString) return NaN;
+            valueString = valueString.trim().toLowerCase();
+            const multipliers = {
+                'p': 1e-12, 'n': 1e-9, 'u': 1e-6, 'µ': 1e-6, 'm': 1e-3,
+                'k': 1e3, 'meg': 1e6, 'g': 1e9, 't': 1e12
+            };
+            
+            const match = valueString.match(/^(\d*\.?\d+)([pnµmkMGT]?)(ohm|f|h|hz|v|a|w)?$/i);
+            if (!match) return parseFloat(valueString); // Try parsing as float if no match
+
+            let value = parseFloat(match[1]);
+            const prefix = match[2];
+
+            if (multipliers[prefix]) {
+                value *= multipliers[prefix];
+            } else if (prefix === 'M') { // Special case for Mega (M) as 'm' is milli
+                value *= 1e6;
+            }
+            return value;
+        }
+
+        /**
+         * Formats a numeric value into a human-readable string with appropriate units.
+         * @param {number} value The numeric value.
+         * @param {string} unitType The type of unit (e.g., 'resistance', 'capacitance', 'inductance', 'frequency', 'voltage', 'current', 'power').
+         * @returns {string} Formatted string (e.g., "10 kΩ", "2.2 µF").
+         */
+        function formatUnitValue(value, unitType) {
+            if (isNaN(value) || !isFinite(value)) return 'N/A';
+            if (value === 0) return `0 ${getUnitSymbol(unitType, 0)}`;
+
+            const absValue = Math.abs(value);
+            let prefix = '';
+            let divisor = 1;
+
+            if (absValue >= 1e12) { prefix = 'T'; divisor = 1e12; }
+            else if (absValue >= 1e9) { prefix = 'G'; divisor = 1e9; }
+            else if (absValue >= 1e6) { prefix = 'M'; divisor = 1e6; }
+            else if (absValue >= 1e3) { prefix = 'k'; divisor = 1e3; }
+            else if (absValue < 1e-9) { prefix = 'p'; divisor = 1e-12; }
+            else if (absValue < 1e-6) { prefix = 'n'; divisor = 1e-9; }
+            else if (absValue < 1e-3) { prefix = 'µ'; divisor = 1e-6; }
+            else if (absValue < 1) { prefix = 'm'; divisor = 1e-3; }
+            
+            const formattedValue = (value / divisor).toFixed(2);
+            return `${formattedValue} ${getUnitSymbol(unitType, prefix)}`;
+        }
+
+        function getUnitSymbol(unitType, prefix) {
+            const symbols = {
+                'resistance': { '': 'Ω', 'k': 'kΩ', 'M': 'MΩ', 'G': 'GΩ' },
+                'capacitance': { '': 'F', 'm': 'mF', 'µ': 'µF', 'n': 'nF', 'p': 'pF' },
+                'inductance': { '': 'H', 'm': 'mH', 'µ': 'µH', 'n': 'nH' },
+                'frequency': { '': 'Hz', 'k': 'kHz', 'M': 'MHz', 'G': 'GHz' },
+                'voltage': { '': 'V', 'm': 'mV', 'k': 'kV' },
+                'current': { '': 'A', 'm': 'mA', 'µ': 'µA' },
+                'power': { '': 'W', 'm': 'mW', 'k': 'kW' }
+            };
+            return symbols[unitType]?.[prefix] || `${prefix}${unitType.charAt(0).toUpperCase()}`; // Fallback
+        }
+
+
+        function renderCalculator(type) {
+            const area = document.getElementById('calfluxCalculatorArea');
+            let html = '';
+
+            // Update active navigation button
+            document.querySelectorAll('.calflux-nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.calflux-nav-btn[data-calculator-type="${type}"]`).classList.add('active');
+
+            switch (type) {
+                case 'ohm':
+                    html = `
+                        <div class="calculator-section">
+                            <h3>Ley de Ohm y Potencia</h3>
+                            <p>Calcula Voltaje (V), Corriente (I), Resistencia (R) y Potencia (P).</p>
+                            <div class="formula">
+                                V = I * R<br>
+                                P = V * I<br>
+                                P = I² * R<br>
+                                P = V² / R
+                            </div>
+                            <div class="example">
+                                <strong>Ejemplo:</strong> Si V = 12V y R = 100Ω,<br>
+                                I = 12V / 100Ω = 0.12A (120mA)<br>
+                                P = 12V * 0.12A = 1.44W
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="ohm_v">Voltaje (V):</label>
+                                <input type="text" id="ohm_v" placeholder="Ej: 12V">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="ohm_i">Corriente (I):</label>
+                                <input type="text" id="ohm_i" placeholder="Ej: 0.1A o 100mA">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="ohm_r">Resistencia (R):</label>
+                                <input type="text" id="ohm_r" placeholder="Ej: 100Ω o 1k">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="ohm_p">Potencia (P):</label>
+                                <input type="text" id="ohm_p" placeholder="Ej: 1.5W">
+                            </div>
+                            <div class="action-buttons">
+                                <button onclick="calculateOhm()">Calcular</button>
+                            </div>
+                            <div class="calculator-results">
+                                <p>Voltaje: <span id="ohm_result_v">N/A</span></p>
+                                <p>Corriente: <span id="ohm_result_i">N/A</span></p>
+                                <p>Resistencia: <span id="ohm_result_r">N/A</span></p>
+                                <p>Potencia: <span id="ohm_result_p">N/A</span></p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'dividers':
+                    html = `
+                        <div class="calculator-section">
+                            <h3>Divisor de Voltaje y Corriente</h3>
+                            <p>Calcula la salida de un divisor de voltaje o la corriente en una rama de un divisor de corriente.</p>
+                            
+                            <h4>Divisor de Voltaje</h4>
+                            <div class="formula">
+                                Vout = Vin * (R2 / (R1 + R2))
+                            </div>
+                            <div class="example">
+                                <strong>Ejemplo:</strong> Vin = 9V, R1 = 1kΩ, R2 = 2kΩ<br>
+                                Vout = 9V * (2000 / (1000 + 2000)) = 6V
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="vd_vin">Voltaje de Entrada (Vin):</label>
+                                <input type="text" id="vd_vin" placeholder="Ej: 9V">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="vd_r1">Resistencia 1 (R1):</label>
+                                <input type="text" id="vd_r1" placeholder="Ej: 1k">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="vd_r2">Resistencia 2 (R2):</label>
+                                <input type="text" id="vd_r2" placeholder="Ej: 2k">
+                            </div>
+                            <div class="action-buttons">
+                                <button onclick="calculateVoltageDivider()">Calcular Vout</button>
+                            </div>
+                            <div class="calculator-results">
+                                <p>Voltaje de Salida (Vout): <span id="vd_result_vout">N/A</span></p>
+                            </div>
+
+                            <h4 style="margin-top: 40px;">Divisor de Corriente</h4>
+                            <div class="formula">
+                                I_R2 = Itotal * (R1 / (R1 + R2))
+                            </div>
+                            <div class="example">
+                                <strong>Ejemplo:</strong> Itotal = 1A, R1 = 100Ω, R2 = 200Ω<br>
+                                I_R2 = 1A * (100 / (100 + 200)) = 0.33A
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="cd_itotal">Corriente Total (Itotal):</label>
+                                <input type="text" id="cd_itotal" placeholder="Ej: 1A">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="cd_r1">Resistencia 1 (R1):</label>
+                                <input type="text" id="cd_r1" placeholder="Ej: 100">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="cd_r2">Resistencia 2 (R2):</label>
+                                <input type="text" id="cd_r2" placeholder="Ej: 200">
+                            </div>
+                            <div class="action-buttons">
+                                <button onclick="calculateCurrentDivider()">Calcular I_R2</button>
+                            </div>
+                            <div class="calculator-results">
+                                <p>Corriente en R2 (I_R2): <span id="cd_result_ir2">N/A</span></p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'rcrlFilter':
+                    html = `
+                        <div class="calculator-section">
+                            <h3>Filtros RC y RL (Frecuencia de Corte)</h3>
+                            <p>Calcula la frecuencia de corte (-3dB) para filtros RC y RL.</p>
+                            
+                            <h4>Filtro RC (Pasa-Bajos o Pasa-Altos)</h4>
+                            <div class="formula">
+                                Fc = 1 / (2 * PI * R * C)
+                            </div>
+                            <div class="example">
+                                <strong>Ejemplo:</strong> R = 1kΩ, C = 0.1µF<br>
+                                Fc = 1 / (2 * PI * 1000 * 0.0000001) ≈ 1591.5 Hz (1.59 kHz)
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="rc_r">Resistencia (R):</label>
+                                <input type="text" id="rc_r" placeholder="Ej: 1k">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="rc_c">Capacitancia (C):</label>
+                                <input type="text" id="rc_c" placeholder="Ej: 0.1uF">
+                            </div>
+                            <div class="action-buttons">
+                                <button onclick="calculateRcFilter()">Calcular Fc RC</button>
+                            </div>
+                            <div class="calculator-results">
+                                <p>Frecuencia de Corte (Fc): <span id="rc_result_fc">N/A</span></p>
+                            </div>
+
+                            <h4 style="margin-top: 40px;">Filtro RL (Pasa-Bajos o Pasa-Altos)</h4>
+                            <div class="formula">
+                                Fc = R / (2 * PI * L)
+                            </div>
+                            <div class="example">
+                                <strong>Ejemplo:</strong> R = 100Ω, L = 10mH<br>
+                                Fc = 100 / (2 * PI * 0.01) ≈ 1591.5 Hz (1.59 kHz)
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="rl_r">Resistencia (R):</label>
+                                <input type="text" id="rl_r" placeholder="Ej: 100">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="rl_l">Inductancia (L):</label>
+                                <input type="text" id="rl_l" placeholder="Ej: 10mH">
+                            </div>
+                            <div class="action-buttons">
+                                <button onclick="calculateRlFilter()">Calcular Fc RL</button>
+                            </div>
+                            <div class="calculator-results">
+                                <p>Frecuencia de Corte (Fc): <span id="rl_result_fc">N/A</span></p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'lcResonance':
+                    html = `
+                        <div class="calculator-section">
+                            <h3>Resonancia LC</h3>
+                            <p>Calcula la frecuencia de resonancia de un circuito LC (serie o paralelo).</p>
+                            <div class="formula">
+                                Fr = 1 / (2 * PI * sqrt(L * C))
+                            </div>
+                            <div class="example">
+                                <strong>Ejemplo:</strong> L = 10mH, C = 100nF<br>
+                                Fr = 1 / (2 * PI * sqrt(0.01 * 0.0000001)) ≈ 5032.9 Hz (5.03 kHz)
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="lc_l">Inductancia (L):</label>
+                                <input type="text" id="lc_l" placeholder="Ej: 10mH">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="lc_c">Capacitancia (C):</label>
+                                <input type="text" id="lc_c" placeholder="Ej: 100nF">
+                            </div>
+                            <div class="action-buttons">
+                                <button onclick="calculateLcResonance()">Calcular Fr</button>
+                            </div>
+                            <div class="calculator-results">
+                                <p>Frecuencia de Resonancia (Fr): <span id="lc_result_fr">N/A</span></p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'transformers':
+                    html = `
+                        <div class="calculator-section">
+                            <h3>Transformadores</h3>
+                            <p>Calcula voltajes y corrientes en el secundario de un transformador ideal.</p>
+                            <div class="formula">
+                                Vsec / Vprim = Nsec / Nprim<br>
+                                Isec / Iprim = Nprim / Nsec
+                            </div>
+                            <div class="example">
+                                <strong>Ejemplo:</strong> Vprim = 120V, Nprim = 1000 vueltas, Nsec = 100 vueltas, Iprim = 1A<br>
+                                Vsec = 120V * (100 / 1000) = 12V<br>
+                                Isec = 1A * (1000 / 100) = 10A
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="xf_vprim">Voltaje Primario (Vprim):</label>
+                                <input type="text" id="xf_vprim" placeholder="Ej: 120V">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="xf_iprim">Corriente Primaria (Iprim):</label>
+                                <input type="text" id="xf_iprim" placeholder="Ej: 1A">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="xf_nprim">Vueltas Primario (Nprim):</label>
+                                <input type="number" id="xf_nprim" placeholder="Ej: 1000">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="xf_nsec">Vueltas Secundario (Nsec):</label>
+                                <input type="number" id="xf_nsec" placeholder="Ej: 100">
+                            </div>
+                            <div class="action-buttons">
+                                <button onclick="calculateTransformer()">Calcular</button>
+                            </div>
+                            <div class="calculator-results">
+                                <p>Voltaje Secundario (Vsec): <span id="xf_result_vsec">N/A</span></p>
+                                <p>Corriente Secundario (Isec): <span id="xf_result_isec">N/A</span></p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'resistorCode':
+                    html = `
+                        <div class="calculator-section">
+                            <h3>Calculadora de Código de Colores de Resistencia</h3>
+                            <p>Ingresa los colores de las bandas de tu resistencia para determinar su valor y tolerancia.</p>
+                            <div class="resistor-calculator">
+                                <div class="resistor-input-group">
+                                    <label for="band1">Banda 1:</label>
+                                    <select id="band1" onchange="calculateResistance()">
+                                        <option value="black" style="background-color: black; color: white;">Negro (0)</option>
+                                        <option value="brown" style="background-color: brown; color: white;">Marrón (1)</option>
+                                        <option value="red" style="background-color: red; color: white;">Rojo (2)</option>
+                                        <option value="orange" style="background-color: orange; color: black;">Naranja (3)</option>
+                                        <option value="yellow" style="background-color: yellow; color: black;">Amarillo (4)</option>
+                                        <option value="green" style="background-color: green; color: white;">Verde (5)</option>
+                                        <option value="blue" style="background-color: blue; color: white;">Azul (6)</option>
+                                        <option value="violet" style="background-color: violet; color: white;">Violeta (7)</option>
+                                        <option value="gray" style="background-color: gray; color: black;">Gris (8)</option>
+                                        <option value="white" style="background-color: white; color: black;">Blanco (9)</option>
+                                    </select>
+                                </div>
+                                <div class="resistor-input-group">
+                                    <label for="band2">Banda 2:</label>
+                                    <select id="band2" onchange="calculateResistance()">
+                                        <option value="black" style="background-color: black; color: white;">Negro (0)</option>
+                                        <option value="brown" style="background-color: brown; color: white;">Marrón (1)</option>
+                                        <option value="red" style="background-color: red; color: white;">Rojo (2)</option>
+                                        <option value="orange" style="background-color: orange; color: black;">Naranja (3)</option>
+                                        <option value="yellow" style="background-color: yellow; color: black;">Amarillo (4)</option>
+                                        <option value="green" style="background-color: green; color: white;">Verde (5)</option>
+                                        <option value="blue" style="background-color: blue; color: white;">Azul (6)</option>
+                                        <option value="violet" style="background-color: violet; color: white;">Violeta (7)</option>
+                                        <option value="gray" style="background-color: gray; color: black;">Gris (8)</option>
+                                        <option value="white" style="background-color: white; color: black;">Blanco (9)</option>
+                                    </select>
+                                </div>
+                                <div class="resistor-input-group">
+                                    <label for="multiplier">Multiplicador:</label>
+                                    <select id="multiplier" onchange="calculateResistance()">
+                                        <option value="black" style="background-color: black; color: white;">Negro (x1)</option>
+                                        <option value="brown" style="background-color: brown; color: white;">Marrón (x10)</option>
+                                        <option value="red" style="background-color: red; color: white;">Rojo (x100)</option>
+                                        <option value="orange" style="background-color: orange; color: black;">Naranja (x1k)</option>
+                                        <option value="yellow" style="background-color: yellow; color: black;">Amarillo (x10k)</option>
+                                        <option value="green" style="background-color: green; color: white;">Verde (x100k)</option>
+                                        <option value="blue" style="background-color: blue; color: white;">Azul (x1M)</option>
+                                        <option value="violet" style="background-color: violet; color: white;">Violeta (x10M)</option>
+                                        <option value="gold" style="background-color: gold; color: black;">Dorado (x0.1)</option>
+                                        <option value="silver" style="background-color: silver; color: black;">Plateado (x0.01)</option>
+                                    </select>
+                                </div>
+                                <div class="resistor-input-group">
+                                    <label for="tolerance">Tolerancia:</label>
+                                    <select id="tolerance" onchange="calculateResistance()">
+                                        <option value="brown" style="background-color: brown; color: white;">Marrón (±1%)</option>
+                                        <option value="red" style="background-color: red; color: white;">Rojo (±2%)</option>
+                                        <option value="green" style="background-color: green; color: white;">Verde (±0.5%)</option>
+                                        <option value="blue" style="background-color: blue; color: white;">Azul (±0.25%)</option>
+                                        <option value="violet" style="background-color: violet; color: white;">Violeta (±0.1%)</option>
+                                        <option value="gray" style="background-color: gray; color: black;">Gris (±0.05%)</option>
+                                        <option value="gold" style="background-color: gold; color: black;">Dorado (±5%)</option>
+                                        <option value="silver" style="background-color: silver; color: black;">Plateado (±10%)</option>
+                                    </select>
+                                </div>
+                                <div class="resistor-result">
+                                    <p>Valor de Resistencia: <span id="resistanceValue">0 Ω</span></p>
+                                    <div class="resistor-bands-display">
+                                        <div id="displayBand1" class="resistor-band-color"></div>
+                                        <div id="displayBand2" class="resistor-band-color"></div>
+                                        <div id="displayMultiplier" class="resistor-band-color"></div>
+                                        <div id="displayTolerance" class="resistor-band-color"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                default:
+                    html = '<p>Selecciona una calculadora de la navegación superior.</p>';
+            }
+            area.innerHTML = html;
+
+            // Initialize specific calculators if needed (e.g., resistor color code)
+            if (type === 'resistorCode') {
+                calculateResistance(); // Call to set initial values and colors
+            }
+        }
+
+        function calculateOhm() {
+            const vInput = document.getElementById('ohm_v').value;
+            const iInput = document.getElementById('ohm_i').value;
+            const rInput = document.getElementById('ohm_r').value;
+            const pInput = document.getElementById('ohm_p').value;
+
+            let V = parseUnitValue(vInput);
+            let I = parseUnitValue(iInput);
+            let R = parseUnitValue(rInput);
+            let P = parseUnitValue(pInput);
+
+            let calculatedCount = 0;
+
+            // Count valid inputs
+            if (!isNaN(V) && vInput !== '') calculatedCount++;
+            if (!isNaN(I) && iInput !== '') calculatedCount++;
+            if (!isNaN(R) && rInput !== '') calculatedCount++;
+            if (!isNaN(P) && pInput !== '') calculatedCount++;
+
+            if (calculatedCount < 2) {
+                showModal('Entrada Insuficiente', 'Por favor, introduce al menos dos valores para calcular los demás.');
+                document.getElementById('ohm_result_v').textContent = 'N/A';
+                document.getElementById('ohm_result_i').textContent = 'N/A';
+                document.getElementById('ohm_result_r').textContent = 'N/A';
+                document.getElementById('ohm_result_p').textContent = 'N/A';
+                return;
+            }
+
+            // Attempt to calculate missing values
+            if (isNaN(V) && !isNaN(I) && !isNaN(R)) V = I * R;
+            if (isNaN(V) && !isNaN(P) && !isNaN(I)) V = P / I;
+            if (isNaN(V) && !isNaN(P) && !isNaN(R)) V = Math.sqrt(P * R);
+
+            if (isNaN(I) && !isNaN(V) && !isNaN(R)) I = V / R;
+            if (isNaN(I) && !isNaN(P) && !isNaN(V)) I = P / V;
+            if (isNaN(I) && !isNaN(P) && !isNaN(R)) I = Math.sqrt(P / R);
+
+            if (isNaN(R) && !isNaN(V) && !isNaN(I)) R = V / I;
+            if (isNaN(R) && !isNaN(V) && !isNaN(P)) R = V * V / P;
+            if (isNaN(R) && !isNaN(I) && !isNaN(P)) R = P / (I * I);
+
+            if (isNaN(P) && !isNaN(V) && !isNaN(I)) P = V * I;
+            if (isNaN(P) && !isNaN(I) && !isNaN(R)) P = I * I * R;
+            if (isNaN(P) && !isNaN(V) && !isNaN(R)) P = V * V / R;
+
+            // Display results
+            document.getElementById('ohm_result_v').textContent = formatUnitValue(V, 'voltage');
+            document.getElementById('ohm_result_i').textContent = formatUnitValue(I, 'current');
+            document.getElementById('ohm_result_r').textContent = formatUnitValue(R, 'resistance');
+            document.getElementById('ohm_result_p').textContent = formatUnitValue(P, 'power');
+        }
+
+        function calculateVoltageDivider() {
+            const vin = parseUnitValue(document.getElementById('vd_vin').value);
+            const r1 = parseUnitValue(document.getElementById('vd_r1').value);
+            const r2 = parseUnitValue(document.getElementById('vd_r2').value);
+
+            if (isNaN(vin) || isNaN(r1) || isNaN(r2) || (r1 + r2) === 0) {
+                document.getElementById('vd_result_vout').textContent = 'Entrada Inválida';
+                return;
+            }
+
+            const vout = vin * (r2 / (r1 + r2));
+            document.getElementById('vd_result_vout').textContent = formatUnitValue(vout, 'voltage');
+        }
+
+        function calculateCurrentDivider() {
+            const itotal = parseUnitValue(document.getElementById('cd_itotal').value);
+            const r1 = parseUnitValue(document.getElementById('cd_r1').value);
+            const r2 = parseUnitValue(document.getElementById('cd_r2').value);
+
+            if (isNaN(itotal) || isNaN(r1) || isNaN(r2) || (r1 + r2) === 0) {
+                document.getElementById('cd_result_ir2').textContent = 'Entrada Inválida';
+                return;
+            }
+
+            const i_r2 = itotal * (r1 / (r1 + r2));
+            document.getElementById('cd_result_ir2').textContent = formatUnitValue(i_r2, 'current');
+        }
+
+        function calculateRcFilter() {
+            const r = parseUnitValue(document.getElementById('rc_r').value);
+            const c = parseUnitValue(document.getElementById('rc_c').value);
+
+            if (isNaN(r) || isNaN(c) || r <= 0 || c <= 0) {
+                document.getElementById('rc_result_fc').textContent = 'Entrada Inválida';
+                return;
+            }
+
+            const fc = 1 / (2 * Math.PI * r * c);
+            document.getElementById('rc_result_fc').textContent = formatUnitValue(fc, 'frequency');
+        }
+
+        function calculateRlFilter() {
+            const r = parseUnitValue(document.getElementById('rl_r').value);
+            const l = parseUnitValue(document.getElementById('rl_l').value);
+
+            if (isNaN(r) || isNaN(l) || r <= 0 || l <= 0) {
+                document.getElementById('rl_result_fc').textContent = 'Entrada Inválida';
+                return;
+            }
+
+            const fc = r / (2 * Math.PI * l);
+            document.getElementById('rl_result_fc').textContent = formatUnitValue(fc, 'frequency');
+        }
+
+        function calculateLcResonance() {
+            const l = parseUnitValue(document.getElementById('lc_l').value);
+            const c = parseUnitValue(document.getElementById('lc_c').value);
+
+            if (isNaN(l) || isNaN(c) || l <= 0 || c <= 0) {
+                document.getElementById('lc_result_fr').textContent = 'Entrada Inválida';
+                return;
+            }
+
+            const fr = 1 / (2 * Math.PI * Math.sqrt(l * c));
+            document.getElementById('lc_result_fr').textContent = formatUnitValue(fr, 'frequency');
+        }
+
+        function calculateTransformer() {
+            const vprim = parseUnitValue(document.getElementById('xf_vprim').value);
+            const iprim = parseUnitValue(document.getElementById('xf_iprim').value);
+            const nprim = parseFloat(document.getElementById('xf_nprim').value);
+            const nsec = parseFloat(document.getElementById('xf_nsec').value);
+
+            let vsec = NaN;
+            let isec = NaN;
+
+            // Calculate Vsec
+            if (!isNaN(vprim) && !isNaN(nprim) && !isNaN(nsec) && nprim !== 0) {
+                vsec = vprim * (nsec / nprim);
+            } else if (!isNaN(iprim) && !isNaN(nprim) && !isNaN(nsec) && nsec !== 0) {
+                // If Vprim is unknown but Iprim is known, we can't directly calculate Vsec without Zprim/Zsec or P
+                // For an ideal transformer, Pprim = Psec, so Vprim * Iprim = Vsec * Isec
+                // This path is more complex without more inputs, so we'll prioritize Vprim.
+            }
+
+            // Calculate Isec
+            if (!isNaN(iprim) && !isNaN(nprim) && !isNaN(nsec) && nsec !== 0) {
+                isec = iprim * (nprim / nsec);
+            } else if (!isNaN(vprim) && !isNaN(nprim) && !isNaN(nsec) && nprim !== 0) {
+                // If Iprim is unknown but Vprim is known, we need a load impedance to calculate Isec
+                // For an ideal transformer, Vprim * Iprim = Vsec * Isec, so Isec = (Vprim * Iprim) / Vsec
+                // This path is also more complex without more inputs.
+            }
+
+            document.getElementById('xf_result_vsec').textContent = formatUnitValue(vsec, 'voltage');
+            document.getElementById('xf_result_isec').textContent = formatUnitValue(isec, 'current');
+        }
+
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
