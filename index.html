@@ -22,13 +22,26 @@
             line-height: 1.6;
         }
 
+        /* Screen Management Base Styles */
+        .screen {
+            display: none; /* All screens hidden by default */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        .screen.active {
+            display: flex; /* Active screen is flex container */
+        }
+
         /* Start Screen Styles */
-        .start-screen {
-            display: flex;
+        #startScreen {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
             background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0e14 100%);
             padding: 40px;
             text-align: center;
@@ -36,7 +49,7 @@
             overflow: hidden;
         }
 
-        .start-screen::before {
+        #startScreen::before {
             content: '';
             position: absolute;
             top: 0;
@@ -209,8 +222,7 @@
         }
 
         /* App Container */
-        .app-container {
-            display: none;
+        #appContainer {
             flex-direction: column;
             height: 100vh;
             background: #0a0e14;
@@ -343,6 +355,7 @@
             border-right: 1px solid #30363d;
             overflow-y: auto;
             flex-shrink: 0;
+            transition: transform 0.3s ease-in-out; /* For mobile slide effect */
         }
 
         .search-container {
@@ -580,7 +593,6 @@
             align-items: center;
             justify-content: center;
             cursor: grab; /* Changed to grab cursor */
-            transition: border-color 0.2s, box-shadow 0.2s;
             user-select: none; /* Prevent selection */
             -webkit-user-select: none; /* Safari */
             -moz-user-select: none; /* Firefox */
@@ -672,6 +684,7 @@
             overflow-y: auto;
             flex-shrink: 0;
             display: none; /* Initially hidden */
+            transition: transform 0.3s ease-in-out; /* For mobile slide effect */
         }
 
         .panel-header {
@@ -812,21 +825,22 @@
         }
 
         /* Cal Flux Section Styles */
-        .calflux-section {
-            display: none;
+        #calfluxSection {
+            flex-direction: column;
             padding: 20px;
             background: rgba(22, 27, 34, 0.95);
             border-radius: 12px;
             margin: 20px;
             overflow-y: auto;
             max-height: calc(100vh - 40px);
-            position: absolute;
+            position: absolute; /* Changed to absolute for overlay */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 90%;
             max-width: 1200px;
             z-index: 2500;
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.2);
         }
 
         .calflux-header {
@@ -1015,13 +1029,8 @@
 
 
         /* Tutorial Section */
-        .tutorial-section {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        #tutorialSection {
+            flex-direction: column;
             background: rgba(13, 17, 23, 0.95);
             backdrop-filter: blur(15px);
             z-index: 3000;
@@ -1075,7 +1084,7 @@
 
         /* Protected Content Alert */
         .protected-alert {
-            position: absolute;
+            position: fixed; /* Changed to fixed for better overlay */
             background-color: rgba(255, 255, 255, 0.9);
             color: #0a0e14;
             padding: 5px 10px;
@@ -1086,6 +1095,9 @@
             transition: opacity 0.3s ease-in-out;
             pointer-events: none; /* Allow clicks to pass through */
             z-index: 9999;
+            transform: translate(-50%, -50%); /* Center based on left/top */
+            left: 50%;
+            top: 50%;
         }
         .protected-alert.show {
             opacity: 1;
@@ -1126,10 +1138,11 @@
             
             .components-sidebar {
                 width: 100%; /* Full width on small screens */
-                position: absolute; /* Overlay when open */
+                position: fixed; /* Overlay when open */
                 height: calc(100vh - 70px);
                 top: 70px;
                 left: -100%; /* Hidden by default */
+                transform: translateX(0); /* Reset transform */
                 transition: left 0.3s ease;
                 z-index: 900; /* Above canvas, below header */
             }
@@ -1143,10 +1156,11 @@
 
             .properties-panel {
                 width: 100%; /* Full width on small screens */
-                position: absolute;
+                position: fixed; /* Overlay */
                 height: calc(100vh - 70px);
                 top: 70px;
                 right: -100%; /* Hidden by default */
+                transform: translateX(0); /* Reset transform */
                 transition: right 0.3s ease;
                 z-index: 900;
             }
@@ -1154,10 +1168,13 @@
                 right: 0;
             }
 
-            .calflux-section {
+            #calfluxSection, #tutorialSection {
                 width: 95%; /* More space for content */
-                margin: 10px auto;
+                margin: 0 auto; /* Center with auto margin */
                 max-height: calc(100vh - 20px);
+                top: 50%; /* Re-center after width change */
+                left: 50%; /* Re-center after width change */
+                transform: translate(-50%, -50%); /* Re-center with transform */
             }
 
             .component-grid {
@@ -1186,7 +1203,7 @@
 </head>
 <body>
     <!-- Start Screen -->
-    <div class="start-screen" id="startScreen">
+    <div class="screen active" id="startScreen">
         <div class="logo-container">
             <div class="main-logo" id="mainLogo"></div>
             <h1 class="app-title">FLUXIONICS</h1>
@@ -1217,15 +1234,15 @@
         </div>
         
         <div class="start-options">
-            <button class="start-button primary" onclick="startApplication()">
+            <button class="start-button primary" onclick="showScreen('appContainer')">
                 <i class="fas fa-play"></i>
                 Comenzar a Diseñar
             </button>
-            <button class="start-button secondary" onclick="showCalFlux()">
+            <button class="start-button secondary" onclick="showScreen('calfluxSection')">
                 <i class="fas fa-table"></i>
                 Cal Flux
             </button>
-            <button class="start-button secondary" onclick="showTutorial()">
+            <button class="start-button secondary" onclick="showScreen('tutorialSection')">
                 <i class="fas fa-graduation-cap"></i>
                 Tutorial
             </button>
@@ -1233,11 +1250,11 @@
     </div>
 
     <!-- Cal Flux Section -->
-    <div class="calflux-section" id="calfluxSection">
+    <div class="screen" id="calfluxSection">
         <div class="calflux-header">
             <i class="fas fa-table"></i>
             <h2>Cal Flux - Documentación de Componentes</h2>
-            <button class="start-button secondary" onclick="hideCalFlux()" style="margin-left: auto;">
+            <button class="start-button secondary" onclick="showScreen('startScreen')" style="margin-left: auto;">
                 <i class="fas fa-arrow-left"></i>
                 Volver
             </button>
@@ -1464,9 +1481,9 @@
     </div>
     
     <!-- Tutorial Section -->
-    <div class="tutorial-section" id="tutorialSection">
+    <div class="screen" id="tutorialSection">
         <div class="tutorial-content">
-            <button class="close-menu-btn" onclick="hideTutorial()" style="position: absolute; top: 20px; right: 20px;">
+            <button class="close-menu-btn" onclick="showScreen('startScreen')" style="position: absolute; top: 20px; right: 20px;">
                 <i class="fas fa-times"></i>
             </button>
             <h2>Tutorial de Fluxionics</h2>
@@ -1497,7 +1514,7 @@
 
 
     <!-- Main Application -->
-    <div class="app-container" id="appContainer">
+    <div class="screen" id="appContainer">
         <!-- Header -->
         <header class="header">
             <div class="header-left">
@@ -1706,7 +1723,8 @@
                 
                 <div class="canvas-area" id="canvasArea">
                     <canvas id="circuitCanvas"></canvas>
-                    <div class="grid-overlay"></div>
+                    <!-- Grid overlay is handled by canvas drawing now, but keeping div for potential future use or fallback -->
+                    <!-- <div class="grid-overlay"></div> --> 
                 </div>
                 
                 <div class="status-bar">
@@ -1758,7 +1776,7 @@
                     <i class="fas fa-save"></i>
                     <span>Guardar Circuito</span>
                 </div>
-                <div class="menu-item" onclick="showCalFlux()">
+                <div class="menu-item" onclick="showScreen('calfluxSection')">
                     <i class="fas fa-table"></i>
                     <span>Cal Flux</span>
                 </div>
@@ -1796,6 +1814,7 @@
         let selectedComponentElement = null;
         let componentsCount = 0;
         let isSimulationRunning = false;
+        let simulationInterval;
         
         // Component data for properties panel
         const componentData = {
@@ -1834,64 +1853,34 @@
             'violet': '±0.1%', 'gray': '±0.05%', 'gold': '±5%', 'silver': '±10%'
         };
         
+        // --- Screen Management Functions ---
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
 
-        // Application Functions
-        function startApplication() {
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'flex';
-            document.getElementById('calfluxSection').style.display = 'none';
-            document.getElementById('tutorialSection').style.display = 'none';
-            initializeCanvas(); // Ensure canvas is initialized when app starts
-        }
-
-        function showCalFlux() {
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'none';
-            document.getElementById('tutorialSection').style.display = 'none';
-            document.getElementById('calfluxSection').style.display = 'block';
-            closeSidebar(); // Close sidebar if opened from menu
-            calculateResistance(); // Initialize resistor calculator
-        }
-
-        function hideCalFlux() {
-            // Determine which screen to go back to (startScreen or appContainer)
-            // If appContainer was visible before CalFlux, go back to it. Otherwise, go to startScreen.
-            const wasAppContainerVisible = document.getElementById('appContainer').style.display === 'flex';
-
-            document.getElementById('calfluxSection').style.display = 'none';
-            if (wasAppContainerVisible) {
-                document.getElementById('appContainer').style.display = 'flex';
-            } else {
-                document.getElementById('startScreen').style.display = 'flex';
+            // Show the requested screen
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                // Special handling for appContainer to initialize canvas
+                if (screenId === 'appContainer') {
+                    initializeCanvas();
+                }
+                // Special handling for calfluxSection to initialize calculator
+                if (screenId === 'calfluxSection') {
+                    calculateResistance();
+                }
             }
-            document.getElementById('tutorialSection').style.display = 'none';
+            // Close sidebars if open when switching screens
+            closeSidebar();
+            closePropertiesPanel();
         }
 
-        function showTutorial() {
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'none';
-            document.getElementById('calfluxSection').style.display = 'none';
-            document.getElementById('tutorialSection').style.display = 'block';
-            closeSidebar(); // Close sidebar if opened from menu
-        }
-        
-        function hideTutorial() {
-            // Determine which screen to go back to (startScreen or appContainer)
-            const wasAppContainerVisible = document.getElementById('appContainer').style.display === 'flex';
-
-            document.getElementById('tutorialSection').style.display = 'none';
-            if (wasAppContainerVisible) {
-                document.getElementById('appContainer').style.display = 'flex';
-            } else {
-                document.getElementById('startScreen').style.display = 'flex';
-            }
-            document.getElementById('calfluxSection').style.display = 'none';
-        }
-
-        // Canvas Functions
+        // --- Canvas & Grid Functions ---
         function initializeCanvas() {
             const canvas = document.getElementById('circuitCanvas');
-            // Ensure canvas exists before trying to get context
             if (!canvas) {
                 console.error("Canvas element not found!");
                 return;
@@ -1935,7 +1924,7 @@
             }
         }
 
-        // Tool Functions
+        // --- Tool Functions ---
         function selectTool(tool) {
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
@@ -1961,12 +1950,16 @@
             }
         }
 
-        // Component Functions
+        // --- Component Functions ---
         function selectComponent(type) {
             document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
             document.querySelector(`[data-component="${type}"]`).classList.add('selected');
             selectedComponentType = type;
             selectTool('select'); // Automatically switch to select tool after choosing a component
+            // On mobile, close sidebar after selecting a component
+            if (window.innerWidth <= 768) {
+                document.getElementById('componentsSidebar').classList.remove('open');
+            }
         }
         
         function placeComponent(x, y) {
@@ -1979,11 +1972,14 @@
             componentElement.setAttribute('data-component-type', selectedComponentType);
             componentElement.setAttribute('data-id', componentsCount);
             
-            // Snap to grid
+            // Snap to grid (20px grid size)
             const gridSize = 20;
-            // Adjust coordinates to snap to the center of a grid square
-            componentElement.style.left = `${Math.round(x / gridSize) * gridSize - (25)}px`; // 25 = half of component width (50px)
-            componentElement.style.top = `${Math.round(y / gridSize) * gridSize - (25)}px`; // 25 = half of component height (50px)
+            // Calculate top-left position to center the 50x50 component on the grid point
+            const snappedX = Math.round(x / gridSize) * gridSize - (50 / 2);
+            const snappedY = Math.round(y / gridSize) * gridSize - (50 / 2);
+
+            componentElement.style.left = `${snappedX}px`;
+            componentElement.style.top = `${snappedY}px`;
             
             // Icono del componente
             const icon = document.createElement('div');
@@ -2032,7 +2028,8 @@
             const panel = document.getElementById('propertiesPanel');
             const content = document.getElementById('propertiesContent');
             panel.style.display = 'block';
-            
+            panel.classList.add('open'); // For mobile slide-in
+
             const componentType = componentElement.getAttribute('data-component-type');
             const data = componentData[componentType];
             
@@ -2057,7 +2054,7 @@
             content.innerHTML = html;
         }
 
-        // Resistor Calculator Functions
+        // --- Resistor Calculator Functions ---
         function calculateResistance() {
             const band1Color = document.getElementById('band1').value;
             const band2Color = document.getElementById('band2').value;
@@ -2098,9 +2095,7 @@
         }
 
 
-        // Simulation Functions
-        let simulationInterval;
-
+        // --- Simulation Functions ---
         function toggleSimulation() {
             const playBtn = document.getElementById('playBtn');
             if (isSimulationRunning) {
@@ -2168,7 +2163,7 @@
             document.getElementById('temperatureDisplay').textContent = temperature + '°C';
         }
 
-        // Menu Functions
+        // --- Menu & Panel Functions ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebarMenu');
             sidebar.classList.toggle('open');
@@ -2176,22 +2171,34 @@
 
         function closeSidebar() {
             document.getElementById('sidebarMenu').classList.remove('open');
+            // Also close components sidebar if open on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('componentsSidebar').classList.remove('open');
+            }
         }
 
         function closePropertiesPanel() {
             document.getElementById('propertiesPanel').style.display = 'none';
+            document.getElementById('propertiesPanel').classList.remove('open'); // For mobile slide-out
         }
 
-        // File Functions
+        // --- File Functions ---
         function newCircuit() {
             // Using a custom confirmation instead of alert/confirm
             const confirmNew = window.confirm('¿Crear un nuevo circuito? Se perderán los cambios no guardados.');
             if (confirmNew) {
-                document.getElementById('canvasArea').innerHTML = '<canvas id="circuitCanvas"></canvas><div class="grid-overlay"></div>';
-                initializeCanvas(); // Re-initialize canvas after clearing
-                componentsCount = 0;
+                // Clear all placed components
+                const canvasArea = document.getElementById('canvasArea');
+                Array.from(canvasArea.children).forEach(child => {
+                    if (child.classList.contains('placed-component')) {
+                        child.remove();
+                    }
+                });
+                componentsCount = 0; // Reset component counter
                 closePropertiesPanel();
                 closeSidebar();
+                resetSimulation(); // Reset simulation values
+                initializeCanvas(); // Re-initialize canvas to redraw grid
             }
         }
 
@@ -2203,6 +2210,7 @@
             closeSidebar();
             // In a real app, you would add an event listener to 'input' for 'change' event
             // to read the file content and load the circuit.
+            alert('Función de abrir circuito pendiente.'); // Placeholder
         }
 
         function saveCircuit() {
@@ -2235,7 +2243,7 @@
         }
 
         function exportImage() {
-            exportCircuit();
+            exportCircuit(); // Reusing the same placeholder for image export
         }
         
         function exportXMLCircuit() {
@@ -2269,13 +2277,14 @@
             return xmlString;
         }
 
-        // Zoom Functions
+        // --- Zoom Functions ---
         function zoomIn() {
             const zoomLevel = document.querySelector('.zoom-level');
             let currentZoom = parseInt(zoomLevel.textContent);
             if (currentZoom < 200) {
                 currentZoom += 10;
                 zoomLevel.textContent = currentZoom + '%';
+                // Implement actual zoom on canvas/components here if needed
             }
         }
 
@@ -2285,10 +2294,11 @@
             if (currentZoom > 50) {
                 currentZoom -= 10;
                 zoomLevel.textContent = currentZoom + '%';
+                // Implement actual zoom on canvas/components here if needed
             }
         }
 
-        // Other Functions
+        // --- Other Functions (Placeholders) ---
         function showAnalysis() {
             alert('Análisis de circuitos próximamente disponible');
             closeSidebar();
@@ -2304,15 +2314,23 @@
             closeSidebar();
         }
 
-        // Protected Content Alert Functions
+        // --- Protected Content Alert Functions ---
         let alertTimeout;
         function showProtectedAlert(element, message = 'Contenido protegido') {
             const alertDiv = document.getElementById('protectedAlert');
-            const rect = element.getBoundingClientRect();
             
-            // Position the alert near the element
-            alertDiv.style.left = `${rect.left + rect.width / 2}px`;
-            alertDiv.style.top = `${rect.top - 30}px`; // Above the element
+            // For elements, position near them. For global (body), center it.
+            if (element && element !== document.body) {
+                const rect = element.getBoundingClientRect();
+                alertDiv.style.left = `${rect.left + rect.width / 2}px`;
+                alertDiv.style.top = `${rect.top - 30}px`; // Above the element
+                alertDiv.style.transform = 'translate(-50%, -50%)'; // Center horizontally
+            } else {
+                alertDiv.style.left = '50%';
+                alertDiv.style.top = '50%';
+                alertDiv.style.transform = 'translate(-50%, -50%)'; // Center globally
+            }
+
             alertDiv.textContent = message;
             alertDiv.classList.add('show');
 
@@ -2322,18 +2340,19 @@
             }, 1500); // Hide after 1.5 seconds
         }
 
-
-        // Event listeners
+        // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize resistor calculator on load
             calculateResistance();
 
+            // Event listener for component selection in sidebar
             document.querySelectorAll('.component-item').forEach(item => {
                 item.addEventListener('click', function() {
                     selectComponent(this.dataset.component);
                 });
             });
 
+            // Event listener for placing components on canvas area
             document.getElementById('canvasArea').addEventListener('click', (event) => {
                 // Get coordinates relative to the canvas area
                 const rect = event.currentTarget.getBoundingClientRect();
@@ -2345,15 +2364,16 @@
                 }
             });
             
+            // Event listener for clicking on empty canvas area to deselect
             document.getElementById('canvasArea').addEventListener('click', (event) => {
-                // If click is on the canvas area itself (not a placed component)
-                if (event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) {
+                // If click is on the canvas element itself or its parent container (canvasArea)
+                if (event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea') {
                     document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
                     closePropertiesPanel();
                 }
             });
 
-            // Search functionality
+            // Search functionality for components
             document.getElementById('componentSearch').addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase();
                 document.querySelectorAll('.component-item').forEach(item => {
@@ -2366,7 +2386,8 @@
                 });
             });
 
-            // Disable right-click context menu
+            // --- Protection Measures ---
+            // Disable right-click context menu globally
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 showProtectedAlert(e.target, 'Contenido protegido');
@@ -2394,9 +2415,14 @@
                     e.preventDefault();
                     showProtectedAlert(document.body, 'Contenido protegido');
                 }
+                // Ctrl+Shift+C (Cmd+Option+C on Mac) - Inspect Element
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+                    e.preventDefault();
+                    showProtectedAlert(document.body, 'Contenido protegido');
+                }
             });
 
-            // Add protected alert to logos on interaction
+            // Add protected alert to logos on interaction (mousedown)
             document.getElementById('mainLogo').addEventListener('mousedown', function(e) {
                 showProtectedAlert(e.target);
             });
@@ -2408,6 +2434,31 @@
             });
             document.querySelector('.app-subtitle').addEventListener('mousedown', function(e) {
                 showProtectedAlert(e.target);
+            });
+
+            // Aggressive debugger check (can be bypassed, but a deterrent)
+            // This will try to open dev tools if they are not already open and the user tries to interact.
+            // This is generally not recommended for production but requested by user.
+            let devtoolsAreOpen = false;
+            const checkDevTools = () => {
+                const threshold = 160; // Approximate threshold for dev tools height/width
+                if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+                    if (!devtoolsAreOpen) {
+                        showProtectedAlert(document.body, '¡Herramientas de desarrollador detectadas!');
+                        devtoolsAreOpen = true;
+                    }
+                } else {
+                    devtoolsAreOpen = false;
+                }
+            };
+            // Periodically check, but also on resize and focus changes
+            setInterval(checkDevTools, 500); // Check every half second
+            window.addEventListener('resize', checkDevTools);
+            window.addEventListener('focus', checkDevTools);
+            window.addEventListener('blur', () => {
+                // This might indicate dev tools opening in a new window or tab switch
+                // Give a slight delay to allow dev tools to open, then check
+                setTimeout(checkDevTools, 100);
             });
         });
     </script>
