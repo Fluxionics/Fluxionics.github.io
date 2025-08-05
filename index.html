@@ -311,7 +311,7 @@
             border-radius: 8px;
         }
 
-        .logo-text-container { /* New container for text and badge */
+        .logo-text-container { /* New container for text and beta badge */
             position: relative;
             display: flex;
             flex-direction: column; /* Stack beta on top of text */
@@ -622,8 +622,7 @@
             position: relative;
             overflow: auto; /* Allow scrolling for canvas area */
             -webkit-overflow-scrolling: touch; /* For smoother iOS scrolling */
-            /* Ensure it takes full height on mobile to allow scrolling */
-            min-height: 100vh; /* Set a large enough min-height to ensure scrollability on mobile */
+            /* No min-height here, rely on circuitCanvas size for scrollability */
         }
         
         .placed-component {
@@ -685,23 +684,25 @@
         }
 
         .placed-component:hover .component-pin,
-        .tool-btn[data-tool="wire"].active ~ .canvas-area .placed-component .component-pin {
+        .tool-btn[data-tool="wire"].active ~ .canvas-area .placed-component .component-pin,
+        .component-pin.selected-for-wire { /* Always show selected wire pin */
             opacity: 1; /* Show pins on hover or when wire tool is active */
         }
 
-        /* Pin positioning */
-        .pin-top { top: -5px; left: 50%; transform: translateX(-50%); }
-        .pin-right { top: 50%; right: -5px; transform: translateY(-50%); }
-        .pin-bottom { bottom: -5px; left: 50%; transform: translateX(-50%); }
-        .pin-left { top: 50%; left: -5px; transform: translateY(-50%); }
-
+        /* Pin positioning - relative to 50x50 component */
+        /* 2-pin components (left/right) */
+        .pin-left-side { top: 50%; left: -5px; transform: translateY(-50%); }
+        .pin-right-side { top: 50%; right: -5px; transform: translateY(-50%); }
+        /* 4-pin components (top/right/bottom/left) */
+        .pin-top-side { top: -5px; left: 50%; transform: translateX(-50%); }
+        .pin-bottom-side { bottom: -5px; left: 50%; transform: translateX(-50%); }
+        
         .component-pin.selected-for-wire {
             background-color: #00d4ff; /* Highlight color for selected start pin */
             box-shadow: 0 0 10px #00d4ff;
         }
         
         #circuitCanvas {
-            /* This canvas will now be explicitly large to force scrolling */
             background: 
                 radial-gradient(circle at 20px 20px, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
                 radial-gradient(circle at 0px 0px, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
@@ -710,17 +711,24 @@
             top: 0;
             left: 0;
             z-index: 1; /* Ensure canvas is behind components */
+            transform-origin: 0 0; /* Set transform origin to top-left for scaling */
         }
 
         /* Scroll Arrows for Mobile (Global positioning) */
         .scroll-arrows {
             position: fixed;
             right: 10px;
-            bottom: 80px; /* Adjust based on status bar height */
+            bottom: 10px; /* Adjust based on status bar height */
             display: none; /* Hidden by default, shown on mobile via JS */
             flex-direction: column;
             gap: 10px;
             z-index: 1000;
+        }
+
+        .scroll-arrow-row {
+            display: flex;
+            justify-content: flex-end; /* Align right */
+            gap: 10px;
         }
 
         .scroll-arrow-btn {
@@ -2004,9 +2012,17 @@
                     <i class="fas fa-file-export"></i>
                     <span>Exportar a XML</span>
                 </div>
+                <div class="menu-item" onclick="exportSPICECircuit()">
+                    <i class="fas fa-file-code"></i>
+                    <span>Exportar a SPICE</span>
+                </div>
                 <div class="menu-item" onclick="showAnalysis()">
                     <i class="fas fa-chart-line"></i>
                     <span>Análisis</span>
+                </div>
+                <div class="menu-item" onclick="showTemplates()">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Plantillas</span>
                 </div>
                 <div class="menu-item" onclick="showSettings()">
                     <i class="fas fa-cog"></i>
@@ -2022,18 +2038,24 @@
 
     <!-- Scroll Arrows (for mobile) - Moved outside appContainer -->
     <div class="scroll-arrows" id="scrollArrows">
-        <button class="scroll-arrow-btn" onclick="scrollCanvas('up')">
-            <i class="fas fa-chevron-up"></i>
-        </button>
-        <button class="scroll-arrow-btn" onclick="scrollCanvas('down')">
-            <i class="fas fa-chevron-down"></i>
-        </button>
-        <button class="scroll-arrow-btn" onclick="scrollCanvas('left')">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="scroll-arrow-btn" onclick="scrollCanvas('right')">
-            <i class="fas fa-chevron-right"></i>
-        </button>
+        <div class="scroll-arrow-row">
+            <button class="scroll-arrow-btn" onclick="scrollCanvas('up')">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+        <div class="scroll-arrow-row">
+            <button class="scroll-arrow-btn" onclick="scrollCanvas('left')">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="scroll-arrow-btn" onclick="scrollCanvas('right')">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="scroll-arrow-row">
+            <button class="scroll-arrow-btn" onclick="scrollCanvas('down')">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Protected Content Alert -->
@@ -2069,33 +2091,58 @@
         let circuitCtx = null;
         const CANVAS_WIDTH = 3000; // Large fixed width for scrollable canvas
         const CANVAS_HEIGHT = 3000; // Large fixed height for scrollable canvas
+        let currentZoom = 1.0; // Initial zoom level
 
         // Wire drawing variables
         let startPin = null; // { componentId, pinId, x, y }
         let connections = []; // Array of { startPin: {comp, pin}, endPin: {comp, pin} }
 
-        // Component data for properties panel
+        // Component data for properties and pins
+        // 'pins' array defines the logical pins for each component.
+        // The CSS classes (e.g., 'pin-left-side') map these logical pins to visual positions.
         const componentData = {
-            'resistor': { name: 'Resistor', properties: { value: '1kΩ', tolerance: '5%', power: '0.25W' }, icon: 'R' },
-            'capacitor': { name: 'Capacitor', properties: { value: '100µF', voltage: '25V' }, icon: 'C' },
-            'inductor': { name: 'Inductor', properties: { value: '10mH' }, icon: 'L' },
-            'battery': { name: 'Batería', properties: { voltage: '9V' }, icon: 'BAT' },
-            'switch': { name: 'Switch', properties: { state: 'Abierto' }, icon: 'SW' },
-            'ground': { name: 'Tierra', properties: {}, icon: 'GND' },
-            'voltage-source': { name: 'Fuente de Voltaje', properties: { value: '5V' }, icon: 'V' },
-            'current-source': { name: 'Fuente de Corriente', properties: { value: '1A' }, icon: 'I' },
-            'motor': { name: 'Motor', properties: { speed: '1000 RPM' }, icon: 'M' },
-            'diode': { name: 'Diodo', properties: { type: 'Rectificador' }, icon: 'D' },
-            'led': { name: 'LED', properties: { color: 'Rojo' }, icon: 'LED' },
-            'transistor': { name: 'Transistor', properties: { type: 'NPN' }, icon: 'Q' },
-            'mosfet': { name: 'MOSFET', properties: { type: 'N-Channel' }, icon: 'M' },
-            'opamp': { name: 'Op-Amp', properties: { model: 'LM741' }, icon: 'U' },
-            'timer555': { name: 'Timer 555', properties: { mode: 'Astable' }, icon: '555' },
-            'arduino': { name: 'Arduino', properties: { model: 'UNO' }, icon: 'ARD' },
-            'thermistor': { name: 'Termistor', properties: { temp: '25°C' }, icon: 'TH' },
-            'photoresistor': { name: 'LDR', properties: { light: '50%' }, icon: 'LDR' },
-            'ultrasonic': { name: 'Ultrasónico', properties: { range: '10cm' }, icon: 'US' },
+            'resistor': { name: 'Resistor', properties: { value: '1kΩ', tolerance: '5%', power: '0.25W' }, icon: 'R', pins: ['left', 'right'] },
+            'capacitor': { name: 'Capacitor', properties: { value: '100µF', voltage: '25V' }, icon: 'C', pins: ['left', 'right'] },
+            'inductor': { name: 'Inductor', properties: { value: '10mH' }, icon: 'L', pins: ['left', 'right'] },
+            'battery': { name: 'Batería', properties: { voltage: '9V' }, icon: 'BAT', pins: ['positive', 'negative'] }, // Specific pin names
+            'switch': { name: 'Switch', properties: { state: 'Abierto' }, icon: 'SW', pins: ['in', 'out'] }, // Specific pin names
+            'ground': { name: 'Tierra', properties: {}, icon: 'GND', pins: ['main'] }, // Single pin
+            'voltage-source': { name: 'Fuente de Voltaje', properties: { value: '5V' }, icon: 'V', pins: ['positive', 'negative'] },
+            'current-source': { name: 'Fuente de Corriente', properties: { value: '1A' }, icon: 'I', pins: ['in', 'out'] },
+            'motor': { name: 'Motor', properties: { speed: '1000 RPM' }, icon: 'M', pins: ['A', 'B'] },
+            'diode': { name: 'Diodo', properties: { type: 'Rectificador' }, icon: 'D', pins: ['anode', 'cathode'] },
+            'led': { name: 'LED', properties: { color: 'Rojo' }, icon: 'LED', pins: ['anode', 'cathode'] },
+            'transistor': { name: 'Transistor', properties: { type: 'NPN' }, icon: 'Q', pins: ['base', 'collector', 'emitter'] }, // 3 pins
+            'mosfet': { name: 'MOSFET', properties: { type: 'N-Channel' }, icon: 'M', pins: ['gate', 'drain', 'source'] }, // 3 pins
+            'opamp': { name: 'Op-Amp', properties: { model: 'LM741' }, icon: 'U', pins: ['inverting', 'non-inverting', 'output', 'vcc+', 'vcc-'] }, // More pins
+            'timer555': { name: 'Timer 555', properties: { mode: 'Astable' }, icon: '555', pins: ['pin1', 'pin2', 'pin3', 'pin4', 'pin5', 'pin6', 'pin7', 'pin8'] }, // 8 pins
+            'arduino': { name: 'Arduino', properties: { model: 'UNO' }, icon: 'ARD', pins: ['D0', 'D1', 'A0', 'GND', '5V', '3.3V'] }, // Example pins
+            'thermistor': { name: 'Termistor', properties: { temp: '25°C' }, icon: 'TH', pins: ['left', 'right'] },
+            'photoresistor': { name: 'LDR', properties: { light: '50%' }, icon: 'LDR', pins: ['left', 'right'] },
+            'ultrasonic': { name: 'Ultrasónico', properties: { range: '10cm' }, icon: 'US', pins: ['vcc', 'gnd', 'trig', 'echo'] }, // 4 pins
         };
+
+        // Mapping logical pin names to visual CSS classes for 2-pin components
+        const twoPinVisualMap = {
+            'left': 'pin-left-side',
+            'right': 'pin-right-side',
+            'positive': 'pin-left-side', // For batteries/sources
+            'negative': 'pin-right-side',
+            'in': 'pin-left-side',
+            'out': 'pin-right-side',
+            'anode': 'pin-left-side',
+            'cathode': 'pin-right-side',
+            'main': 'pin-bottom-side' // For ground
+        };
+
+        // For components with more than 2 pins, we'll try to distribute them
+        const multiPinVisualPositions = {
+            3: ['pin-left-side', 'pin-top-side', 'pin-right-side'], // Example for transistor
+            4: ['pin-top-side', 'pin-right-side', 'pin-bottom-side', 'pin-left-side'], // Common for 4-pin ICs
+            8: ['pin-top-side', 'pin-right-side', 'pin-right-side', 'pin-bottom-side', 'pin-bottom-side', 'pin-left-side', 'pin-left-side', 'pin-top-side'], // Simplified for 8-pin ICs
+            // Add more specific mappings if needed for other pin counts
+        };
+
 
         // Resistor color code values
         const colorValues = {
@@ -2167,6 +2214,9 @@
             circuitCanvas.width = CANVAS_WIDTH;
             circuitCanvas.height = CANVAS_HEIGHT;
             
+            // Apply initial zoom
+            applyZoom();
+
             // Draw grid initially
             drawGrid();
             // Redraw wires when canvas is initialized or resized
@@ -2175,7 +2225,8 @@
 
         function drawGrid() {
             if (!circuitCtx) return;
-            circuitCtx.clearRect(0, 0, circuitCanvas.width, circuitCanvas.height); // Clear previous grid
+            // Clear the canvas before redrawing everything
+            circuitCtx.clearRect(0, 0, circuitCanvas.width, circuitCanvas.height); 
             circuitCtx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
             circuitCtx.lineWidth = 0.5;
             
@@ -2198,12 +2249,10 @@
 
         function drawWires() {
             if (!circuitCtx) return;
-            // Clear only wires, not the grid. Or redraw grid then wires.
-            // For simplicity, let's redraw everything for now.
-            drawGrid(); // Redraw grid first
+            drawGrid(); // Redraw grid first to clear old wires
             
             circuitCtx.strokeStyle = '#FFFFFF'; // White wires
-            circuitCtx.lineWidth = 2;
+            circuitCtx.lineWidth = 2 / currentZoom; // Adjust line width for zoom
             
             connections.forEach(conn => {
                 const startComp = document.querySelector(`.placed-component[data-id="${conn.startPin.componentId}"]`);
@@ -2223,38 +2272,80 @@
             });
         }
 
-        function getPinCoordinates(componentElement, pinId) {
-            // These coordinates are relative to the component's parent (canvasArea),
-            // which is what the canvas drawing needs.
-            const compX = componentElement.offsetLeft; 
-            const compY = componentElement.offsetTop;
+        function getPinCoordinates(componentElement, pinLogicalId) {
+            const compX = parseFloat(componentElement.style.left); 
+            const compY = parseFloat(componentElement.style.top);
 
             const compWidth = componentElement.offsetWidth;
             const compHeight = componentElement.offsetHeight;
 
             let x, y;
 
-            // Calculate pin position relative to the component's top-left
-            switch (pinId) {
-                case 'top':
-                    x = compX + compWidth / 2;
-                    y = compY;
-                    break;
-                case 'right':
-                    x = compX + compWidth;
-                    y = compY + compHeight / 2;
-                    break;
-                case 'bottom':
-                    x = compX + compWidth / 2;
-                    y = compY + compHeight;
-                    break;
-                case 'left':
+            // Determine visual position based on logical pin ID
+            // This is a simplified mapping. For real pin-outs, you'd need more complex logic.
+            const componentType = componentElement.getAttribute('data-component-type');
+            const componentPinInfo = componentData[componentType].pins;
+            const pinIndex = componentPinInfo.indexOf(pinLogicalId);
+
+            // Default to 2-pin layout if not a multi-pin component or specific mapping
+            if (componentPinInfo.length <= 2) {
+                if (pinLogicalId === 'left' || pinLogicalId === 'positive' || pinLogicalId === 'in' || pinLogicalId === 'anode') {
                     x = compX;
                     y = compY + compHeight / 2;
-                    break;
-                default:
-                    return null;
+                } else if (pinLogicalId === 'right' || pinLogicalId === 'negative' || pinLogicalId === 'out' || pinLogicalId === 'cathode') {
+                    x = compX + compWidth;
+                    y = compY + compHeight / 2;
+                } else if (pinLogicalId === 'main') { // For ground
+                    x = compX + compWidth / 2;
+                    y = compY + compHeight;
+                }
+            } else if (componentPinInfo.length === 3) { // For 3-pin components (transistor, mosfet)
+                if (pinIndex === 0) { // Base/Gate (left)
+                    x = compX;
+                    y = compY + compHeight / 2;
+                } else if (pinIndex === 1) { // Collector/Drain (top)
+                    x = compX + compWidth / 2;
+                    y = compY;
+                } else if (pinIndex === 2) { // Emitter/Source (right)
+                    x = compX + compWidth;
+                    y = compY + compHeight / 2;
+                }
+            } else if (componentPinInfo.length === 4) { // For 4-pin components (ultrasonic)
+                 if (pinIndex === 0) { // Top
+                    x = compX + compWidth / 2;
+                    y = compY;
+                } else if (pinIndex === 1) { // Right
+                    x = compX + compWidth;
+                    y = compY + compHeight / 2;
+                } else if (pinIndex === 2) { // Bottom
+                    x = compX + compWidth / 2;
+                    y = compY + compHeight;
+                } else if (pinIndex === 3) { // Left
+                    x = compX;
+                    y = compY + compHeight / 2;
+                }
+            } else { // Generic distribution for more pins (Op-Amp, Timer 555, Arduino)
+                // Distribute pins around the perimeter. This is a simplification.
+                const numPins = componentPinInfo.length;
+                const pinsPerSide = Math.ceil(numPins / 4); // Distribute roughly evenly
+                
+                // For simplicity, let's just map them sequentially around the perimeter
+                // This is a very basic visual representation and might not match actual IC layouts
+                if (pinIndex < pinsPerSide) { // Top side
+                    x = compX + (compWidth / (pinsPerSide + 1)) * (pinIndex + 1);
+                    y = compY;
+                } else if (pinIndex < 2 * pinsPerSide) { // Right side
+                    x = compX + compWidth;
+                    y = compY + (compHeight / (pinsPerSide + 1)) * (pinIndex - pinsPerSide + 1);
+                } else if (pinIndex < 3 * pinsPerSide) { // Bottom side
+                    x = compX + compWidth - (compWidth / (pinsPerSide + 1)) * (pinIndex - 2 * pinsPerSide + 1);
+                    y = compY + compHeight;
+                } else { // Left side
+                    x = compX;
+                    y = compY + compHeight - (compHeight / (pinsPerSide + 1)) * (pinIndex - 3 * pinsPerSide + 1);
+                }
             }
+            
             return { x: x, y: y };
         }
 
@@ -2355,9 +2446,9 @@
             const canvasArea = document.getElementById('canvasArea');
             const canvasRect = canvasArea.getBoundingClientRect();
 
-            // Calculate new position relative to canvasArea's scroll position
-            let newX = (clientX - canvasRect.left + canvasArea.scrollLeft) - dragOffsetX;
-            let newY = (clientY - canvasRect.top + canvasArea.scrollTop) - dragOffsetY;
+            // Calculate new position relative to canvasArea's scroll position, adjusted for zoom
+            let newX = ((clientX - canvasRect.left) / currentZoom + canvasArea.scrollLeft) - dragOffsetX;
+            let newY = ((clientY - canvasRect.top) / currentZoom + canvasArea.scrollTop) - dragOffsetY;
 
             // Snap to grid
             newX = Math.round(newX / gridSize) * gridSize;
@@ -2414,10 +2505,14 @@
             componentElement.setAttribute('data-component-type', type); // Use 'type' here
             componentElement.setAttribute('data-id', componentId); // Unique ID for each component
             
+            // Adjust coordinates for zoom before snapping to grid
+            const adjustedX = x / currentZoom;
+            const adjustedY = y / currentZoom;
+
             // Snap to grid (20px grid size)
             // Calculate top-left position to center the 50x50 component on the grid point
-            const snappedX = Math.round(x / gridSize) * gridSize - (50 / 2);
-            const snappedY = Math.round(y / gridSize) * gridSize - (50 / 2);
+            const snappedX = Math.round(adjustedX / gridSize) * gridSize - (50 / 2);
+            const snappedY = Math.round(adjustedY / gridSize) * gridSize - (50 / 2);
 
             componentElement.style.left = `${snappedX}px`;
             componentElement.style.top = `${snappedY}px`;
@@ -2428,15 +2523,35 @@
             icon.textContent = componentData[type].icon; // Use 'type' here
             componentElement.appendChild(icon);
 
-            // Add pins to the component
+            // Add pins to the component dynamically based on componentData
             const pinsContainer = document.createElement('div');
             pinsContainer.classList.add('component-pins');
-            ['top', 'right', 'bottom', 'left'].forEach(pinId => {
+            const componentPins = componentData[type].pins;
+
+            componentPins.forEach((pinLogicalId, index) => {
                 const pin = document.createElement('div');
-                pin.classList.add('component-pin', `pin-${pinId}`);
-                pin.setAttribute('data-pin-id', pinId);
+                pin.classList.add('component-pin');
+                pin.setAttribute('data-pin-id', pinLogicalId); // Store logical pin ID
                 pin.setAttribute('data-component-id', componentId); // Link pin to its component
                 pin.addEventListener('click', handlePinClick); // Add click listener for wiring
+
+                // Apply visual positioning based on pin count
+                if (componentPins.length <= 2) {
+                    pin.classList.add(twoPinVisualMap[pinLogicalId]);
+                } else {
+                    // For more complex components, distribute pins visually
+                    // This is a simplified distribution for demo purposes
+                    const visualClass = multiPinVisualPositions[componentPins.length] ? multiPinVisualPositions[componentPins.length][index] : null;
+                    if (visualClass) {
+                        pin.classList.add(visualClass);
+                    } else {
+                        // Fallback for unexpected pin counts, e.g., distribute around perimeter
+                        if (index % 4 === 0) pin.classList.add('pin-top-side');
+                        else if (index % 4 === 1) pin.classList.add('pin-right-side');
+                        else if (index % 4 === 2) pin.classList.add('pin-bottom-side');
+                        else pin.classList.add('pin-left-side');
+                    }
+                }
                 pinsContainer.appendChild(pin);
             });
             componentElement.appendChild(pinsContainer);
@@ -2528,15 +2643,13 @@
 
             const clickedPin = event.target;
             const componentId = clickedPin.getAttribute('data-component-id');
-            const pinId = clickedPin.getAttribute('data-pin-id');
+            const pinLogicalId = clickedPin.getAttribute('data-pin-id'); // Use logical pin ID
 
             if (!startPin) {
                 // First pin clicked, set as start
                 startPin = { 
                     componentId: componentId, 
-                    pinId: pinId,
-                    x: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).x,
-                    y: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).y
+                    pinId: pinLogicalId, // Store logical pin ID
                 };
                 clickedPin.classList.add('selected-for-wire'); // Highlight the selected start pin
                 console.log('Start pin selected:', startPin);
@@ -2544,22 +2657,27 @@
                 // Second pin clicked, complete the connection
                 const endPin = { 
                     componentId: componentId, 
-                    pinId: pinId,
-                    x: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).x,
-                    y: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).y
+                    pinId: pinLogicalId, // Store logical pin ID
                 };
 
-                // Prevent connecting a pin to itself or to another pin on the same component (for simple demo)
-                if (startPin.componentId === endPin.componentId && startPin.pinId === endPin.pinId) {
-                    showModal('Conexión Inválida', 'No puedes conectar un pin a sí mismo o a otro pin en el mismo componente.');
-                    // Remove highlight from previous start pin
-                    const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
-                    if (prevSelectedPin) {
-                        prevSelectedPin.classList.remove('selected-for-wire');
-                    }
+                // Remove highlight from previous start pin
+                const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
+                if (prevSelectedPin) {
+                    prevSelectedPin.classList.remove('selected-for-wire');
+                }
+
+                // Prevent connecting a pin to itself or to another pin on the same component
+                if (startPin.componentId === endPin.componentId) {
+                    showModal('Conexión Inválida', 'No puedes conectar dos pines del mismo componente.');
                     startPin = null; // Reset
                     return;
                 }
+                if (startPin.componentId === endPin.componentId && startPin.pinId === endPin.pinId) {
+                    showModal('Conexión Inválida', 'No puedes conectar un pin a sí mismo.');
+                    startPin = null; // Reset
+                    return;
+                }
+
 
                 // Check for duplicate connections (simple check, could be more robust)
                 const isDuplicate = connections.some(conn => 
@@ -2571,11 +2689,6 @@
 
                 if (isDuplicate) {
                     showModal('Conexión Existente', 'Esta conexión ya existe.');
-                    // Remove highlight from previous start pin
-                    const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
-                    if (prevSelectedPin) {
-                        prevSelectedPin.classList.remove('selected-for-wire');
-                    }
                     startPin = null; // Reset
                     return;
                 }
@@ -2583,11 +2696,6 @@
                 connections.push({ startPin: startPin, endPin: endPin });
                 console.log('Connection established:', connections[connections.length - 1]);
                 drawWires(); // Redraw all wires
-                // Remove highlight from previous start pin
-                const prevSelectedPin = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
-                if (prevSelectedPin) {
-                    prevSelectedPin.classList.remove('selected-for-wire');
-                }
                 startPin = null; // Reset for next connection
             }
         }
@@ -2755,6 +2863,7 @@
                 id: comp.getAttribute('data-id'),
                 x: comp.style.left,
                 y: comp.style.top,
+                // In a real app, you'd also save properties from the panel
             }));
             
             const data = {
@@ -2846,26 +2955,138 @@
             return xmlString;
         }
 
+        function exportSPICECircuit() {
+            const components = Array.from(document.querySelectorAll('.placed-component'));
+            let spiceNetlist = "* Fluxionics SPICE Netlist\n\n";
+
+            // Define voltage sources (V) and ground (0)
+            const voltageSources = components.filter(c => c.getAttribute('data-component-type') === 'voltage-source' || c.getAttribute('data-component-type') === 'battery');
+            const grounds = components.filter(c => c.getAttribute('data-component-type') === 'ground');
+
+            // Map component IDs to node names (simplified: use component ID as node name)
+            // In a real SPICE export, you'd map pins to unique node numbers.
+            const componentNodeMap = new Map();
+            let nodeCounter = 1;
+            components.forEach(comp => {
+                componentNodeMap.set(comp.getAttribute('data-id'), `N${nodeCounter++}`);
+            });
+            grounds.forEach(gnd => componentNodeMap.set(gnd.getAttribute('data-id'), '0')); // Ground node is '0'
+
+            // Add components to netlist
+            components.forEach(comp => {
+                const type = comp.getAttribute('data-component-type');
+                const id = comp.getAttribute('data-id');
+                const properties = componentData[type].properties;
+                const pins = componentData[type].pins;
+
+                // For simplicity, connect pins to a single node associated with the component.
+                // A real SPICE netlist needs each pin to connect to a distinct node.
+                // This is a placeholder for the structure.
+                let node1 = componentNodeMap.get(id);
+                let node2 = '0'; // Default to ground for components with one connection point
+
+                if (pins.length >= 2) {
+                    // For 2-pin components, assume connection between two nodes
+                    // This is highly simplified and needs actual pin-to-node mapping
+                    node1 = componentNodeMap.get(id) + '_P1'; // Placeholder for pin-specific nodes
+                    node2 = componentNodeMap.get(id) + '_P2';
+                }
+
+                switch (type) {
+                    case 'resistor':
+                        spiceNetlist += `R${id} ${node1} ${node2} ${properties.value}\n`;
+                        break;
+                    case 'capacitor':
+                        spiceNetlist += `C${id} ${node1} ${node2} ${properties.value}\n`;
+                        break;
+                    case 'inductor':
+                        spiceNetlist += `L${id} ${node1} ${node2} ${properties.value}\n`;
+                        break;
+                    case 'battery':
+                    case 'voltage-source':
+                        spiceNetlist += `V${id} ${node1} ${node2} DC ${properties.voltage}\n`;
+                        break;
+                    case 'diode':
+                        spiceNetlist += `D${id} ${node1} ${node2} Dmodel\n`; // Dmodel needs to be defined
+                        break;
+                    case 'led':
+                        spiceNetlist += `D${id} ${node1} ${node2} LEDmodel\n`; // LEDmodel needs to be defined
+                        break;
+                    case 'ground':
+                        // Ground is implicitly handled by node '0'
+                        break;
+                    // Add more component types as needed
+                    default:
+                        spiceNetlist += `* Unsupported component: ${type} (ID: ${id})\n`;
+                }
+            });
+
+            // Add connections (wires) to netlist - this is the most complex part for SPICE
+            // For a basic demo, we'll just list them as comments.
+            // A real implementation would involve graph traversal to assign common node numbers.
+            connections.forEach((conn, index) => {
+                spiceNetlist += `* W${index+1} connects ${conn.startPin.componentId}:${conn.startPin.pinId} to ${conn.endPin.componentId}:${conn.endPin.pinId}\n`;
+            });
+
+            // Add models (basic examples)
+            spiceNetlist += "\n.MODEL Dmodel D\n";
+            spiceNetlist += ".MODEL LEDmodel D (IS=10f RS=10 N=1.7 BV=5 IBV=10u CJO=2p TT=10n)\n"; // Example LED model
+
+            spiceNetlist += ".END\n";
+
+            const blob = new Blob([spiceNetlist], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'circuito_fluxionics.cir';
+            a.click();
+            URL.revokeObjectURL(url);
+            closeSidebar();
+            showModal('Exportar a SPICE', '<p>Se ha generado un archivo SPICE (.cir) básico. Ten en cuenta que la exportación SPICE es una función avanzada y la precisión dependerá de la complejidad del circuito y los modelos de componentes.</p><p>Para simulaciones profesionales, se requiere un software SPICE completo.</p>');
+        }
+
+
         // --- Zoom Functions ---
+        function applyZoom() {
+            if (circuitCanvas) {
+                // Scale the canvas element itself for visual effect and scrollability
+                circuitCanvas.style.transform = `scale(${currentZoom})`;
+                // When scaling the canvas element, its effective size for scrollbars changes.
+                // We need to make the parent container (canvasArea) "think" the canvas is larger.
+                // This is often done by setting the canvas's width/height attributes to the scaled dimensions
+                // and then drawing everything at the original scale. Or, by setting the CSS width/height
+                // and keeping the internal drawing resolution high.
+                // For simplicity, we'll just scale the element and adjust coordinates.
+                
+                // When scaling the canvas element, the scrollable area needs to reflect the scaled size.
+                // This is a bit tricky. A common approach is to set the canvas's CSS dimensions
+                // to its *scaled* size, while keeping its internal `width` and `height` attributes
+                // (which define the drawing buffer) at their original high resolution.
+                // Then, in `drawWires`, you'd scale the context.
+
+                // For now, let's keep the canvas attributes fixed and just scale the CSS transform.
+                // The `canvasArea`'s `overflow: auto` will create scrollbars for the large `circuitCanvas`.
+                // The key is to adjust mouse coordinates and component positions by `currentZoom`.
+            }
+            // Update zoom level display
+            document.querySelector('.zoom-level').textContent = `${Math.round(currentZoom * 100)}%`;
+            // Redraw wires to adjust their thickness based on new zoom
+            drawWires();
+        }
+
         function zoomIn() {
-            const zoomLevel = document.querySelector('.zoom-level');
-            let currentZoom = parseInt(zoomLevel.textContent);
-            if (currentZoom < 200) {
-                currentZoom += 10;
-                zoomLevel.textContent = currentZoom + '%';
-                // Implement actual zoom on canvas/components here if needed
-                // For a fixed-size canvas, zooming would involve scaling the canvas context or components' CSS transform
-                // For now, it's just a display value.
+            if (currentZoom < 2.0) { // Max zoom 200%
+                currentZoom += 0.1;
+                currentZoom = parseFloat(currentZoom.toFixed(1)); // Avoid floating point inaccuracies
+                applyZoom();
             }
         }
 
         function zoomOut() {
-            const zoomLevel = document.querySelector('.zoom-level');
-            let currentZoom = parseInt(zoomLevel.textContent);
-            if (currentZoom > 50) {
-                currentZoom -= 10;
-                zoomLevel.textContent = currentZoom + '%';
-                // Implement actual zoom on canvas/components here if needed
+            if (currentZoom > 0.5) { // Min zoom 50%
+                currentZoom -= 0.1;
+                currentZoom = parseFloat(currentZoom.toFixed(1)); // Avoid floating point inaccuracies
+                applyZoom();
             }
         }
 
@@ -2921,14 +3142,33 @@
         // --- Other Functions (Implementations) ---
         function showAnalysis() {
             showModal('Análisis de Circuitos', `
-                <h3>Análisis de Circuitos</h3>
-                <p>Esta sección te permitirá realizar análisis avanzados de tu circuito, como:</p>
+                <h3>Análisis de Circuitos Avanzado</h3>
+                <p>Esta sección te permitirá realizar análisis más profundos de tu circuito, incluyendo:</p>
                 <ul>
-                    <li><strong>Análisis DC:</strong> Calcular voltajes y corrientes en estado estacionario.</li>
-                    <li><strong>Análisis AC:</strong> Estudiar el comportamiento del circuito con señales alternas.</li>
-                    <li><strong>Análisis Transitorio:</strong> Observar cómo cambian los voltajes y corrientes con el tiempo.</li>
+                    <li><strong>Análisis DC:</strong> Para calcular voltajes y corrientes en estado estacionario.</li>
+                    <li><strong>Análisis AC:</strong> Para estudiar el comportamiento del circuito con señales alternas (respuesta en frecuencia).</li>
+                    <li><strong>Análisis Transitorio:</strong> Para observar cómo cambian los voltajes y corrientes con el tiempo.</li>
+                    <li><strong>Análisis de Monte Carlo y Peor Caso:</strong> Para evaluar la robustez del diseño frente a variaciones de componentes.</li>
                 </ul>
-                <p>Actualmente, esta funcionalidad está en desarrollo. ¡Pronto podrás desbloquear todo el potencial de tu diseño!</p>
+                <p>Además, se integrará un <strong>Panel de Instrumentos</strong> con osciloscopio y analizador de espectro virtuales.</p>
+                <p>Actualmente, estas funcionalidades están en desarrollo y requieren un motor de simulación más robusto. ¡Pronto podrás desbloquear todo el potencial de tu diseño!</p>
+                <h4>Validación de Diseño</h4>
+                <p>También se implementará la verificación de reglas de diseño para asegurar la validez de tus circuitos.</p>
+            `);
+            closeSidebar();
+        }
+
+        function showTemplates() {
+            showModal('Plantillas de Circuitos', `
+                <h3>Plantillas de Circuitos Predefinidos</h3>
+                <p>Esta sección contendrá una biblioteca de circuitos comunes y ejemplos predefinidos para ayudarte a empezar rápidamente o aprender sobre diferentes configuraciones.</p>
+                <ul>
+                    <li>Filtros (Pasa-bajos, Pasa-altos)</li>
+                    <li>Amplificadores Operacionales básicos</li>
+                    <li>Osciladores</li>
+                    <li>Circuitos lógicos simples</li>
+                </ul>
+                <p>¡Próximamente podrás cargar y modificar estas plantillas para tus propios proyectos!</p>
             `);
             closeSidebar();
         }
@@ -2942,6 +3182,7 @@
                     <li><strong>Idioma:</strong> Seleccionar el idioma de la interfaz.</li>
                     <li><strong>Tamaño de Cuadrícula:</strong> Ajustar el tamaño de la cuadrícula en el lienzo.</li>
                     <li><strong>Opciones de Simulación:</strong> Configurar la velocidad de simulación y la precisión.</li>
+                    <li><strong>Capas y Organización:</strong> Gestionar capas para circuitos complejos.</li>
                 </ul>
                 <p>¡Mantente atento a las próximas actualizaciones para estas características!</p>
             `);
@@ -2964,6 +3205,9 @@
                     <li><strong>¿Por qué mi simulación muestra un cortocircuito?</strong> Un cortocircuito ocurre cuando la corriente puede fluir sin resistencia, a menudo conectando directamente una fuente de voltaje a tierra sin una carga. Revisa tus conexiones.</li>
                 </ul>
 
+                <h4>Documentación Profesional</h4>
+                <p>Para información detallada sobre modelos de componentes, análisis avanzado y formatos estándar (como SPICE, Eagle, KiCad), consulta nuestra documentación completa (próximamente).</p>
+                
                 <h4>Soporte Técnico</h4>
                 <p>Si no encuentras lo que buscas, por favor contacta a nuestro equipo de soporte en <a href="mailto:soporte@fluxionics.com">soporte@fluxionics.com</a>. ¡Estamos aquí para ayudarte!</p>
             `);
@@ -3092,8 +3336,9 @@
                     const componentType = e.dataTransfer.getData('text/plain');
                     if (componentType && currentTool === 'select') {
                         const rect = canvasArea.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
+                        // Adjust coordinates for zoom when dropping
+                        const x = (e.clientX - rect.left) / currentZoom;
+                        const y = (e.clientY - rect.top) / currentZoom;
                         placeComponent(x, y, componentType); // Pass the type
                         // No need to reset selectedComponentTypeForPlacement here as it's for mobile
                         document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected')); // Visual cleanup
@@ -3215,4 +3460,3 @@
     </script>
 </body>
 </html>
-
