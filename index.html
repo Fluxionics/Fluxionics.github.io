@@ -6,6 +6,8 @@
     <title>Fluxionics - Simulador Profesional de Circuitos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- html2canvas for image export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Reset and Base Styles */
         * {
@@ -618,7 +620,8 @@
         .canvas-area {
             flex: 1;
             position: relative;
-            overflow: hidden; /* Default for desktop */
+            overflow: auto; /* Allow scrolling for canvas area */
+            -webkit-overflow-scrolling: touch; /* For smoother iOS scrolling */
         }
         
         .placed-component {
@@ -629,6 +632,7 @@
             border: 2px solid #00d4ff;
             border-radius: 8px;
             display: flex;
+            flex-direction: column; /* To stack icon and pins */
             align-items: center;
             justify-content: center;
             cursor: grab; /* Changed to grab cursor */
@@ -636,6 +640,7 @@
             -webkit-user-select: none; /* Safari */
             -moz-user-select: none; /* Firefox */
             -ms-user-select: none; /* IE 10+ */
+            z-index: 5; /* Ensure components are above wires */
         }
         
         .placed-component:hover {
@@ -653,15 +658,51 @@
             font-size: 24px;
             color: #ffffff;
         }
-        
-        #circuitCanvas {
+
+        .component-pins {
+            position: absolute;
             width: 100%;
             height: 100%;
-            display: block; /* Ensure it takes full space */
+            top: 0;
+            left: 0;
+            pointer-events: none; /* Allow clicks to pass through to component */
+        }
+
+        .component-pin {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff00ff; /* Magenta for visibility */
+            border: 1px solid #ffffff;
+            border-radius: 50%;
+            cursor: crosshair;
+            pointer-events: auto; /* Make pins clickable */
+            z-index: 15; /* Ensure pins are above components */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.2s;
+        }
+
+        .placed-component:hover .component-pin,
+        .tool-btn[data-tool="wire"].active ~ .canvas-area .placed-component .component-pin {
+            opacity: 1; /* Show pins on hover or when wire tool is active */
+        }
+
+        /* Pin positioning */
+        .pin-top { top: -5px; left: 50%; transform: translateX(-50%); }
+        .pin-right { top: 50%; right: -5px; transform: translateY(-50%); }
+        .pin-bottom { bottom: -5px; left: 50%; transform: translateX(-50%); }
+        .pin-left { top: 50%; left: -5px; transform: translateY(-50%); }
+        
+        #circuitCanvas {
+            /* This canvas will now be explicitly large to force scrolling */
             background: 
                 radial-gradient(circle at 20px 20px, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
                 radial-gradient(circle at 0px 0px, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
             background-size: 20px 20px;
+            position: absolute; /* Position it within canvas-area */
+            top: 0;
+            left: 0;
+            z-index: 1; /* Ensure canvas is behind components */
         }
 
         /* Scroll Arrows for Mobile (Global positioning) */
@@ -1360,19 +1401,8 @@
             }
 
             /* Mobile specific overflow and min-height for scrollable areas */
-            .canvas-area {
-                overflow-y: auto; /* Enable scrolling for mobile */
-                min-height: 150vh; /* TEMPORARY: Ensure canvas area is scrollable on mobile for testing */
-            }
-            #startScreen {
-                min-height: 120vh; /* TEMPORARY: Ensure start screen is scrollable on mobile for testing */
-            }
-            #calfluxSection {
-                min-height: 120vh; /* TEMPORARY: Ensure calflux section is scrollable on mobile for testing */
-            }
-            #tutorialSection {
-                min-height: 120vh; /* TEMPORARY: Ensure tutorial section is scrollable on mobile for testing */
-            }
+            /* Removed min-height from screens, relying on content overflow */
+            /* Canvas area will have fixed large size to force its own scroll */
         }
     </style>
 </head>
@@ -1889,10 +1919,6 @@
                         <button class="tool-btn" data-tool="delete" onclick="selectTool('delete')">
                             <i class="fas fa-trash"></i>
                         </button>
-                        <button class="tool-btn" onclick="explainComponentWithAI()">
-                            <i class="fas fa-magic"></i> <!-- Sparkle icon -->
-                            Explicar Componente ✨
-                        </button>
                     </div>
                     
                     <div class="zoom-controls">
@@ -1908,8 +1934,6 @@
                 
                 <div class="canvas-area" id="canvasArea">
                     <canvas id="circuitCanvas"></canvas>
-                    <!-- Grid overlay is handled by canvas drawing now, but keeping div for potential future use or fallback -->
-                    <!-- <div class="grid-overlay"></div> --> 
                 </div>
                 
                 <div class="status-bar">
@@ -1997,6 +2021,12 @@
         <button class="scroll-arrow-btn" onclick="scrollCanvas('down')">
             <i class="fas fa-chevron-down"></i>
         </button>
+        <button class="scroll-arrow-btn" onclick="scrollCanvas('left')">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="scroll-arrow-btn" onclick="scrollCanvas('right')">
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
 
     <!-- Protected Content Alert -->
@@ -2021,11 +2051,21 @@
         // Global variables
         let currentTool = 'select';
         let selectedComponentTypeForPlacement = null; // Used for mobile click-to-place
-        let selectedComponentElement = null; // Used for editing properties and AI explanation
+        let selectedComponentElement = null; // Used for editing properties
         let componentsCount = 0;
         let isSimulationRunning = false;
         let simulationInterval;
         let isMobileDevice = false; // Flag to detect mobile devices
+        
+        // Canvas and context references
+        let circuitCanvas = null;
+        let circuitCtx = null;
+        const CANVAS_WIDTH = 3000; // Large fixed width for scrollable canvas
+        const CANVAS_HEIGHT = 3000; // Large fixed height for scrollable canvas
+
+        // Wire drawing variables
+        let startPin = null; // { componentId, pinId, x, y }
+        let connections = []; // Array of { startPin: {comp, pin}, endPin: {comp, pin} }
 
         // Component data for properties panel
         const componentData = {
@@ -2109,49 +2149,111 @@
 
         // --- Canvas & Grid Functions ---
         function initializeCanvas() {
-            const canvas = document.getElementById('circuitCanvas');
-            if (!canvas) {
+            circuitCanvas = document.getElementById('circuitCanvas');
+            if (!circuitCanvas) {
                 console.error("Canvas element not found!");
                 return;
             }
-            const ctx = canvas.getContext('2d');
+            circuitCtx = circuitCanvas.getContext('2d');
             
-            // Set canvas size to fill its parent (canvas-area)
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight;
+            // Set canvas size to a large fixed size to enable scrolling of canvasArea
+            circuitCanvas.width = CANVAS_WIDTH;
+            circuitCanvas.height = CANVAS_HEIGHT;
             
-            // Draw grid
-            drawGrid(ctx, canvas.width, canvas.height);
-
-            // Add resize listener to redraw grid
-            window.addEventListener('resize', () => {
-                canvas.width = canvas.parentElement.offsetWidth;
-                canvas.height = canvas.parentElement.offsetHeight;
-                drawGrid(ctx, canvas.width, canvas.height);
-            });
+            // Draw grid initially
+            drawGrid();
+            // Redraw wires when canvas is initialized or resized
+            drawWires();
         }
 
-        function drawGrid(ctx, width, height) {
-            ctx.clearRect(0, 0, width, height); // Clear previous grid
-            ctx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
-            ctx.lineWidth = 0.5;
+        function drawGrid() {
+            if (!circuitCtx) return;
+            circuitCtx.clearRect(0, 0, circuitCanvas.width, circuitCanvas.height); // Clear previous grid
+            circuitCtx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
+            circuitCtx.lineWidth = 0.5;
             
             const gridSize = 20;
             
-            for (let x = 0; x <= width; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
-                ctx.stroke();
+            for (let x = 0; x <= circuitCanvas.width; x += gridSize) {
+                circuitCtx.beginPath();
+                circuitCtx.moveTo(x, 0);
+                circuitCtx.lineTo(x, circuitCanvas.height);
+                circuitCtx.stroke();
             }
             
-            for (let y = 0; y <= height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
+            for (let y = 0; y <= circuitCanvas.height; y += gridSize) {
+                circuitCtx.beginPath();
+                circuitCtx.moveTo(0, y);
+                circuitCtx.lineTo(circuitCanvas.width, y);
+                circuitCtx.stroke();
             }
         }
+
+        function drawWires() {
+            if (!circuitCtx) return;
+            // Clear only wires, not the grid. Or redraw grid then wires.
+            // For simplicity, let's redraw everything for now.
+            drawGrid(); // Redraw grid first
+            
+            circuitCtx.strokeStyle = '#FFFFFF'; // White wires
+            circuitCtx.lineWidth = 2;
+            
+            connections.forEach(conn => {
+                const startComp = document.querySelector(`.placed-component[data-id="${conn.startPin.componentId}"]`);
+                const endComp = document.querySelector(`.placed-component[data-id="${conn.endPin.componentId}"]`);
+
+                if (startComp && endComp) {
+                    const startPinCoords = getPinCoordinates(startComp, conn.startPin.pinId);
+                    const endPinCoords = getPinCoordinates(endComp, conn.endPin.pinId);
+
+                    if (startPinCoords && endPinCoords) {
+                        circuitCtx.beginPath();
+                        circuitCtx.moveTo(startPinCoords.x, startPinCoords.y);
+                        circuitCtx.lineTo(endPinCoords.x, endPinCoords.y);
+                        circuitCtx.stroke();
+                    }
+                }
+            });
+        }
+
+        function getPinCoordinates(componentElement, pinId) {
+            const compRect = componentElement.getBoundingClientRect();
+            const canvasArea = document.getElementById('canvasArea');
+            
+            // Use offsetLeft/Top for position relative to parent (canvasArea)
+            const compX = componentElement.offsetLeft; 
+            const compY = componentElement.offsetTop;
+
+            const compWidth = componentElement.offsetWidth;
+            const compHeight = componentElement.offsetHeight;
+
+            let x, y;
+
+            // Calculate pin position relative to the component's top-left
+            switch (pinId) {
+                case 'top':
+                    x = compX + compWidth / 2;
+                    y = compY;
+                    break;
+                case 'right':
+                    x = compX + compWidth;
+                    y = compY + compHeight / 2;
+                    break;
+                case 'bottom':
+                    x = compX + compWidth / 2;
+                    y = compY + compHeight;
+                    break;
+                case 'left':
+                    x = compX;
+                    y = compY + compHeight / 2;
+                    break;
+                default:
+                    return null;
+            }
+            // These coordinates are relative to the canvasArea's top-left, which is what the canvas drawing needs.
+            return { x: x, y: y };
+        }
+
 
         // --- Tool Functions ---
         function selectTool(tool) {
@@ -2168,16 +2270,19 @@
                     canvasArea.style.cursor = 'default';
                     selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                    startPin = null; // Reset wire tool state
                     break;
                 case 'wire':
                     canvasArea.style.cursor = 'crosshair';
                     selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                    startPin = null; // Reset wire tool state
                     break;
                 case 'delete':
                     canvasArea.style.cursor = 'not-allowed';
                     selectedComponentTypeForPlacement = null; // Deselect component type when tool changes
                     document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                    startPin = null; // Reset wire tool state
                     break;
             }
         }
@@ -2240,20 +2345,22 @@
             const canvasArea = document.getElementById('canvasArea');
             const canvasRect = canvasArea.getBoundingClientRect();
 
-            // Calculate new position relative to canvasArea
-            let newX = clientX - canvasRect.left - dragOffsetX;
-            let newY = clientY - canvasRect.top - dragOffsetY;
+            // Calculate new position relative to canvasArea's scroll position
+            let newX = (clientX - canvasRect.left + canvasArea.scrollLeft) - dragOffsetX;
+            let newY = (clientY - canvasRect.top + canvasArea.scrollTop) - dragOffsetY;
 
             // Snap to grid
             newX = Math.round(newX / gridSize) * gridSize;
             newY = Math.round(newY / gridSize) * gridSize;
 
-            // Keep component within canvas boundaries
-            newX = Math.max(0, Math.min(newX, canvasArea.scrollWidth - draggedComponent.offsetWidth)); // Use scrollWidth/Height
-            newY = Math.max(0, Math.min(newY, canvasArea.scrollHeight - draggedComponent.offsetHeight));
+            // Keep component within canvas boundaries (using fixed CANVAS_WIDTH/HEIGHT)
+            newX = Math.max(0, Math.min(newX, CANVAS_WIDTH - draggedComponent.offsetWidth));
+            newY = Math.max(0, Math.min(newY, CANVAS_HEIGHT - draggedComponent.offsetHeight));
 
             draggedComponent.style.left = `${newX}px`;
             draggedComponent.style.top = `${newY}px`;
+
+            drawWires(); // Redraw wires as component moves
         }
 
         // Function to stop dragging
@@ -2266,6 +2373,8 @@
             document.removeEventListener('mouseup', stopDrag);
             document.removeEventListener('touchmove', doDrag);
             document.removeEventListener('touchend', stopDrag);
+
+            drawWires(); // Final redraw after drag ends
         }
 
         // --- Component Functions ---
@@ -2288,11 +2397,12 @@
             }
             
             componentsCount++;
+            const componentId = `comp-${componentsCount}`;
             
             const componentElement = document.createElement('div');
             componentElement.classList.add('placed-component');
             componentElement.setAttribute('data-component-type', type); // Use 'type' here
-            componentElement.setAttribute('data-id', componentsCount);
+            componentElement.setAttribute('data-id', componentId); // Unique ID for each component
             
             // Snap to grid (20px grid size)
             // Calculate top-left position to center the 50x50 component on the grid point
@@ -2307,6 +2417,19 @@
             icon.classList.add('icon');
             icon.textContent = componentData[type].icon; // Use 'type' here
             componentElement.appendChild(icon);
+
+            // Add pins to the component
+            const pinsContainer = document.createElement('div');
+            pinsContainer.classList.add('component-pins');
+            ['top', 'right', 'bottom', 'left'].forEach(pinId => {
+                const pin = document.createElement('div');
+                pin.classList.add('component-pin', `pin-${pinId}`);
+                pin.setAttribute('data-pin-id', pinId);
+                pin.setAttribute('data-component-id', componentId); // Link pin to its component
+                pin.addEventListener('click', handlePinClick); // Add click listener for wiring
+                pinsContainer.appendChild(pin);
+            });
+            componentElement.appendChild(pinsContainer);
             
             // Attach drag listeners
             componentElement.addEventListener('mousedown', startDrag);
@@ -2331,7 +2454,7 @@
             document.getElementById('canvasArea').appendChild(componentElement);
             
             selectPlacedComponent(componentElement);
-            console.log(`Component '${type}' placed at (${snappedX}, ${snappedY})`); // Debug log
+            console.log(`Component '${type}' placed at (${snappedX}, ${snappedY}) with ID: ${componentId}`); // Debug log
         }
         
         function selectPlacedComponent(element) {
@@ -2343,11 +2466,18 @@
         
         function deletePlacedComponent(element) {
             showModalConfirm('Eliminar Componente', '¿Estás seguro de que quieres eliminar este componente?', () => {
+                const componentIdToDelete = element.getAttribute('data-id');
+                // Remove any connections involving this component
+                connections = connections.filter(conn => 
+                    conn.startPin.componentId !== componentIdToDelete && 
+                    conn.endPin.componentId !== componentIdToDelete
+                );
                 element.remove();
                 closePropertiesPanel();
                 if (selectedComponentElement === element) { // Clear if the deleted one was selected
                     selectedComponentElement = null;
                 }
+                drawWires(); // Redraw wires after deletion
             });
         }
         
@@ -2380,6 +2510,62 @@
             
             content.innerHTML = html;
         }
+
+        // --- Wire Handling ---
+        function handlePinClick(event) {
+            event.stopPropagation(); // Prevent component click/drag
+            if (currentTool !== 'wire') return;
+
+            const clickedPin = event.target;
+            const componentId = clickedPin.getAttribute('data-component-id');
+            const pinId = clickedPin.getAttribute('data-pin-id');
+
+            if (!startPin) {
+                // First pin clicked, set as start
+                startPin = { 
+                    componentId: componentId, 
+                    pinId: pinId,
+                    x: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).x,
+                    y: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).y
+                };
+                console.log('Start pin selected:', startPin);
+            } else {
+                // Second pin clicked, complete the connection
+                const endPin = { 
+                    componentId: componentId, 
+                    pinId: pinId,
+                    x: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).x,
+                    y: getPinCoordinates(document.querySelector(`[data-id="${componentId}"]`), pinId).y
+                };
+
+                // Prevent connecting a pin to itself or to another pin on the same component (for simple demo)
+                if (startPin.componentId === endPin.componentId && startPin.pinId === endPin.pinId) {
+                    showModal('Conexión Inválida', 'No puedes conectar un pin a sí mismo o a otro pin en el mismo componente.');
+                    startPin = null; // Reset
+                    return;
+                }
+
+                // Check for duplicate connections (simple check, could be more robust)
+                const isDuplicate = connections.some(conn => 
+                    (conn.startPin.componentId === startPin.componentId && conn.startPin.pinId === startPin.pinId &&
+                     conn.endPin.componentId === endPin.componentId && conn.endPin.pinId === endPin.pinId) ||
+                    (conn.startPin.componentId === endPin.componentId && conn.startPin.pinId === endPin.pinId &&
+                     conn.endPin.componentId === startPin.componentId && conn.endPin.pinId === startPin.pinId)
+                );
+
+                if (isDuplicate) {
+                    showModal('Conexión Existente', 'Esta conexión ya existe.');
+                    startPin = null; // Reset
+                    return;
+                }
+
+                connections.push({ startPin: startPin, endPin: endPin });
+                console.log('Connection established:', connections[connections.length - 1]);
+                drawWires(); // Redraw all wires
+                startPin = null; // Reset for next connection
+            }
+        }
+
 
         // --- Resistor Calculator Functions ---
         function calculateResistance() {
@@ -2524,10 +2710,11 @@
                     }
                 });
                 componentsCount = 0; // Reset component counter
+                connections = []; // Clear all connections
                 closePropertiesPanel();
                 closeSidebar();
                 resetSimulation(); // Reset simulation values
-                initializeCanvas(); // Re-initialize canvas to redraw grid
+                initializeCanvas(); // Re-initialize canvas to redraw grid and clear wires
             });
         }
 
@@ -2546,6 +2733,7 @@
             
             const data = {
                 components: components,
+                connections: connections, // Save connections
                 timestamp: new Date().toISOString()
             };
             
@@ -2560,12 +2748,30 @@
         }
 
         function exportCircuit() {
-            showModal('Exportar Imagen', '<p>La función para exportar imágenes está próxima a ser implementada.</p>');
-            closeSidebar();
+            // This button is for XML export in the header.
+            exportXMLCircuit();
         }
 
         function exportImage() {
-            exportCircuit(); // Reusing the same placeholder for image export
+            showModal('Exportar Imagen', '<div class="loading-spinner"><i class="fas fa-spinner"></i> Generando imagen...</div>');
+            // Use html2canvas to capture the canvasArea
+            html2canvas(document.getElementById('canvasArea'), {
+                backgroundColor: '#0a0e14', // Match body background
+                scale: 2, // Increase scale for better resolution
+                useCORS: true // Important for images if any are loaded from external sources
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = imgData;
+                a.download = 'circuito_fluxionics.png';
+                a.click();
+                hideModal(); // Hide loading modal
+                closeSidebar();
+            }).catch(error => {
+                console.error("Error exporting image:", error);
+                showModal('Error al Exportar Imagen', '<p>Hubo un problema al generar la imagen del circuito. Por favor, inténtalo de nuevo.</p>');
+                closeSidebar();
+            });
         }
         
         function exportXMLCircuit() {
@@ -2593,7 +2799,22 @@
                 xmlString += `    <id>${comp.id}</id>\n`;
                 xmlString += `    <x>${comp.x}</x>\n`;
                 xmlString += `    <y>${comp.y}</y>\n`;
+                // Add properties for XML export if needed
+                const compData = componentData[comp.type];
+                if (compData && compData.properties) {
+                    for (const key in compData.properties) {
+                        // For simplicity, just add a generic property tag. In a real app, you'd get actual values.
+                        xmlString += `    <property name="${key}" value="${compData.properties[key]}"/>\n`;
+                    }
+                }
                 xmlString += '  </component>\n';
+            });
+            // Add connections to XML
+            connections.forEach(conn => {
+                xmlString += `  <connection>\n`;
+                xmlString += `    <start componentId="${conn.startPin.componentId}" pinId="${conn.startPin.pinId}"/>\n`;
+                xmlString += `    <end componentId="${conn.endPin.componentId}" pinId="${conn.endPin.pinId}"/>\n`;
+                xmlString += `  </connection>\n`;
             });
             xmlString += '</circuit>';
             return xmlString;
@@ -2607,6 +2828,8 @@
                 currentZoom += 10;
                 zoomLevel.textContent = currentZoom + '%';
                 // Implement actual zoom on canvas/components here if needed
+                // For a fixed-size canvas, zooming would involve scaling the canvas context or components' CSS transform
+                // For now, it's just a display value.
             }
         }
 
@@ -2626,6 +2849,7 @@
             let targetId = '';
 
             // Determine which element to scroll based on the active screen
+            // The canvasArea is the primary scrollable element for the circuit design
             if (currentActiveScreenId === 'appContainer') {
                 scrollTarget = document.getElementById('canvasArea');
                 targetId = 'canvasArea';
@@ -2641,42 +2865,82 @@
             }
 
             const initialScrollTop = scrollTarget.scrollTop;
-            const scrollAmount = 150; // Aumentado para una mayor visibilidad
+            const initialScrollLeft = scrollTarget.scrollLeft;
+            const scrollAmount = 150; // Increased for better visibility
 
             if (direction === 'up') {
                 scrollTarget.scrollTop -= scrollAmount;
-            } else {
+            } else if (direction === 'down') {
                 scrollTarget.scrollTop += scrollAmount;
+            } else if (direction === 'left') { // Added horizontal scroll
+                scrollTarget.scrollLeft -= scrollAmount;
+            } else if (direction === 'right') { // Added horizontal scroll
+                scrollTarget.scrollLeft += scrollAmount;
             }
 
             console.log(`Intento de desplazamiento en: ${targetId}`);
             console.log(`Dirección: ${direction}, Cantidad: ${scrollAmount}`);
-            console.log(`Scroll inicial: ${initialScrollTop}, Scroll final: ${scrollTarget.scrollTop}`);
+            console.log(`Scroll inicial (Top, Left): (${initialScrollTop}, ${initialScrollLeft}), Scroll final: (${scrollTarget.scrollTop}, ${scrollTarget.scrollLeft})`);
             console.log(`ScrollHeight: ${scrollTarget.scrollHeight}, ClientHeight: ${scrollTarget.clientHeight}`);
+            console.log(`ScrollWidth: ${scrollTarget.scrollWidth}, ClientWidth: ${scrollTarget.clientWidth}`);
 
-            if (scrollTarget.scrollHeight <= scrollTarget.clientHeight) {
-                console.warn(`El elemento ${targetId} no tiene suficiente contenido para desplazarse (scrollHeight <= clientHeight).`);
-                // Optionally show a modal to the user if they try to scroll a non-scrollable area
-                // showModal('Sin Contenido Desplazable', 'Esta sección no tiene suficiente contenido para desplazarse.');
-            } else if (initialScrollTop === scrollTarget.scrollTop) {
+            if (scrollTarget.scrollHeight <= scrollTarget.clientHeight && scrollTarget.scrollWidth <= scrollTarget.clientWidth) {
+                console.warn(`El elemento ${targetId} no tiene suficiente contenido para desplazarse (scrollHeight <= clientHeight && scrollWidth <= clientWidth).`);
+            } else if (initialScrollTop === scrollTarget.scrollTop && initialScrollLeft === scrollTarget.scrollLeft) {
                 console.warn(`El desplazamiento no tuvo efecto en ${targetId}. Posiblemente ya esté al límite.`);
             }
         }
 
 
-        // --- Other Functions (Placeholders) ---
+        // --- Other Functions (Implementations) ---
         function showAnalysis() {
-            showModal('Análisis de Circuitos', '<p>La función de análisis de circuitos está próxima a ser implementada.</p>');
+            showModal('Análisis de Circuitos', `
+                <h3>Análisis de Circuitos</h3>
+                <p>Esta sección te permitirá realizar análisis avanzados de tu circuito, como:</p>
+                <ul>
+                    <li><strong>Análisis DC:</strong> Calcular voltajes y corrientes en estado estacionario.</li>
+                    <li><strong>Análisis AC:</strong> Estudiar el comportamiento del circuito con señales alternas.</li>
+                    <li><strong>Análisis Transitorio:</strong> Observar cómo cambian los voltajes y corrientes con el tiempo.</li>
+                </ul>
+                <p>Actualmente, esta funcionalidad está en desarrollo. ¡Pronto podrás desbloquear todo el potencial de tu diseño!</p>
+            `);
             closeSidebar();
         }
 
         function showSettings() {
-            showModal('Configuración', '<p>La sección de configuración está próxima a ser implementada.</p>');
+            showModal('Configuración', `
+                <h3>Configuración de la Aplicación</h3>
+                <p>Aquí podrás personalizar tu experiencia en Fluxionics:</p>
+                <ul>
+                    <li><strong>Tema:</strong> Cambiar entre temas claros y oscuros.</li>
+                    <li><strong>Idioma:</strong> Seleccionar el idioma de la interfaz.</li>
+                    <li><strong>Tamaño de Cuadrícula:</strong> Ajustar el tamaño de la cuadrícula en el lienzo.</li>
+                    <li><strong>Opciones de Simulación:</strong> Configurar la velocidad de simulación y la precisión.</li>
+                </ul>
+                <p>¡Mantente atento a las próximas actualizaciones para estas características!</p>
+            `);
             closeSidebar();
         }
 
         function showHelp() {
-            showModal('Ayuda', '<p>La sección de ayuda está próxima a ser implementada.</p>');
+            showModal('Ayuda y Soporte', `
+                <h3>¿Necesitas Ayuda?</h3>
+                <p>Bienvenido a la sección de ayuda de Fluxionics. Aquí encontrarás respuestas a las preguntas más comunes y recursos para empezar:</p>
+                
+                <h4>Primeros Pasos</h4>
+                <p>Si eres nuevo en Fluxionics, te recomendamos visitar nuestro <a href="#" onclick="showScreen('tutorialSection'); hideModal();">Tutorial Interactivo</a> para aprender lo básico sobre cómo añadir componentes, conectarlos y simular tus circuitos.</p>
+
+                <h4>Preguntas Frecuentes (FAQ)</h4>
+                <ul>
+                    <li><strong>¿Cómo añado un componente?</strong> Selecciona un componente de la barra lateral izquierda y haz clic en el lienzo.</li>
+                    <li><strong>¿Cómo conecto dos componentes?</strong> Selecciona la herramienta de 'Cable' (<i class="fas fa-route"></i>), haz clic en un pin de un componente y luego en un pin de otro.</li>
+                    <li><strong>¿Cómo edito las propiedades de un componente?</strong> Con la herramienta de 'Selección' (<i class="fas fa-mouse-pointer"></i>) activa, haz doble clic en el componente.</li>
+                    <li><strong>¿Por qué mi simulación muestra un cortocircuito?</strong> Un cortocircuito ocurre cuando la corriente puede fluir sin resistencia, a menudo conectando directamente una fuente de voltaje a tierra sin una carga. Revisa tus conexiones.</li>
+                </ul>
+
+                <h4>Soporte Técnico</h4>
+                <p>Si no encuentras lo que buscas, por favor contacta a nuestro equipo de soporte en <a href="mailto:soporte@fluxionics.com">soporte@fluxionics.com</a>. ¡Estamos aquí para ayudarte!</p>
+            `);
             closeSidebar();
         }
 
@@ -2738,72 +3002,6 @@
             modalOverlay.classList.remove('show');
         }
 
-        // --- Gemini API Integration ---
-        async function explainComponentWithAI() {
-            if (!selectedComponentElement) {
-                showModal('Explicar Componente', '<p>Por favor, selecciona un componente en el lienzo para que la IA lo explique.</p>');
-                return;
-            }
-
-            const componentType = selectedComponentElement.getAttribute('data-component-type');
-            const componentName = componentData[componentType] ? componentData[componentType].name : componentType;
-
-            showModal('Explicar Componente', '<div class="loading-spinner"><i class="fas fa-spinner"></i> Cargando explicación...</div>');
-
-            const prompt = `Explica la función básica y los usos comunes de un(a) ${componentName} en un circuito electrónico, adecuado para un principiante. Mantén la explicación concisa y fácil de entender.`;
-
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = ""; // If you want to use models other than gemini-2.5-flash-preview-05-20 or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            let retryCount = 0;
-            const maxRetries = 3;
-            const baseDelay = 1000; // 1 second
-
-            while (retryCount < maxRetries) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        // Handle HTTP errors
-                        if (response.status === 429) { // Too Many Requests
-                            const delay = baseDelay * Math.pow(2, retryCount) + Math.random() * 500;
-                            console.warn(`Rate limit exceeded. Retrying in ${delay / 1000}s... (Attempt ${retryCount + 1})`);
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                            retryCount++;
-                            continue; // Retry the request
-                        } else {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                    }
-
-                    const result = await response.json();
-
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        document.getElementById('customModalBody').innerHTML = `<p>${text}</p>`;
-                    } else {
-                        document.getElementById('customModalBody').innerHTML = '<p>No se pudo obtener una explicación. La IA no devolvió contenido.</p>';
-                    }
-                    return; // Exit loop on success
-                } catch (error) {
-                    console.error('Error al llamar a la API de Gemini:', error);
-                    document.getElementById('customModalBody').innerHTML = '<p>Error al conectar con la IA. Por favor, inténtalo de nuevo más tarde.</p>';
-                    return; // Exit loop on unrecoverable error
-                }
-            }
-            document.getElementById('customModalBody').innerHTML = '<p>Se excedió el número máximo de reintentos. Por favor, inténtalo de nuevo más tarde.</p>';
-        }
-
-
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
             detectMobile(); // Detect device type first
@@ -2841,10 +3039,11 @@
                 canvasArea.addEventListener('click', (event) => {
                     // Only place component if the click target is the canvas itself or its direct children (like grid overlay)
                     // and not on an already placed component. Also ensure it's not a drag event.
-                    if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) && !isDragging) {
+                    if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea') && !isDragging && currentTool === 'select') {
                         const rect = event.currentTarget.getBoundingClientRect();
-                        const x = event.clientX - rect.left;
-                        const y = event.clientY - rect.top;
+                        // Adjust coordinates for scroll position
+                        const x = event.clientX - rect.left + canvasArea.scrollLeft;
+                        const y = event.clientY - rect.top + canvasArea.scrollTop;
                         if (selectedComponentTypeForPlacement && currentTool === 'select') {
                             placeComponent(x, y, selectedComponentTypeForPlacement); // Pass the type
                             selectedComponentTypeForPlacement = null; // Deselect component type after placing
