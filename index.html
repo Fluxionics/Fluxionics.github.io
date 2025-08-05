@@ -2382,3 +2382,34 @@
                 // Ctrl+Shift+I (Cmd+Option+I on Mac)
                 if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
                     e.preventDefault();
+                    showProtectedAlert(document.body, 'Contenido protegido');
+                }
+                // Ctrl+Shift+J (Cmd+Option+J on Mac)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'J') {
+                    e.preventDefault();
+                    showProtectedAlert(document.body, 'Contenido protegido');
+                }
+                // Ctrl+U (Cmd+U on Mac) - View Source
+                if ((e.ctrlKey || e.metaKey) && e.key === 'U') {
+                    e.preventDefault();
+                    showProtectedAlert(document.body, 'Contenido protegido');
+                }
+            });
+
+            // Add protected alert to logos on interaction
+            document.getElementById('mainLogo').addEventListener('mousedown', function(e) {
+                showProtectedAlert(e.target);
+            });
+            document.getElementById('smallLogo').addEventListener('mousedown', function(e) {
+                showProtectedAlert(e.target);
+            });
+            document.querySelector('.app-title').addEventListener('mousedown', function(e) {
+                showProtectedAlert(e.target);
+            });
+            document.querySelector('.app-subtitle').addEventListener('mousedown', function(e) {
+                showProtectedAlert(e.target);
+            });
+        });
+    </script>
+</body>
+</html>
