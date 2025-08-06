@@ -1201,8 +1201,7 @@
             background: rgba(0, 212, 255, 0.1);
             border: 1px solid #00d4ff;
             border-radius: 8px;
-            text-align: center;
-        }
+            text-align: center;\n        }
         
         .resistor-result p {
             font-size: 1.1em;
@@ -1319,6 +1318,265 @@
             font-family: 'Courier New', Courier, monospace;
             color: #00d4ff;
         }
+
+        /* Examples Flux Section */
+        #examplesFluxSection {
+            flex-direction: column;
+            padding: 20px;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 2500;
+            color: #e6edf3;
+            overflow-y: auto;
+        }
+
+        .examples-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            position: sticky;
+            top: 0;
+            background: rgba(13, 17, 23, 0.95);
+            z-index: 10;
+        }
+
+        .examples-header h2 {
+            font-size: 24px;
+            color: #00d4ff;
+            font-weight: 700;
+        }
+
+        .examples-category {
+            margin-bottom: 40px;
+        }
+
+        .examples-category-title {
+            font-size: 2em;
+            color: #c9d1d9;
+            margin-bottom: 25px;
+            border-bottom: 1px dashed rgba(0, 212, 255, 0.2);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .examples-category-title i {
+            color: #00d4ff;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .example-card {
+            background: rgba(22, 27, 34, 0.8);
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+        }
+
+        .example-card-image {
+            width: 100%;
+            height: 180px;
+            background-color: #1a1f2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b949e;
+            font-size: 0.9em;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .example-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .example-card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .example-card-content h4 {
+            font-size: 1.4em;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .example-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #8b949e;
+        }
+
+        .example-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .example-meta .difficulty i {
+            color: #FFD700; /* Gold for stars */
+        }
+
+        .example-meta .time i {
+            color: #00d4ff;
+        }
+
+        .example-card-content p {
+            font-size: 0.95em;
+            color: #c9d1d9;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            flex-grow: 1; /* Allow description to take available space */
+        }
+
+        .example-card-button {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #00d4ff, #0088cc);
+            color: #0a0e14;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.95em;
+        }
+
+        .example-card-button:hover {
+            background: linear-gradient(45deg, #00e6ff, #00a3e6);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Specific Example Page Styles (within examplesFluxSection for now) */
+        .specific-example-page {
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #30363d;
+            margin-top: 20px;
+        }
+
+        .specific-example-page h3 {
+            font-size: 2em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .specific-example-page .meta-info {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 25px;
+            font-size: 1em;
+            color: #c9d1d9;
+        }
+
+        .specific-example-page .meta-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .specific-example-page .meta-info .difficulty i {
+            color: #FFD700;
+        }
+
+        .specific-example-page .meta-info .time i {
+            color: #00d4ff;
+        }
+
+        .specific-example-page .section-title {
+            font-size: 1.5em;
+            color: #c9d1d9;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed rgba(0, 212, 255, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .specific-example-page p, .specific-example-page ul {
+            font-size: 1em;
+            line-height: 1.7;
+            color: #8b949e;
+            margin-bottom: 15px;
+        }
+
+        .specific-example-page ul {
+            list-style-type: disc;
+            margin-left: 25px;
+        }
+
+        .specific-example-page .formula, .specific-example-page .calculation-example {
+            background: #1a1f2e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00d4ff;
+            font-size: 1.1em;
+            overflow-x: auto;
+        }
+
+        .specific-example-page .calculation-example {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid #00d4ff;
+            color: #c9d1d9;
+        }
+
+        .specific-example-page .action-button {
+            margin-top: 25px;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #00d4ff, #0088cc);
+            color: #0a0e14;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1em;
+        }
+
+        .specific-example-page .action-button:hover {
+            background: linear-gradient(45deg, #00e6ff, #00a3e6);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        }
+
 
         /* Protected Content Alert */
         .protected-alert {
@@ -1491,7 +1749,7 @@
                 right: 0;
             }
 
-            #calfluxSection, #tutorialSection {
+            #calfluxSection, #tutorialSection, #examplesFluxSection {
                 width: 95%; /* More space for content */
                 margin: 0 auto; /* Center with auto margin */
                 top: 50%; /* Re-center after width change */
@@ -1529,6 +1787,10 @@
             /* Mobile specific overflow and min-height for scrollable areas */
             /* Removed min-height from screens, relying on content overflow */
             /* Canvas area will have fixed large size to force its own scroll */
+
+            .examples-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+            }
         }
     </style>
 </head>
@@ -1576,6 +1838,10 @@
                 <i class="fas fa-table"></i>
                 Cal Flux
             </button>
+            <button class="start-button secondary" onclick="showScreen('examplesFluxSection')">
+                <i class="fas fa-lightbulb"></i>
+                Ejemplos Flux
+            </button>
             <button class="start-button secondary" onclick="showScreen('tutorialSection')">
                 <i class="fas fa-graduation-cap"></i>
                 Tutorial
@@ -1606,6 +1872,238 @@
 
         <div class="calflux-calculator-area" id="calfluxCalculatorArea">
             <!-- Calculator content will be loaded here by JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Examples Flux Section -->
+    <div class="screen" id="examplesFluxSection">
+        <div class="examples-header">
+            <i class="fas fa-lightbulb"></i>
+            <h2>Ejemplos Flux</h2>
+            <button class="start-button secondary" onclick="showScreen('startScreen')" style="margin-left: auto;">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </button>
+        </div>
+
+        <div class="examples-content">
+            <!-- Basic Examples -->
+            <div class="examples-category">
+                <h3 class="examples-category-title"><i class="fas fa-circle" style="color: #28a745;"></i> BÁSICOS (Principiantes)</h3>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=LED+Básico" alt="Mi Primera Luz LED">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>Mi Primera Luz LED</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    Básico
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 5 min
+                                </span>
+                            </div>
+                            <p>Aprende a calcular la resistencia limitadora para encender tu primer LED de forma segura.</p>
+                            <button class="example-card-button" onclick="openExampleInSimulator('basic_led')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=Divisor+de+Voltaje" alt="Divisor de Voltaje">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>Divisor de Voltaje</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    Básico
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 7 min
+                                </span>
+                            </div>
+                            <p>Entiende cómo dos resistencias pueden dividir un voltaje de entrada para obtener una salida específica.</p>
+                            <button class="example-card-button" onclick="openExampleInSimulator('voltage_divider')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=Carga+Capacitor" alt="Carga de Capacitor">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>Carga de Capacitor</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    Básico
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 10 min
+                                </span>
+                            </div>
+                            <p>Observa la curva exponencial de carga y descarga de un capacitor en un circuito RC.</p>
+                            <button class="example-card-button" onclick="showModal('Carga de Capacitor', '<p>Este ejemplo estará disponible pronto.</p>')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intermediate Examples -->
+            <div class="examples-category">
+                <h3 class="examples-category-title"><i class="fas fa-circle" style="color: #ffc107;"></i> INTERMEDIOS</h3>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=LED+555" alt="LED Parpadeante 555">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>LED Parpadeante 555</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    Intermedio
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 15 min
+                                </span>
+                            </div>
+                            <p>Construye tu primer oscilador con el IC 555 en modo astable para hacer parpadear un LED.</p>
+                            <button class="example-card-button" onclick="openExampleInSimulator('led_555')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=Amplificador+Simple" alt="Amplificador Simple">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>Amplificador Simple</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    Intermedio
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 20 min
+                                </span>
+                            </div>
+                            <p>Aprende a amplificar señales pequeñas usando un transistor BJT y resistencias.</p>
+                            <button class="example-card-button" onclick="showModal('Amplificador Simple', '<p>Este ejemplo estará disponible pronto.</p>')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=Control+de+Motor" alt="Control de Motor">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>Control de Motor</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    Intermedio
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 25 min
+                                </span>
+                            </div>
+                            <p>Controla la velocidad de un motor DC utilizando un MOSFET y modulación por ancho de pulso (PWM).</p>
+                            <button class="example-card-button" onclick="showModal('Control de Motor', '<p>Este ejemplo estará disponible pronto.</p>')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Examples -->
+            <div class="examples-category">
+                <h3 class="examples-category-title"><i class="fas fa-circle" style="color: #dc3545;"></i> AVANZADOS</h3>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=Fuente+Regulada" alt="Fuente Regulada">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>Fuente Regulada</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    Avanzado
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 45 min
+                                </span>
+                            </div>
+                            <p>Diseña y simula tu propia fuente de alimentación regulada con transformador y regulador de voltaje.</p>
+                            <button class="example-card-button" onclick="showModal('Fuente Regulada', '<p>Este ejemplo estará disponible pronto.</p>')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-card-image">
+                            <!-- Placeholder Image -->
+                            <img src="https://placehold.co/300x180/0d1117/e6edf3?text=Filtro+Activo" alt="Filtro Activo">
+                        </div>
+                        <div class="example-card-content">
+                            <h4>Filtro Activo</h4>
+                            <div class="example-meta">
+                                <span class="difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    Avanzado
+                                </span>
+                                <span class="time">
+                                    <i class="fas fa-clock"></i> 30 min
+                                </span>
+                            </div>
+                            <p>Crea un filtro que use un amplificador operacional para seleccionar o rechazar frecuencias específicas.</p>
+                            <button class="example-card-button" onclick="showModal('Filtro Activo', '<p>Este ejemplo estará disponible pronto.</p>')">
+                                <i class="fas fa-play"></i> Abrir en Simulador
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -2028,6 +2526,10 @@
                 <div class="menu-item" onclick="showScreen('calfluxSection')">
                     <i class="fas fa-table"></i>
                     <span>Cal Flux</span>
+                </div>
+                <div class="menu-item" onclick="showScreen('examplesFluxSection')">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Ejemplos Flux</span>
                 </div>
                 <div class="menu-item" onclick="exportImage()">
                     <i class="fas fa-image"></i>
@@ -2459,6 +2961,87 @@
             'violet': '±0.1%', 'gray': '±0.05%', 'gold': '±5%', 'silver': '±10%'
         };
         
+        // --- Predefined Example Circuits ---
+        const exampleCircuits = {
+            'basic_led': {
+                name: 'Mi Primera Luz LED',
+                components: [
+                    { type: 'battery', id: 'batt-1', x: 100, y: 100, properties: { voltage: '9V' } },
+                    { type: 'resistor', id: 'r1-1', x: 250, y: 100, properties: { value: '220Ω' } },
+                    { type: 'led', id: 'led-1', x: 400, y: 100, properties: { color: 'Rojo' } },
+                    { type: 'ground', id: 'gnd-1', x: 250, y: 250, properties: {} }
+                ],
+                connections: [
+                    { start: { compId: 'batt-1', pinId: 'positive' }, end: { compId: 'r1-1', pinId: 'p1' } },
+                    { start: { compId: 'r1-1', pinId: 'p2' }, end: { compId: 'led-1', pinId: 'anode' } },
+                    { start: { compId: 'led-1', pinId: 'cathode' }, end: { compId: 'gnd-1', pinId: 'main' } },
+                    { start: { compId: 'batt-1', pinId: 'negative' }, end: { compId: 'gnd-1', pinId: 'main' } }
+                ]
+            },
+            'voltage_divider': {
+                name: 'Divisor de Voltaje',
+                components: [
+                    { type: 'voltage-source', id: 'vsource-1', x: 100, y: 100, properties: { value: '9V' } },
+                    { type: 'resistor', id: 'r1-1', x: 250, y: 100, properties: { value: '1kΩ' } },
+                    { type: 'resistor', id: 'r2-1', x: 250, y: 250, properties: { value: '2kΩ' } },
+                    { type: 'ground', id: 'gnd-1', x: 250, y: 400, properties: {} }
+                ],
+                connections: [
+                    { start: { compId: 'vsource-1', pinId: 'positive' }, end: { compId: 'r1-1', pinId: 'p1' } },
+                    { start: { compId: 'r1-1', pinId: 'p2' }, end: { compId: 'r2-1', pinId: 'p1' } },
+                    { start: { compId: 'r2-1', pinId: 'p2' }, end: { compId: 'gnd-1', pinId: 'main' } },
+                    { start: { compId: 'vsource-1', pinId: 'negative' }, end: { compId: 'gnd-1', pinId: 'main' } }
+                ]
+            },
+            'led_555': {
+                name: 'LED Parpadeante 555',
+                components: [
+                    { type: 'timer555', id: 'timer555-1', x: 200, y: 200, properties: {} },
+                    { type: 'led', id: 'led-1', x: 400, y: 250, properties: { color: 'Rojo' } },
+                    { type: 'resistor', id: 'r1-1', x: 250, y: 100, properties: { value: '1kΩ' } },
+                    { type: 'resistor', id: 'r2-1', x: 350, y: 100, properties: { value: '100kΩ' } },
+                    { type: 'capacitor', id: 'c1-1', x: 300, y: 400, properties: { value: '10µF' } },
+                    { type: 'battery', id: 'batt-1', x: 100, y: 100, properties: { voltage: '9V' } },
+                    { type: 'ground', id: 'gnd-1', x: 100, y: 450, properties: {} }
+                ],
+                connections: [
+                    // Battery positive to 555 VCC (pin 8) and R1 (pin 1)
+                    { start: { compId: 'batt-1', pinId: 'positive' }, end: { compId: 'timer555-1', pinId: 'vcc' } },
+                    { start: { compId: 'batt-1', pinId: 'positive' }, end: { compId: 'r1-1', pinId: 'p1' } },
+
+                    // R1 to R2
+                    { start: { compId: 'r1-1', pinId: 'p2' }, end: { compId: 'r2-1', pinId: 'p1' } },
+
+                    // R1 to 555 Discharge (pin 7)
+                    { start: { compId: 'r1-1', pinId: 'p2' }, end: { compId: 'timer555-1', pinId: 'discharge' } },
+
+                    // R2 to 555 Threshold (pin 6) and Trigger (pin 2)
+                    { start: { compId: 'r2-1', pinId: 'p2' }, end: { compId: 'timer555-1', pinId: 'threshold' } },
+                    { start: { compId: 'r2-1', pinId: 'p2' }, end: { compId: 'timer555-1', pinId: 'trigger' } },
+
+                    // 555 Threshold (pin 6) to Capacitor (pin 1)
+                    { start: { compId: 'timer555-1', pinId: 'threshold' }, end: { compId: 'c1-1', pinId: 'p1' } },
+
+                    // Capacitor (pin 2) to Ground
+                    { start: { compId: 'c1-1', pinId: 'p2' }, end: { compId: 'gnd-1', pinId: 'main' } },
+
+                    // 555 Ground (pin 1) to Ground
+                    { start: { compId: 'timer555-1', pinId: 'gnd' }, end: { compId: 'gnd-1', pinId: 'main' } },
+
+                    // 555 Control Voltage (pin 5) to Ground (via small cap, but for simplicity direct to ground or leave floating)
+                    { start: { compId: 'timer555-1', pinId: 'control_voltage' }, end: { compId: 'gnd-1', pinId: 'main' } },
+
+                    // 555 Output (pin 3) to LED Anode
+                    { start: { compId: 'timer555-1', pinId: 'output' }, end: { compId: 'led-1', pinId: 'anode' } },
+
+                    // LED Cathode to Ground
+                    { start: { compId: 'led-1', pinId: 'cathode' }, end: { compId: 'gnd-1', pinId: 'main' } }
+                ]
+            },
+            // Add more examples here following the same structure
+        };
+
+
         // --- Device Detection ---
         function detectMobile() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -2491,6 +3074,7 @@
                 // Special handling for appContainer to initialize canvas
                 if (screenId === 'appContainer') {
                     initializeCanvas();
+                    checkAndLoadExample(); // Check for example to load from URL
                 }
                 // Special handling for calfluxSection to initialize calculator
                 if (screenId === 'calfluxSection') {
@@ -2754,16 +3338,19 @@
             }
         }
         
-        function placeComponent(x, y, componentTypeToPlace) { // New argument
+        function placeComponent(x, y, componentTypeToPlace, componentIdOverride = null, propertiesOverride = {}) { // Added propertiesOverride
             const type = componentTypeToPlace || selectedComponentTypeForPlacement; // Use provided type or global
             if (!type) {
                 console.log("No component type selected to place.");
                 return;
             }
             
-            componentsCount++;
-            const componentId = `comp-${componentsCount}`;
-            
+            // Use override ID if provided, otherwise generate new
+            const componentId = componentIdOverride || `comp-${++componentsCount}`;
+            if (!componentIdOverride) { // Only increment if not an override
+                componentsCount = Math.max(componentsCount, parseInt(componentId.replace('comp-', '')) || 0);
+            }
+
             const componentElement = document.createElement('div');
             componentElement.classList.add('placed-component');
             componentElement.setAttribute('data-component-type', type); // Use 'type' here
@@ -2815,6 +3402,9 @@
             });
             componentElement.appendChild(pinsContainer);
             
+            // Store properties on the element itself for easy retrieval/modification
+            componentElement.componentProperties = { ...componentData[type].properties, ...propertiesOverride }; // Merge default with override
+
             // Attach drag listeners
             componentElement.addEventListener('mousedown', startDrag);
             componentElement.addEventListener('touchstart', startDrag, { passive: false }); // passive: false for preventDefault
@@ -2872,27 +3462,40 @@
             panel.classList.add('open'); // For mobile slide-in
 
             const componentType = componentElement.getAttribute('data-component-type');
-            const data = componentData[componentType];
+            // Use properties stored directly on the element, which includes overrides from examples
+            const currentProperties = componentElement.componentProperties;
             
-            if (!data) {
+            if (!currentProperties) {
                 content.innerHTML = '<p>No hay propiedades disponibles para este componente.</p>';
                 return;
             }
             
-            let html = `<h3>${data.name} (ID: ${componentElement.getAttribute('data-id')})</h3>`;
+            let html = `<h3>${componentData[componentType].name} (ID: ${componentElement.getAttribute('data-id')})</h3>`;
             html += '<div class="panel-properties">';
             
-            for (const key in data.properties) {
+            for (const key in currentProperties) {
                 html += `
                     <div class="property-group">
                         <label for="prop-${componentElement.getAttribute('data-id')}-${key}">${key.charAt(0).toUpperCase() + key.slice(1)}:</label>
-                        <input type="text" id="prop-${componentElement.getAttribute('data-id')}-${key}" value="${data.properties[key]}">
+                        <input type="text" id="prop-${componentElement.getAttribute('data-id')}-${key}" value="${currentProperties[key]}"
+                               onchange="updateComponentProperty('${componentElement.getAttribute('data-id')}', '${key}', this.value)">
                     </div>
                 `;
             }
             html += '</div>';
             
             content.innerHTML = html;
+        }
+
+        function updateComponentProperty(componentId, propertyKey, newValue) {
+            const componentElement = document.querySelector(`.placed-component[data-id="${componentId}"]`);
+            if (componentElement && componentElement.componentProperties) {
+                componentElement.componentProperties[propertyKey] = newValue;
+                console.log(`Updated component ${componentId} property ${propertyKey} to ${newValue}`);
+                // In a real simulator, this would trigger a re-calculation of simulation values
+                // For now, just update the display.
+                // You might want to redraw component icons/labels if they reflect properties.
+            }
         }
 
         // --- Wire Handling ---
@@ -2999,799 +3602,64 @@
             document.getElementById('displayTolerance').style.backgroundColor = toleranceColor;
         }
 
-
-        // --- Simulation Functions ---
-        function toggleSimulation() {
-            const playBtn = document.getElementById('playBtn');
-            if (isSimulationRunning) {
-                pauseSimulation();
-            } else {
-                startSimulation();
-            }
-        }
-
-        function startSimulation() {
-            isSimulationRunning = true;
-            document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
-            document.getElementById('playBtn').classList.add('active');
-            
-            // Check for short circuit
-            const isShortCircuit = Math.random() < 0.2; // 20% chance of short circuit for demo
-            
-            if (isShortCircuit) {
-                document.getElementById('statusText').textContent = '¡Cortocircuito detectado!';
-                document.getElementById('statusText').classList.add('short-circuit');
-                document.getElementById('voltageDisplay').textContent = '0V';
-                document.getElementById('currentDisplay').textContent = '∞A'; // Infinity symbol for demo
-                document.getElementById('powerDisplay').textContent = '∞W';
-                pauseSimulation(); // Stop simulation on short circuit
-            } else {
-                document.getElementById('statusText').textContent = 'Simulación en ejecución';
-                document.getElementById('statusText').classList.remove('short-circuit');
-                simulationInterval = setInterval(simulateValues, 1000);
-            }
-        }
-
-        function pauseSimulation() {
-            isSimulationRunning = false;
-            clearInterval(simulationInterval);
-            document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
-            document.getElementById('playBtn').classList.remove('active');
-            document.getElementById('statusText').textContent = 'Simulación pausada';
-        }
-
-        function resetSimulation() {
-            isSimulationRunning = false;
-            clearInterval(simulationInterval);
-            document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
-            document.getElementById('playBtn').classList.remove('active');
-            document.getElementById('statusText').textContent = 'Listo para diseñar circuitos';
-            document.getElementById('statusText').classList.remove('short-circuit');
-            
-            // Reset values
-            document.getElementById('voltageDisplay').textContent = '0V';
-            document.getElementById('currentDisplay').textContent = '0A';
-            document.getElementById('powerDisplay').textContent = '0W';
-            document.getElementById('temperatureDisplay').textContent = '25°C';
-        }
-
-        function simulateValues() {
-            // Simulate random values for demonstration
-            const voltage = (Math.random() * 10).toFixed(1);
-            const current = (Math.random() * 2).toFixed(2);
-            const power = (voltage * current).toFixed(2);
-            const temperature = (25 + Math.random() * 10).toFixed(1);
-            
-            document.getElementById('voltageDisplay').textContent = voltage + 'V';
-            document.getElementById('currentDisplay').textContent = current + 'A';
-            document.getElementById('powerDisplay').textContent = power + 'W';
-            document.getElementById('temperatureDisplay').textContent = temperature + '°C';
-        }
-
-        // --- Menu & Panel Functions ---
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebarMenu');
-            sidebar.classList.toggle('open');
-            // Also toggle components sidebar on mobile
-            if (window.innerWidth <= 768) {
-                document.getElementById('componentsSidebar').classList.toggle('open');
-            }
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebarMenu').classList.remove('open');
-            // Also close components sidebar if open on mobile
-            if (window.innerWidth <= 768) {
-                document.getElementById('componentsSidebar').classList.remove('open');
-            }
-        }
-
-        function closePropertiesPanel() {
-            document.getElementById('propertiesPanel').style.display = 'none';
-            document.getElementById('propertiesPanel').classList.remove('open'); // For mobile slide-out
-        }
-
-        // --- File Functions ---
-        function newCircuit() {
-            showModalConfirm('Nuevo Circuito', '¿Crear un nuevo circuito? Se perderán los cambios no guardados.', () => {
-                // Clear all placed components
-                const canvasArea = document.getElementById('canvasArea');
-                Array.from(canvasArea.children).forEach(child => {
-                    if (child.classList.contains('placed-component')) {
-                        child.remove();
-                    }
-                });
-                componentsCount = 0; // Reset component counter
-                connections = []; // Clear all connections
-                closePropertiesPanel();
-                closeSidebar();
-                resetSimulation(); // Reset simulation values
-                initializeCanvas(); // Re-initialize canvas to redraw grid and clear wires
-            });
-        }
-
-        function openCircuit() {
-            showModal('Abrir Circuito', '<p>La función para abrir circuitos está próxima a ser implementada.</p>');
-            closeSidebar();
-        }
-
-        function saveCircuit() {
-            const components = Array.from(document.querySelectorAll('.placed-component')).map(comp => ({
-                type: comp.getAttribute('data-component-type'),
-                id: comp.getAttribute('data-id'),
-                x: comp.style.left,
-                y: comp.style.top,
-                // In a real app, you'd also save properties from the panel
-            }));
-            
-            const data = {
-                components: components,
-                connections: connections, // Save connections
-                timestamp: new Date().toISOString()
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'circuito_fluxionics.json';
-            a.click();
-            URL.revokeObjectURL(url);
-            closeSidebar();
-        }
-
-        function exportCircuit() {
-            // This button is for XML export in the header.
-            exportXMLCircuit();
-        }
-
-        function exportImage() {
-            showModal('Exportar Imagen', '<div class="loading-spinner"><i class="fas fa-spinner"></i> Generando imagen...</div>');
-            // Use html2canvas to capture the canvasArea
-            html2canvas(document.getElementById('canvasArea'), {
-                backgroundColor: '#0a0e14', // Match body background
-                scale: 2, // Increase scale for better resolution
-                useCORS: true // Important for images if any are loaded from external sources
-            }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.href = imgData;
-                a.download = 'circuito_fluxionics.png';
-                a.click();
-                hideModal(); // Hide loading modal
-                closeSidebar();
-            }).catch(error => {
-                console.error("Error exporting image:", error);
-                showModal('Error al Exportar Imagen', '<p>Hubo un problema al generar la imagen del circuito. Por favor, inténtalo de nuevo.</p>');
-                closeSidebar();
-            });
-        }
-        
-        function exportXMLCircuit() {
-            const components = Array.from(document.querySelectorAll('.placed-component')).map(comp => ({
-                type: comp.getAttribute('data-component-type'),
-                id: comp.getAttribute('data-id'),
-                x: comp.style.left,
-                y: comp.style.top,
-            }));
-            const xmlContent = generateCircuitXML(components);
-            const blob = new Blob([xmlContent], { type: 'text/xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'circuito_fluxionics.xml';
-            a.click();
-            URL.revokeObjectURL(url);
-            closeSidebar();
-        }
-        
-        function generateCircuitXML(components) {
-            let xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n<circuit>\n';
-            components.forEach(comp => {
-                xmlString += `  <component type="${comp.type}">\n`;
-                xmlString += `    <id>${comp.id}</id>\n`;
-                xmlString += `    <x>${comp.x}</x>\n`;
-                xmlString += `    <y>${comp.y}</y>\n`;
-                // Add properties for XML export if needed
-                const compData = componentData[comp.type];
-                if (compData && compData.properties) {
-                    for (const key in compData.properties) {
-                        // For simplicity, just add a generic property tag. In a real app, you'd get actual values.
-                        xmlString += `    <property name="${key}" value="${compData.properties[key]}"/>\n`;
-                    }
-                }
-                xmlString += '  </component>\n';
-            });
-            // Add connections to XML
-            connections.forEach(conn => {
-                xmlString += `  <connection>\n`;
-                xmlString += `    <start componentId="${conn.startPin.componentId}" pinId="${conn.startPin.pinId}"/>\n`;
-                xmlString += `    <end componentId="${conn.endPin.componentId}" pinId="${conn.endPin.pinId}"/>\n`;
-                xmlString += `  </connection>\n`;
-            });
-            xmlString += '</circuit>';
-            return xmlString;
-        }
-
-        function exportSPICECircuit() {
-            const components = Array.from(document.querySelectorAll('.placed-component'));
-            let spiceNetlist = "* Fluxionics SPICE Netlist\n\n";
-
-            // A map to assign unique node numbers to connected pins
-            const nodeConnections = new Map(); // Key: "compID_pinID", Value: nodeNumber
-            let nextNodeNumber = 1;
-
-            // Helper to get or create a node number for a pin
-            const getNode = (componentId, pinId) => {
-                const key = `${componentId}_${pinId}`;
-                if (!nodeConnections.has(key)) {
-                    nodeConnections.set(key, nextNodeNumber++);
-                }
-                return nodeConnections.get(key);
-            };
-
-            // Process explicit connections (wires) first to ensure connected pins share the same node
-            connections.forEach(conn => {
-                // Ensure nodes are created for both ends of the connection
-                getNode(conn.startPin.componentId, conn.startPin.pinId);
-                getNode(conn.endPin.componentId, conn.endPin.pinId);
-            });
-
-            // Add components to netlist
-            components.forEach(comp => {
-                const type = comp.getAttribute('data-component-type');
-                const id = comp.getAttribute('data-id');
-                const properties = componentData[type].properties;
-                const pins = componentData[type].pins;
-
-                // Handle ground explicitly
-                if (type === 'ground') {
-                    // Ensure the ground pin is mapped to node '0'
-                    nodeConnections.set(`${id}_${pins[0].id}`, '0');
-                    return; // Ground components don't need a line in SPICE like R, C, V
-                }
-
-                // Get node numbers for component pins based on their logical IDs
-                const pinNodes = {};
-                pins.forEach(pin => {
-                    pinNodes[pin.id] = getNode(id, pin.id);
-                });
-
-                switch (type) {
-                    case 'resistor':
-                        if (pinNodes.p1 && pinNodes.p2) {
-                            spiceNetlist += `R${id} ${pinNodes.p1} ${pinNodes.p2} ${properties.value}\n`;
-                        }
-                        break;
-                    case 'capacitor':
-                        if (pinNodes.p1 && pinNodes.p2) {
-                            spiceNetlist += `C${id} ${pinNodes.p1} ${pinNodes.p2} ${properties.value}\n`;
-                        }
-                        break;
-                    case 'inductor':
-                        if (pinNodes.p1 && pinNodes.p2) {
-                            spiceNetlist += `L${id} ${pinNodes.p1} ${pinNodes.p2} ${properties.value}\n`;
-                        }
-                        break;
-                    case 'battery':
-                    case 'voltage-source':
-                        if (pinNodes.positive && pinNodes.negative) {
-                            spiceNetlist += `V${id} ${pinNodes.positive} ${pinNodes.negative} DC ${properties.voltage}\n`;
-                        }
-                        break;
-                    case 'diode':
-                        if (pinNodes.anode && pinNodes.cathode) {
-                            spiceNetlist += `D${id} ${pinNodes.anode} ${pinNodes.cathode} Dmodel\n`; // Dmodel needs to be defined
-                        }
-                        break;
-                    case 'led':
-                        if (pinNodes.anode && pinNodes.cathode) {
-                            spiceNetlist += `D${id} ${pinNodes.anode} ${pinNodes.cathode} LEDmodel\n`; // LEDmodel needs to be defined
-                        }
-                        break;
-                    case 'transistor': // NPN BJT example
-                        if (pinNodes.collector && pinNodes.base && pinNodes.emitter) {
-                            spiceNetlist += `Q${id} ${pinNodes.collector} ${pinNodes.base} ${pinNodes.emitter} NPNmodel\n`; // NPNmodel needs to be defined
-                        }
-                        break;
-                    case 'opamp': // Very simplified Op-Amp model
-                        if (pinNodes.non_inverting && pinNodes.inverting && pinNodes.output) {
-                            spiceNetlist += `X${id} ${pinNodes.non_inverting} ${pinNodes.inverting} ${pinNodes.output} ideal_opamp\n`;
-                        }
-                        break;
-                    case 'timer555': // Placeholder for 555 - complex, usually subcircuit
-                        // For a basic SPICE export, we might just list its pins as nodes
-                        // A full 555 model would be a .SUBCKT
-                        spiceNetlist += `* Timer 555 (ID: ${id})\n`;
-                        pins.forEach(pin => {
-                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
-                        });
-                        break;
-                    case 'arduino': // Placeholder for Arduino
-                        spiceNetlist += `* Arduino (ID: ${id})\n`;
-                        pins.forEach(pin => {
-                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
-                        });
-                        break;
-                    case 'ultrasonic': // Placeholder for Ultrasonic
-                        spiceNetlist += `* Ultrasonic Sensor (ID: ${id})\n`;
-                        pins.forEach(pin => {
-                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
-                        });
-                        break;
-                    case 'thermistor':
-                    case 'photoresistor':
-                        if (pinNodes.p1 && pinNodes.p2) {
-                            spiceNetlist += `R${id} ${pinNodes.p1} ${pinNodes.p2} 1k ; Placeholder for sensor resistance\n`;
-                        }
-                        break;
-                    case 'switch':
-                        if (pinNodes.in && pinNodes.out) {
-                            spiceNetlist += `S${id} ${pinNodes.in} ${pinNodes.out} ${id}_control_node 0 Smodel\n`; // Need a control node and model
-                        }
-                        break;
-                    case 'motor':
-                        if (pinNodes.A && pinNodes.B) {
-                            spiceNetlist += `V_motor_${id} ${pinNodes.A} ${pinNodes.B} DC 0 ; Placeholder for motor voltage\n`;
-                        }
-                        break;
-                    // --- New SPICE exports for added components ---
-                    case 'voltage-reference':
-                        if (pinNodes.out && pinNodes.gnd) {
-                            spiceNetlist += `Vref${id} ${pinNodes.out} ${pinNodes.gnd} DC ${properties.value}\n`;
-                        }
-                        break;
-                    case 'adc':
-                        spiceNetlist += `* ADC (ID: ${id}) - Simplified representation\n`;
-                        if (pinNodes.vin1 && pinNodes.gnd) { // Assuming a simple analog input to ground
-                            spiceNetlist += `XADC${id} ${pinNodes.vin1} ${pinNodes.gnd} ${pinNodes.scl} ${pinNodes.sda} ADC_MODEL\n`;
-                        }
-                        break;
-                    case 'dac':
-                        spiceNetlist += `* DAC (ID: ${id}) - Simplified representation\n`;
-                        if (pinNodes.dout && pinNodes.gnd) { // Assuming a simple analog output to ground
-                            spiceNetlist += `XDAC${id} ${pinNodes.scl} ${pinNodes.sda} ${pinNodes.dout} ${pinNodes.gnd} DAC_MODEL\n`;
-                        }
-                        break;
-                    case 'bjt': // NPN BJT
-                        if (pinNodes.collector && pinNodes.base && pinNodes.emitter) {
-                            spiceNetlist += `Q${id} ${pinNodes.collector} ${pinNodes.base} ${pinNodes.emitter} NPN_BJT_MODEL\n`;
-                        }
-                        break;
-                    case 'igbt':
-                        if (pinNodes.collector && pinNodes.gate && pinNodes.emitter) {
-                            spiceNetlist += `XIGBT${id} ${pinNodes.collector} ${pinNodes.gate} ${pinNodes.emitter} IGBT_MODEL\n`;
-                        }
-                        break;
-                    case 'driver':
-                        spiceNetlist += `* DRIVER (ID: ${id}) - Placeholder\n`;
-                        if (pinNodes.in && pinNodes.out) {
-                            spiceNetlist += `XDRV${id} ${pinNodes.in} ${pinNodes.out} DRIVER_MODEL\n`;
-                        }
-                        break;
-                    case 'microcontroller':
-                        spiceNetlist += `* MICROCONTROLLER (ID: ${id}) - Placeholder\n`;
-                        pins.forEach(pin => {
-                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
-                        });
-                        break;
-                    case 'cpld':
-                        spiceNetlist += `* CPLD (ID: ${id}) - Placeholder\n`;
-                        pins.forEach(pin => {
-                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
-                        });
-                        break;
-                    case 'fpga':
-                        spiceNetlist += `* FPGA (ID: ${id}) - Placeholder\n`;
-                        pins.forEach(pin => {
-                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
-                        });
-                        break;
-                    case 'dsp':
-                        spiceNetlist += `* DSP (ID: ${id}) - Placeholder\n`;
-                        pins.forEach(pin => {
-                            spiceNetlist += `* Pin ${pin.label}: Node ${pinNodes[pin.id]}\n`;
-                        });
-                        break;
-                    case 'temp-sensor':
-                        if (pinNodes.data && pinNodes.gnd) {
-                            spiceNetlist += `R_TS${id} ${pinNodes.data} ${pinNodes.gnd} 10k ; Placeholder for temp sensor resistance\n`;
-                        }
-                        break;
-                    case 'pressure-sensor':
-                        if (pinNodes.scl && pinNodes.sda) {
-                            spiceNetlist += `* Pressure Sensor (ID: ${id}) - Digital, no direct SPICE model\n`;
-                        }
-                        break;
-                    case 'imu':
-                        if (pinNodes.scl && pinNodes.sda) {
-                            spiceNetlist += `* IMU (ID: ${id}) - Digital, no direct SPICE model\n`;
-                        }
-                        break;
-                    case 'light-sensor':
-                        if (pinNodes.scl && pinNodes.sda) {
-                            spiceNetlist += `* Light Sensor (ID: ${id}) - Digital, no direct SPICE model\n`;
-                        }
-                        break;
-                    case 'rf-transceiver':
-                        spiceNetlist += `* RF Transceiver (ID: ${id}) - Complex, no direct SPICE model\n`;
-                        break;
-                    case 'bluetooth-module':
-                        spiceNetlist += `* Bluetooth Module (ID: ${id}) - Complex, no direct SPICE model\n`;
-                        break;
-                    case 'ethernet-phy':
-                        spiceNetlist += `* Ethernet PHY (ID: ${id}) - Complex, no direct SPICE model\n`;
-                        break;
-                    case 'rf-amplifier':
-                        if (pinNodes.in && pinNodes.out) {
-                            spiceNetlist += `XAMP${id} ${pinNodes.in} ${pinNodes.out} RF_AMP_MODEL\n`;
-                        }
-                        break;
-                    case 'mixer':
-                        if (pinNodes.rf_in && pinNodes.lo_in && pinNodes.if_out) {
-                            spiceNetlist += `XMIX${id} ${pinNodes.rf_in} ${pinNodes.lo_in} ${pinNodes.if_out} MIXER_MODEL\n`;
-                        }
-                        break;
-                    case 'fuse':
-                        if (pinNodes.in && pinNodes.out) {
-                            spiceNetlist += `R_FUSE${id} ${pinNodes.in} ${pinNodes.out} 1m ; Ideal fuse (low resistance)\n`; // Simplified
-                        }
-                        break;
-                    case 'tvs-diode':
-                        if (pinNodes.p1 && pinNodes.p2) {
-                            spiceNetlist += `D_TVS${id} ${pinNodes.p1} ${pinNodes.p2} TVS_DIODE_MODEL\n`;
-                        }
-                        break;
-                    case 'peltier-cooler':
-                        if (pinNodes.positive && pinNodes.negative) {
-                            spiceNetlist += `V_PELTIER${id} ${pinNodes.positive} ${pinNodes.negative} DC 0 ; Placeholder for Peltier power\n`;
-                        }
-                        break;
-                }
-            });
-
-            // Add models (basic examples)
-            spiceNetlist += "\n.MODEL Dmodel D\n";
-            spiceNetlist += ".MODEL LEDmodel D (IS=10f RS=10 N=1.7 BV=5 IBV=10u CJO=2p TT=10n)\n"; // Example LED model
-            spiceNetlist += ".MODEL NPNmodel NPN\n"; // Example NPN BJT model
-            spiceNetlist += ".MODEL NPN_BJT_MODEL NPN\n"; // General BJT model
-            spiceNetlist += ".SUBCKT ideal_opamp 1 2 3 ; Non-inverting, Inverting, Output\n";
-            spiceNetlist += "Rin 1 2 1G ; High input impedance\n";
-            spiceNetlist += "Eout 3 0 1 2 100k ; High gain voltage controlled voltage source\n";
-            spiceNetlist += ".ENDS\n";
-            spiceNetlist += ".MODEL Smodel VSWITCH (RON=10m ROFF=1G VON=1V VOFF=0V)\n"; // Example switch model
-            spiceNetlist += ".SUBCKT ADC_MODEL IN OUT VCC GND\n* Simplified ADC Model\n.ENDS\n";
-            spiceNetlist += ".SUBCKT DAC_MODEL IN1 IN2 OUT GND\n* Simplified DAC Model\n.ENDS\n";
-            spiceNetlist += ".SUBCKT IGBT_MODEL C G E\n* Simplified IGBT Model\n.ENDS\n";
-            spiceNetlist += ".SUBCKT DRIVER_MODEL IN OUT\n* Simplified Driver Model\n.ENDS\n";
-            spiceNetlist += ".SUBCKT RF_AMP_MODEL IN OUT\n* Simplified RF Amplifier Model\n.ENDS\n";
-            spiceNetlist += ".SUBCKT MIXER_MODEL RF_IN LO_IN IF_OUT\n* Simplified Mixer Model\n.ENDS\n";
-            spiceNetlist += ".MODEL TVS_DIODE_MODEL D (BV=6V IBV=100m)\n"; // Simple Zener-like TVS diode model
-
-
-            spiceNetlist += ".END\n";
-
-            const blob = new Blob([spiceNetlist], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'circuito_fluxionics.cir';
-            a.click();
-            URL.revokeObjectURL(url);
-            closeSidebar();
-            showModal('Exportar a SPICE', '<p>Se ha generado un archivo SPICE (.cir) básico. Ten en cuenta que la exportación SPICE es una función avanzada y la precisión dependerá de la complejidad del circuito y los modelos de componentes.</p><p>Para simulaciones profesionales, se requiere un software SPICE completo.</p>');
-        }
-
-
-        // --- Zoom Functions ---
-        function applyZoom() {
-            // Update zoom level display
-            document.querySelector('.zoom-level').textContent = `${Math.round(currentZoom * 100)}%`;
-            // Redraw wires to adjust their thickness based on new zoom and re-apply context scale
-            drawWires();
-        }
-
-        function zoomIn() {
-            if (currentZoom < 2.0) { // Max zoom 200%
-                currentZoom += 0.1;
-                currentZoom = parseFloat(currentZoom.toFixed(1)); // Avoid floating point inaccuracies
-                applyZoom();
-            }
-        }
-
-        function zoomOut() {
-            if (currentZoom > 0.5) { // Min zoom 50%
-                currentZoom -= 0.1;
-                currentZoom = parseFloat(currentZoom.toFixed(1)); // Avoid floating point inaccuracies
-                applyZoom();
-            }
-        }
-
-        // --- Scroll Canvas for Mobile ---
-        function scrollCanvas(direction) {
-            let scrollTarget = null;
-            let scrollAmount = 150; // Increased for better visibility
-
-            // Determine which element to scroll based on the active screen
-            // The canvasArea is the primary scrollable element for the circuit design
-            if (currentActiveScreenId === 'appContainer') {
-                scrollTarget = document.getElementById('canvasArea');
-            } else { // This covers startScreen, calfluxSection, tutorialSection
-                scrollTarget = document.getElementById(currentActiveScreenId);
-            }
-
-            if (!scrollTarget) {
-                console.error("Error: Elemento de desplazamiento no encontrado para la pantalla activa:", currentActiveScreenId);
-                showModal('Error de Desplazamiento', 'No se pudo encontrar el área de desplazamiento para esta pantalla.');
-                return;
-            }
-
-            if (direction === 'up') {
-                scrollTarget.scrollTop -= scrollAmount;
-            } else if (direction === 'down') {
-                scrollTarget.scrollTop += scrollAmount;
-            } else if (direction === 'left') { // Added horizontal scroll
-                scrollTarget.scrollLeft -= scrollAmount;
-            } else if (direction === 'right') { // Added horizontal scroll
-                scrollTarget.scrollLeft += scrollAmount;
-            }
-        }
-
-
-        // --- Other Functions (Implementations) ---
-        function showAnalysis() {
-            showModal('Análisis de Circuitos Avanzado', `
-                <h3>Análisis de Circuitos Avanzado</h3>
-                <p>Esta sección te permitirá realizar análisis más profundos de tu circuito, incluyendo:</p>
-                <ul>
-                    <li><strong>Análisis DC:</strong> Para calcular voltajes y corrientes en estado estacionario.</li>
-                    <li><strong>Análisis AC:</strong> Para estudiar el comportamiento del circuito con señales alternas (respuesta en frecuencia).</li>
-                    <li><strong>Análisis Transitorio:</strong> Para observar cómo cambian los voltajes y corrientes con el tiempo.</li>
-                    <li><strong>Análisis de Monte Carlo y Peor Caso:</strong> Para evaluar la robustez del diseño frente a variaciones de componentes.</li>
-                </ul>
-                <p>Además, se integrará un <strong>Panel de Instrumentos</strong> con osciloscopio y analizador de espectro virtuales.</p>
-                <p>Actualmente, estas funcionalidades están en desarrollo y requieren un motor de simulación más robusto. ¡Pronto podrás desbloquear todo el potencial de tu diseño!</p>
-                <h4>Validación de Diseño</h4>
-                <p>También se implementará la verificación de reglas de diseño para asegurar la validez de tus circuitos.</p>
-            `);
-            closeSidebar();
-        }
-
-        function showTemplates() {
-            showModal('Plantillas de Circuitos', `
-                <h3>Plantillas de Circuitos Predefinidos</h3>
-                <p>Esta sección contendrá una biblioteca de circuitos comunes y ejemplos predefinidos para ayudarte a empezar rápidamente o aprender sobre diferentes configuraciones.</p>
-                <ul>
-                    <li>Filtros (Pasa-bajos, Pasa-altos)</li>
-                    <li>Amplificadores Operacionales básicos</li>
-                    <li>Osciladores</li>
-                    <li>Circuitos lógicos simples</li>
-                </ul>
-                <p>¡Próximamente podrás cargar y modificar estas plantillas para tus propios proyectos!</p>
-            `);
-            closeSidebar();
-        }
-
-        function showSettings() {
-            showModal('Configuración', `
-                <h3>Configuración de la Aplicación</h3>
-                <p>Aquí podrás personalizar tu experiencia en Fluxionics:</p>
-                <ul>
-                    <li><strong>Tema:</strong> Cambiar entre temas claros y oscuros.</li>
-                    <li><strong>Idioma:</strong> Seleccionar el idioma de la interfaz.</li>
-                    <li><strong>Tamaño de Cuadrícula:</strong> Ajustar el tamaño de la cuadrícula en el lienzo.</li>
-                    <li><strong>Opciones de Simulación:</strong> Configurar la velocidad de simulación y la precisión.</li>
-                    <li><strong>Capas y Organización:</strong> Gestionar capas para circuitos complejos.</li>
-                </ul>
-                <p>¡Mantente atento a las próximas actualizaciones para estas características!</p>
-            `);
-            closeSidebar();
-        }
-
-        function showHelp() {
-            showModal('Ayuda y Soporte', `
-                <h3>¿Necesitas Ayuda?</h3>
-                <p>Bienvenido a la sección de ayuda de Fluxionics. Aquí encontrarás respuestas a las preguntas más comunes y recursos para empezar:</p>
-                
-                <h4>Primeros Pasos</h4>
-                <p>Si eres nuevo en Fluxionics, te recomendamos visitar nuestro <a href="#" onclick="showScreen('tutorialSection'); hideModal();">Tutorial Interactivo</a> para aprender lo básico sobre cómo añadir componentes, conectarlos y simular tus circuitos.</p>
-
-                <h4>Preguntas Frecuentes (FAQ)</h4>
-                <ul>
-                    <li><strong>¿Cómo añado un componente?</strong> Selecciona un componente de la barra lateral izquierda y haz clic en el lienzo.</li>
-                    <li><strong>¿Cómo conecto dos componentes?</strong> Selecciona la herramienta de 'Cable' (<i class="fas fa-route"></i>), haz clic en un pin de un componente y luego en un pin de otro.</li>
-                    <li><strong>¿Cómo edito las propiedades de un componente?</strong> Con la herramienta de 'Selección' (<i class="fas fa-mouse-pointer"></i>) activa, haz doble clic en el componente.</li>
-                    <li><strong>¿Por qué mi simulación muestra un cortocircuito?</strong> Un cortocircuito ocurre cuando la corriente puede fluir sin resistencia, a menudo conectando directamente una fuente de voltaje a tierra sin una carga. Revisa tus conexiones.</li>
-                </ul>
-
-                <h4>Documentación Profesional</h4>
-                <p>Para información detallada sobre modelos de componentes, análisis avanzado y formatos estándar (como SPICE, Eagle, KiCad), consulta nuestra documentación completa (próximamente).</p>
-                
-                <h4>Soporte Técnico</h4>
-                <p>Si no encuentras lo que buscas, por favor contacta a nuestro equipo de soporte en <a href="mailto:soporte@fluxionics.com">soporte@fluxionics.com</a>. ¡Estamos aquí para ayudarte!</p>
-            `);
-            closeSidebar();
-        }
-
-        // --- Protected Content Alert Functions ---
-        let alertTimeout;
-        function showProtectedAlert(element, message = 'Contenido protegido') {
-            const alertDiv = document.getElementById('protectedAlert');
-            
-            // For elements, position near them. For global (body), center it.
-            if (element && element !== document.body) {
-                const rect = element.getBoundingClientRect();
-                alertDiv.style.left = `${rect.left + rect.width / 2}px`;
-                alertDiv.style.top = `${rect.top - 30}px`; // Above the element
-                alertDiv.style.transform = 'translate(-50%, -50%)'; // Center horizontally
-            } else {
-                alertDiv.style.left = '50%';
-                alertDiv.style.top = '50%';
-                alertDiv.style.transform = 'translate(-50%, -50%)'; // Center globally
-            }
-
-            alertDiv.textContent = message;
-            alertDiv.classList.add('show');
-
-            clearTimeout(alertTimeout);
-            alertTimeout = setTimeout(() => {
-                alertDiv.classList.remove('show');
-            }, 1500); // Hide after 1.5 seconds
-        }
-
-        // --- Custom Modal Functions ---
-        function showModal(title, contentHtml) {
-            const modalOverlay = document.getElementById('customModalOverlay');
-            const modalTitle = document.getElementById('customModalTitle');
-            const modalBody = document.getElementById('customModalBody');
-
-            modalTitle.textContent = title;
-            modalBody.innerHTML = contentHtml;
-            modalOverlay.classList.add('show');
-        }
-
-        function showModalConfirm(title, message, onConfirm) {
-            const modalOverlay = document.getElementById('customModalOverlay');
-            const modalTitle = document.getElementById('customModalTitle');
-            const modalBody = document.getElementById('customModalBody');
-
-            modalTitle.textContent = title;
-            modalBody.innerHTML = `
-                <p>${message}</p>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                    <button class="start-button secondary" onclick="hideModal()">Cancelar</button>
-                    <button class="start-button primary" onclick="hideModal(); ${onConfirm.name}();">Confirmar</button>
-                </div>
-            `;
-            modalOverlay.classList.add('show');
-        }
-
-        function hideModal() {
-            const modalOverlay = document.getElementById('customModalOverlay');
-            modalOverlay.classList.remove('show');
-        }
-
-        // --- Cal Flux Calculator Functions ---
-
         /**
-         * Parses a string value with units (e.g., "10k", "2.2u", "5m") into its base numeric value.
-         * @param {string} valueString The input string.
-         * @returns {number} The base numeric value.
-         */
-        function parseUnitValue(valueString) {
-            if (!valueString) return NaN;
-            valueString = valueString.trim().toLowerCase();
-            const multipliers = {
-                'p': 1e-12, 'n': 1e-9, 'u': 1e-6, 'µ': 1e-6, 'm': 1e-3,
-                'k': 1e3, 'meg': 1e6, 'g': 1e9, 't': 1e12
-            };
-            
-            const match = valueString.match(/^(\d*\.?\d+)([pnµmkMGT]?)(ohm|f|h|hz|v|a|w)?$/i);
-            if (!match) return parseFloat(valueString); // Try parsing as float if no match
-
-            let value = parseFloat(match[1]);
-            const prefix = match[2];
-
-            if (multipliers[prefix]) {
-                value *= multipliers[prefix];
-            } else if (prefix === 'M') { // Special case for Mega (M) as 'm' is milli
-                value *= 1e6;
-            }
-            return value;
-        }
-
-        /**
-         * Formats a numeric value into a human-readable string with appropriate units.
+         * Formats a numeric value into a human-readable string with engineering units (e.g., 1000 -> 1k, 0.001 -> 1m).
          * @param {number} value The numeric value.
-         * @param {string} unitType The type of unit (e.g., 'resistance', 'capacitance', 'inductance', 'frequency', 'voltage', 'current', 'power').
-         * @returns {string} Formatted string (e.g., "10 kΩ", "2.2 µF").
+         * @param {string} unit The base unit (e.g., 'V', 'A', 'Ω', 'F', 'H').
+         * @returns {string} The formatted string.
          */
-        function formatUnitValue(value, unitType) {
-            if (isNaN(value) || !isFinite(value)) return 'N/A';
-            if (value === 0) return `0 ${getUnitSymbol(unitType, '')}`; // Use empty prefix for 0
+        function formatUnitValue(value, unit) {
+            if (isNaN(value)) return 'NaN';
+            if (value === 0) return `0${unit}`;
 
             const absValue = Math.abs(value);
-            let prefix = '';
-            let divisor = 1;
+            const sign = value < 0 ? '-' : '';
 
-            if (absValue >= 1e12) { prefix = 'T'; divisor = 1e12; }
-            else if (absValue >= 1e9) { prefix = 'G'; divisor = 1e9; }
-            else if (absValue >= 1e6) { prefix = 'M'; divisor = 1e6; }
-            else if (absValue >= 1e3) { prefix = 'k'; divisor = 1e3; }
-            else if (absValue < 1e-9) { prefix = 'p'; divisor = 1e-12; }
-            else if (absValue < 1e-6) { prefix = 'n'; divisor = 1e-9; }
-            else if (absValue < 1e-3) { prefix = 'µ'; divisor = 1e-6; }
-            else if (absValue < 1) { prefix = 'm'; divisor = 1e-3; }
-            
-            const formattedValue = (value / divisor).toFixed(2);
-            return `${formattedValue} ${getUnitSymbol(unitType, prefix)}`;
+            if (absValue >= 1e12) return `${sign}${(value / 1e12).toFixed(2)}T${unit}`;
+            if (absValue >= 1e9) return `${sign}${(value / 1e9).toFixed(2)}G${unit}`;
+            if (absValue >= 1e6) return `${sign}${(value / 1e6).toFixed(2)}M${unit}`;
+            if (absValue >= 1e3) return `${sign}${(value / 1e3).toFixed(2)}k${unit}`;
+            if (absValue >= 1) return `${sign}${value.toFixed(2)}${unit}`;
+            if (absValue >= 1e-3) return `${sign}${(value / 1e-3).toFixed(2)}m${unit}`;
+            if (absValue >= 1e-6) return `${sign}${(value / 1e-6).toFixed(2)}µ${unit}`;
+            if (absValue >= 1e-9) return `${sign}${(value / 1e-9).toFixed(2)}n${unit}`;
+            if (absValue >= 1e-12) return `${sign}${(value / 1e-12).toFixed(2)}p${unit}`;
+            return `${value.toExponential(2)}${unit}`;
         }
 
-        function getUnitSymbol(unitType, prefix) {
-            const symbols = {
-                'resistance': { '': 'Ω', 'k': 'kΩ', 'M': 'MΩ', 'G': 'GΩ' },
-                'capacitance': { '': 'F', 'm': 'mF', 'µ': 'µF', 'n': 'nF', 'p': 'pF' },
-                'inductance': { '': 'H', 'm': 'mH', 'µ': 'µH', 'n': 'nH' },
-                'frequency': { '': 'Hz', 'k': 'kHz', 'M': 'MHz', 'G': 'GHz' },
-                'voltage': { '': 'V', 'm': 'mV', 'k': 'kV' },
-                'current': { '': 'A', 'm': 'mA', 'µ': 'µA' },
-                'power': { '': 'W', 'm': 'mW', 'k': 'kW' }
-            };
-            return symbols[unitType]?.[prefix] || `${prefix}${unitType.charAt(0).toUpperCase()}`; // Fallback
-        }
-
-
+        // --- Cal Flux Calculator Rendering ---
         function renderCalculator(type) {
             const area = document.getElementById('calfluxCalculatorArea');
-            let html = '';
-
-            // Update active navigation button
-            document.querySelectorAll('.calflux-nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            const navButtons = document.querySelectorAll('.calflux-nav-btn');
+            navButtons.forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.calflux-nav-btn[data-calculator-type="${type}"]`).classList.add('active');
+
+            let html = '';
 
             switch (type) {
                 case 'ohm':
                     html = `
                         <div class="calculator-section">
-                            <h3>Ley de Ohm y Potencia</h3>
-                            <p>Calcula Voltaje (V), Corriente (I), Resistencia (R) y Potencia (P).</p>
-                            <div class="formula">
-                                V = I * R<br>
-                                P = V * I<br>
-                                P = I² * R<br>
-                                P = V² / R
-                            </div>
-                            <div class="example">
-                                <strong>Ejemplo:</strong> Si V = 12V y R = 100Ω,<br>
-                                I = 12V / 100Ω = 0.12A (120mA)<br>
-                                P = 12V * 0.12A = 1.44W
+                            <h3>Ley de Ohm (V = I * R)</h3>
+                            <p>Calcula voltaje, corriente o resistencia usando la Ley de Ohm.</p>
+                            <div class="formula">V = I * R</div>
+                            <div class="calculator-input-group">
+                                <label for="ohm_voltage">Voltaje (V):</label>
+                                <input type="text" id="ohm_voltage" placeholder="Ej: 9V, 12V">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="ohm_v">Voltaje (V):</label>
-                                <input type="text" id="ohm_v" placeholder="Ej: 12V">
+                                <label for="ohm_current">Corriente (A):</label>
+                                <input type="text" id="ohm_current" placeholder="Ej: 100mA, 0.5A">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="ohm_i">Corriente (I):</label>
-                                <input type="text" id="ohm_i" placeholder="Ej: 0.1A o 100mA">
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="ohm_r">Resistencia (R):</label>
-                                <input type="text" id="ohm_r" placeholder="Ej: 100Ω o 1k">
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="ohm_p">Potencia (P):</label>
-                                <input type="text" id="ohm_p" placeholder="Ej: 1.5W">
+                                <label for="ohm_resistance">Resistencia (Ω):</label>
+                                <input type="text" id="ohm_resistance" placeholder="Ej: 220Ω, 1k">
                             </div>
                             <div class="action-buttons">
                                 <button onclick="calculateOhm()">Calcular</button>
                             </div>
-                            <div class="calculator-results">
-                                <p>Voltaje: <span id="ohm_result_v">N/A</span></p>
-                                <p>Corriente: <span id="ohm_result_i">N/A</span></p>
-                                <p>Resistencia: <span id="ohm_result_r">N/A</span></p>
-                                <p>Potencia: <span id="ohm_result_p">N/A</span></p>
+                            <div class="calculator-results" id="ohmResults">
+                                <p>Resultados:</p>
                             </div>
                         </div>
                     `;
@@ -3799,61 +3667,26 @@
                 case 'dividers':
                     html = `
                         <div class="calculator-section">
-                            <h3>Divisor de Voltaje y Corriente</h3>
-                            <p>Calcula la salida de un divisor de voltaje o la corriente en una rama de un divisor de corriente.</p>
-                            
-                            <h4>Divisor de Voltaje</h4>
-                            <div class="formula">
-                                Vout = Vin * (R2 / (R1 + R2))
-                            </div>
-                            <div class="example">
-                                <strong>Ejemplo:</strong> Vin = 9V, R1 = 1kΩ, R2 = 2kΩ<br>
-                                Vout = 9V * (2000 / (1000 + 2000)) = 6V
+                            <h3>Divisor de Voltaje</h3>
+                            <p>Calcula el voltaje de salida de un divisor de voltaje resistivo.</p>
+                            <div class="formula">Vout = Vin * (R2 / (R1 + R2))</div>
+                            <div class="calculator-input-group">
+                                <label for="divider_vin">Voltaje de Entrada (Vin):</label>
+                                <input type="text" id="divider_vin" placeholder="Ej: 5V">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="vd_vin">Voltaje de Entrada (Vin):</label>
-                                <input type="text" id="vd_vin" placeholder="Ej: 9V">
+                                <label for="divider_r1">Resistencia R1 (Ω):</label>
+                                <input type="text" id="divider_r1" placeholder="Ej: 1k, 1000">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="vd_r1">Resistencia 1 (R1):</label>
-                                <input type="text" id="vd_r1" placeholder="Ej: 1k">
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="vd_r2">Resistencia 2 (R2):</label>
-                                <input type="text" id="vd_r2" placeholder="Ej: 2k">
+                                <label for="divider_r2">Resistencia R2 (Ω):</label>
+                                <input type="text" id="divider_r2" placeholder="Ej: 2.2k, 2200">
                             </div>
                             <div class="action-buttons">
-                                <button onclick="calculateVoltageDivider()">Calcular Vout</button>
+                                <button onclick="calculateVoltageDivider()">Calcular</button>
                             </div>
-                            <div class="calculator-results">
-                                <p>Voltaje de Salida (Vout): <span id="vd_result_vout">N/A</span></p>
-                            </div>
-
-                            <h4 style="margin-top: 40px;">Divisor de Corriente</h4>
-                            <div class="formula">
-                                I_R2 = Itotal * (R1 / (R1 + R2))
-                            </div>
-                            <div class="example">
-                                <strong>Ejemplo:</strong> Itotal = 1A, R1 = 100Ω, R2 = 200Ω<br>
-                                I_R2 = 1A * (100 / (100 + 200)) = 0.33A
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="cd_itotal">Corriente Total (Itotal):</label>
-                                <input type="text" id="cd_itotal" placeholder="Ej: 1A">
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="cd_r1">Resistencia 1 (R1):</label>
-                                <input type="text" id="cd_r1" placeholder="Ej: 100">
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="cd_r2">Resistencia 2 (R2):</label>
-                                <input type="text" id="cd_r2" placeholder="Ej: 200">
-                            </div>
-                            <div class="action-buttons">
-                                <button onclick="calculateCurrentDivider()">Calcular I_R2</button>
-                            </div>
-                            <div class="calculator-results">
-                                <p>Corriente en R2 (I_R2): <span id="cd_result_ir2">N/A</span></p>
+                            <div class="calculator-results" id="dividerResults">
+                                <p>Resultados:</p>
                             </div>
                         </div>
                     `;
@@ -3861,53 +3694,34 @@
                 case 'rcrlFilter':
                     html = `
                         <div class="calculator-section">
-                            <h3>Filtros RC y RL (Frecuencia de Corte)</h3>
-                            <p>Calcula la frecuencia de corte (-3dB) para filtros RC y RL.</p>
-                            
-                            <h4>Filtro RC (Pasa-Bajos o Pasa-Altos)</h4>
-                            <div class="formula">
-                                Fc = 1 / (2 * PI * R * C)
-                            </div>
-                            <div class="example">
-                                <strong>Ejemplo:</strong> R = 1kΩ, C = 0.1µF<br>
-                                Fc = 1 / (2 * PI * 1000 * 0.0000001) ≈ 1591.5 Hz (1.59 kHz)
-                            </div>
+                            <h3>Filtros RC/RL (Frecuencia de Corte)</h3>
+                            <p>Calcula la frecuencia de corte (-3dB) para filtros RC o RL.</p>
+                            <div class="formula">Fc = 1 / (2 * π * R * C)  (para RC)</div>
+                            <div class="formula">Fc = R / (2 * π * L)  (para RL)</div>
                             <div class="calculator-input-group">
-                                <label for="rc_r">Resistencia (R):</label>
-                                <input type="text" id="rc_r" placeholder="Ej: 1k">
+                                <label for="filter_type">Tipo de Filtro:</label>
+                                <select id="filter_type" onchange="toggleFilterInputs()">
+                                    <option value="rc">RC</option>
+                                    <option value="rl">RL</option>
+                                </select>
                             </div>
-                            <div class="calculator-input-group">
-                                <label for="rc_c">Capacitancia (C):</label>
-                                <input type="text" id="rc_c" placeholder="Ej: 0.1uF">
+                            <div class="calculator-input-group" id="rcInputs">
+                                <label for="filter_r">Resistencia (R):</label>
+                                <input type="text" id="filter_r" placeholder="Ej: 1k, 100">
+                                <label for="filter_c">Capacitancia (C):</label>
+                                <input type="text" id="filter_c" placeholder="Ej: 100n, 0.1u">
+                            </div>
+                            <div class="calculator-input-group" id="rlInputs" style="display:none;">
+                                <label for="filter_r_rl">Resistencia (R):</label>
+                                <input type="text" id="filter_r_rl" placeholder="Ej: 100, 500">
+                                <label for="filter_l">Inductancia (L):</label>
+                                <input type="text" id="filter_l" placeholder="Ej: 10m, 0.001">
                             </div>
                             <div class="action-buttons">
-                                <button onclick="calculateRcFilter()">Calcular Fc RC</button>
+                                <button onclick="calculateFilterFrequency()">Calcular</button>
                             </div>
-                            <div class="calculator-results">
-                                <p>Frecuencia de Corte (Fc): <span id="rc_result_fc">N/A</span></p>
-                            </div>
-
-                            <h4 style="margin-top: 40px;">Filtro RL (Pasa-Bajos o Pasa-Altos)</h4>
-                            <div class="formula">
-                                Fc = R / (2 * PI * L)
-                            </div>
-                            <div class="example">
-                                <strong>Ejemplo:</strong> R = 100Ω, L = 10mH<br>
-                                Fc = 100 / (2 * PI * 0.01) ≈ 1591.5 Hz (1.59 kHz)
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="rl_r">Resistencia (R):</label>
-                                <input type="text" id="rl_r" placeholder="Ej: 100">
-                            </div>
-                            <div class="calculator-input-group">
-                                <label for="rl_l">Inductancia (L):</label>
-                                <input type="text" id="rl_l" placeholder="Ej: 10mH">
-                            </div>
-                            <div class="action-buttons">
-                                <button onclick="calculateRlFilter()">Calcular Fc RL</button>
-                            </div>
-                            <div class="calculator-results">
-                                <p>Frecuencia de Corte (Fc): <span id="rl_result_fc">N/A</span></p>
+                            <div class="calculator-results" id="filterResults">
+                                <p>Resultados:</p>
                             </div>
                         </div>
                     `;
@@ -3916,27 +3730,21 @@
                     html = `
                         <div class="calculator-section">
                             <h3>Resonancia LC</h3>
-                            <p>Calcula la frecuencia de resonancia de un circuito LC (serie o paralelo).</p>
-                            <div class="formula">
-                                Fr = 1 / (2 * PI * sqrt(L * C))
-                            </div>
-                            <div class="example">
-                                <strong>Ejemplo:</strong> L = 10mH, C = 100nF<br>
-                                Fr = 1 / (2 * PI * sqrt(0.01 * 0.0000001)) ≈ 5032.9 Hz (5.03 kHz)
-                            </div>
+                            <p>Calcula la frecuencia de resonancia de un circuito LC.</p>
+                            <div class="formula">Fr = 1 / (2 * π * √(L * C))</div>
                             <div class="calculator-input-group">
                                 <label for="lc_l">Inductancia (L):</label>
-                                <input type="text" id="lc_l" placeholder="Ej: 10mH">
+                                <input type="text" id="lc_l" placeholder="Ej: 10m, 0.001">
                             </div>
                             <div class="calculator-input-group">
                                 <label for="lc_c">Capacitancia (C):</label>
-                                <input type="text" id="lc_c" placeholder="Ej: 100nF">
+                                <input type="text" id="lc_c" placeholder="Ej: 100n, 0.1u">
                             </div>
                             <div class="action-buttons">
-                                <button onclick="calculateLcResonance()">Calcular Fr</button>
+                                <button onclick="calculateLCResonance()">Calcular</button>
                             </div>
-                            <div class="calculator-results">
-                                <p>Frecuencia de Resonancia (Fr): <span id="lc_result_fr">N/A</span></p>
+                            <div class="calculator-results" id="lcResults">
+                                <p>Resultados:</p>
                             </div>
                         </div>
                     `;
@@ -3944,39 +3752,38 @@
                 case 'transformers':
                     html = `
                         <div class="calculator-section">
-                            <h3>Transformadores</h3>
-                            <p>Calcula voltajes y corrientes en el secundario de un transformador ideal.</p>
-                            <div class="formula">
-                                Vsec / Vprim = Nsec / Nprim<br>
-                                Isec / Iprim = Nprim / Nsec
-                            </div>
-                            <div class="example">
-                                <strong>Ejemplo:</strong> Vprim = 120V, Nprim = 1000 vueltas, Nsec = 100 vueltas, Iprim = 1A<br>
-                                Vsec = 120V * (100 / 1000) = 12V<br>
-                                Isec = 1A * (1000 / 100) = 10A
+                            <h3>Transformadores (Relación de Espiras)</h3>
+                            <p>Calcula voltajes o corrientes en transformadores ideales.</p>
+                            <div class="formula">Vp/Vs = Np/Ns = Is/Ip</div>
+                            <div class="calculator-input-group">
+                                <label for="transformer_vp">Voltaje Primario (Vp):</label>
+                                <input type="text" id="transformer_vp" placeholder="Ej: 120V">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="xf_vprim">Voltaje Primario (Vprim):</label>
-                                <input type="text" id="xf_vprim" placeholder="Ej: 120V">
+                                <label for="transformer_np">Espira Primaria (Np):</label>
+                                <input type="text" id="transformer_np" placeholder="Ej: 1000">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="xf_iprim">Corriente Primaria (Iprim):</label>
-                                <input type="text" id="xf_iprim" placeholder="Ej: 1A">
+                                <label for="transformer_vs">Voltaje Secundario (Vs):</label>
+                                <input type="text" id="transformer_vs" placeholder="Ej: 12V">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="xf_nprim">Vueltas Primario (Nprim):</label>
-                                <input type="number" id="xf_nprim" placeholder="Ej: 1000">
+                                <label for="transformer_ns">Espira Secundaria (Ns):</label>
+                                <input type="text" id="transformer_ns" placeholder="Ej: 100">
                             </div>
                             <div class="calculator-input-group">
-                                <label for="xf_nsec">Vueltas Secundario (Nsec):</label>
-                                <input type="number" id="xf_nsec" placeholder="Ej: 100">
+                                <label for="transformer_ip">Corriente Primaria (Ip):</label>
+                                <input type="text" id="transformer_ip" placeholder="Ej: 1A">
+                            </div>
+                            <div class="calculator-input-group">
+                                <label for="transformer_is">Corriente Secundaria (Is):</label>
+                                <input type="text" id="transformer_is" placeholder="Ej: 10A">
                             </div>
                             <div class="action-buttons">
                                 <button onclick="calculateTransformer()">Calcular</button>
                             </div>
-                            <div class="calculator-results">
-                                <p>Voltaje Secundario (Vsec): <span id="xf_result_vsec">N/A</span></p>
-                                <p>Corriente Secundario (Isec): <span id="xf_result_isec">N/A</span></p>
+                            <div class="calculator-results" id="transformerResults">
+                                <p>Resultados:</p>
                             </div>
                         </div>
                     `;
@@ -3984,75 +3791,76 @@
                 case 'resistorCode':
                     html = `
                         <div class="calculator-section">
-                            <h3>Calculadora de Código de Colores de Resistencia</h3>
-                            <p>Ingresa los colores de las bandas de tu resistencia para determinar su valor y tolerancia.</p>
+                            <h3>Código de Colores de Resistencia</h3>
+                            <p>Determina el valor de una resistencia a partir de sus bandas de color.</p>
+                            <div class="resistor-bands-display">
+                                <div class="resistor-band-color" id="displayBand1" style="background-color: black;"></div>
+                                <div class="resistor-band-color" id="displayBand2" style="background-color: brown;"></div>
+                                <div class="resistor-band-color" id="displayMultiplier" style="background-color: red;"></div>
+                                <div class="resistor-band-color" id="displayTolerance" style="background-color: gold;"></div>
+                            </div>
                             <div class="resistor-calculator">
+                                <h4>Bandas de Resistencia</h4>
                                 <div class="resistor-input-group">
-                                    <label for="band1">Banda 1:</label>
+                                    <label for="band1">Banda 1 (Primer Dígito):</label>
                                     <select id="band1" onchange="calculateResistance()">
-                                        <option value="black" style="background-color: black; color: white;">Negro (0)</option>
-                                        <option value="brown" style="background-color: brown; color: white;">Marrón (1)</option>
-                                        <option value="red" style="background-color: red; color: white;">Rojo (2)</option>
-                                        <option value="orange" style="background-color: orange; color: black;">Naranja (3)</option>
-                                        <option value="yellow" style="background-color: yellow; color: black;">Amarillo (4)</option>
-                                        <option value="green" style="background-color: green; color: white;">Verde (5)</option>
-                                        <option value="blue" style="background-color: blue; color: white;">Azul (6)</option>
-                                        <option value="violet" style="background-color: violet; color: white;">Violeta (7)</option>
-                                        <option value="gray" style="background-color: gray; color: black;">Gris (8)</option>
-                                        <option value="white" style="background-color: white; color: black;">Blanco (9)</option>
+                                        <option value="black" style="background-color: black; color: white;">Negro</option>
+                                        <option value="brown" style="background-color: brown; color: white;">Marrón</option>
+                                        <option value="red" style="background-color: red; color: white;">Rojo</option>
+                                        <option value="orange" style="background-color: orange; color: black;">Naranja</option>
+                                        <option value="yellow" style="background-color: yellow; color: black;">Amarillo</option>
+                                        <option value="green" style="background-color: green; color: white;">Verde</option>
+                                        <option value="blue" style="background-color: blue; color: white;">Azul</option>
+                                        <option value="violet" style="background-color: violet; color: white;">Violeta</option>
+                                        <option value="gray" style="background-color: gray; color: white;">Gris</option>
+                                        <option value="white" style="background-color: white; color: black;">Blanco</option>
                                     </select>
                                 </div>
                                 <div class="resistor-input-group">
-                                    <label for="band2">Banda 2:</label>
+                                    <label for="band2">Banda 2 (Segundo Dígito):</label>
                                     <select id="band2" onchange="calculateResistance()">
-                                        <option value="black" style="background-color: black; color: white;">Negro (0)</option>
-                                        <option value="brown" style="background-color: brown; color: white;">Marrón (1)</option>
-                                        <option value="red" style="background-color: red; color: white;">Rojo (2)</option>
-                                        <option value="orange" style="background-color: orange; color: black;">Naranja (3)</option>
-                                        <option value="yellow" style="background-color: yellow; color: black;">Amarillo (4)</option>
-                                        <option value="green" style="background-color: green; color: white;">Verde (5)</option>
-                                        <option value="blue" style="background-color: blue; color: white;">Azul (6)</option>
-                                        <option value="violet" style="background-color: violet; color: white;">Violeta (7)</option>
-                                        <option value="gray" style="background-color: gray; color: black;">Gris (8)</option>
-                                        <option value="white" style="background-color: white; color: black;">Blanco (9)</option>
+                                        <option value="black" style="background-color: black; color: white;">Negro</option>
+                                        <option value="brown" selected style="background-color: brown; color: white;">Marrón</option>
+                                        <option value="red" style="background-color: red; color: white;">Rojo</option>
+                                        <option value="orange" style="background-color: orange; color: black;">Naranja</option>
+                                        <option value="yellow" style="background-color: yellow; color: black;">Amarillo</option>
+                                        <option value="green" style="background-color: green; color: white;">Verde</option>
+                                        <option value="blue" style="background-color: blue; color: white;">Azul</option>
+                                        <option value="violet" style="background-color: violet; color: white;">Violeta</option>
+                                        <option value="gray" style="background-color: gray; color: white;">Gris</option>
+                                        <option value="white" style="background-color: white; color: black;">Blanco</option>
                                     </select>
                                 </div>
                                 <div class="resistor-input-group">
-                                    <label for="multiplier">Multiplicador:</label>
+                                    <label for="multiplier">Banda Multiplicadora:</label>
                                     <select id="multiplier" onchange="calculateResistance()">
                                         <option value="black" style="background-color: black; color: white;">Negro (x1)</option>
                                         <option value="brown" style="background-color: brown; color: white;">Marrón (x10)</option>
-                                        <option value="red" style="background-color: red; color: white;">Rojo (x100)</option>
+                                        <option value="red" selected style="background-color: red; color: white;">Rojo (x100)</option>
                                         <option value="orange" style="background-color: orange; color: black;">Naranja (x1k)</option>
                                         <option value="yellow" style="background-color: yellow; color: black;">Amarillo (x10k)</option>
                                         <option value="green" style="background-color: green; color: white;">Verde (x100k)</option>
                                         <option value="blue" style="background-color: blue; color: white;">Azul (x1M)</option>
                                         <option value="violet" style="background-color: violet; color: white;">Violeta (x10M)</option>
-                                        <option value="gold" style="background-color: gold; color: black;">Dorado (x0.1)</option>
-                                        <option value="silver" style="background-color: silver; color: black;">Plateado (x0.01)</option>
+                                        <option value="gold" style="background-color: gold; color: black;">Oro (x0.1)</option>
+                                        <option value="silver" style="background-color: silver; color: black;">Plata (x0.01)</option>
                                     </select>
                                 </div>
                                 <div class="resistor-input-group">
-                                    <label for="tolerance">Tolerancia:</label>
+                                    <label for="tolerance">Banda de Tolerancia:</label>
                                     <select id="tolerance" onchange="calculateResistance()">
                                         <option value="brown" style="background-color: brown; color: white;">Marrón (±1%)</option>
                                         <option value="red" style="background-color: red; color: white;">Rojo (±2%)</option>
                                         <option value="green" style="background-color: green; color: white;">Verde (±0.5%)</option>
                                         <option value="blue" style="background-color: blue; color: white;">Azul (±0.25%)</option>
                                         <option value="violet" style="background-color: violet; color: white;">Violeta (±0.1%)</option>
-                                        <option value="gray" style="background-color: gray; color: black;">Gris (±0.05%)</option>
-                                        <option value="gold" style="background-color: gold; color: black;">Dorado (±5%)</option>
-                                        <option value="silver" style="background-color: silver; color: black;">Plateado (±10%)</option>
+                                        <option value="gray" style="background-color: gray; color: white;">Gris (±0.05%)</option>
+                                        <option value="gold" selected style="background-color: gold; color: black;">Oro (±5%)</option>
+                                        <option value="silver" style="background-color: silver; color: black;">Plata (±10%)</option>
                                     </select>
                                 </div>
                                 <div class="resistor-result">
-                                    <p>Valor de Resistencia: <span id="resistanceValue">0 Ω</span></p>
-                                    <div class="resistor-bands-display">
-                                        <div id="displayBand1" class="resistor-band-color"></div>
-                                        <div id="displayBand2" class="resistor-band-color"></div>
-                                        <div id="displayMultiplier" class="resistor-band-color"></div>
-                                        <div id="displayTolerance" class="resistor-band-color"></div>
-                                    </div>
+                                    <p>Resistencia: <span id="resistanceValue">0Ω ±5%</span></p>
                                 </div>
                             </div>
                         </div>
@@ -4063,265 +3871,417 @@
                         <div class="component-guide-section">
                             <h3>Guía Completa de Componentes Electrónicos por Nivel Profesional</h3>
                             <p>Esta guía te proporciona una base sólida para seleccionar componentes según el nivel de complejidad de tus proyectos.</p>
-                            
-                            <h4>1. COMPONENTES ANALÓGICOS</h4>
-                            
+
+                            <h4>1. Componentes Analógicos</h4>
                             <h5>Op-Amps (Amplificadores Operacionales)</h5>
                             <ul>
-                                <li><strong>Nivel Básico:</strong> LM358 (dual, rail-to-rail, bajo costo), TL072 (JFET input, bajo ruido), uA741 (clásico para aprendizaje, obsoleto).</li>
-                                <li><strong>Nivel Medio:</strong> LM324 (quad LM358), TL084 (quad JFET), LF356 (mejor slew rate), LM833 (optimizado para audio).</li>
-                                <li><strong>Nivel Intermedio:</strong> OPA2134 (audio profesional, FET input), AD8628 (auto-zero, ultra-bajo offset), OPA627 (ultra-bajo ruido, alta velocidad).</li>
-                                <li><strong>Nivel Profesional:</strong> OPA827 (ultra-bajo ruido, alta precisión), AD797 (1nV/VHz ruido, 110MHz GBW), LT1028 (0.85nV/VHz), ADA4898-2 (ultra-rápido, rail-to-rail).</li>
+                                <li><strong>Nivel Básico:</strong> LM358 (Dual, rail-to-rail output, bajo costo), TL072 (JFET input, bajo ruido), uA741 (Clásico para aprendizaje, obsoleto en diseños nuevos).</li>
+                                <li><strong>Nivel Medio:</strong> LM324 (Quad, versión del LM358), TL084 (Quad JFET, para aplicaciones multi-canal), LF356 (JFET, mejor slew rate que TL072), LM833 (Dual, optimizado para audio).</li>
+                                <li><strong>Nivel Profesional:</strong> OPA2134 (Audio profesional, FET input, 8MHz GBW, 20V/µs slew rate), AD8628 (Auto-zero, ultra-bajo offset, para instrumentación, DC precision), OPA627 (Ultra-bajo ruido, alta velocidad, para preamplificadores, instrumentación crítica), OPA827 (Ultra-bajo ruido (1nV/√Hz), alta precisión).</li>
                             </ul>
 
-                            <h5>Referencias de Voltaje</h5>
+                            <h5>Reguladores de Voltaje Lineales (LDOs)</h5>
                             <ul>
-                                <li><strong>Básico:</strong> LM4040 (shunt reference), TL431 (adjustable shunt regulator).</li>
-                                <li><strong>Intermedio:</strong> AD580 (precision 2.5V), REF02 (5V precision).</li>
-                                <li><strong>Profesional:</strong> LTZ1000 (ultra-precision heated), AD587 (10V precision).</li>
+                                <li><strong>Nivel Básico:</strong> LM78xx/LM79xx (Fijos, fáciles de usar, bajo costo), LM317/LM337 (Ajustables, versátiles).</li>
+                                <li><strong>Nivel Medio:</strong> AMS1117 (LDOs de bajo dropout, común en 3.3V/5V), LT1763 (Bajo ruido, ideal para RF/Audio).</li>
+                                <li><strong>Nivel Profesional:</strong> TPS7A4700 (Ultra-bajo ruido, alta PSRR, para aplicaciones sensibles), ADP7118 (Alta corriente, bajo ruido, para FPGAs/DSPs).</li>
                             </ul>
 
-                            <h5>Convertidores A/D</h5>
+                            <h5>Diodos y Rectificadores</h5>
                             <ul>
-                                <li><strong>Básico:</strong> ADC0804 (8-bit, single channel), MCP3008 (8-channel, 10-bit, SPI).</li>
-                                <li><strong>Intermedio:</strong> ADS1115 (16-bit, 4-channel, I2C), MCP3424 (18-bit, 4-channel, I2C).</li>
-                                <li><strong>Profesional:</strong> AD7794 (24-bit, 6-channel), ADS1256 (24-bit, 8-channel, high-speed).</li>
+                                <li><strong>Nivel Básico:</strong> 1N400x (Rectificación de propósito general), 1N4148 (Conmutación de señal pequeña).</li>
+                                <li><strong>Nivel Medio:</strong> Diodos Schottky (Baja caída de tensión, alta velocidad, para fuentes conmutadas), Diodos Zener (Regulación de voltaje de referencia).</li>
+                                <li><strong>Nivel Profesional:</strong> Diodos de Recuperación Rápida/Ultra-Rápida (Para aplicaciones de alta frecuencia), Diodos de Carburo de Silicio (SiC) (Alta temperatura, alta tensión, baja pérdida).</li>
                             </ul>
 
-                            <h5>Convertidores D/A</h5>
+                            <h5>Transistores BJT y MOSFET</h5>
                             <ul>
-                                <li><strong>Básico:</strong> DAC0808 (8-bit, current output), MCP4725 (12-bit, I2C).</li>
-                                <li><strong>Intermedio:</strong> MCP4922 (12-bit, dual channel, SPI), AD5693 (16-bit, I2C, nano-power).</li>
-                                <li><strong>Profesional:</strong> AD5791 (20-bit, ±10V output), DAC8881 (18-bit, low-power).</li>
+                                <li><strong>Nivel Básico:</strong> 2N3904/2N3906 (BJT de señal pequeña, propósito general), IRF540N (MOSFET de potencia, bajo costo).</li>
+                                <li><strong>Nivel Medio:</strong> Transistores de Potencia (2N3055, TIP120), MOSFETs de Canal N/P (IRLZ44N, FQP17P06).</li>
+                                <li><strong>Nivel Profesional:</strong> MOSFETs de Super-Unión (Baja Ron, para fuentes conmutadas de alta eficiencia), GaN FETs (Muy alta frecuencia, alta eficiencia, para convertidores resonantes).</li>
                             </ul>
 
-                            <h4>2. COMPONENTES DE POTENCIA</h4>
-
-                            <h5>Transistores de Potencia</h5>
+                            <h4>2. Componentes Digitales</h4>
+                            <h5>Microcontroladores (MCUs)</h5>
                             <ul>
-                                <li><strong>Básico:</strong> TIP31C/TIP32C (NPN/PNP, 3A, 100V), 2N3055 (NPN, 15A, 60V).</li>
-                                <li><strong>Intermedio:</strong> TIP147/TIP142 (Darlington complementario), MJE340/MJE350 (complementario).</li>
+                                <li><strong>Nivel Básico:</strong> ATmega328P (Arduino UNO, fácil de usar, gran comunidad), PIC16F84A (Clásico para aprendizaje, simple).</li>
+                                <li><strong>Nivel Medio:</strong> STM32F103 (ARM Cortex-M3, más potente, periféricos avanzados), ESP32/ESP8266 (Con Wi-Fi/Bluetooth, para IoT).</li>
+                                <li><strong>Nivel Profesional:</strong> ARM Cortex-M4/M7 (DSP, FPU, alta velocidad, para control avanzado), Microcontroladores de 32 bits específicos para aplicaciones (Automotriz, Industrial).</li>
                             </ul>
 
-                            <h5>MOSFETS</h5>
+                            <h5>FPGAs y CPLDs</h5>
                             <ul>
-                                <li><strong>Básico:</strong> IRF540N (N-channel, 100V, 33A), IRF9540N (P-channel).</li>
-                                <li><strong>Intermedio:</strong> IRLZ44N (Logic level), IRF3205 (Low Rds(on)).</li>
-                                <li><strong>Profesional:</strong> SIC MOSFETS (Silicon Carbide), GaN FETs (Gallium Nitride).</li>
+                                <li><strong>Nivel Básico:</strong> CPLDs pequeños (EPM240, XC9572XL, para lógica glue, bajo pin-count).</li>
+                                <li><strong>Nivel Medio:</strong> FPGAs de baja densidad (Xilinx Spartan-6, Altera Cyclone IV, para procesamiento de señales, interfaces).</li>
+                                <li><strong>Nivel Profesional:</strong> FPGAs de alta densidad (Xilinx Zynq, Altera Arria, con ARM cores, para sistemas complejos, procesamiento de video/RF).</li>
                             </ul>
 
-                            <h5>IGBTS</h5>
+                            <h5>Memorias (Flash, RAM, EEPROM)</h5>
                             <ul>
-                                <li><strong>Intermedio:</strong> IRGP4063D (600V, 96A), FGA25N120 (1200V, 25A).</li>
-                                <li><strong>Profesional:</strong> Módulos IGBT (ej. FF75R12RT4).</li>
+                                <li><strong>Nivel Básico:</strong> EEPROM I2C/SPI (24LC256, 25LC1024, para configuración, datos pequeños).</li>
+                                <li><strong>Nivel Medio:</strong> Flash SPI (W25Q64FV, para firmware, datos grandes), SRAM paralela (Para buffers de datos rápidos).</li>
+                                <li><strong>Nivel Profesional:</strong> DDR3/DDR4 SDRAM (Alta velocidad, gran capacidad, para sistemas embebidos de alto rendimiento), NVRAM (FRAM, MRAM, para datos críticos no volátiles).</li>
                             </ul>
 
-                            <h5>Drivers y Aislamiento</h5>
+                            <h4>3. Sensores y Actuadores</h4>
+                            <h5>Sensores de Temperatura</h5>
                             <ul>
-                                <li><strong>Básico:</strong> ULN2003 (Darlington array), MCP1407 (MOSFET driver).</li>
-                                <li><strong>Intermedio:</strong> IR2110 (High/low side driver).</li>
-                                <li><strong>Profesional:</strong> ACPL-332J (Isolated gate driver), Si8230 (Isolated driver con protección).</li>
+                                <li><strong>Nivel Básico:</strong> Termistor NTC (Cambio de resistencia con temperatura), LM35 (Salida de voltaje lineal).</li>
+                                <li><strong>Nivel Medio:</strong> DS18B20 (Digital, 1-Wire, buena precisión), Termopares (Amplio rango de temperatura).</li>
+                                <li><strong>Nivel Profesional:</strong> RTDs (PT100, PT1000, alta precisión, estabilidad), Sensores de temperatura de infrarrojos (Sin contacto).</li>
                             </ul>
 
-                            <h4>3. COMPONENTES DIGITALES</h4>
-
-                            <h5>Microcontroladores</h5>
+                            <h5>Sensores de Luz</h5>
                             <ul>
-                                <li><strong>Básico:</strong> Arduino Uno (ATmega328P), PIC16F877A.</li>
-                                <li><strong>Intermedio:</strong> STM32F103 (ARM Cortex-M3), ESP32 (WiFi/Bluetooth).</li>
-                                <li><strong>Profesional:</strong> STM32F407 (Cortex-M4), STM32H743 (Cortex-M7), i.MX RT1060 (Crossover processor).</li>
+                                <li><strong>Nivel Básico:</strong> Fotorresistor (LDR, resistencia varía con la luz).</li>
+                                <li><strong>Nivel Medio:</strong> Fotodiodo/Fototransistor (Respuesta más rápida, lineal), Sensor de luz ambiental (BH1750, digital I2C).</li>
+                                <li><strong>Nivel Profesional:</strong> Sensores de color (TCS34725, RGB), Sensores de imagen (CMOS/CCD).</li>
                             </ul>
 
-                            <h5>Lógica Programable</h5>
+                            <h5>Actuadores (Motores, Relés)</h5>
                             <ul>
-                                <li><strong>Intermedio:</strong> CPLDs (ej. XC9572XL).</li>
-                                <li><strong>Profesional:</strong> FPGAS (Cyclone IV, Spartan-7, Virtex).</li>
+                                <li><strong>Nivel Básico:</strong> Motor DC con driver simple (L293D), Relé electromecánico.</li>
+                                <li><strong>Nivel Medio:</strong> Motores paso a paso con drivers (A4988), Servomotores (SG90, MG996R).</li>
+                                <li><strong>Nivel Profesional:</strong> Motores BLDC con control FOC (Field-Oriented Control), Relés de estado sólido (SSR) de alta potencia.</li>
                             </ul>
 
-                            <h5>DSPs (Digital Signal Processors)</h5>
+                            <h4>4. Consideraciones de Diseño</h4>
+                            <h5>Fiabilidad (Reliability)</h5>
                             <ul>
-                                <li><strong>Profesional:</strong> TMS320F28335 (Fixed-point), ADSP-21489 (Floating-point SHARC), TMS320C6678 (Multi-core DSP).</li>
+                                <li>MTBF (Mean Time Between Failures)</li>
+                                <li>Rango de temperatura de operación</li>
+                                <li>Tolerancia a la humedad</li>
+                                <li>Resistencia a vibraciones/golpes</li>
+                                <li>Protección ESD</li>
                             </ul>
 
-                            <h4>4. SENSORES</h4>
-
-                            <h5>Temperatura</h5>
+                            <h5>Optimización de Costos</h5>
                             <ul>
-                                <li><strong>Básico:</strong> LM35 (Analog), DS18B20 (Digital, 1-Wire).</li>
-                                <li><strong>Intermedio:</strong> PT100/PT1000 (RTD), Thermocouple (K, J, T types).</li>
-                                <li><strong>Profesional:</strong> SHT30 (Humidity + Temperature, I2C), MAX31865 (RTD-to-Digital converter).</li>
+                                <li>Precios por volumen (descuentos por cantidad)</li>
+                                <li>Ciclo de vida del producto (longevidad)</li>
+                                <li>Segundas fuentes (múltiples proveedores)</li>
+                                <li>Estandarización de encapsulados</li>
                             </ul>
 
-                            <h5>Presión</h5>
+                            <h5>EMC/EMI (Compatibilidad Electromagnética / Interferencia Electromagnética)</h5>
                             <ul>
-                                <li><strong>Intermedio:</strong> BMP280 (Barometric pressure), MPX5700 (Analog absolute pressure).</li>
-                                <li><strong>Profesional:</strong> Honeywell HSC Series (High accuracy), Differential pressure sensors.</li>
+                                <li>Frecuencias de conmutación (evitar interferencias)</li>
+                                <li>Requisitos de blindaje</li>
+                                <li>Consideraciones de diseño de PCB</li>
+                                <li>Requisitos de filtro</li>
                             </ul>
 
-                            <h5>Movimiento/Orientación</h5>
+                            <h4>5. Tendencias Futuras</h4>
+                            <h5>Tecnologías Emergentes</h5>
                             <ul>
-                                <li><strong>Básico:</strong> ADXL335 (3-axis accelerometer, analog).</li>
-                                <li><strong>Intermedio:</strong> MPU6050 (6-DOF IMU), LSM9DS1 (9-DOF).</li>
-                                <li><strong>Profesional:</strong> ADIS16490 (Tactical grade IMU), Fiber optic gyros.</li>
-                            </ul>
-
-                            <h5>Ópticos</h5>
-                            <ul>
-                                <li><strong>Básico:</strong> LDR (Light Dependent Resistor), Photodiode (BPW21).</li>
-                                <li><strong>Intermedio:</strong> TSL2561 (Digital light sensor), Color sensors (TCS3200).</li>
-                                <li><strong>Profesional:</strong> Avalanche Photodiodes (APD), PIN photodiodes, Image sensors (CCD/CMOS).</li>
-                            </ul>
-
-                            <h4>5. RF Y COMUNICACIONES</h4>
-
-                            <h5>Módulos Básicos</h5>
-                            <ul>
-                                <li><strong>Básico:</strong> nRF24L01 (2.4GHz transceiver), HC-05/HC-06 (Bluetooth classic).</li>
-                                <li><strong>Intermedio:</strong> ESP32 (WiFi + Bluetooth), SX1278 (LoRa transceiver).</li>
-                                <li><strong>Profesional:</strong> CC1310 (Sub-1GHz transceiver), AD9361 (Wideband transceiver).</li>
-                            </ul>
-
-                            <h5>Interfaces de Comunicación</h5>
-                            <ul>
-                                <li><strong>Básico:</strong> MAX232 (RS232 level shifter), 75176 (RS485 transceiver).</li>
-                                <li><strong>Intermedio:</strong> MCP2515 (CAN controller), FT232 (USB to UART bridge).</li>
-                                <li><strong>Profesional:</strong> Ethernet PHYs (W5500, ENC28J60), USB 3.0 controllers, PCIe interfaces.</li>
-                            </ul>
-
-                            <h5>Componentes RF Discretos</h5>
-                            <ul>
-                                <li><strong>Intermedio:</strong> RF amplifiers (MAR-6, ERA-5), Mixers (ADE-1, SA602).</li>
-                                <li><strong>Profesional:</strong> VCOs (Voltage Controlled Oscillators), Directional couplers, Baluns.</li>
-                            </ul>
-
-                            <h4>6. PROTECCIÓN Y GESTIÓN TÉRMICA</h4>
-
-                            <h5>Protección</h5>
-                            <ul>
-                                <li><strong>Básico:</strong> Fusibles (Glass tube, ceramic), Varistores (MOV).</li>
-                                <li><strong>Intermedio:</strong> TVS diodes (Transient Voltage Suppressor), PTC Resettable fuses.</li>
-                                <li><strong>Profesional:</strong> Gas Discharge Tubes, Crowbar circuits.</li>
-                            </ul>
-
-                            <h5>Gestión Térmica</h5>
-                            <ul>
-                                <li><strong>Básico:</strong> Disipadores de Calor (Heatsinks), Materiales de Interfaz Térmica.</li>
-                                <li><strong>Intermedio:</strong> Ventiladores (Temperature controlled), Enfriadores Peltier.</li>
-                                <li><strong>Profesional:</strong> Refrigeración Líquida, Heat pipes, Simulación Térmica.</li>
-                            </ul>
-
-                            <h4>7. CRITERIOS DE SELECCIÓN</h4>
-                            <p>Esta sección cubre las consideraciones clave al seleccionar componentes, incluyendo:</p>
-                            <ul>
-                                <li><strong>Especificaciones Críticas:</strong> Voltaje de offset, Corriente de polarización de entrada, Slew rate, Ruido, CMRR, PSRR (para analógicos); Rds(on), Vce(sat), SOA, Resistencia térmica, Carga de puerta (para potencia); Frecuencia de operación, Consumo de energía, Capacidades de E/S, Memoria, Periféricos, Encapsulado (para digitales).</li>
-                                <li><strong>Consideraciones de Diseño:</strong> Fiabilidad (MTBF, rango de temperatura, tolerancia a la humedad, resistencia a vibraciones/golpes, protección ESD), Optimización de Costos (precios por volumen, ciclo de vida, segundas fuentes, estandarización de encapsulados), EMC/EMI (frecuencias de conmutación, requisitos de blindaje, diseño de PCB, requisitos de filtro).</li>
-                            </ul>
-
-                            <h4>8. TENDENCIAS FUTURAS</h4>
-                            <p>Explora las tecnologías emergentes que están dando forma al futuro de la electrónica:</p>
-                            <ul>
-                                <li><strong>Semiconductores de Banda Ancha (Wide Bandgap):</strong> Carburo de Silicio (SiC), Nitruro de Galio (GaN) - para alta temperatura, eficiencia y frecuencia.</li>
-                                <li><strong>Empaquetado Avanzado:</strong> Integración 3D (Through Silicon Vias), System in Package (SiP), Fan-out Wafer Level Packaging.</li>
-                                <li><strong>Integración IoT:</strong> Ultra-bajo consumo, Seguridad (cifrado de hardware), Edge AI (procesadores de red neuronal).</li>
+                                <li><strong>Semiconductores de Banda Ancha (Wide Bandgap):</strong> Carburo de Silicio (SiC) - Alta temperatura, eficiencia; Nitruro de Galio (GaN) - Alta frecuencia, potencia.</li>
+                                <li><strong>Encapsulados Avanzados:</strong> Integración 3D (Through Silicon Vias - TSV), System in Package (SiP) - Múltiples chips, Fan-out Wafer Level Packaging.</li>
+                                <li><strong>Integración IoT:</strong> Ultra-bajo consumo (compatibilidad con recolección de energía), Seguridad (cifrado de hardware), Edge AI (procesadores de redes neuronales).</li>
                             </ul>
                         </div>
                     `;
                     break;
                 default:
-                    html = '<p>Selecciona una calculadora o guía de la navegación superior.</p>';
+                    html = '<p>Selecciona una calculadora o guía del menú de navegación.</p>';
             }
             area.innerHTML = html;
 
-            // Initialize specific calculators if needed (e.g., resistor color code)
-            if (type === 'resistorCode') {
-                calculateResistance(); // Call to set initial values and colors
+            // Re-attach event listeners for dynamically loaded content
+            if (type === 'ohm') {
+                // No specific listeners needed for Ohm, as it's handled by onclick on the button
+            } else if (type === 'dividers') {
+                // No specific listeners needed for Dividers
+            } else if (type === 'rcrlFilter') {
+                toggleFilterInputs(); // Set initial state for filter inputs
+            } else if (type === 'resistorCode') {
+                calculateResistance(); // Calculate initial resistance when loaded
             }
+        }
+
+        function calculateOhm() {
+            const V_input = document.getElementById('ohm_voltage').value;
+            const I_input = document.getElementById('ohm_current').value;
+            const R_input = document.getElementById('ohm_resistance').value;
+            const resultsDiv = document.getElementById('ohmResults');
+
+            let V = parseUnitValue(V_input);
+            let I = parseUnitValue(I_input);
+            let R = parseUnitValue(R_input);
+
+            let resultHtml = '<p>Resultados:</p>';
+            let calculated = false;
+
+            if (!isNaN(V) && !isNaN(I) && isNaN(R)) { // Calculate R
+                if (I === 0) {
+                    resultHtml += '<p>Error: La corriente no puede ser cero para calcular la resistencia.</p>';
+                } else {
+                    R = V / I;
+                    resultHtml += `<p>Resistencia (R): <span>${formatUnitValue(R, 'Ω')}</span></p>`;
+                    calculated = true;
+                }
+            } else if (!isNaN(V) && isNaN(I) && !isNaN(R)) { // Calculate I
+                if (R === 0) {
+                    resultHtml += '<p>Error: La resistencia no puede ser cero para calcular la corriente.</p>';
+                } else {
+                    I = V / R;
+                    resultHtml += `<p>Corriente (I): <span>${formatUnitValue(I, 'A')}</span></p>`;
+                    calculated = true;
+                }
+            } else if (isNaN(V) && !isNaN(I) && !isNaN(R)) { // Calculate V
+                V = I * R;
+                resultHtml += `<p>Voltaje (V): <span>${formatUnitValue(V, 'V')}</span></p>`;
+                calculated = true;
+            } else {
+                resultHtml += '<p>Por favor, introduce exactamente dos valores para calcular el tercero.</p>';
+            }
+
+            if (calculated) {
+                const P = V * I;
+                if (!isNaN(P)) {
+                    resultHtml += `<p>Potencia (P): <span>${formatUnitValue(P, 'W')}</span></p>`;
+                }
+            }
+            resultsDiv.innerHTML = resultHtml;
+        }
+
+        function calculateVoltageDivider() {
+            const Vin_input = document.getElementById('divider_vin').value;
+            const R1_input = document.getElementById('divider_r1').value;
+            const R2_input = document.getElementById('divider_r2').value;
+            const resultsDiv = document.getElementById('dividerResults');
+
+            const Vin = parseUnitValue(Vin_input);
+            const R1 = parseUnitValue(R1_input);
+            const R2 = parseUnitValue(R2_input);
+
+            let resultHtml = '<p>Resultados:</p>';
+
+            if (isNaN(Vin) || isNaN(R1) || isNaN(R2)) {
+                resultHtml += '<p>Por favor, introduce valores numéricos válidos para todos los campos.</p>';
+            } else if ((R1 + R2) === 0) {
+                resultHtml += '<p>Error: La suma de R1 y R2 no puede ser cero.</p>';
+            } else {
+                const Vout = Vin * (R2 / (R1 + R2));
+                resultHtml += `<p>Voltaje de Salida (Vout): <span>${formatUnitValue(Vout, 'V')}</span></p>`;
+            }
+            resultsDiv.innerHTML = resultHtml;
+        }
+
+        function toggleFilterInputs() {
+            const filterType = document.getElementById('filter_type').value;
+            document.getElementById('rcInputs').style.display = (filterType === 'rc') ? 'block' : 'none';
+            document.getElementById('rlInputs').style.display = (filterType === 'rl') ? 'block' : 'none';
+        }
+
+        function calculateFilterFrequency() {
+            const filterType = document.getElementById('filter_type').value;
+            const resultsDiv = document.getElementById('filterResults');
+            let resultHtml = '<p>Resultados:</p>';
+            let Fc;
+
+            if (filterType === 'rc') {
+                const R_input = document.getElementById('filter_r').value;
+                const C_input = document.getElementById('filter_c').value;
+                const R = parseUnitValue(R_input);
+                const C = parseUnitValue(C_input);
+
+                if (isNaN(R) || isNaN(C) || R <= 0 || C <= 0) {
+                    resultHtml += '<p>Por favor, introduce valores positivos válidos para R y C.</p>';
+                } else {
+                    Fc = 1 / (2 * Math.PI * R * C);
+                    resultHtml += `<p>Frecuencia de Corte (Fc): <span>${formatUnitValue(Fc, 'Hz')}</span></p>`;
+                }
+            } else if (filterType === 'rl') {
+                const R_input = document.getElementById('filter_r_rl').value;
+                const L_input = document.getElementById('filter_l').value;
+                const R = parseUnitValue(R_input);
+                const L = parseUnitValue(L_input);
+
+                if (isNaN(R) || isNaN(L) || R <= 0 || L <= 0) {
+                    resultHtml += '<p>Por favor, introduce valores positivos válidos para R y L.</p>';
+                } else {
+                    Fc = R / (2 * Math.PI * L);
+                    resultHtml += `<p>Frecuencia de Corte (Fc): <span>${formatUnitValue(Fc, 'Hz')}</span></p>`;
+                }
+            }
+            resultsDiv.innerHTML = resultHtml;
+        }
+
+        function calculateLCResonance() {
+            const L_input = document.getElementById('lc_l').value;
+            const C_input = document.getElementById('lc_c').value;
+            const resultsDiv = document.getElementById('lcResults');
+
+            const L = parseUnitValue(L_input);
+            const C = parseUnitValue(C_input);
+
+            let resultHtml = '<p>Resultados:</p>';
+
+            if (isNaN(L) || isNaN(C) || L <= 0 || C <= 0) {
+                resultHtml += '<p>Por favor, introduce valores positivos válidos para L y C.</p>';
+            } else {
+                const Fr = 1 / (2 * Math.PI * Math.sqrt(L * C));
+                resultHtml += `<p>Frecuencia de Resonancia (Fr): <span>${formatUnitValue(Fr, 'Hz')}</span></p>`;
+            }
+            resultsDiv.innerHTML = resultHtml;
+        }
+
+        function calculateTransformer() {
+            const Vp_input = document.getElementById('transformer_vp').value;
+            const Np_input = document.getElementById('transformer_np').value;
+            const Vs_input = document.getElementById('transformer_vs').value;
+            const Ns_input = document.getElementById('transformer_ns').value;
+            const Ip_input = document.getElementById('transformer_ip').value;
+            const Is_input = document.getElementById('transformer_is').value;
+            const resultsDiv = document.getElementById('transformerResults');
+
+            let Vp = parseUnitValue(Vp_input);
+            let Np = parseUnitValue(Np_input);
+            let Vs = parseUnitValue(Vs_input);
+            let Ns = parseUnitValue(Ns_input);
+            let Ip = parseUnitValue(Ip_input);
+            let Is = parseUnitValue(Is_input);
+
+            let resultHtml = '<p>Resultados:</p>';
+            let calculated = false;
+
+            // Vp/Vs = Np/Ns
+            if (!isNaN(Vp) && !isNaN(Np) && !isNaN(Ns) && isNaN(Vs)) { // Calculate Vs
+                Vs = Vp * (Ns / Np);
+                resultHtml += `<p>Voltaje Secundario (Vs): <span>${formatUnitValue(Vs, 'V')}</span></p>`;
+                calculated = true;
+            } else if (!isNaN(Vp) && !isNaN(Vs) && !isNaN(Ns) && isNaN(Np)) { // Calculate Np
+                Np = Ns * (Vp / Vs);
+                resultHtml += `<p>Espira Primaria (Np): <span>${Np.toFixed(2)}</span></p>`;
+                calculated = true;
+            } else if (!isNaN(Vp) && !isNaN(Vs) && !isNaN(Np) && isNaN(Ns)) { // Calculate Ns
+                Ns = Np * (Vs / Vp);
+                resultHtml += `<p>Espira Secundaria (Ns): <span>${Ns.toFixed(2)}</span></p>`;
+                calculated = true;
+            } else if (!isNaN(Np) && !isNaN(Ns) && !isNaN(Vs) && isNaN(Vp)) { // Calculate Vp
+                Vp = Vs * (Np / Ns);
+                resultHtml += `<p>Voltaje Primario (Vp): <span>${formatUnitValue(Vp, 'V')}</span></p>`;
+                calculated = true;
+            }
+
+            // Np/Ns = Is/Ip
+            if (!isNaN(Np) && !isNaN(Ns) && !isNaN(Is) && isNaN(Ip)) { // Calculate Ip
+                Ip = Is * (Ns / Np);
+                resultHtml += `<p>Corriente Primaria (Ip): <span>${formatUnitValue(Ip, 'A')}</span></p>`;
+                calculated = true;
+            } else if (!isNaN(Np) && !isNaN(Ns) && !isNaN(Ip) && isNaN(Is)) { // Calculate Is
+                Is = Ip * (Np / Ns);
+                resultHtml += `<p>Corriente Secundario (Is): <span>${formatUnitValue(Is, 'A')}</span></p>`;
+                calculated = true;
+            } else if (!isNaN(Ip) && !isNaN(Is) && !isNaN(Ns) && isNaN(Np)) { // Calculate Np
+                Np = Ns * (Is / Ip);
+                resultHtml += `<p>Espira Primaria (Np): <span>${Np.toFixed(2)}</span></p>`;
+                calculated = true;
+            } else if (!isNaN(Ip) && !isNaN(Is) && !isNaN(Np) && isNaN(Ns)) { // Calculate Ns
+                Ns = Np * (Ip / Is);
+                resultHtml += `<p>Espira Secundaria (Ns): <span>${Ns.toFixed(2)}</span></p>`;
+                calculated = true;
+            }
+
+            if (!calculated) {
+                resultHtml += '<p>Por favor, introduce al menos tres valores relacionados para realizar el cálculo.</p>';
+            }
+            resultsDiv.innerHTML = resultHtml;
+        }
+
+        // --- Example Loading Functions ---
+
+        /**
+         * Opens a specific example in the simulator.
+         * Constructs a URL with parameters and redirects.
+         * @param {string} exampleId The ID of the example to load.
+         */
+        function openExampleInSimulator(exampleId) {
+            // Construct the URL with the example parameter
+            const baseUrl = window.location.origin + window.location.pathname;
+            const url = `${baseUrl}?example=${exampleId}`;
+            window.location.href = url; // Redirect to the simulator with the example parameter
+        }
+
+        /**
+         * Checks the URL for an 'example' parameter and loads the corresponding circuit.
+         * Called when appContainer is activated.
+         */
+        function checkAndLoadExample() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const exampleId = urlParams.get('example');
+
+            if (exampleId && exampleCircuits[exampleId]) {
+                // Clear existing circuit before loading example
+                _createNewCircuit(); // This will also initialize the canvas
+
+                const exampleData = exampleCircuits[exampleId];
+                console.log(`Loading example: ${exampleData.name}`);
+
+                // Load components
+                exampleData.components.forEach(comp => {
+                    // Convert string positions to numbers for placeComponent
+                    const x = parseFloat(comp.x.replace('px', ''));
+                    const y = parseFloat(comp.y.replace('px', ''));
+                    placeComponent(x, y, comp.type, comp.id, comp.properties); // Pass properties to placeComponent
+                });
+
+                // Load connections
+                // Need to ensure components are rendered before drawing connections
+                setTimeout(() => {
+                    connections = []; // Clear any residual connections
+                    exampleData.connections.forEach(conn => {
+                        connections.push({
+                            startPin: { componentId: conn.start.compId, pinId: conn.start.pinId },
+                            endPin: { componentId: conn.end.compId, pinId: conn.end.pinId }
+                        });
+                    });
+                    drawWires(); // Redraw all wires after connections are set
+                    showModal('Ejemplo Cargado', `El ejemplo "${exampleData.name}" ha sido cargado en el simulador.`);
+                }, 100); // Small delay to ensure components are in DOM
+            }
+            // Clear the URL parameter after loading to prevent re-loading on refresh
+            const newUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
         }
 
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
-            detectMobile(); // Detect device type first
+            detectMobile(); // Detect mobile device on load
 
-            // Show scroll arrows if on mobile, regardless of current screen
-            if (isMobileDevice) {
-                document.getElementById('scrollArrows').style.display = 'flex';
-            }
+            // Initial screen display
+            showScreen('startScreen');
 
-            // Event listeners for component selection in sidebar
-            document.querySelectorAll('.component-item').forEach(item => {
-                if (isMobileDevice) {
-                    item.addEventListener('click', function() {
-                        selectComponent(this.dataset.component);
-                    });
-                } else { // Desktop: enable drag for placement
-                    item.setAttribute('draggable', 'true');
-                    item.addEventListener('dragstart', (e) => {
-                        e.dataTransfer.setData('text/plain', item.dataset.component);
-                        // No visual 'selected' state on dragstart for desktop, it's a drag operation
-                        // Clear any previous selection when starting a drag
-                        selectedComponentTypeForPlacement = null;
-                        document.querySelectorAll('.component-item').forEach(compItem => compItem.classList.remove('selected'));
-                    });
-                }
-            });
-
-            // Canvas area interaction for placing components
-            const canvasArea = document.getElementById('canvasArea');
-            if (isMobileDevice) {
-                // Mobile: click to place
-                canvasArea.addEventListener('click', (event) => {
-                    // Only place component if the click target is the canvas itself or its direct children (like grid overlay)
-                    // and not on an already placed component. Also ensure it's not a drag event.
-                    if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea') && !isDragging && currentTool === 'select') {
-                        const rect = event.currentTarget.getBoundingClientRect();
-                        // Adjust coordinates for scroll position
-                        const x = event.clientX - rect.left + canvasArea.scrollLeft;
-                        const y = event.clientY - rect.top + canvasArea.scrollTop;
-                        if (selectedComponentTypeForPlacement && currentTool === 'select') {
-                            placeComponent(x, y, selectedComponentTypeForPlacement); // Pass the type
-                            selectedComponentTypeForPlacement = null; // Deselect component type after placing
-                            document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
-                        } else if (currentTool === 'select' && !selectedComponentTypeForPlacement) {
-                            // If select tool is active but no component type selected, deselect any placed component
-                            document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
-                            closePropertiesPanel();
-                        }
-                    }
-                });
-            } else { // Desktop: handle drag and drop for placement
-                canvasArea.addEventListener('dragover', (e) => {
-                    e.preventDefault(); // Allow drop
-                    e.dataTransfer.dropEffect = 'move';
-                });
-
-                canvasArea.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    const componentType = e.dataTransfer.getData('text/plain');
-                    if (componentType && currentTool === 'select') {
-                        const rect = canvasArea.getBoundingClientRect();
-                        // Adjust coordinates for zoom when dropping
-                        const x = (e.clientX - rect.left) / currentZoom;
-                        const y = (e.clientY - rect.top) / currentZoom;
-                        placeComponent(x, y, componentType); // Pass the type
-                        // No need to reset selectedComponentTypeForPlacement here as it's for mobile
-                        document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected')); // Visual cleanup
-                    }
-                });
-            }
-
-            // Event listener for clicking on empty canvas area to deselect (common for both)
+            // Canvas click listener for placing components (mobile)
             document.getElementById('canvasArea').addEventListener('click', (event) => {
-                // If click is on the canvas element itself or its parent container (canvasArea)
-                // and it's not a drag event
-                if ((event.target.id === 'circuitCanvas' || event.target.id === 'canvasArea') && !isDragging) {
-                    document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
-                    closePropertiesPanel();
-                    selectedComponentElement = null; // Clear selected component
+                if (selectedComponentTypeForPlacement && currentTool === 'select') {
+                    const canvasRect = circuitCanvas.getBoundingClientRect();
+                    // Calculate click position relative to canvas content, considering scroll and zoom
+                    const clickX = (event.clientX - canvasRect.left) + document.getElementById('canvasArea').scrollLeft;
+                    const clickY = (event.clientY - canvasRect.top) + document.getElementById('canvasArea').scrollTop;
+                    placeComponent(clickX, clickY, selectedComponentTypeForPlacement);
+                    // After placing, deselect the component type to prevent accidental multiple placements
+                    document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                    selectedComponentTypeForPlacement = null;
                 }
             });
 
-            // Search functionality for components
+            // Component Selection in Sidebar
+            document.querySelectorAll('.component-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    selectComponent(this.dataset.component);
+                });
+            });
+
+            // Tool Selection in Toolbar
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectTool(this.dataset.tool);
+                });
+            });
+
+            // Search functionality
             document.getElementById('componentSearch').addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase();
                 document.querySelectorAll('.component-item').forEach(item => {
@@ -4334,93 +4294,19 @@
                 });
             });
 
-            // --- Protection Measures ---
-            // Disable right-click context menu globally
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                showProtectedAlert(e.target, 'Contenido protegido');
+            // Cal Flux Navigation
+            document.querySelectorAll('.calflux-nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    renderCalculator(this.dataset.calculatorType);
+                });
             });
 
-            // Disable common developer tool shortcuts
-            document.addEventListener('keydown', function(e) {
-                // F12
-                if (e.key === 'F12') {
-                    e.preventDefault();
-                    showProtectedAlert(document.body, 'Contenido protegido');
-                }
-                // Ctrl+Shift+I (Cmd+Option+I on Mac)
-                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
-                    e.preventDefault();
-                    showProtectedAlert(document.body, 'Contenido protegido');
-                }
-                // Ctrl+Shift+J (Cmd+Option+J on Mac)
-                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'J') {
-                    e.preventDefault();
-                    showProtectedAlert(document.body, 'Contenido protegido');
-                }
-                // Ctrl+U (Cmd+U on Mac) - View Source
-                if ((e.ctrlKey || e.metaKey) && e.key === 'U') {
-                    e.preventDefault();
-                    showProtectedAlert(document.body, 'Contenido protegido');
-                }
-                // Ctrl+Shift+C (Cmd+Option+C on Mac) - Inspect Element
-                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
-                    e.preventDefault();
-                    showProtectedAlert(document.body, 'Contenido protegido');
-                }
-                // Alt+Cmd+I (Safari Dev Tools)
-                if ((e.altKey || e.metaKey) && e.key === 'i') {
-                    e.preventDefault();
-                    showProtectedAlert(document.body, 'Contenido protegido');
-                }
-            });
-
-            // Add protected alert to logos on interaction (mousedown)
-            document.getElementById('mainLogo').addEventListener('mousedown', function(e) {
-                showProtectedAlert(e.target);
-            });
-            document.getElementById('smallLogo').addEventListener('mousedown', function(e) {
-                showProtectedAlert(e.target);
-            });
-            document.querySelector('.app-title').addEventListener('mousedown', function(e) {
-                showProtectedAlert(e.target);
-            });
-            document.querySelector('.app-subtitle').addEventListener('mousedown', function(e) {
-                showProtectedAlert(e.target);
-            });
-            // Add event listener for the new beta badge on start screen
-            document.querySelector('#startScreen .beta-badge').addEventListener('mousedown', function(e) {
-                showProtectedAlert(e.target);
-            });
-            // Add event listener for the beta badge in the header
-            document.querySelector('.header .beta-badge').addEventListener('mousedown', function(e) {
-                showProtectedAlert(e.target);
-            });
-
-
-            // Aggressive debugger check (can be bypassed, but a strong deterrent)
-            let devtoolsAreOpen = false;
-            const checkDevTools = () => {
-                const threshold = 160; // Approximate threshold for dev tools height/width
-                if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
-                    if (!devtoolsAreOpen) {
-                        showProtectedAlert(document.body, '¡Herramientas de desarrollador detectadas!');
-                        devtoolsAreOpen = true;
-                    }
-                } else {
-                    devtoolsAreOpen = false;
-                }
-            };
-            // Periodically check, but also on resize and focus changes
-            setInterval(checkDevTools, 500); // Check every half second
-            window.addEventListener('resize', checkDevTools);
-            window.addEventListener('focus', checkDevTools);
-            window.addEventListener('blur', () => {
-                // This might indicate dev tools opening in a new window or tab switch
-                // Give a slight delay to allow dev tools to open, then check
-                setTimeout(checkDevTools, 100);
-            });
+            // Show scroll arrows on mobile
+            if (isMobileDevice) {
+                document.getElementById('scrollArrows').style.display = 'flex';
+            }
         });
     </script>
 </body>
 </html>
+
