@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluxionics - Simulador de Circuitos</title>
+    <title>Fluxionics - Simulador Profesional de Circuitos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* CSS Variables for Theming */
         :root {
@@ -138,6 +139,11 @@
             border-radius: 12px; transition: background 0.2s; color: var(--text-color); font-size: 18px;
         }
         .menu-btn:hover { background: rgba(0, 212, 255, 0.1); }
+        .menu-btn.active {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--shadow-accent);
+        }
         .logo { display: flex; align-items: center; gap: 12px; }
         .logo-img {
             width: 40px; height: 40px; background-image: url('https://imgur.com/pxjxVqC.png');
@@ -185,8 +191,8 @@
         .components-sidebar {
             width: 320px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
             padding: 20px; border-right: 1px solid var(--border-color); overflow-y: auto;
-            flex-shrink: 0; position: fixed; top: 70px; left: 0; height: calc(100% - 70px); z-index: 1500;
-            transform: translateX(-100%); transition: transform 0.3s ease-in-out;
+            flex-shrink: 0; transition: transform 0.3s ease-in-out; transform: translateX(-100%);
+            position: fixed; top: 70px; left: 0; height: calc(100% - 70px); z-index: 1500;
         }
         .components-sidebar.open { transform: translateX(0); }
         .component-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -214,6 +220,39 @@
         }
         .tool-btn:hover { background: rgba(0, 212, 255, 0.2); color: var(--accent-color); }
         .tool-btn.active { background: var(--accent-color); color: var(--bg-color); }
+
+        /* New buttons for Gemini API */
+        .gemini-tool-btn {
+            padding: 0 15px; /* Adjust padding for text */
+            height: 40px;
+            background: linear-gradient(45deg, #ff7e5f, #feb47b);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 126, 95, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .gemini-tool-btn:hover {
+            background: linear-gradient(45deg, #ff947b, #ffc799);
+            box-shadow: 0 6px 15px rgba(255, 126, 95, 0.5);
+            transform: translateY(-2px);
+        }
+        .gemini-tool-btn.loading {
+            background: #feb47b;
+            cursor: not-allowed;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(254, 180, 123, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(254, 180, 123, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(254, 180, 123, 0); }
+        }
         
         #simulatorCanvas {
             flex-grow: 1; position: relative; cursor: crosshair; overflow: hidden;
@@ -307,20 +346,23 @@
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center;
             z-index: 2000; transition: opacity 0.3s ease; opacity: 0; pointer-events: none;
+            text-align: left;
         }
         .modal-overlay.visible { opacity: 1; pointer-events: auto; }
         .modal-content {
             background: var(--primary-bg); padding: 30px; border-radius: 12px;
-            box-shadow: 0 10px 30px var(--shadow-color); text-align: center; max-width: 400px;
+            box-shadow: 0 10px 30px var(--shadow-color); max-width: 600px;
             transform: translateY(-20px); transition: transform 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         .modal-overlay.visible .modal-content { transform: translateY(0); }
-        .modal-content h3 { color: var(--accent-color); margin-bottom: 10px; }
-        .modal-content p { color: var(--text-color); margin-bottom: 20px; }
+        .modal-content h3 { color: var(--accent-color); margin-bottom: 10px; text-align: center; }
+        .modal-content p { color: var(--text-color); margin-bottom: 20px; line-height: 1.6; }
         .modal-close-btn {
             padding: 10px 20px; background: var(--accent-color); color: var(--bg-color);
             border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
-            transition: background 0.2s ease;
+            transition: background 0.2s ease; display: block; margin: 0 auto;
         }
         .modal-close-btn:hover { background: #00a3e6; }
     </style>
@@ -333,23 +375,24 @@
         <p class="app-subtitle">Simulador Profesional de Circuitos</p>
         
         <div class="start-buttons-wrapper">
-            <button class="start-button primary" onclick="showScreen('appContainer')">
+            <button class="start-button primary" onclick="handleStartSimulator()">
                 <i class="fas fa-play"></i>
                 Iniciar Simulador
             </button>
-            <button class="start-button secondary" onclick="showNotImplementedMessage('Cal Flux')">
+            <!-- Updated button calls for more specific messages -->
+            <button class="start-button secondary" onclick="showMessage('Cal Flux', 'Esta herramienta de cálculo avanzada está en desarrollo. Pronto podrás resolver ecuaciones de circuito complejas con IA.')">
                 <i class="fas fa-calculator"></i>
                 Cal Flux
             </button>
-            <button class="start-button secondary" onclick="showNotImplementedMessage('Ejemplos Flux')">
+            <button class="start-button secondary" onclick="showMessage('Ejemplos Flux', 'Pronto podrás explorar una biblioteca de circuitos de ejemplo para aprender y experimentar.')">
                 <i class="fas fa-microchip"></i>
                 Ejemplos Flux
             </button>
-            <button class="start-button secondary" onclick="showNotImplementedMessage('Tutoriales')">
+            <button class="start-button secondary" onclick="showMessage('Tutoriales', 'Estamos creando tutoriales guiados para ayudarte a dominar el simulador y la electrónica.')">
                 <i class="fas fa-book"></i>
                 Tutoriales
             </button>
-            <button class="start-button secondary" onclick="showNotImplementedMessage('Clases')">
+            <button class="start-button secondary" onclick="showMessage('Clases', 'Esta función te permitirá acceder a cursos interactivos y materiales educativos. ¡Regresa pronto!')">
                 <i class="fas fa-user-graduate"></i>
                 Clases
             </button>
@@ -368,6 +411,10 @@
                     <div class="logo-img"></div>
                     <span class="logo-text">Fluxionics</span>
                 </div>
+                <!-- New button for components sidebar -->
+                <button class="menu-btn" id="toggle-components-sidebar">
+                    <i class="fas fa-microchip"></i>
+                </button>
             </div>
             <div class="header-right">
                 <button class="menu-btn" id="save-btn"><i class="fas fa-save"></i></button>
@@ -384,8 +431,9 @@
             <aside class="main-sidebar" id="main-sidebar">
                 <h4 class="sidebar-title">Menú Principal</h4>
                 <div class="sidebar-links">
-                    <a href="#"><i class="fas fa-info-circle"></i> Ayuda</a>
-                    <a href="#"><i class="fas fa-user-shield"></i> Política y Privacidad</a>
+                    <!-- Updated button calls for more specific messages -->
+                    <a href="#" onclick="showMessage('Ayuda', 'La ayuda detallada y el soporte técnico estarán disponibles en futuras versiones.')"><i class="fas fa-info-circle"></i> Ayuda</a>
+                    <a href="#" onclick="showMessage('Política y Privacidad', 'Consulta nuestra política de privacidad para saber cómo protegemos tus datos.')"><i class="fas fa-user-shield"></i> Política y Privacidad</a>
                 </div>
                 <div class="theme-toggle-container">
                     <button id="theme-dark-btn" class="theme-btn active"><i class="fas fa-moon"></i> Oscuro</button>
@@ -425,8 +473,13 @@
                     </div>
                     <div class="simulation-controls tool-group">
                         <button class="control-btn" id="play-btn"><i class="fas fa-play"></i></button>
-                        <button class="control-btn" id="pause-btn"><i class="fas fa-pause"></i></button>
+                        <!-- Updated pause button call for a specific message -->
+                        <button class="control-btn" id="pause-btn" onclick="showMessage('Pausa', 'La función de pausa de simulación no está disponible en esta versión.')"><i class="fas fa-pause"></i></button>
                         <button class="control-btn" id="stop-btn"><i class="fas fa-stop"></i></button>
+                    </div>
+                    <div class="llm-tools tool-group">
+                        <button class="gemini-tool-btn" id="analyze-circuit-btn">✨ Analizar Circuito</button>
+                        <button class="gemini-tool-btn" id="improve-circuit-btn">✨ Consejos para Mejorar</button>
                     </div>
                 </div>
                 <canvas id="simulatorCanvas"></canvas>
@@ -477,28 +530,57 @@
                 screen.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
-            if (screenId === 'appContainer') {
-                setupCanvas();
-            }
         }
         
+        // --- Manejador para el botón de inicio ---
+        function handleStartSimulator() {
+            showScreen('appContainer');
+            loadCircuit();
+            setupCanvas();
+        }
+
         // --- Sidebar Toggle Logic ---
+        function closeAllSidebars() {
+            document.getElementById('main-sidebar').classList.remove('open');
+            document.getElementById('components-sidebar').classList.remove('open');
+            document.getElementById('properties-sidebar').classList.remove('open');
+            document.getElementById('toggle-main-menu').classList.remove('active');
+            document.getElementById('toggle-components-sidebar').classList.remove('active');
+            document.getElementById('toggle-properties').classList.remove('active');
+            setupCanvas(); // Recalculate canvas size
+        }
+
         document.getElementById('toggle-main-menu').addEventListener('click', () => {
             const mainSidebar = document.getElementById('main-sidebar');
-            mainSidebar.classList.toggle('open');
-            if (mainSidebar.classList.contains('open')) {
-                document.getElementById('components-sidebar').classList.remove('open');
-                document.getElementById('properties-sidebar').classList.remove('open');
+            const isActive = mainSidebar.classList.contains('open');
+            closeAllSidebars();
+            if (!isActive) {
+                mainSidebar.classList.add('open');
+                document.getElementById('toggle-main-menu').classList.add('active');
             }
+            setupCanvas();
+        });
+
+        document.getElementById('toggle-components-sidebar').addEventListener('click', () => {
+            const componentsSidebar = document.getElementById('components-sidebar');
+            const isActive = componentsSidebar.classList.contains('open');
+            closeAllSidebars();
+            if (!isActive) {
+                componentsSidebar.classList.add('open');
+                document.getElementById('toggle-components-sidebar').classList.add('active');
+            }
+            setupCanvas();
         });
         
         document.getElementById('toggle-properties').addEventListener('click', () => {
             const propertiesSidebar = document.getElementById('properties-sidebar');
-            propertiesSidebar.classList.toggle('open');
-            if (propertiesSidebar.classList.contains('open')) {
-                document.getElementById('main-sidebar').classList.remove('open');
-                document.getElementById('components-sidebar').classList.remove('open');
+            const isActive = propertiesSidebar.classList.contains('open');
+            closeAllSidebars();
+            if (!isActive) {
+                propertiesSidebar.classList.add('open');
+                document.getElementById('toggle-properties').classList.add('active');
             }
+            setupCanvas();
         });
         
         // --- Theme Switching Logic ---
@@ -523,14 +605,39 @@
         // --- Custom Modal Logic (replaces alert) ---
         function showMessage(title, message) {
             document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('modalMessage').innerHTML = message; // Usar innerHTML para Markdown
             document.getElementById('messageModal').classList.add('visible');
-        }
-        function showNotImplementedMessage(featureName) {
-             showMessage(`Función para "${featureName}"`, `Esta función aún no está disponible, pero el botón funciona correctamente.`);
         }
         function hideModal() {
             document.getElementById('messageModal').classList.remove('visible');
+        }
+        
+        // --- Save and Share Logic ---
+        document.getElementById('save-btn').addEventListener('click', () => {
+            saveCircuit();
+            showMessage('Circuito Guardado', 'El estado del circuito se ha guardado localmente.');
+        });
+        
+        document.getElementById('share-btn').addEventListener('click', () => {
+            const circuitData = { components: components, wires: wires };
+            const circuitJson = JSON.stringify(circuitData);
+            document.execCommand('copy');
+            showMessage('Circuito Compartido', 'El estado del circuito se ha copiado al portapapeles. ¡Puedes compartirlo ahora!');
+        });
+        
+        function saveCircuit() {
+            const circuitData = { components: components, wires: wires };
+            localStorage.setItem('fluxionics_circuit', JSON.stringify(circuitData));
+        }
+        
+        function loadCircuit() {
+            const savedCircuit = localStorage.getItem('fluxionics_circuit');
+            if (savedCircuit) {
+                const circuitData = JSON.parse(savedCircuit);
+                components = circuitData.components;
+                wires = circuitData.wires;
+                componentCounter = components.length > 0 ? Math.max(...components.map(c => c.id)) + 1 : 0;
+            }
         }
 
         // --- Canvas Setup ---
@@ -538,13 +645,25 @@
         const ctx = canvas.getContext('2d');
 
         function setupCanvas() {
-            canvas.width = window.innerWidth - 320; // Adjust for sidebar
-            canvas.height = window.innerHeight - 70 - 35; // Adjust for header and footer
-            if (document.getElementById('components-sidebar').classList.contains('open')) {
-                 canvas.width = window.innerWidth - 320;
-            } else {
-                 canvas.width = window.innerWidth;
+            const sidebarOpen = document.getElementById('components-sidebar').classList.contains('open') || document.getElementById('properties-sidebar').classList.contains('open');
+            const mainSidebarOpen = document.getElementById('main-sidebar').classList.contains('open');
+            
+            let canvasWidth = window.innerWidth;
+            let leftOffset = 0;
+            let rightOffset = 0;
+            
+            if (document.getElementById('components-sidebar').classList.contains('open') || document.getElementById('main-sidebar').classList.contains('open')) {
+                leftOffset = 320;
             }
+            if (document.getElementById('properties-sidebar').classList.contains('open')) {
+                rightOffset = 300;
+            }
+
+            canvasWidth = window.innerWidth - leftOffset - rightOffset;
+            canvas.style.marginLeft = `${leftOffset}px`;
+            canvas.style.width = `${canvasWidth}px`;
+            canvas.width = canvasWidth;
+            canvas.height = window.innerHeight - 70 - 35; // Adjust for header and footer
 
             drawCircuit();
         }
@@ -649,7 +768,9 @@
             wires.forEach(wire => {
                 const startPin = getPinPosition(wire.startComponent, wire.startPin);
                 const endPin = getPinPosition(wire.endComponent, wire.endPin);
-                drawWire(startPin.x, startPin.y, endPin.x, endPin.y);
+                if (startPin && endPin) {
+                    drawWire(startPin.x, startPin.y, endPin.x, endPin.y);
+                }
             });
 
             // Draw components
@@ -791,13 +912,34 @@
             updateToolbarButtons();
         });
         document.getElementById('tool-delete').addEventListener('click', () => {
-            // Delete logic here
-            showMessage("Herramienta de Borrado", "Función de borrado no implementada.");
+            if (selectedComponent) {
+                // Remove the component
+                components = components.filter(c => c.id !== selectedComponent.id);
+                // Remove any wires connected to the component
+                wires = wires.filter(w => w.startComponent !== selectedComponent.id && w.endComponent !== selectedComponent.id);
+                selectedComponent = null;
+                clearPropertiesPanel();
+                drawCircuit();
+                showMessage("Componente Eliminado", "El componente seleccionado ha sido eliminado del circuito.");
+            } else {
+                showMessage("Selección Requerida", "Por favor, selecciona un componente para eliminarlo.");
+            }
+            
+            selectedTool = 'delete'; // Set a temporary state for the button to be active
+            updateToolbarButtons();
+            // Reset to select tool after a short delay
+            setTimeout(() => {
+                selectedTool = 'select';
+                updateToolbarButtons();
+            }, 500);
         });
         
         function updateToolbarButtons() {
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tool-${selectedTool}`).classList.add('active');
+            const activeToolBtn = document.getElementById(`tool-${selectedTool}`);
+            if (activeToolBtn) {
+                 activeToolBtn.classList.add('active');
+            }
         }
 
         // --- Properties Sidebar Logic ---
@@ -815,6 +957,7 @@
                 </div>
             `;
             document.getElementById('properties-sidebar').classList.add('open');
+            document.getElementById('toggle-properties').classList.add('active');
         }
 
         function updateComponentValue(newValue) {
@@ -838,9 +981,7 @@
                 updateSimulationControls();
             }
         });
-        document.getElementById('pause-btn').addEventListener('click', () => {
-            showMessage("Pausa", "Función de pausa no implementada en esta versión.");
-        });
+
         document.getElementById('stop-btn').addEventListener('click', () => {
             if (simulationRunning) {
                 simulationRunning = false;
@@ -850,13 +991,10 @@
         });
 
         function updateSimulationControls() {
+            document.querySelectorAll('.simulation-controls .control-btn').forEach(btn => btn.classList.remove('active'));
             if (simulationRunning) {
                 document.getElementById('play-btn').classList.add('active');
-                document.getElementById('pause-btn').classList.remove('active');
-                document.getElementById('stop-btn').classList.remove('active');
             } else {
-                document.getElementById('play-btn').classList.remove('active');
-                document.getElementById('pause-btn').classList.remove('active');
                 document.getElementById('stop-btn').classList.add('active');
             }
         }
@@ -866,17 +1004,12 @@
             let voltageSources = components.filter(c => c.type === 'voltage-source');
             let resistors = components.filter(c => c.type === 'resistor');
             
-            if (voltageSources.length !== 1 || resistors.length < 1) {
-                showMessage("Error de Simulación", "Para esta versión, el circuito debe tener exactamente una fuente de voltaje y al menos un resistor.");
-                return;
+            if (voltageSources.length === 0 || resistors.length === 0) {
+                 showMessage("Error de Simulación", "Para simular, el circuito debe tener al menos una fuente de voltaje y un resistor.");
+                 return;
             }
-
-            // Check for a complete loop (simplified for now)
-            const allComponents = [...voltageSources, ...resistors];
-            let connectionsCount = allComponents.reduce((acc, c) => acc + c.connections.length, 0);
-
-            if (connectionsCount < 2 * allComponents.length) {
-                showMessage("Error de Simulación", "El circuito no está cerrado. Asegúrate de que todos los componentes estén conectados en una serie o paralelo simple.");
+            if (voltageSources.length > 1) {
+                showMessage("Error de Simulación", "Esta versión solo admite un circuito con una única fuente de voltaje.");
                 return;
             }
 
@@ -900,11 +1033,129 @@
             console.log("Simulación iniciada...");
         }
 
+        // --- Lógica para la API de Gemini ---
+        const analyzeBtn = document.getElementById('analyze-circuit-btn');
+        const improveBtn = document.getElementById('improve-circuit-btn');
+
+        analyzeBtn.addEventListener('click', analyzeCircuit);
+        improveBtn.addEventListener('click', getImprovementSuggestions);
+
+        async function callGeminiApi(prompt) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("Respuesta inesperada de la API.");
+                }
+            } catch (error) {
+                console.error("Error al llamar a la API de Gemini:", error);
+                showMessage('Error de Conexión', `No se pudo conectar a la API de Gemini. Detalles: ${error.message}`);
+                return null;
+            }
+        }
+
+        function formatCircuitData() {
+            let circuitDescription = "Analiza el siguiente circuito electrónico. Describe su propósito, el rol de cada componente, y las interacciones. Si parece un circuito incompleto o incorrecto, por favor házmelo saber. Utiliza un formato claro y amigable.\n\n";
+            
+            if (components.length === 0) {
+                return null;
+            }
+
+            circuitDescription += "Componentes:\n";
+            components.forEach(comp => {
+                circuitDescription += `- ID: ${comp.id}, Tipo: ${comp.type}, Valor: ${comp.value}\n`;
+            });
+
+            circuitDescription += "\nConexiones:\n";
+            wires.forEach(wire => {
+                const startComp = components.find(c => c.id === wire.startComponent);
+                const endComp = components.find(c => c.id === wire.endComponent);
+                if (startComp && endComp) {
+                    circuitDescription += `- Pin de ${startComp.type} (ID ${startComp.id}) conectado a Pin de ${endComp.type} (ID ${endComp.id}).\n`;
+                }
+            });
+            return circuitDescription;
+        }
+
+        async function analyzeCircuit() {
+            if (components.length === 0) {
+                showMessage("Análisis de Circuito", "Por favor, crea un circuito primero para analizarlo.");
+                return;
+            }
+
+            const circuitData = formatCircuitData();
+            if (!circuitData) {
+                return;
+            }
+
+            analyzeBtn.classList.add('loading');
+            analyzeBtn.textContent = 'Analizando...';
+            
+            const prompt = `Actúa como un experto en electrónica. ${circuitData}`;
+
+            const analysis = await callGeminiApi(prompt);
+            
+            analyzeBtn.classList.remove('loading');
+            analyzeBtn.innerHTML = '✨ Analizar Circuito';
+
+            if (analysis) {
+                showMessage("Análisis del Circuito", analysis);
+            }
+        }
+
+        async function getImprovementSuggestions() {
+            if (components.length === 0) {
+                showMessage("Consejos para Mejorar", "Por favor, crea un circuito para recibir sugerencias.");
+                return;
+            }
+
+            const circuitData = formatCircuitData();
+            if (!circuitData) {
+                return;
+            }
+
+            improveBtn.classList.add('loading');
+            improveBtn.textContent = 'Pensando...';
+
+            const prompt = `Actúa como un ingeniero electrónico experimentado. Basado en la siguiente descripción de un circuito, ofrece consejos de mejora. Por favor, sé constructivo y enfocado en la optimización del diseño o la funcionalidad. Evita mencionar errores básicos de conexión, ya que la aplicación es un simulador simple. ${circuitData}`;
+            
+            const suggestions = await callGeminiApi(prompt);
+
+            improveBtn.classList.remove('loading');
+            improveBtn.innerHTML = '✨ Consejos para Mejorar';
+
+            if (suggestions) {
+                showMessage("Consejos para Mejorar", suggestions);
+            }
+        }
+
         // Initial setup
         window.onload = () => {
             showScreen('startScreen');
-            document.getElementById('components-sidebar').classList.add('open');
-            updateToolbarButtons();
+            // Aseguramos que los botones se inicialicen correctamente
+            analyzeBtn.classList.remove('loading');
+            improveBtn.classList.remove('loading');
         };
     </script>
 </body>
