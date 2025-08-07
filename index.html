@@ -479,6 +479,82 @@
         .form-submit-button.student:hover {
             background: linear-gradient(45deg, #047857, #059669);
         }
+
+        /* Arduino Console Screen */
+        #arduinoConsoleScreen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            flex-direction: column;
+            background: var(--bg-color);
+            z-index: 200;
+        }
+        .arduino-header {
+            height: 70px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 25px;
+            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+        .arduino-content {
+            display: flex; flex-grow: 1; padding: 20px; gap: 20px;
+        }
+        .code-editor-container {
+            flex: 2; display: flex; flex-direction: column;
+        }
+        .console-output-container {
+            flex: 1; display: flex; flex-direction: column;
+        }
+        .editor-header, .output-header {
+            font-size: 1.2em; font-weight: 600; margin-bottom: 10px; color: var(--accent-color);
+        }
+        .code-editor, .console-output {
+            flex-grow: 1;
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            color: var(--text-color);
+            resize: none;
+            overflow: auto;
+        }
+        .console-output {
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+            overflow-y: auto;
+        }
+
+        .action-buttons {
+            display: flex; gap: 10px; margin-top: 10px;
+        }
+        .action-buttons .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 8px;
+            border: none;
+        }
+        .action-buttons .btn.compile {
+            background: #28a745; color: white;
+        }
+        .action-buttons .btn.compile:hover { background: #218838; }
+        .action-buttons .btn.upload {
+            background: #007bff; color: white;
+        }
+        .action-buttons .btn.upload:hover { background: #0069d9; }
+        
+        .back-to-simulator-btn {
+            background: var(--secondary-bg); color: var(--text-color); padding: 10px 15px; border-radius: 8px;
+            border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;
+        }
+        .back-to-simulator-btn:hover {
+            background: var(--border-color);
+        }
+
     </style>
 </head>
 <body>
@@ -590,7 +666,8 @@
             <div class="canvas-container">
                 <div class="canvas-toolbar">
                     <div class="tool-group">
-                        <button class="tool-btn active"><i class="fas fa-mouse-pointer"></i></button>
+                        <button id="selectToolBtn" class="tool-btn active"><i class="fas fa-mouse-pointer"></i></button>
+                        <button id="connectToolBtn" class="tool-btn"><i class="fas fa-link"></i></button>
                         <button class="tool-btn"><i class="fas fa-eraser"></i></button>
                         <button class="tool-btn"><i class="fas fa-undo"></i></button>
                         <button class="tool-btn"><i class="fas fa-redo"></i></button>
@@ -603,7 +680,7 @@
                     <div class="tool-group">
                         <button class="tool-btn"><i class="fas fa-table"></i></button>
                         <button class="tool-btn"><i class="fas fa-chart-line"></i></button>
-                        <button class="tool-btn"><i class="fas fa-terminal"></i></button>
+                        <button id="arduinoConsoleBtn" class="tool-btn"><i class="fas fa-terminal"></i></button>
                     </div>
                 </div>
                 <canvas id="simulatorCanvas"></canvas>
@@ -649,6 +726,33 @@
                 <button type="submit" class="form-submit-button student">Unirse a la Sala</button>
             </form>
             <a href="#" id="backToRoleSelectionFromStudent" class="back-button"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+    </div>
+
+    <!-- Arduino Console Screen -->
+    <div id="arduinoConsoleScreen" class="screen">
+        <header class="arduino-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-terminal" style="font-size:24px; color:var(--accent-color);"></i>
+                <h2 style="font-family:'Orbitron', sans-serif; font-weight:700;">Arduino Console</h2>
+            </div>
+            <button id="backToSimulatorBtn" class="back-to-simulator-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Simulador
+            </button>
+        </header>
+        <div class="arduino-content">
+            <div class="code-editor-container">
+                <div class="editor-header">Código</div>
+                <textarea class="code-editor" id="arduinoCodeEditor" placeholder="Escribe tu código de Arduino aquí..."></textarea>
+                <div class="action-buttons">
+                    <button class="btn compile"><i class="fas fa-cogs"></i> Compilar</button>
+                    <button class="btn upload"><i class="fas fa-upload"></i> Subir</button>
+                </div>
+            </div>
+            <div class="console-output-container">
+                <div class="output-header">Salida de la Consola</div>
+                <pre class="console-output" id="consoleOutput"></pre>
+            </div>
         </div>
     </div>
 
@@ -725,6 +829,9 @@
             e.preventDefault();
             showScreen('roleSelectionScreen');
         });
+        document.getElementById('backToSimulatorBtn').addEventListener('click', () => {
+            showScreen('appContainer');
+        });
 
         // Form submission handlers (placeholder functionality)
         document.getElementById('create-room-form').addEventListener('submit', (e) => {
@@ -741,7 +848,8 @@
         const toggleMenuBtn = document.getElementById('toggleMenuBtn');
         const mainLinks = mainSidebar.querySelectorAll('a');
         const toolButtons = document.querySelectorAll('.canvas-toolbar .tool-btn');
-        
+        let currentTool = 'select'; // Default tool
+
         // Toggle main menu sidebar
         toggleMenuBtn.addEventListener('click', () => {
             mainSidebar.classList.toggle('open');
@@ -763,8 +871,23 @@
             btn.addEventListener('click', () => {
                 toolButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                // You can add more specific logic here for each tool
+                
+                // Set the current tool based on the button clicked
+                if (btn.id === 'selectToolBtn') {
+                    currentTool = 'select';
+                    document.getElementById('simulatorCanvas').style.cursor = 'crosshair';
+                } else if (btn.id === 'connectToolBtn') {
+                    currentTool = 'connect';
+                    document.getElementById('simulatorCanvas').style.cursor = 'crosshair';
+                    showAlert('Modo de conexión activado. Haz clic en los pines para conectar.');
+                }
+                // Placeholder for other tools
             });
+        });
+        
+        // Handle terminal button specifically
+        document.getElementById('arduinoConsoleBtn').addEventListener('click', () => {
+            showScreen('arduinoConsoleScreen');
         });
 
         // --- Component Drag and Drop Functionality ---
@@ -854,6 +977,7 @@
 
             element.addEventListener('mousedown', (e) => {
                 if (e.target.classList.contains('pin')) return; // Ignore drag if clicking on a pin
+                if (currentTool !== 'select') return; // Only allow dragging in select mode
                 isDragging = true;
                 startX = e.clientX;
                 startY = e.clientY;
