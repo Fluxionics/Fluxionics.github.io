@@ -49,6 +49,17 @@
             display: flex; flex-direction: column; overflow: hidden;
         }
 
+        /* Animated Background Canvas */
+        #animatedBackground {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+        }
+
         /* Screen Management */
         .screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -62,11 +73,7 @@
             background: radial-gradient(ellipse at center, var(--primary-bg) 0%, var(--bg-color) 100%);
             padding: 40px; text-align: center; position: relative; overflow-y: auto;
         }
-        #startScreen::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,0 L10,5 M10,15 L10,20 M0,10 L5,10 M15,10 L20,10" stroke="%2300d4ff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>') repeat;
-            opacity: 0.05; z-index: 0;
-        }
+        
         .main-logo {
             width: 150px; height: 150px; margin: 0 auto 20px;
             background-image: url('https://imgur.com/pxjxVqC.png');
@@ -95,9 +102,8 @@
             padding: 18px 35px; border: none; border-radius: 12px; font-size: 1.2em; font-weight: 700;
             cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;
             gap: 12px; text-transform: uppercase; letter-spacing: 1px; min-width: 250px; justify-content: center;
-            flex-grow: 1; /* Allow buttons to grow and fill space */
+            flex-grow: 1;
         }
-        /* Media query for smaller screens to make buttons stack vertically again */
         @media (max-width: 768px) {
             .start-buttons-wrapper {
                 flex-direction: column;
@@ -119,6 +125,10 @@
         .start-button.secondary:hover {
             border-color: var(--accent-color); background: var(--border-color); transform: translateY(-3px);
             box-shadow: 0 8px 20px var(--shadow-accent);
+        }
+        .start-footer {
+            font-size: 12px; color: var(--placeholder-text);
+            margin-top: 40px;
         }
         
         /* Main App Container */
@@ -187,14 +197,13 @@
             box-shadow: 0 0 15px var(--shadow-accent);
         }
 
-        /* Components Sidebar */
+        /* Components Sidebar (Always Open) */
         .components-sidebar {
             width: 320px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
             padding: 20px; border-right: 1px solid var(--border-color); overflow-y: auto;
-            flex-shrink: 0; transition: transform 0.3s ease-in-out; transform: translateX(-100%);
-            position: fixed; top: 70px; left: 0; height: calc(100% - 70px); z-index: 1500;
+            flex-shrink: 0; 
+            position: sticky; top: 70px; left: 0; height: calc(100% - 70px); z-index: 1000;
         }
-        .components-sidebar.open { transform: translateX(0); }
         .component-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .component-item {
             width: 85px; height: 85px; background: var(--secondary-bg); border-radius: 12px;
@@ -223,7 +232,7 @@
 
         /* New buttons for Gemini API */
         .gemini-tool-btn {
-            padding: 0 15px; /* Adjust padding for text */
+            padding: 0 15px;
             height: 40px;
             background: linear-gradient(45deg, #ff7e5f, #feb47b);
             color: white;
@@ -331,17 +340,7 @@
             font-size: 16px;
         }
         
-        /* Footer */
-        .footer {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 35px;
-            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; border-top: 1px solid var(--border-color);
-            box-shadow: 0 -4px 20px var(--shadow-color);
-            font-size: 12px; color: var(--placeholder-text);
-        }
-        
-        /* Modal for messages */
+        /* Custom Modal for messages */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center;
@@ -368,6 +367,9 @@
     </style>
 </head>
 <body>
+    <!-- Animated Background Canvas -->
+    <canvas id="animatedBackground"></canvas>
+
     <!-- Start Screen -->
     <div id="startScreen" class="screen active">
         <div class="main-logo"></div>
@@ -379,16 +381,11 @@
                 <i class="fas fa-play"></i>
                 Iniciar Simulador
             </button>
-            <!-- Updated button calls for more specific messages -->
             <button class="start-button secondary" onclick="showMessage('Cal Flux', 'Esta herramienta de cálculo avanzada está en desarrollo. Pronto podrás resolver ecuaciones de circuito complejas con IA.')">
                 <i class="fas fa-calculator"></i>
                 Cal Flux
             </button>
-            <button class="start-button secondary" onclick="showMessage('Ejemplos Flux', 'Pronto podrás explorar una biblioteca de circuitos de ejemplo para aprender y experimentar.')">
-                <i class="fas fa-microchip"></i>
-                Ejemplos Flux
-            </button>
-            <button class="start-button secondary" onclick="showMessage('Tutoriales', 'Estamos creando tutoriales guiados para ayudarte a dominar el simulador y la electrónica.')">
+            <button class="start-button secondary" onclick="showTutorialWithAI()">
                 <i class="fas fa-book"></i>
                 Tutoriales
             </button>
@@ -396,6 +393,9 @@
                 <i class="fas fa-user-graduate"></i>
                 Clases
             </button>
+        </div>
+        <div class="start-footer">
+            <span>© 2024 Fluxionics. Todos los derechos reservados.</span>
         </div>
     </div>
 
@@ -411,10 +411,7 @@
                     <div class="logo-img"></div>
                     <span class="logo-text">Fluxionics</span>
                 </div>
-                <!-- New button for components sidebar -->
-                <button class="menu-btn" id="toggle-components-sidebar">
-                    <i class="fas fa-microchip"></i>
-                </button>
+                <!-- Removed toggle-components-sidebar button -->
             </div>
             <div class="header-right">
                 <button class="menu-btn" id="save-btn"><i class="fas fa-save"></i></button>
@@ -431,9 +428,8 @@
             <aside class="main-sidebar" id="main-sidebar">
                 <h4 class="sidebar-title">Menú Principal</h4>
                 <div class="sidebar-links">
-                    <!-- Updated button calls for more specific messages -->
-                    <a href="#" onclick="showMessage('Ayuda', 'La ayuda detallada y el soporte técnico estarán disponibles en futuras versiones.')"><i class="fas fa-info-circle"></i> Ayuda</a>
-                    <a href="#" onclick="showMessage('Política y Privacidad', 'Consulta nuestra política de privacidad para saber cómo protegemos tus datos.')"><i class="fas fa-user-shield"></i> Política y Privacidad</a>
+                    <a href="#" onclick="showHelpWithAI()"><i class="fas fa-info-circle"></i> Ayuda</a>
+                    <a href="#" onclick="showPolicyWithAI()"><i class="fas fa-user-shield"></i> Política y Privacidad</a>
                 </div>
                 <div class="theme-toggle-container">
                     <button id="theme-dark-btn" class="theme-btn active"><i class="fas fa-moon"></i> Oscuro</button>
@@ -441,7 +437,7 @@
                 </div>
             </aside>
             
-            <!-- Components Sidebar -->
+            <!-- Components Sidebar (Always Open) -->
             <aside class="components-sidebar" id="components-sidebar">
                 <div class="component-category">
                     <h4 class="category-title"><i class="fas fa-sliders-h"></i> Componentes Pasivos</h4>
@@ -472,10 +468,9 @@
                         <button class="tool-btn" id="tool-delete"><i class="fas fa-trash-alt"></i></button>
                     </div>
                     <div class="simulation-controls tool-group">
-                        <button class="control-btn" id="play-btn"><i class="fas fa-play"></i></button>
-                        <!-- Updated pause button call for a specific message -->
-                        <button class="control-btn" id="pause-btn" onclick="showMessage('Pausa', 'La función de pausa de simulación no está disponible en esta versión.')"><i class="fas fa-pause"></i></button>
-                        <button class="control-btn" id="stop-btn"><i class="fas fa-stop"></i></button>
+                        <button class="tool-btn" id="play-btn"><i class="fas fa-play"></i></button>
+                        <button class="tool-btn" id="pause-btn" onclick="showMessage('Pausa', 'La función de pausa de simulación no está disponible en esta versión.')"><i class="fas fa-pause"></i></button>
+                        <button class="tool-btn" id="stop-btn"><i class="fas fa-stop"></i></button>
                     </div>
                     <div class="llm-tools tool-group">
                         <button class="gemini-tool-btn" id="analyze-circuit-btn">✨ Analizar Circuito</button>
@@ -497,17 +492,13 @@
                 </div>
             </aside>
         </div>
-        
-        <div class="footer">
-            <span>© 2024 Fluxionics. Todos los derechos reservados.</span>
-        </div>
     </div>
     
     <!-- Custom Modal for messages -->
     <div id="messageModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 id="modalTitle">Función no implementada</h3>
-            <p id="modalMessage">Esta función aún no está disponible, pero el botón funciona correctamente.</p>
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
             <button class="modal-close-btn" onclick="hideModal()">Cerrar</button>
         </div>
     </div>
@@ -542,10 +533,8 @@
         // --- Sidebar Toggle Logic ---
         function closeAllSidebars() {
             document.getElementById('main-sidebar').classList.remove('open');
-            document.getElementById('components-sidebar').classList.remove('open');
             document.getElementById('properties-sidebar').classList.remove('open');
             document.getElementById('toggle-main-menu').classList.remove('active');
-            document.getElementById('toggle-components-sidebar').classList.remove('active');
             document.getElementById('toggle-properties').classList.remove('active');
             setupCanvas(); // Recalculate canvas size
         }
@@ -557,17 +546,6 @@
             if (!isActive) {
                 mainSidebar.classList.add('open');
                 document.getElementById('toggle-main-menu').classList.add('active');
-            }
-            setupCanvas();
-        });
-
-        document.getElementById('toggle-components-sidebar').addEventListener('click', () => {
-            const componentsSidebar = document.getElementById('components-sidebar');
-            const isActive = componentsSidebar.classList.contains('open');
-            closeAllSidebars();
-            if (!isActive) {
-                componentsSidebar.classList.add('open');
-                document.getElementById('toggle-components-sidebar').classList.add('active');
             }
             setupCanvas();
         });
@@ -593,6 +571,7 @@
             darkThemeBtn.classList.add('active');
             lightThemeBtn.classList.remove('active');
             drawCircuit();
+            updateParticleColors();
         });
 
         lightThemeBtn.addEventListener('click', () => {
@@ -600,12 +579,13 @@
             lightThemeBtn.classList.add('active');
             darkThemeBtn.classList.remove('active');
             drawCircuit();
+            updateParticleColors();
         });
 
         // --- Custom Modal Logic (replaces alert) ---
         function showMessage(title, message) {
             document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalMessage').innerHTML = message; // Usar innerHTML para Markdown
+            document.getElementById('modalMessage').innerHTML = message;
             document.getElementById('messageModal').classList.add('visible');
         }
         function hideModal() {
@@ -645,17 +625,17 @@
         const ctx = canvas.getContext('2d');
 
         function setupCanvas() {
-            const sidebarOpen = document.getElementById('components-sidebar').classList.contains('open') || document.getElementById('properties-sidebar').classList.contains('open');
+            const propertiesSidebarOpen = document.getElementById('properties-sidebar').classList.contains('open');
             const mainSidebarOpen = document.getElementById('main-sidebar').classList.contains('open');
             
             let canvasWidth = window.innerWidth;
-            let leftOffset = 0;
+            let leftOffset = 320; // Components sidebar is always open
             let rightOffset = 0;
             
-            if (document.getElementById('components-sidebar').classList.contains('open') || document.getElementById('main-sidebar').classList.contains('open')) {
+            if (mainSidebarOpen) {
                 leftOffset = 320;
             }
-            if (document.getElementById('properties-sidebar').classList.contains('open')) {
+            if (propertiesSidebarOpen) {
                 rightOffset = 300;
             }
 
@@ -663,7 +643,7 @@
             canvas.style.marginLeft = `${leftOffset}px`;
             canvas.style.width = `${canvasWidth}px`;
             canvas.width = canvasWidth;
-            canvas.height = window.innerHeight - 70 - 35; // Adjust for header and footer
+            canvas.height = window.innerHeight - 70; // Adjusted for header only, no footer
 
             drawCircuit();
         }
@@ -672,8 +652,8 @@
 
         // --- Drawing functions for components and wires ---
         function drawResistor(x, y, value) {
-            ctx.strokeStyle = body.classList.contains('light-theme') ? 'black' : 'white';
-            ctx.fillStyle = body.classList.contains('light-theme') ? 'black' : 'white';
+            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(x - 20, y);
@@ -685,6 +665,7 @@
             ctx.stroke();
 
             // Draw pins
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--accent-color');
             ctx.beginPath();
             ctx.arc(x - 20, y, 3, 0, Math.PI * 2);
             ctx.fill();
@@ -692,14 +673,15 @@
             ctx.arc(x + 20, y, 3, 0, Math.PI * 2);
             ctx.fill();
 
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
             ctx.font = '12px Inter';
             ctx.textAlign = 'center';
             ctx.fillText(`${value}Ω`, x, y + 25);
         }
 
         function drawVoltageSource(x, y, value) {
-            ctx.strokeStyle = body.classList.contains('light-theme') ? 'black' : 'white';
-            ctx.fillStyle = body.classList.contains('light-theme') ? 'black' : 'white';
+            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
             ctx.lineWidth = 2;
 
             // Draw terminals
@@ -724,6 +706,7 @@
             ctx.fillText('-', x - 5, y + 5);
 
             // Draw pins
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--accent-color');
             ctx.beginPath();
             ctx.arc(x - 20, y, 3, 0, Math.PI * 2);
             ctx.fill();
@@ -731,13 +714,14 @@
             ctx.arc(x + 20, y, 3, 0, Math.PI * 2);
             ctx.fill();
 
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-color');
             ctx.font = '12px Inter';
             ctx.textAlign = 'center';
             ctx.fillText(`${value}V`, x, y + 25);
         }
 
         function drawWire(x1, y1, x2, y2) {
-            ctx.strokeStyle = '#00d4ff';
+            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--accent-color');
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(x1, y1);
@@ -749,7 +733,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Draw grid
-            ctx.strokeStyle = body.classList.contains('light-theme') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+            ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--grid-color');
             ctx.lineWidth = 1;
             for (let x = 0; x < canvas.width; x += GRID_SIZE) {
                 ctx.beginPath();
@@ -925,9 +909,8 @@
                 showMessage("Selección Requerida", "Por favor, selecciona un componente para eliminarlo.");
             }
             
-            selectedTool = 'delete'; // Set a temporary state for the button to be active
+            selectedTool = 'delete';
             updateToolbarButtons();
-            // Reset to select tool after a short delay
             setTimeout(() => {
                 selectedTool = 'select';
                 updateToolbarButtons();
@@ -991,7 +974,7 @@
         });
 
         function updateSimulationControls() {
-            document.querySelectorAll('.simulation-controls .control-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.simulation-controls .tool-btn').forEach(btn => btn.classList.remove('active'));
             if (simulationRunning) {
                 document.getElementById('play-btn').classList.add('active');
             } else {
@@ -1048,31 +1031,57 @@
             chatHistory.push({ role: "user", parts: [{ text: prompt }] });
             const payload = { contents: chatHistory };
 
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+            let attempts = 0;
+            const maxAttempts = 3;
+            let delay = 1000; // 1 second
 
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status} ${response.statusText}`);
-                }
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
 
-                const result = await response.json();
-                
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    return result.candidates[0].content.parts[0].text;
-                } else {
-                    throw new Error("Respuesta inesperada de la API.");
+                    // Check for rate limit error
+                    if (response.status === 429) {
+                        if (attempts < maxAttempts - 1) {
+                            await new Promise(res => setTimeout(res, delay));
+                            delay *= 2;
+                            attempts++;
+                            continue;
+                        } else {
+                            showMessage("Error de Conexión", "El servicio está ocupado, por favor intenta de nuevo más tarde.");
+                            return null;
+                        }
+                    }
+
+                    // Check for authentication error specifically
+                    if (response.status === 401) {
+                        showMessage('Error de Autenticación', 'No se pudo conectar a la API. Por favor, asegúrate de que tu clave de API esté configurada correctamente.');
+                        return null;
+                    }
+                    
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.status} ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Respuesta inesperada de la API.");
+                    }
+                } catch (error) {
+                    console.error("Error al llamar a la API de Gemini:", error);
+                    showMessage('Error de Conexión', `No se pudo conectar a la API de Gemini. Detalles: ${error.message}`);
+                    return null;
                 }
-            } catch (error) {
-                console.error("Error al llamar a la API de Gemini:", error);
-                showMessage('Error de Conexión', `No se pudo conectar a la API de Gemini. Detalles: ${error.message}`);
-                return null;
             }
+            return null; // Ensure the function returns something at the end of the loop
         }
 
         function formatCircuitData() {
@@ -1110,7 +1119,7 @@
             }
 
             analyzeBtn.classList.add('loading');
-            analyzeBtn.textContent = 'Analizando...';
+            analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analizando...';
             
             const prompt = `Actúa como un experto en electrónica. ${circuitData}`;
 
@@ -1136,7 +1145,7 @@
             }
 
             improveBtn.classList.add('loading');
-            improveBtn.textContent = 'Pensando...';
+            improveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Pensando...';
 
             const prompt = `Actúa como un ingeniero electrónico experimentado. Basado en la siguiente descripción de un circuito, ofrece consejos de mejora. Por favor, sé constructivo y enfocado en la optimización del diseño o la funcionalidad. Evita mencionar errores básicos de conexión, ya que la aplicación es un simulador simple. ${circuitData}`;
             
@@ -1149,13 +1158,121 @@
                 showMessage("Consejos para Mejorar", suggestions);
             }
         }
+        
+        async function showTutorialWithAI() {
+            const tutorialPrompt = "Explica de manera clara y amigable las funciones de una aplicación de simulación de circuitos. Describe los botones principales: 'Menú Principal', 'Propiedades', 'Guardar', 'Compartir', 'Simular', 'Pausa', 'Detener' y las herramientas de 'Seleccionar', 'Cable' y 'Eliminar'. También explica el panel de propiedades y el panel de resultados de simulación. Tu objetivo es ser un tutor que guía al usuario a través de la interfaz.";
+            const button = document.querySelector('.start-button:nth-child(3)');
+            button.classList.add('loading');
+            
+            const tutorialText = await callGeminiApi(tutorialPrompt);
+
+            button.classList.remove('loading');
+
+            if (tutorialText) {
+                showMessage('Tutorial de Fluxionics', tutorialText.replace(/\n/g, '<br>'));
+            }
+        }
+        
+        async function showHelpWithAI() {
+            const helpPrompt = "Genera un texto de ayuda y soporte técnico para una aplicación de simulación de circuitos llamada 'Fluxionics'. Incluye información sobre cómo contactar al soporte, la documentación, y una sección de preguntas frecuentes básicas. Manten un tono profesional y servicial.";
+            const helpText = await callGeminiApi(helpPrompt);
+            if (helpText) {
+                showMessage('Ayuda y Soporte Técnico', helpText.replace(/\n/g, '<br>'));
+            }
+        }
+        
+        async function showPolicyWithAI() {
+            const policyPrompt = "Escribe una política de privacidad y términos de uso para una aplicación web de simulación de circuitos. El documento debe ser claro, conciso y fácil de entender. Debe incluir secciones sobre qué datos se recopilan (como el estado del circuito para guardar), cómo se utilizan, la seguridad de los datos y cómo el usuario puede controlar su información. Menciona que no se recopilan datos personales sensibles sin consentimiento explícito. Usa un tono formal.";
+            const policyText = await callGeminiApi(policyPrompt);
+            if (policyText) {
+                showMessage('Política de Privacidad y Términos de Uso', policyText.replace(/\n/g, '<br>'));
+            }
+        }
+
+        // --- Animated Background Logic ---
+        const bgCanvas = document.getElementById('animatedBackground');
+        const bgCtx = bgCanvas.getContext('2d');
+        let particles = [];
+        const PARTICLE_COUNT = 50;
+        let particleColor = getComputedStyle(document.body).getPropertyValue('--accent-color');
+
+        function updateParticleColors() {
+            particleColor = getComputedStyle(document.body).getPropertyValue('--accent-color');
+            particles.forEach(p => {
+                p.color = particleColor.replace(')', (Math.random() * 0.5 + 0.1) + ')');
+            });
+        }
+
+        function resizeBackgroundCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+        }
+        window.addEventListener('resize', resizeBackgroundCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * bgCanvas.width;
+                this.y = Math.random() * bgCanvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.color = getComputedStyle(document.body).getPropertyValue('--accent-color');
+                this.trail = [];
+                this.trailLength = Math.floor(Math.random() * 50) + 10;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > bgCanvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > bgCanvas.height || this.y < 0) this.speedY *= -1;
+                
+                this.trail.push({x: this.x, y: this.y, size: this.size, color: this.color});
+                if (this.trail.length > this.trailLength) {
+                    this.trail.shift();
+                }
+            }
+
+            draw() {
+                // Draw trails
+                for (let i = 0; i < this.trail.length; i++) {
+                    let trailPart = this.trail[i];
+                    let opacity = (i / this.trail.length) * 0.5;
+                    bgCtx.fillStyle = particleColor.replace(')', opacity + ')');
+                    bgCtx.beginPath();
+                    bgCtx.arc(trailPart.x, trailPart.y, trailPart.size * (i/this.trail.length), 0, Math.PI * 2);
+                    bgCtx.fill();
+                }
+                
+                // Draw head particle
+                bgCtx.fillStyle = particleColor;
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                bgCtx.fill();
+            }
+        }
+
+        function animateBackground() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateBackground);
+        }
 
         // Initial setup
         window.onload = () => {
             showScreen('startScreen');
-            // Aseguramos que los botones se inicialicen correctamente
             analyzeBtn.classList.remove('loading');
             improveBtn.classList.remove('loading');
+            resizeBackgroundCanvas();
+            animateBackground();
         };
     </script>
 </body>
