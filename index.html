@@ -196,7 +196,9 @@
             justify-content: center; transition: all 0.3s ease; border: 2px solid transparent;
         }
         .component-item:hover { background: var(--border-color); border-color: var(--accent-color); }
-        
+        .component-item .component-icon { font-size: 24px; margin-bottom: 5px; }
+        .component-item .component-name { font-size: 12px; text-align: center; }
+
         /* Canvas Container */
         .canvas-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-color); position: relative; }
         .canvas-toolbar {
@@ -221,20 +223,46 @@
                 linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
             background-size: 25px 25px;
         }
-
-        /* Placed Component on Canvas */
-        .placed-component {
-            position: absolute; width: 50px; height: 50px; border: 2px solid var(--accent-color);
-            background: var(--secondary-bg); display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-            color: var(--text-color); font-weight: bold; font-size: 14px;
-        }
-        .placed-component:hover { transform: scale(1.1); }
-        .placed-component.selected {
-            box-shadow: 0 0 15px var(--shadow-accent);
-            border-color: #ffcc00;
-        }
         
+        /* Component on canvas visual */
+        .component-visual {
+            position: absolute;
+            background: transparent;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .component-visual .comp-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: var(--text-color);
+        }
+
+        .component-visual .pin {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--border-color);
+            border: 1px solid var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+        }
+        .component-visual .pin.start-pin {
+            top: 20px;
+            left: -5px;
+        }
+        .component-visual .pin.end-pin {
+            top: 20px;
+            right: -5px;
+        }
+
         /* Properties Sidebar */
         .properties-sidebar {
             width: 300px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
@@ -245,6 +273,7 @@
         .properties-sidebar.open { transform: translateX(0); }
 
         .properties-title { font-size: 14px; font-weight: 700; color: var(--accent-color); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; }
+        .prop-item { margin-bottom: 15px; }
         .prop-item label { display: block; font-size: 12px; color: var(--text-color); margin-bottom: 5px; }
         .prop-item input, .prop-item select {
             width: 100%; padding: 8px; background: var(--secondary-bg);
@@ -252,6 +281,16 @@
             transition: all 0.3s ease;
         }
         .prop-item input:focus, .prop-item select:focus { outline: none; border-color: var(--accent-color); background: var(--border-color); }
+
+        #simulation-results {
+            padding: 15px; background: var(--secondary-bg); border-radius: 10px;
+            margin-top: 20px; border: 2px solid var(--accent-color);
+            text-align: center;
+        }
+        #simulation-results h4 {
+            color: var(--accent-color); margin-bottom: 10px;
+            font-size: 16px;
+        }
         
         /* Footer */
         .footer {
@@ -293,7 +332,6 @@
         <h1 class="app-title">Fluxionics</h1>
         <p class="app-subtitle">Simulador Profesional de Circuitos</p>
         
-        <!-- Updated to a horizontal layout -->
         <div class="start-buttons-wrapper">
             <button class="start-button primary" onclick="showScreen('appContainer')">
                 <i class="fas fa-play"></i>
@@ -358,10 +396,19 @@
             <!-- Components Sidebar -->
             <aside class="components-sidebar" id="components-sidebar">
                 <div class="component-category">
-                    <h4 class="category-title"><i class="fas fa-sliders-h"></i> Fuentes</h4>
+                    <h4 class="category-title"><i class="fas fa-sliders-h"></i> Componentes Pasivos</h4>
                     <div class="component-grid">
-                        <div class="component-item" draggable="true" data-component="voltage-source">
-                            <div class="component-icon">V</div>
+                        <div class="component-item" draggable="true" data-component-type="resistor">
+                            <i class="fas fa-grip-lines-vertical component-icon"></i>
+                            <span class="component-name">Resistor</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="component-category" style="margin-top: 20px;">
+                    <h4 class="category-title"><i class="fas fa-bolt"></i> Fuentes</h4>
+                    <div class="component-grid">
+                        <div class="component-item" draggable="true" data-component-type="voltage-source">
+                            <i class="fas fa-battery-three-quarters component-icon"></i>
                             <span class="component-name">Fuente de Voltaje</span>
                         </div>
                     </div>
@@ -382,9 +429,7 @@
                         <button class="control-btn" id="stop-btn"><i class="fas fa-stop"></i></button>
                     </div>
                 </div>
-                <div id="simulatorCanvas">
-                    <!-- Circuit drawing area with grid -->
-                </div>
+                <canvas id="simulatorCanvas"></canvas>
             </div>
 
             <!-- Properties Sidebar -->
@@ -392,6 +437,10 @@
                 <h4 class="properties-title">Propiedades del Componente</h4>
                 <div id="properties-panel">
                     <p style="text-align: center; color: var(--placeholder-text);">Selecciona un componente para editar sus propiedades.</p>
+                </div>
+                <div id="simulation-results">
+                    <h4>Resultados de la Simulación</h4>
+                    <p id="results-text">No hay datos de simulación.</p>
                 </div>
             </aside>
         </div>
@@ -411,19 +460,32 @@
     </div>
     
     <script>
+        // --- Variables globales y estado del simulador ---
+        let components = [];
+        let wires = [];
+        let selectedTool = 'select';
+        let isDrawingWire = false;
+        let wireStartPin = null;
+        let selectedComponent = null;
+        let simulationRunning = false;
+        let componentCounter = 0;
+        const GRID_SIZE = 25;
+
         // --- Screen Switching Logic ---
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
+            if (screenId === 'appContainer') {
+                setupCanvas();
+            }
         }
         
         // --- Sidebar Toggle Logic ---
         document.getElementById('toggle-main-menu').addEventListener('click', () => {
             const mainSidebar = document.getElementById('main-sidebar');
             mainSidebar.classList.toggle('open');
-            // Close other sidebars if main menu is open
             if (mainSidebar.classList.contains('open')) {
                 document.getElementById('components-sidebar').classList.remove('open');
                 document.getElementById('properties-sidebar').classList.remove('open');
@@ -433,7 +495,6 @@
         document.getElementById('toggle-properties').addEventListener('click', () => {
             const propertiesSidebar = document.getElementById('properties-sidebar');
             propertiesSidebar.classList.toggle('open');
-            // Close other sidebars if properties sidebar is open
             if (propertiesSidebar.classList.contains('open')) {
                 document.getElementById('main-sidebar').classList.remove('open');
                 document.getElementById('components-sidebar').classList.remove('open');
@@ -449,148 +510,401 @@
             body.classList.remove('light-theme');
             darkThemeBtn.classList.add('active');
             lightThemeBtn.classList.remove('active');
+            drawCircuit();
         });
 
         lightThemeBtn.addEventListener('click', () => {
             body.classList.add('light-theme');
             lightThemeBtn.classList.add('active');
             darkThemeBtn.classList.remove('active');
+            drawCircuit();
         });
 
         // --- Custom Modal Logic (replaces alert) ---
-        function showNotImplementedMessage(featureName) {
-            document.getElementById('modalTitle').textContent = `Función para "${featureName}"`;
-            document.getElementById('modalMessage').textContent = `Esta función aún no está disponible, pero el botón funciona correctamente.`;
+        function showMessage(title, message) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
             document.getElementById('messageModal').classList.add('visible');
+        }
+        function showNotImplementedMessage(featureName) {
+             showMessage(`Función para "${featureName}"`, `Esta función aún no está disponible, pero el botón funciona correctamente.`);
         }
         function hideModal() {
             document.getElementById('messageModal').classList.remove('visible');
         }
 
+        // --- Canvas Setup ---
+        const canvas = document.getElementById('simulatorCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function setupCanvas() {
+            canvas.width = window.innerWidth - 320; // Adjust for sidebar
+            canvas.height = window.innerHeight - 70 - 35; // Adjust for header and footer
+            if (document.getElementById('components-sidebar').classList.contains('open')) {
+                 canvas.width = window.innerWidth - 320;
+            } else {
+                 canvas.width = window.innerWidth;
+            }
+
+            drawCircuit();
+        }
+
+        window.addEventListener('resize', setupCanvas);
+
+        // --- Drawing functions for components and wires ---
+        function drawResistor(x, y, value) {
+            ctx.strokeStyle = body.classList.contains('light-theme') ? 'black' : 'white';
+            ctx.fillStyle = body.classList.contains('light-theme') ? 'black' : 'white';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x - 20, y);
+            ctx.lineTo(x - 10, y);
+            ctx.rect(x - 10, y - 5, 20, 10);
+            ctx.stroke();
+            ctx.moveTo(x + 10, y);
+            ctx.lineTo(x + 20, y);
+            ctx.stroke();
+
+            // Draw pins
+            ctx.beginPath();
+            ctx.arc(x - 20, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + 20, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${value}Ω`, x, y + 25);
+        }
+
+        function drawVoltageSource(x, y, value) {
+            ctx.strokeStyle = body.classList.contains('light-theme') ? 'black' : 'white';
+            ctx.fillStyle = body.classList.contains('light-theme') ? 'black' : 'white';
+            ctx.lineWidth = 2;
+
+            // Draw terminals
+            ctx.beginPath();
+            ctx.moveTo(x - 20, y);
+            ctx.lineTo(x - 10, y);
+            ctx.stroke();
+            ctx.moveTo(x + 10, y);
+            ctx.lineTo(x + 20, y);
+            ctx.stroke();
+
+            // Draw circles
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Draw plus and minus
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('+', x - 5, y - 5);
+            ctx.fillText('-', x - 5, y + 5);
+
+            // Draw pins
+            ctx.beginPath();
+            ctx.arc(x - 20, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + 20, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.font = '12px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${value}V`, x, y + 25);
+        }
+
+        function drawWire(x1, y1, x2, y2) {
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        function drawCircuit() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid
+            ctx.strokeStyle = body.classList.contains('light-theme') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += GRID_SIZE) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += GRID_SIZE) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // Draw wires
+            wires.forEach(wire => {
+                const startPin = getPinPosition(wire.startComponent, wire.startPin);
+                const endPin = getPinPosition(wire.endComponent, wire.endPin);
+                drawWire(startPin.x, startPin.y, endPin.x, endPin.y);
+            });
+
+            // Draw components
+            components.forEach(comp => {
+                if (comp.type === 'resistor') {
+                    drawResistor(comp.x, comp.y, comp.value);
+                } else if (comp.type === 'voltage-source') {
+                    drawVoltageSource(comp.x, comp.y, comp.value);
+                }
+            });
+        }
+
+        function getPinPosition(componentId, pin) {
+            const comp = components.find(c => c.id === componentId);
+            if (!comp) return null;
+
+            const offset = pin === 'start-pin' ? -20 : 20;
+            return { x: comp.x + offset, y: comp.y };
+        }
+
+
         // --- Drag and Drop Logic ---
         const componentItems = document.querySelectorAll('.component-item');
-        const simulatorCanvas = document.getElementById('simulatorCanvas');
         let draggedComponentType = null;
-        let placedComponents = []; // Array to store placed component objects
 
         componentItems.forEach(item => {
             item.addEventListener('dragstart', (e) => {
-                draggedComponentType = item.getAttribute('data-component');
+                draggedComponentType = item.getAttribute('data-component-type');
                 e.dataTransfer.setData('text/plain', draggedComponentType);
             });
         });
 
-        simulatorCanvas.addEventListener('dragover', (e) => {
+        canvas.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
         });
 
-        simulatorCanvas.addEventListener('drop', (e) => {
+        canvas.addEventListener('drop', (e) => {
             e.preventDefault();
             if (draggedComponentType) {
-                // Simplified placement on a grid
-                const rect = simulatorCanvas.getBoundingClientRect();
+                const rect = canvas.getBoundingClientRect();
                 const dropX = e.clientX - rect.left;
                 const dropY = e.clientY - rect.top;
                 
-                // Snap to grid (25px grid size)
-                const snappedX = Math.round(dropX / 25) * 25;
-                const snappedY = Math.round(dropY / 25) * 25;
-                
-                // Create and place the new component
-                const newComponent = document.createElement('div');
-                newComponent.classList.add('placed-component');
-                newComponent.style.left = `${snappedX}px`;
-                newComponent.style.top = `${snappedY}px`;
-                newComponent.textContent = draggedComponentType;
-                newComponent.dataset.componentType = draggedComponentType; // Store component type
-                simulatorCanvas.appendChild(newComponent);
-                
-                // Add click listener for selection
-                newComponent.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevents deselecting the component
-                    selectComponent(newComponent);
-                });
+                // Snap to grid
+                const snappedX = Math.round(dropX / GRID_SIZE) * GRID_SIZE;
+                const snappedY = Math.round(dropY / GRID_SIZE) * GRID_SIZE;
 
-                placedComponents.push(newComponent);
+                // Create and place the new component
+                const newComponent = {
+                    id: componentCounter++,
+                    type: draggedComponentType,
+                    x: snappedX,
+                    y: snappedY,
+                    value: draggedComponentType === 'resistor' ? 100 : 9, // Default values
+                    connections: []
+                };
+                components.push(newComponent);
                 draggedComponentType = null;
+                drawCircuit();
             }
         });
-        
-        // Handle component selection/deselection
-        function selectComponent(componentElement) {
-            // Deselect all other components first
-            document.querySelectorAll('.placed-component.selected').forEach(c => {
-                c.classList.remove('selected');
-            });
-            
-            // Select the new component
-            componentElement.classList.add('selected');
-            updatePropertiesPanel(componentElement);
-        }
-        
-        function deselectAllComponents() {
-            document.querySelectorAll('.placed-component.selected').forEach(c => {
-                c.classList.remove('selected');
-            });
-            clearPropertiesPanel();
-        }
 
-        // Deselect when clicking on canvas background
-        simulatorCanvas.addEventListener('click', () => {
-            deselectAllComponents();
+        // --- Interaction Logic (Selection, Wiring) ---
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            if (selectedTool === 'select') {
+                selectedComponent = getComponentAt(mouseX, mouseY);
+                if (selectedComponent) {
+                    updatePropertiesPanel(selectedComponent);
+                } else {
+                    clearPropertiesPanel();
+                }
+            } else if (selectedTool === 'wire') {
+                const pin = getPinAt(mouseX, mouseY);
+                if (pin) {
+                    if (!isDrawingWire) {
+                        isDrawingWire = true;
+                        wireStartPin = pin;
+                        canvas.style.cursor = 'crosshair';
+                    } else {
+                        const wireEndPin = pin;
+                        if (wireStartPin.componentId !== wireEndPin.componentId) {
+                            wires.push({
+                                startComponent: wireStartPin.componentId,
+                                startPin: wireStartPin.pin,
+                                endComponent: wireEndPin.componentId,
+                                endPin: wireEndPin.pin,
+                            });
+                            isDrawingWire = false;
+                            wireStartPin = null;
+                            canvas.style.cursor = 'default';
+                            drawCircuit();
+                        } else {
+                            showMessage("Error de conexión", "No puedes conectar un componente a sí mismo.");
+                            isDrawingWire = false;
+                            wireStartPin = null;
+                            canvas.style.cursor = 'default';
+                        }
+                    }
+                } else {
+                    isDrawingWire = false;
+                    wireStartPin = null;
+                    canvas.style.cursor = 'default';
+                }
+            }
         });
 
-        // Update the properties sidebar
+        function getComponentAt(x, y) {
+            return components.find(comp => {
+                return x > comp.x - 25 && x < comp.x + 25 && y > comp.y - 25 && y < comp.y + 25;
+            });
+        }
+
+        function getPinAt(x, y) {
+            for (const comp of components) {
+                const startPinPos = getPinPosition(comp.id, 'start-pin');
+                if (startPinPos && Math.hypot(x - startPinPos.x, y - startPinPos.y) < 8) {
+                    return { componentId: comp.id, pin: 'start-pin' };
+                }
+                const endPinPos = getPinPosition(comp.id, 'end-pin');
+                if (endPinPos && Math.hypot(x - endPinPos.x, y - endPinPos.y) < 8) {
+                    return { componentId: comp.id, pin: 'end-pin' };
+                }
+            }
+            return null;
+        }
+
+        // --- Toolbar and Tool Selection ---
+        document.getElementById('tool-select').addEventListener('click', () => {
+            selectedTool = 'select';
+            updateToolbarButtons();
+        });
+        document.getElementById('tool-wire').addEventListener('click', () => {
+            selectedTool = 'wire';
+            updateToolbarButtons();
+        });
+        document.getElementById('tool-delete').addEventListener('click', () => {
+            // Delete logic here
+            showMessage("Herramienta de Borrado", "Función de borrado no implementada.");
+        });
+        
+        function updateToolbarButtons() {
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tool-${selectedTool}`).classList.add('active');
+        }
+
+        // --- Properties Sidebar Logic ---
         function updatePropertiesPanel(component) {
+            selectedComponent = component;
             const propertiesPanel = document.getElementById('properties-panel');
             propertiesPanel.innerHTML = `
                 <div class="prop-item">
-                    <label for="comp-name">Nombre</label>
-                    <input type="text" id="comp-name" value="${component.dataset.componentType}" />
+                    <label for="comp-type">Tipo</label>
+                    <input type="text" id="comp-type" value="${component.type}" disabled />
                 </div>
                 <div class="prop-item">
                     <label for="comp-value">Valor</label>
-                    <input type="text" id="comp-value" value="1kΩ" />
+                    <input type="number" id="comp-value" value="${component.value}" onchange="updateComponentValue(this.value)" />
                 </div>
-                <p style="text-align: center; color: var(--placeholder-text); margin-top: 20px;">Propiedades detalladas del componente...</p>
             `;
             document.getElementById('properties-sidebar').classList.add('open');
         }
 
-        function clearPropertiesPanel() {
-            const propertiesPanel = document.getElementById('properties-panel');
-            propertiesPanel.innerHTML = `<p style="text-align: center; color: var(--placeholder-text);">Selecciona un componente para editar sus propiedades.</p>`;
-            document.getElementById('properties-sidebar').classList.remove('open');
+        function updateComponentValue(newValue) {
+            if (selectedComponent) {
+                selectedComponent.value = parseFloat(newValue);
+                drawCircuit();
+            }
         }
 
-        // --- Simulation Control Logic (Placeholder) ---
+        function clearPropertiesPanel() {
+            selectedComponent = null;
+            const propertiesPanel = document.getElementById('properties-panel');
+            propertiesPanel.innerHTML = `<p style="text-align: center; color: var(--placeholder-text);">Selecciona un componente para editar sus propiedades.</p>`;
+        }
+
+        // --- Simulation Control Logic ---
         document.getElementById('play-btn').addEventListener('click', () => {
-            console.log('Simulación iniciada');
-            // Add visual feedback
-            document.getElementById('play-btn').classList.add('active');
-            document.getElementById('pause-btn').classList.remove('active');
-            document.getElementById('stop-btn').classList.remove('active');
+            if (!simulationRunning) {
+                runSimulation();
+                simulationRunning = true;
+                updateSimulationControls();
+            }
         });
         document.getElementById('pause-btn').addEventListener('click', () => {
-            console.log('Simulación en pausa');
-            // Add visual feedback
-            document.getElementById('play-btn').classList.remove('active');
-            document.getElementById('pause-btn').classList.add('active');
-            document.getElementById('stop-btn').classList.remove('active');
+            showMessage("Pausa", "Función de pausa no implementada en esta versión.");
         });
         document.getElementById('stop-btn').addEventListener('click', () => {
-            console.log('Simulación detenida');
-            // Add visual feedback
-            document.getElementById('play-btn').classList.remove('active');
-            document.getElementById('pause-btn').classList.remove('active');
-            document.getElementById('stop-btn').classList.add('active');
+            if (simulationRunning) {
+                simulationRunning = false;
+                updateSimulationControls();
+                document.getElementById('results-text').textContent = 'No hay datos de simulación.';
+            }
         });
+
+        function updateSimulationControls() {
+            if (simulationRunning) {
+                document.getElementById('play-btn').classList.add('active');
+                document.getElementById('pause-btn').classList.remove('active');
+                document.getElementById('stop-btn').classList.remove('active');
+            } else {
+                document.getElementById('play-btn').classList.remove('active');
+                document.getElementById('pause-btn').classList.remove('active');
+                document.getElementById('stop-btn').classList.add('active');
+            }
+        }
+        
+        // --- Core Simulation Engine (Simplified DC circuit) ---
+        function runSimulation() {
+            let voltageSources = components.filter(c => c.type === 'voltage-source');
+            let resistors = components.filter(c => c.type === 'resistor');
+            
+            if (voltageSources.length !== 1 || resistors.length < 1) {
+                showMessage("Error de Simulación", "Para esta versión, el circuito debe tener exactamente una fuente de voltaje y al menos un resistor.");
+                return;
+            }
+
+            // Check for a complete loop (simplified for now)
+            const allComponents = [...voltageSources, ...resistors];
+            let connectionsCount = allComponents.reduce((acc, c) => acc + c.connections.length, 0);
+
+            if (connectionsCount < 2 * allComponents.length) {
+                showMessage("Error de Simulación", "El circuito no está cerrado. Asegúrate de que todos los componentes estén conectados en una serie o paralelo simple.");
+                return;
+            }
+
+            // Simple series circuit calculation (for this version)
+            let totalResistance = resistors.reduce((sum, r) => sum + r.value, 0);
+            let totalVoltage = voltageSources[0].value;
+            
+            if (totalResistance === 0) {
+                 showMessage("Error de Simulación", "La resistencia total no puede ser cero.");
+                 return;
+            }
+
+            let totalCurrent = totalVoltage / totalResistance;
+
+            document.getElementById('results-text').textContent = `
+                Corriente Total: ${totalCurrent.toFixed(2)} A
+                Voltaje Total: ${totalVoltage} V
+                Resistencia Total: ${totalResistance} Ω
+            `;
+
+            console.log("Simulación iniciada...");
+        }
 
         // Initial setup
         window.onload = () => {
             showScreen('startScreen');
             document.getElementById('components-sidebar').classList.add('open');
+            updateToolbarButtons();
         };
     </script>
 </body>
