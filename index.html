@@ -6,299 +6,592 @@
     <title>Fluxionics - Simulador de Circuitos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* CSS Variables for Theming */
+        :root {
+            --bg-color: #0a0e14;
+            --primary-bg: #1a1f2e;
+            --secondary-bg: #21262d;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --accent-color: #00d4ff;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-accent: rgba(0, 212, 255, 0.3);
+            --logo-color: #00d4ff;
+            --canvas-bg: #1a1f2e;
+            --grid-color: rgba(48, 54, 61, 0.6);
+            --placeholder-text: #8b949e;
+        }
+
+        body.light-theme {
+            --bg-color: #f0f2f5;
+            --primary-bg: #ffffff;
+            --secondary-bg: #e2e4e6;
+            --border-color: #d1d5db;
+            --text-color: #1f2937;
+            --accent-color: #007bff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --shadow-accent: rgba(0, 123, 255, 0.3);
+            --logo-color: #007bff;
+            --canvas-bg: #f8f9fa;
+            --grid-color: rgba(209, 213, 219, 0.8);
+            --placeholder-text: #6b7280;
+        }
+
         /* Base Styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0e14; color: #e6edf3; overflow: hidden; line-height: 1.6;
-            animation: gradientBackground 20s ease infinite;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color); color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
+            display: flex; flex-direction: column; overflow: hidden;
         }
-        @keyframes gradientBackground {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+
+        /* Screen Management */
+        .screen {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            flex-direction: column;
         }
-        #app { display: flex; flex-direction: column; height: 100vh; }
+        .screen.active { display: flex; }
+        
+        /* Start Screen */
+        #startScreen {
+            align-items: center; justify-content: center;
+            background: radial-gradient(ellipse at center, var(--primary-bg) 0%, var(--bg-color) 100%);
+            padding: 40px; text-align: center; position: relative; overflow-y: auto;
+        }
+        #startScreen::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,0 L10,5 M10,15 L10,20 M0,10 L5,10 M15,10 L20,10" stroke="%2300d4ff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>') repeat;
+            opacity: 0.05; z-index: 0;
+        }
+        .main-logo {
+            width: 150px; height: 150px; margin: 0 auto 20px;
+            background-image: url('https://imgur.com/pxjxVqC.png');
+            background-size: contain; background-repeat: no-repeat;
+            background-position: center; animation: logoFloat 6s ease-in-out infinite;
+            border-radius: 20px; box-shadow: 0 0 30px var(--shadow-accent);
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+        .app-title {
+            font-family: 'Orbitron', sans-serif; font-size: 4.5em; font-weight: 900;
+            color: var(--logo-color); text-shadow: 0 0 30px var(--shadow-accent);
+        }
+        .app-subtitle { font-size: 1.4em; color: var(--placeholder-text); font-weight: 500; margin-bottom: 40px; }
+        
+        /* New horizontal button layout */
+        .start-buttons-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        .start-button {
+            padding: 18px 35px; border: none; border-radius: 12px; font-size: 1.2em; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;
+            gap: 12px; text-transform: uppercase; letter-spacing: 1px; min-width: 250px; justify-content: center;
+            flex-grow: 1; /* Allow buttons to grow and fill space */
+        }
+        /* Media query for smaller screens to make buttons stack vertically again */
+        @media (max-width: 768px) {
+            .start-buttons-wrapper {
+                flex-direction: column;
+            }
+        }
+        
+        .start-button.primary {
+            background: linear-gradient(45deg, var(--accent-color), #0088cc); color: var(--bg-color);
+            box-shadow: 0 8px 25px var(--shadow-accent);
+        }
+        .start-button.primary:hover {
+            background: linear-gradient(45deg, #00e6ff, #00a3e6); transform: translateY(-3px);
+            box-shadow: 0 12px 35px var(--shadow-accent);
+        }
+        .start-button.secondary {
+            background: var(--secondary-bg); color: var(--text-color); border: 2px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+        .start-button.secondary:hover {
+            border-color: var(--accent-color); background: var(--border-color); transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--shadow-accent);
+        }
+        
+        /* Main App Container */
+        #appContainer { flex-direction: column; height: 100vh; background: var(--bg-color); }
 
         /* Header */
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 2rem; background: rgba(10, 14, 20, 0.8); backdrop-filter: blur(10px);
-            border-bottom: 1px solid #23354d; z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; height: 70px;
+            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 25px; z-index: 1000; border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px var(--shadow-color);
         }
-        .logo {
-            font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 700;
-            color: #61dafb; text-shadow: 0 0 10px rgba(97, 218, 251, 0.5);
-            transition: transform 0.3s ease;
+        .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
+        .menu-btn {
+            width: 50px; height: 50px; background: none; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; transition: background 0.2s; color: var(--text-color); font-size: 18px;
         }
-        .logo:hover { transform: scale(1.05); }
-
-        nav a {
-            color: #b3c2d4; text-decoration: none; font-weight: 500; margin-left: 2rem;
-            transition: color 0.3s ease, text-shadow 0.3s ease; position: relative;
+        .menu-btn:hover { background: rgba(0, 212, 255, 0.1); }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-img {
+            width: 40px; height: 40px; background-image: url('https://imgur.com/pxjxVqC.png');
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            border-radius: 8px;
         }
-        nav a:hover, nav a.active {
-            color: #61dafb; text-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
-        }
-        nav a.active::after {
-            content: ''; position: absolute; left: 0; bottom: -5px; width: 100%; height: 2px;
-            background: #61dafb; box-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
-        }
-        .clase-btn, .cta-button {
-            background: #61dafb; color: #0a0e14; padding: 0.5rem 1rem; border-radius: 5px;
-            font-weight: 600; text-decoration: none; border: none; cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-        .clase-btn { background: #3498db; margin-left: 1rem; }
-        .clase-btn:hover { background: #2980b9; transform: translateY(-2px); }
-        .cta-button { background: #61dafb; }
-        .cta-button:hover { background: #4ab1d4; transform: translateY(-2px); }
-
+        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; color: var(--logo-color); }
+        
         /* Main Content */
-        main { display: flex; flex-grow: 1; }
-        .page-content {
-            flex-grow: 1; padding: 2rem; overflow-y: auto; display: none;
-            justify-content: center; align-items: center; flex-direction: column;
-        }
-        #home { display: flex; }
+        .main-content { display: flex; height: calc(100vh - 70px); margin-top: 70px; }
 
-        .home-content {
-            text-align: center; max-width: 800px;
+        /* Main Menu Sidebar */
+        .main-sidebar {
+            width: 320px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            padding: 20px; border-right: 1px solid var(--border-color); overflow-y: auto;
+            flex-shrink: 0; transition: transform 0.3s ease-in-out; transform: translateX(-100%);
+            position: fixed; top: 70px; left: 0; height: calc(100% - 70px); z-index: 1500;
         }
-        .home-content h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 3rem; margin-bottom: 1rem;
-            color: #61dafb; text-shadow: 0 0 15px rgba(97, 218, 251, 0.6);
+        .main-sidebar.open { transform: translateX(0); }
+        .sidebar-title {
+            font-size: 14px; font-weight: 700; color: var(--accent-color); margin-bottom: 20px;
+            text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
         }
-        .home-content p {
-            font-size: 1.2rem; color: #b3c2d4; margin-bottom: 2rem;
+        .sidebar-links a {
+            display: block; padding: 12px; border-radius: 8px; color: var(--text-color); text-decoration: none;
+            transition: background 0.2s; font-weight: 500;
         }
-        .home-actions {
-            display: flex; justify-content: center; gap: 1.5rem;
+        .sidebar-links a:hover { background: var(--border-color); }
+        .theme-toggle-container {
+            display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);
         }
-        .home-actions button {
-            padding: 1rem 2rem; font-size: 1.1rem; border-radius: 8px; font-weight: 600;
-            border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease;
+        .theme-btn {
+            flex: 1; padding: 12px; border: 2px solid var(--border-color); border-radius: 12px;
+            background: var(--primary-bg); color: var(--text-color); font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease;
         }
-        #start-simulator {
-            background: #61dafb; color: #0a0e14;
-        }
-        #start-simulator:hover {
-            background: #4ab1d4; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(97, 218, 251, 0.4);
-        }
-        #learn-more {
-            background: transparent; color: #61dafb; border-color: #61dafb;
-        }
-        #learn-more:hover {
-            background: #61dafb; color: #0a0e14; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(97, 218, 251, 0.4);
+        .theme-btn:hover { border-color: var(--accent-color); background: var(--secondary-bg); }
+        .theme-btn.active {
+            border-color: var(--accent-color); background: var(--accent-color); color: var(--bg-color);
+            box-shadow: 0 0 15px var(--shadow-accent);
         }
 
-        /* Modal Styles */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center;
-            z-index: 2000; transition: opacity 0.3s ease;
+        /* Components Sidebar */
+        .components-sidebar {
+            width: 320px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            padding: 20px; border-right: 1px solid var(--border-color); overflow-y: auto;
+            flex-shrink: 0; position: fixed; top: 70px; left: 0; height: calc(100% - 70px); z-index: 1500;
+            transform: translateX(-100%); transition: transform 0.3s ease-in-out;
         }
-        .modal.hidden { opacity: 0; visibility: hidden; }
+        .components-sidebar.open { transform: translateX(0); }
+        .component-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .component-item {
+            width: 85px; height: 85px; background: var(--secondary-bg); border-radius: 12px;
+            cursor: grab; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; transition: all 0.3s ease; border: 2px solid transparent;
+        }
+        .component-item:hover { background: var(--border-color); border-color: var(--accent-color); }
+        
+        /* Canvas Container */
+        .canvas-container { flex: 1; display: flex; flex-direction: column; background: var(--bg-color); position: relative; }
+        .canvas-toolbar {
+            height: 60px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+        }
+        .tool-group { display: flex; gap: 5px; background: rgba(48, 54, 61, 0.6); padding: 5px; border-radius: 10px; }
+        .tool-btn {
+            width: 40px; height: 40px; background: none; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; transition: all 0.2s; color: var(--text-color); font-size: 16px;
+        }
+        .tool-btn:hover { background: rgba(0, 212, 255, 0.2); color: var(--accent-color); }
+        .tool-btn.active { background: var(--accent-color); color: var(--bg-color); }
+        
+        #simulatorCanvas {
+            flex-grow: 1; position: relative; cursor: crosshair; overflow: hidden;
+            background-color: var(--canvas-bg);
+            background-image:
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 25px 25px;
+        }
+
+        /* Placed Component on Canvas */
+        .placed-component {
+            position: absolute; width: 50px; height: 50px; border: 2px solid var(--accent-color);
+            background: var(--secondary-bg); display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            color: var(--text-color); font-weight: bold; font-size: 14px;
+        }
+        .placed-component:hover { transform: scale(1.1); }
+        .placed-component.selected {
+            box-shadow: 0 0 15px var(--shadow-accent);
+            border-color: #ffcc00;
+        }
+        
+        /* Properties Sidebar */
+        .properties-sidebar {
+            width: 300px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            padding: 20px; border-left: 1px solid var(--border-color); overflow-y: auto;
+            flex-shrink: 0; transition: transform 0.3s ease-in-out; transform: translateX(100%);
+            position: fixed; top: 70px; right: 0; height: calc(100% - 70px); z-index: 1500;
+        }
+        .properties-sidebar.open { transform: translateX(0); }
+
+        .properties-title { font-size: 14px; font-weight: 700; color: var(--accent-color); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; }
+        .prop-item label { display: block; font-size: 12px; color: var(--text-color); margin-bottom: 5px; }
+        .prop-item input, .prop-item select {
+            width: 100%; padding: 8px; background: var(--secondary-bg);
+            border: 2px solid transparent; border-radius: 8px; color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        .prop-item input:focus, .prop-item select:focus { outline: none; border-color: var(--accent-color); background: var(--border-color); }
+        
+        /* Footer */
+        .footer {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 35px;
+            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; border-top: 1px solid var(--border-color);
+            box-shadow: 0 -4px 20px var(--shadow-color);
+            font-size: 12px; color: var(--placeholder-text);
+        }
+        
+        /* Modal for messages */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center;
+            z-index: 2000; transition: opacity 0.3s ease; opacity: 0; pointer-events: none;
+        }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: #151e29; padding: 2rem; border-radius: 12px; border: 1px solid #23354d;
-            text-align: center; max-width: 400px; width: 90%;
+            background: var(--primary-bg); padding: 30px; border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow-color); text-align: center; max-width: 400px;
+            transform: translateY(-20px); transition: transform 0.3s ease;
         }
-        .modal-content h2 { font-family: 'Orbitron', sans-serif; color: #61dafb; margin-bottom: 1.5rem; }
-        .clase-options { display: flex; gap: 1rem; }
-        .option-btn {
-            flex: 1; padding: 1.5rem; border-radius: 8px; border: 1px solid #23354d;
-            background: #1e2a39; color: #e6edf3; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .option-btn:hover { background: #23354d; transform: translateY(-3px); }
-        .option-btn small { margin-top: 0.5rem; color: #b3c2d4; font-size: 0.8rem; }
-        .teacher-form input, .student-form input {
-            width: 100%; padding: 0.75rem; margin-bottom: 1rem; background: #0a0e14;
-            border: 1px solid #23354d; border-radius: 4px; color: #e6edf3;
-        }
-        .teacher-form button, .student-form button {
-            width: 100%; padding: 0.75rem; border: none; border-radius: 4px;
-            background: #61dafb; color: #0a0e14; font-weight: 600; cursor: pointer;
+        .modal-overlay.visible .modal-content { transform: translateY(0); }
+        .modal-content h3 { color: var(--accent-color); margin-bottom: 10px; }
+        .modal-content p { color: var(--text-color); margin-bottom: 20px; }
+        .modal-close-btn {
+            padding: 10px 20px; background: var(--accent-color); color: var(--bg-color);
+            border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
             transition: background 0.2s ease;
         }
-        .join-help { margin-top: 1rem; color: #b3c2d4; }
+        .modal-close-btn:hover { background: #00a3e6; }
     </style>
 </head>
 <body>
-    <div id="app">
-        <header>
-            <div class="logo">Fluxionics</div>
-            <nav id="main-nav">
-                <a href="#home" class="active">Inicio</a>
-                <a href="#simulator">Simulador</a>
-                <a href="#examples">Ejemplos</a>
-                <a href="#calcuflux">CalcuFlux</a>
-                <a href="#help">Ayuda</a>
-            </nav>
-            <div style="display: flex; align-items: center;">
-                <button class="clase-btn" onclick="showClaseOptions()">
-                    👨‍🏫 CLASE
-                </button>
-                <a href="#" class="cta-button" id="tour-btn">Empezar Tour</a>
-            </div>
-        </header>
-
-        <main>
-            <section id="home" class="page-content" style="display: flex;">
-                <div class="home-content">
-                    <h2>Construye. Simula. Aprende.</h2>
-                    <p>Crea circuitos electrónicos en segundos. Explora la electrónica de forma intuitiva, desde los fundamentos hasta los sistemas más complejos, en un entorno de simulación profesional.</p>
-                    <div class="home-actions">
-                        <button id="start-simulator" onclick="window.location.hash = '#simulator';">
-                            Iniciar Simulador
-                        </button>
-                        <button id="learn-more" onclick="window.location.hash = '#examples';">
-                            Ver Ejemplos
-                        </button>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="simulator" class="page-content"></section>
-            <section id="examples" class="page-content"></section>
-            <section id="calcuflux" class="page-content"></section>
-            <section id="help" class="page-content"></section>
-        </main>
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen active">
+        <div class="main-logo"></div>
+        <h1 class="app-title">Fluxionics</h1>
+        <p class="app-subtitle">Simulador Profesional de Circuitos</p>
         
-        <div id="clase-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>🎓 Modo Clase</h2>
-                <div class="clase-options">
-                    <button class="option-btn teacher" onclick="showTeacherModal()">
-                        👨‍🏫 CREAR CLASE
-                        <small>Soy profesor/instructor</small>
-                    </button>
-                    <button class="option-btn student" onclick="showStudentModal()">
-                        👨‍🎓 UNIRME A CLASE
-                        <small>Soy estudiante</small>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="teacher-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>👨‍🏫 Crear Nueva Clase</h2>
-                <div class="teacher-form">
-                    <input type="text" placeholder="Nombre del profesor" id="teacher-name">
-                    <input type="text" placeholder="Nombre de la clase (ej: Electrónica Básica)" id="class-name">
-                    <input type="number" placeholder="Máximo estudiantes (20)" id="max-students" value="20">
-                    <button onclick="generateClaseRoom()">🚀 CREAR SALA</button>
-                </div>
-            </div>
-        </div>
-        
-        <div id="student-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>👨‍🎓 Unirse a Clase</h2>
-                <div class="student-form">
-                    <input type="text" placeholder="Tu nombre" id="student-name">
-                    <input type="text" placeholder="Código de clase" id="room-code" maxlength="6" style="text-transform: uppercase; font-size: 20px; text-align: center;">
-                    <button onclick="joinClaseRoom()">🚪 ENTRAR A CLASE</button>
-                </div>
-                <div class="join-help">
-                    <small>💡 El profesor te dará el código de 6 dígitos</small>
-                </div>
-            </div>
+        <!-- Updated to a horizontal layout -->
+        <div class="start-buttons-wrapper">
+            <button class="start-button primary" onclick="showScreen('appContainer')">
+                <i class="fas fa-play"></i>
+                Iniciar Simulador
+            </button>
+            <button class="start-button secondary" onclick="showNotImplementedMessage('Cal Flux')">
+                <i class="fas fa-calculator"></i>
+                Cal Flux
+            </button>
+            <button class="start-button secondary" onclick="showNotImplementedMessage('Ejemplos Flux')">
+                <i class="fas fa-microchip"></i>
+                Ejemplos Flux
+            </button>
+            <button class="start-button secondary" onclick="showNotImplementedMessage('Tutoriales')">
+                <i class="fas fa-book"></i>
+                Tutoriales
+            </button>
+            <button class="start-button secondary" onclick="showNotImplementedMessage('Clases')">
+                <i class="fas fa-user-graduate"></i>
+                Clases
+            </button>
         </div>
     </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="screen">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <button class="menu-btn" id="toggle-main-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <div class="logo-img"></div>
+                    <span class="logo-text">Fluxionics</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="menu-btn" id="save-btn"><i class="fas fa-save"></i></button>
+                <button class="menu-btn" id="share-btn"><i class="fas fa-share-alt"></i></button>
+                <button class="menu-btn" id="toggle-properties">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Main Menu Sidebar -->
+            <aside class="main-sidebar" id="main-sidebar">
+                <h4 class="sidebar-title">Menú Principal</h4>
+                <div class="sidebar-links">
+                    <a href="#"><i class="fas fa-info-circle"></i> Ayuda</a>
+                    <a href="#"><i class="fas fa-user-shield"></i> Política y Privacidad</a>
+                </div>
+                <div class="theme-toggle-container">
+                    <button id="theme-dark-btn" class="theme-btn active"><i class="fas fa-moon"></i> Oscuro</button>
+                    <button id="theme-light-btn" class="theme-btn"><i class="fas fa-sun"></i> Blanco</button>
+                </div>
+            </aside>
+            
+            <!-- Components Sidebar -->
+            <aside class="components-sidebar" id="components-sidebar">
+                <div class="component-category">
+                    <h4 class="category-title"><i class="fas fa-sliders-h"></i> Fuentes</h4>
+                    <div class="component-grid">
+                        <div class="component-item" draggable="true" data-component="voltage-source">
+                            <div class="component-icon">V</div>
+                            <span class="component-name">Fuente de Voltaje</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Canvas Container -->
+            <div class="canvas-container">
+                <div class="canvas-toolbar">
+                    <div class="tool-group">
+                        <button class="tool-btn active" id="tool-select"><i class="fas fa-mouse-pointer"></i></button>
+                        <button class="tool-btn" id="tool-wire"><i class="fas fa-link"></i></button>
+                        <button class="tool-btn" id="tool-delete"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                    <div class="simulation-controls tool-group">
+                        <button class="control-btn" id="play-btn"><i class="fas fa-play"></i></button>
+                        <button class="control-btn" id="pause-btn"><i class="fas fa-pause"></i></button>
+                        <button class="control-btn" id="stop-btn"><i class="fas fa-stop"></i></button>
+                    </div>
+                </div>
+                <div id="simulatorCanvas">
+                    <!-- Circuit drawing area with grid -->
+                </div>
+            </div>
+
+            <!-- Properties Sidebar -->
+            <aside class="properties-sidebar" id="properties-sidebar">
+                <h4 class="properties-title">Propiedades del Componente</h4>
+                <div id="properties-panel">
+                    <p style="text-align: center; color: var(--placeholder-text);">Selecciona un componente para editar sus propiedades.</p>
+                </div>
+            </aside>
+        </div>
+        
+        <div class="footer">
+            <span>© 2024 Fluxionics. Todos los derechos reservados.</span>
+        </div>
+    </div>
+    
+    <!-- Custom Modal for messages -->
+    <div id="messageModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle">Función no implementada</h3>
+            <p id="modalMessage">Esta función aún no está disponible, pero el botón funciona correctamente.</p>
+            <button class="modal-close-btn" onclick="hideModal()">Cerrar</button>
+        </div>
+    </div>
+    
     <script>
-        // --- Modal Control ---
-        function showClaseOptions() {
-            document.getElementById('clase-modal').classList.remove('hidden');
-        }
-        function hideClaseOptions() {
-            document.getElementById('clase-modal').classList.add('hidden');
-        }
-        function showTeacherModal() {
-            hideClaseOptions();
-            document.getElementById('teacher-modal').classList.remove('hidden');
-        }
-        function hideTeacherModal() {
-            document.getElementById('teacher-modal').classList.add('hidden');
-        }
-        function showStudentModal() {
-            hideClaseOptions();
-            document.getElementById('student-modal').classList.remove('hidden');
-        }
-        function hideStudentModal() {
-            document.getElementById('student-modal').classList.add('hidden');
-        }
-
-        // --- Teacher Flow (Simplified) ---
-        function generateClaseRoom() {
-            const teacherName = document.getElementById('teacher-name').value;
-            const className = document.getElementById('class-name').value;
-            const maxStudents = document.getElementById('max-students').value;
-            const roomCode = generateRoomCode();
-            
-            console.log(`Creando sala: ${roomCode}`);
-            alert(`Clase creada. Código: ${roomCode}`);
-            hideTeacherModal();
-            // In a real app, you would navigate to the teacher dashboard
+        // --- Screen Switching Logic ---
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
         }
         
-        function generateRoomCode() {
-            return Math.random().toString(36).substr(2, 6).toUpperCase();
-        }
-
-        // --- Student Flow (Simplified) ---
-        function joinClaseRoom() {
-            const studentName = document.getElementById('student-name').value;
-            const roomCode = document.getElementById('room-code').value;
-            
-            console.log(`Uniendo a sala: ${roomCode} como ${studentName}`);
-            if (roomCode.length === 6) {
-                alert(`Te has unido a la clase con el código ${roomCode}.`);
-                hideStudentModal();
-                // In a real app, you would navigate to the student interface
-            } else {
-                alert('Código de sala inválido.');
+        // --- Sidebar Toggle Logic ---
+        document.getElementById('toggle-main-menu').addEventListener('click', () => {
+            const mainSidebar = document.getElementById('main-sidebar');
+            mainSidebar.classList.toggle('open');
+            // Close other sidebars if main menu is open
+            if (mainSidebar.classList.contains('open')) {
+                document.getElementById('components-sidebar').classList.remove('open');
+                document.getElementById('properties-sidebar').classList.remove('open');
             }
-        }
+        });
         
-        // --- Page Routing ---
-        const navLinks = document.querySelectorAll('#main-nav a');
-        const pages = document.querySelectorAll('.page-content');
-        
-        function handleRouting() {
-            const hash = window.location.hash || '#home';
-            showPage(hash);
-        }
-
-        function showPage(hash) {
-            pages.forEach(page => page.style.display = 'none');
-            navLinks.forEach(link => link.classList.remove('active'));
-
-            const activePage = document.querySelector(hash);
-            const activeLink = document.querySelector(`a[href="${hash}"]`);
-
-            if (activePage) {
-                activePage.style.display = 'flex';
-                activeLink.classList.add('active');
-            } else {
-                document.querySelector('#home').style.display = 'flex';
-                document.querySelector('a[href="#home"]').classList.add('active');
+        document.getElementById('toggle-properties').addEventListener('click', () => {
+            const propertiesSidebar = document.getElementById('properties-sidebar');
+            propertiesSidebar.classList.toggle('open');
+            // Close other sidebars if properties sidebar is open
+            if (propertiesSidebar.classList.contains('open')) {
+                document.getElementById('main-sidebar').classList.remove('open');
+                document.getElementById('components-sidebar').classList.remove('open');
             }
+        });
+        
+        // --- Theme Switching Logic ---
+        const darkThemeBtn = document.getElementById('theme-dark-btn');
+        const lightThemeBtn = document.getElementById('theme-light-btn');
+        const body = document.body;
+
+        darkThemeBtn.addEventListener('click', () => {
+            body.classList.remove('light-theme');
+            darkThemeBtn.classList.add('active');
+            lightThemeBtn.classList.remove('active');
+        });
+
+        lightThemeBtn.addEventListener('click', () => {
+            body.classList.add('light-theme');
+            lightThemeBtn.classList.add('active');
+            darkThemeBtn.classList.remove('active');
+        });
+
+        // --- Custom Modal Logic (replaces alert) ---
+        function showNotImplementedMessage(featureName) {
+            document.getElementById('modalTitle').textContent = `Función para "${featureName}"`;
+            document.getElementById('modalMessage').textContent = `Esta función aún no está disponible, pero el botón funciona correctamente.`;
+            document.getElementById('messageModal').classList.add('visible');
+        }
+        function hideModal() {
+            document.getElementById('messageModal').classList.remove('visible');
         }
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                window.location.hash = e.target.getAttribute('href');
+        // --- Drag and Drop Logic ---
+        const componentItems = document.querySelectorAll('.component-item');
+        const simulatorCanvas = document.getElementById('simulatorCanvas');
+        let draggedComponentType = null;
+        let placedComponents = []; // Array to store placed component objects
+
+        componentItems.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedComponentType = item.getAttribute('data-component');
+                e.dataTransfer.setData('text/plain', draggedComponentType);
             });
         });
 
-        window.addEventListener('hashchange', handleRouting);
-        window.onload = handleRouting;
+        simulatorCanvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        simulatorCanvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedComponentType) {
+                // Simplified placement on a grid
+                const rect = simulatorCanvas.getBoundingClientRect();
+                const dropX = e.clientX - rect.left;
+                const dropY = e.clientY - rect.top;
+                
+                // Snap to grid (25px grid size)
+                const snappedX = Math.round(dropX / 25) * 25;
+                const snappedY = Math.round(dropY / 25) * 25;
+                
+                // Create and place the new component
+                const newComponent = document.createElement('div');
+                newComponent.classList.add('placed-component');
+                newComponent.style.left = `${snappedX}px`;
+                newComponent.style.top = `${snappedY}px`;
+                newComponent.textContent = draggedComponentType;
+                newComponent.dataset.componentType = draggedComponentType; // Store component type
+                simulatorCanvas.appendChild(newComponent);
+                
+                // Add click listener for selection
+                newComponent.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevents deselecting the component
+                    selectComponent(newComponent);
+                });
+
+                placedComponents.push(newComponent);
+                draggedComponentType = null;
+            }
+        });
+        
+        // Handle component selection/deselection
+        function selectComponent(componentElement) {
+            // Deselect all other components first
+            document.querySelectorAll('.placed-component.selected').forEach(c => {
+                c.classList.remove('selected');
+            });
+            
+            // Select the new component
+            componentElement.classList.add('selected');
+            updatePropertiesPanel(componentElement);
+        }
+        
+        function deselectAllComponents() {
+            document.querySelectorAll('.placed-component.selected').forEach(c => {
+                c.classList.remove('selected');
+            });
+            clearPropertiesPanel();
+        }
+
+        // Deselect when clicking on canvas background
+        simulatorCanvas.addEventListener('click', () => {
+            deselectAllComponents();
+        });
+
+        // Update the properties sidebar
+        function updatePropertiesPanel(component) {
+            const propertiesPanel = document.getElementById('properties-panel');
+            propertiesPanel.innerHTML = `
+                <div class="prop-item">
+                    <label for="comp-name">Nombre</label>
+                    <input type="text" id="comp-name" value="${component.dataset.componentType}" />
+                </div>
+                <div class="prop-item">
+                    <label for="comp-value">Valor</label>
+                    <input type="text" id="comp-value" value="1kΩ" />
+                </div>
+                <p style="text-align: center; color: var(--placeholder-text); margin-top: 20px;">Propiedades detalladas del componente...</p>
+            `;
+            document.getElementById('properties-sidebar').classList.add('open');
+        }
+
+        function clearPropertiesPanel() {
+            const propertiesPanel = document.getElementById('properties-panel');
+            propertiesPanel.innerHTML = `<p style="text-align: center; color: var(--placeholder-text);">Selecciona un componente para editar sus propiedades.</p>`;
+            document.getElementById('properties-sidebar').classList.remove('open');
+        }
+
+        // --- Simulation Control Logic (Placeholder) ---
+        document.getElementById('play-btn').addEventListener('click', () => {
+            console.log('Simulación iniciada');
+            // Add visual feedback
+            document.getElementById('play-btn').classList.add('active');
+            document.getElementById('pause-btn').classList.remove('active');
+            document.getElementById('stop-btn').classList.remove('active');
+        });
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            console.log('Simulación en pausa');
+            // Add visual feedback
+            document.getElementById('play-btn').classList.remove('active');
+            document.getElementById('pause-btn').classList.add('active');
+            document.getElementById('stop-btn').classList.remove('active');
+        });
+        document.getElementById('stop-btn').addEventListener('click', () => {
+            console.log('Simulación detenida');
+            // Add visual feedback
+            document.getElementById('play-btn').classList.remove('active');
+            document.getElementById('pause-btn').classList.remove('active');
+            document.getElementById('stop-btn').classList.add('active');
+        });
+
+        // Initial setup
+        window.onload = () => {
+            showScreen('startScreen');
+            document.getElementById('components-sidebar').classList.add('open');
+        };
     </script>
 </body>
 </html>
