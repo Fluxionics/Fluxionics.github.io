@@ -3,665 +3,558 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluxionics - Simulador Profesional de Circuitos</title>
+    <title>Fluxionics - Simulador de Circuitos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* Estilos base de la página */
+        /* Base Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0e14;
-            color: #e6edf3;
-            overflow-x: hidden;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            background: #0a0e14; color: #e6edf3; overflow: hidden; line-height: 1.6;
+            animation: gradientBackground 20s ease infinite;
         }
-        
-        /* Estilos del encabezado */
+        @keyframes gradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        #app { display: flex; flex-direction: column; height: 100vh; }
+
+        /* Header */
         header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 2rem; background: rgba(10, 14, 20, 0.8); backdrop-filter: blur(10px);
+            border-bottom: 1px solid #23354d; z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        header .logo {
-            font-size: 24px;
-            font-weight: bold;
-            text-decoration: none;
-            color: white;
+        .logo {
+            font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 700;
+            color: #61dafb; text-shadow: 0 0 10px rgba(97, 218, 251, 0.5);
+            transition: transform 0.3s ease;
         }
-        nav button {
-            background: none;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+        .logo:hover { transform: scale(1.05); }
+
+        nav a {
+            color: #b3c2d4; text-decoration: none; font-weight: 500; margin-left: 2rem;
+            transition: color 0.3s ease, text-shadow 0.3s ease; position: relative;
         }
-        nav button:hover {
-            background-color: #34495e;
+        nav a:hover, nav a.active {
+            color: #61dafb; text-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
+        }
+        nav a.active::after {
+            content: ''; position: absolute; left: 0; bottom: -5px; width: 100%; height: 2px;
+            background: #61dafb; box-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
+        }
+        .cta-button {
+            background: #61dafb; color: #0a0e14; padding: 0.5rem 1rem; border-radius: 5px;
+            font-weight: 600; text-decoration: none; transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .cta-button:hover {
+            background: #4ab1d4; transform: translateY(-2px);
         }
 
-        /* Estilos para las secciones de la página */
-        .screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            padding: 20px;
-            box-sizing: border-box;
+        /* Main Content */
+        main { display: flex; flex-grow: 1; }
+
+        /* Sidebar */
+        #sidebar {
+            width: 250px; background: #151e29; padding: 1.5rem 1rem; border-right: 1px solid #23354d;
+            display: flex; flex-direction: column; overflow-y: auto; z-index: 900;
         }
-        .screen.active {
-            display: flex;
+        .sidebar-title {
+            font-size: 1.2rem; font-weight: 600; color: #61dafb; margin-bottom: 1rem;
+            text-align: center; border-bottom: 1px solid #23354d; padding-bottom: 0.5rem;
         }
-        
-        /* Contenido de la pantalla de inicio */
-        #startScreen {
-            background: url('https://picsum.photos/1200/800') no-repeat center center/cover;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            text-align: center;
+        .component-list {
+            list-style: none; padding: 0; flex-grow: 1;
         }
-        #startScreen h1 {
-            font-size: 4em;
-            margin-bottom: 20px;
+        .component-item {
+            display: flex; align-items: center; padding: 0.75rem; margin-bottom: 0.5rem;
+            background: #1e2a39; border-radius: 8px; cursor: grab;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            user-select: none;
         }
-        #startScreen p {
-            font-size: 1.5em;
-            margin-bottom: 30px;
+        .component-item:hover {
+            background: #23354d; transform: translateX(5px); box-shadow: 0 0 10px rgba(97, 218, 251, 0.2);
         }
-        .cta-buttons button {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: transform 0.2s, background-color 0.2s;
+        .component-item i {
+            margin-right: 0.75rem; color: #61dafb; font-size: 1.2rem;
         }
-        .cta-buttons button:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
+        .component-item span {
+            font-weight: 500;
+        }
+        .sidebar-footer {
+            margin-top: auto; text-align: center; padding-top: 1rem; border-top: 1px solid #23354d;
+            color: #556677;
         }
 
-        /* Estilos para el panel de componentes */
-        #components-panel {
-            position: fixed;
-            top: 70px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 900;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+        /* Simulator Canvas */
+        #simulator-container {
+            flex-grow: 1; position: relative; background: radial-gradient(#1e2a39 1px, transparent 1px);
+            background-size: 20px 20px; border: 1px solid #23354d;
         }
-        #components-panel.hidden {
-            display: none;
+        #circuit-canvas {
+            width: 100%; height: 100%; cursor: crosshair;
         }
-        #components-panel h3 {
-            margin-top: 0;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+        #component-info {
+            position: absolute; top: 1rem; right: 1rem; background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px); border-radius: 8px; padding: 1rem;
+            border: 1px solid #23354d; width: 250px; z-index: 10;
         }
-        #components-panel button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 8px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
+        #component-info h3 {
+            font-size: 1.2rem; margin-bottom: 1rem; color: #61dafb;
         }
-        #components-panel button:hover {
-            background-color: #2980b9;
+        .property-group { margin-bottom: 1rem; }
+        .property-group label {
+            display: block; font-size: 0.9rem; color: #b3c2d4; margin-bottom: 0.5rem;
         }
-        
-        /* ----- ESTILOS AÑADIDOS PARA COMPARTIR Y CLASE ----- */
-        
-        /* Estilos del modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-        }
-        .modal.hidden {
-            display: none;
-        }
-        .modal-content {
-            background: #1e2a39;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-        }
-        .close-modal-btn {
-            background: none;
-            border: none;
-            color: #999;
-            cursor: pointer;
-            margin-top: 15px;
-            font-size: 14px;
+        .property-group input {
+            width: 100%; padding: 0.5rem; background: #0a0e14; border: 1px solid #23354d;
+            border-radius: 4px; color: #e6edf3;
         }
 
-        /* Estilos para el botón de clase y sus opciones */
-        .clase-btn, .option-btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 8px;
+        /* Toolbar */
+        #toolbar {
+            position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
+            border-radius: 12px; padding: 0.5rem; display: flex; gap: 0.5rem;
+            border: 1px solid #23354d; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+        .toolbar-btn {
+            background: #1e2a39; color: #b3c2d4; border: none; padding: 0.75rem;
+            border-radius: 8px; cursor: pointer; font-size: 1rem;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        .toolbar-btn:hover {
+            background: #23354d; color: #61dafb; transform: translateY(-2px);
+        }
+        .toolbar-btn.active {
+            background: #61dafb; color: #0a0e14;
+        }
+        #play-btn { background: #4caf50; color: white; }
+        #play-btn:hover { background: #409243; transform: scale(1.05); }
+        #stop-btn { background: #e53e3e; color: white; }
+        #stop-btn:hover { background: #c53030; transform: scale(1.05); }
+
+        /* Simulator Results */
+        #simulator-results {
+            position: absolute; bottom: 1rem; left: 1rem; background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px); border-radius: 8px; padding: 1rem;
+            border: 1px solid #23354d; width: 300px; z-index: 10;
+        }
+        #simulator-results h3 {
+            font-size: 1.2rem; margin-bottom: 1rem; color: #61dafb;
+        }
+        .result-item {
+            display: flex; justify-content: space-between; padding: 0.5rem 0;
+            border-bottom: 1px dashed #23354d;
+        }
+        .result-item:last-child { border-bottom: none; }
+
+        /* Other Pages */
+        .page-content {
+            flex-grow: 1; padding: 2rem; overflow-y: auto;
+        }
+        .page-content h2 {
+            font-family: 'Orbitron', sans-serif; font-size: 2.5rem; margin-bottom: 1rem;
+            color: #61dafb; text-align: center;
+        }
+        .page-content p {
+            max-width: 800px; margin: 0 auto 1.5rem; text-align: center;
+        }
+        .content-card {
+            background: #151e29; padding: 2rem; border-radius: 12px; border: 1px solid #23354d;
+            margin-bottom: 2rem;
+        }
+        .content-card h3 {
+            font-size: 1.8rem; color: #b3c2d4; margin-bottom: 1rem;
+        }
+        .example-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .example-card {
+            background: #1e2a39; padding: 1.5rem; border-radius: 8px;
+            text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 10px;
         }
-        .clase-btn:hover, .option-btn:hover {
-            background-color: #2980b9;
+        .example-card:hover {
+            transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
-        .clase-options {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
+        .example-card img {
+            max-width: 100%; height: auto; border-radius: 4px; margin-bottom: 1rem;
         }
-        .option-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            width: 45%;
+        .example-card h4 {
+            font-size: 1.2rem; color: #61dafb; margin-bottom: 0.5rem;
         }
-        .option-btn small {
-            margin-top: 5px;
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        
-        /* Estilos del formulario */
-        .teacher-form, .student-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .teacher-form input, .student-form input {
-            padding: 12px;
-            background: #2c3e50;
-            border: 1px solid #455a64;
-            border-radius: 6px;
-            color: #e6edf3;
-            font-size: 16px;
-        }
-        .teacher-form button, .student-form button {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
+        .example-card p {
+            font-size: 0.9rem; color: #b3c2d4; text-align: center;
         }
 
-        /* Estilos del panel de compartir */
-        .share-section {
+        /* Tour Tooltip */
+        #tourTooltip {
+            position: absolute; z-index: 2000; background: #1e2a39;
+            border: 1px solid #61dafb; border-radius: 8px; padding: 1rem;
+            max-width: 300px; opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        #tourTooltip.visible {
+            opacity: 1; visibility: visible;
+        }
+        #tourTooltip .tooltip-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        #tourTooltip h4 {
+            color: #61dafb; margin: 0;
+        }
+        #tourTooltip button {
+            background: none; border: none; color: #b3c2d4; cursor: pointer;
+        }
+        #tourTooltip .tooltip-nav {
+            margin-top: 1rem; text-align: right;
+        }
+        .tour-highlight {
             position: relative;
-            display: inline-block;
+            z-index: 2001; /* Must be higher than the tooltip */
         }
-        .share-button {
-            background-color: #9b59b6;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-left: 10px;
-        }
-        .share-panel {
+        .tour-highlight::before {
+            content: '';
             position: absolute;
-            top: 50px;
-            right: 0;
-            background: #1e2a39;
-            border: 1px solid #455a64;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
-        .share-panel.hidden {
-            display: none;
-        }
-        .share-url {
-            display: flex;
-            margin-bottom: 15px;
-        }
-        .share-url input {
-            flex: 1;
-            padding: 8px;
-            background: #2c3e50;
-            border: 1px solid #455a64;
-            border-radius: 4px;
-            color: white;
-        }
-        .share-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .share-options button {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.2s;
-            background-color: #34495e;
-            color: white;
-        }
-
-        /* Modal para el código QR */
-        .qr-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 4000;
-        }
-        .qr-content {
-            background: #1e2a39;
-            padding: 25px;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 2px solid #61dafb;
             border-radius: 10px;
-            text-align: center;
-            color: white;
-        }
-        .qr-content img {
-            margin: 15px 0;
-            border: 5px solid white;
-            border-radius: 8px;
-        }
-        .qr-content button {
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            pointer-events: none;
+            box-shadow: 0 0 15px #61dafb;
         }
     </style>
 </head>
 <body>
+    <div id="app">
+        <header>
+            <div class="logo">Fluxionics</div>
+            <nav id="main-nav">
+                <a href="#home" class="active">Inicio</a>
+                <a href="#simulator">Simulador</a>
+                <a href="#examples">Ejemplos</a>
+                <a href="#calcuflux">CalcuFlux</a>
+                <a href="#help">Ayuda</a>
+            </nav>
+            <a href="#" class="cta-button" id="tour-btn">Empezar Tour</a>
+        </header>
 
-    <header>
-        <a href="#" onclick="navigateTo('/')" class="logo">Fluxionics</a>
-        <nav>
-            <button onclick="navigateTo('/simulator')">Simulador</button>
-            <button onclick="navigateTo('/examples')">Ejemplos</button>
-            <button onclick="navigateTo('/tutorial')">Tutorial</button>
-            <button onclick="navigateTo('/calcflux')">CalcFlux</button>
-            <button class="clase-btn" onclick="showClaseOptions()">👨‍🏫 CLASE</button>
-            <button class="share-button" onclick="showSharePanel()">📤 COMPARTIR</button>
-        </nav>
-    </header>
+        <main>
+            <section id="simulator" class="page-content" style="display: none;">
+                <div id="sidebar">
+                    <h2 class="sidebar-title">Componentes</h2>
+                    <ul class="component-list">
+                        <li class="component-item" data-component="resistor"><i class="fas fa-microchip"></i><span>Resistor</span></li>
+                        <li class="component-item" data-component="capacitor"><i class="fas fa-battery-half"></i><span>Capacitor</span></li>
+                        <li class="component-item" data-component="inductor"><i class="fas fa-bolt"></i><span>Inductor</span></li>
+                        <li class="component-item" data-component="voltage-source"><i class="fas fa-plug"></i><span>Fuente de Voltaje</span></li>
+                        <li class="component-item" data-component="ground"><i class="fas fa-ellipsis-h"></i><span>Tierra</span></li>
+                        <li class="component-item" data-component="led"><i class="fas fa-lightbulb"></i><span>LED</span></li>
+                        <li class="component-item" data-component="diode"><i class="fas fa-dot-circle"></i><span>Diodo</span></li>
+                    </ul>
+                    <div class="sidebar-footer">
+                        Arrastra para añadir
+                    </div>
+                </div>
+                <div id="simulator-container">
+                    <canvas id="circuit-canvas"></canvas>
+                    <div id="component-info" style="display: none;">
+                        <h3>Propiedades</h3>
+                        <div class="property-group">
+                            <label for="component-value">Valor</label>
+                            <input type="text" id="component-value">
+                        </div>
+                        <div class="property-group">
+                            <label for="component-unit">Unidad</label>
+                            <input type="text" id="component-unit">
+                        </div>
+                    </div>
+                    <div id="toolbar">
+                        <button class="toolbar-btn" id="pointer-btn"><i class="fas fa-mouse-pointer"></i></button>
+                        <button class="toolbar-btn" id="wire-btn"><i class="fas fa-link"></i></button>
+                        <button class="toolbar-btn" id="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                        <button class="toolbar-btn" id="play-btn"><i class="fas fa-play"></i></button>
+                        <button class="toolbar-btn" id="stop-btn"><i class="fas fa-stop"></i></button>
+                    </div>
+                    <div id="simulator-results" style="display: none;">
+                        <h3>Resultados</h3>
+                        <div class="result-item">
+                            <span>Voltaje:</span>
+                            <span id="result-voltage">0 V</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Corriente:</span>
+                            <span id="result-current">0 A</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <section id="startScreen" class="screen active">
-        <h1>Simulador Profesional de Circuitos</h1>
-        <p>Diseña, simula y comparte circuitos electrónicos</p>
-        <div class="cta-buttons">
-            <button onclick="navigateTo('/simulator')">Comenzar a Diseñar</button>
-            <button onclick="navigateTo('/tutorial')">Ver Tutorial</button>
-        </div>
-    </section>
+            <section id="home" class="page-content">
+                <h2>Crea, Simula, Aprende</h2>
+                <p>Fluxionics es un simulador de circuitos interactivo y profesional diseñado para estudiantes, técnicos e ingenieros. Explora la electrónica de forma intuitiva, desde los fundamentos hasta los sistemas más complejos.</p>
+                <div class="content-card">
+                    <h3>Características Destacadas</h3>
+                    <p>Diseña circuitos, visualiza el flujo de corriente, mide voltajes, y prueba tus ideas sin límites. Con nuestra interfaz minimalista, la curva de aprendizaje es mínima y la creatividad es máxima.</p>
+                </div>
+                <div class="content-card">
+                    <h3>Empezar ahora</h3>
+                    <p>Usa la barra de navegación para explorar las distintas secciones. ¿Eres nuevo? Te recomendamos empezar con el tour interactivo para conocer las funcionalidades básicas.</p>
+                </div>
+            </section>
 
-    <section id="appContainer" class="screen">
-        <h2>Simulador de Circuitos</h2>
-        <p>Área de trabajo del simulador. Aquí es donde se dibujaría el circuito.</p>
+            <section id="examples" class="page-content" style="display: none;">
+                <h2>Ejemplos de Circuitos</h2>
+                <p>Selecciona un ejemplo para abrirlo directamente en el simulador. Aprende la teoría y la práctica de forma visual.</p>
+                <div class="example-grid">
+                    <div class="example-card" onclick="openExample('led_basic')">
+                        <img src="https://i.ibb.co/VMy4P3X/led-basic.png" alt="LED Básico">
+                        <h4>Mi Primera Luz LED</h4>
+                        <p>⭐ Básico | ⏱️ 5 min</p>
+                    </div>
+                    <div class="example-card" onclick="openExample('voltage_divider')">
+                        <img src="https://i.ibb.co/Mh1wR0M/voltage-divider.png" alt="Divisor de Voltaje">
+                        <h4>Divisor de Voltaje</h4>
+                        <p>⭐ Básico | ⏱️ 10 min</p>
+                    </div>
+                    <div class="example-card" onclick="openExample('555_timer')">
+                        <img src="https://i.ibb.co/M2wFjD7/555-timer.png" alt="555 Timer Astable">
+                        <h4>Oscilador 555</h4>
+                        <p>⭐⭐ Intermedio | ⏱️ 20 min</p>
+                    </div>
+                    <div class="example-card" onclick="openExample('rc_filter')">
+                        <img src="https://i.ibb.co/r7b8nK8/rc-filter.png" alt="Filtro RC">
+                        <h4>Filtro Pasa Bajos RC</h4>
+                        <p>⭐⭐ Intermedio | ⏱️ 15 min</p>
+                    </div>
+                </div>
+            </section>
 
-        <div id="components-panel">
-            <h3>Componentes</h3>
-            <button>Resistencia</button>
-            <button>Batería</button>
-            <button>LED</button>
-        </div>
+            <section id="calcuflux" class="page-content" style="display: none;">
+                <h2>CalcuFlux - Calculadora de Circuitos</h2>
+                <p>Calcula valores de componentes, resistencias, capacitancias, frecuencias de corte y más. Una herramienta indispensable para tus diseños.</p>
+                <div class="content-card">
+                    <h3>Calculadora de Ley de Ohm</h3>
+                    <p>Ingresa dos valores para obtener los otros dos. (V, I, R, P)</p>
+                </div>
+            </section>
 
-        <canvas id="circuit-canvas"></canvas>
-    </section>
-
-    <section id="examplesSection" class="screen">
-        <h2>Ejemplos de Circuitos</h2>
-        <p>Una lista de circuitos de ejemplo para que los usuarios puedan aprender.</p>
-    </section>
-
-    <section id="tutorialSection" class="screen">
-        <h2>Tutorial</h2>
-        <p>Aquí se mostrarán los pasos y videos para aprender a usar el simulador.</p>
-    </section>
-
-    <section id="calfluxSection" class="screen">
-        <h2>CalcFlux - Calculadora de Circuitos</h2>
-        <p>Herramientas de cálculo para resistencias, capacitores, etc.</p>
-    </section>
-
-    <div id="clase-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>🎓 Modo Clase</h2>
-            <div class="clase-options">
-                <button class="option-btn teacher" onclick="createClase()">
-                    👨‍🏫 CREAR CLASE <small>Soy profesor/instructor</small>
-                </button>
-                <button class="option-btn student" onclick="joinClase()">
-                    👨‍🎓 UNIRME A CLASE <small>Soy estudiante</small>
-                </button>
+            <section id="help" class="page-content" style="display: none;">
+                <h2>Ayuda y Documentación</h2>
+                <p>¿Tienes dudas? Aquí encontrarás tutoriales, preguntas frecuentes y la guía de referencia de todos nuestros componentes.</p>
+            </section>
+        </main>
+        
+        <div id="tourTooltip">
+            <div class="tooltip-header">
+                <h4 id="tourTitle">Paso 1</h4>
+                <button onclick="hideTourTooltip()"><i class="fas fa-times"></i></button>
             </div>
-            <button class="close-modal-btn" onclick="closeModal('clase-modal')">Cerrar</button>
-        </div>
-    </div>
-    
-    <div id="teacher-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>👨‍🏫 Crear Nueva Clase</h2>
-            <div class="teacher-form">
-                <input type="text" placeholder="Nombre del profesor" id="teacher-name">
-                <input type="text" placeholder="Nombre de la clase" id="class-name">
-                <input type="number" placeholder="Máximo estudiantes (20)" id="max-students" value="20">
-                <button onclick="generateClaseRoom()">🚀 CREAR SALA</button>
+            <p id="tourText">Texto del tour</p>
+            <div class="tooltip-nav">
+                <button onclick="nextTourStep()">Siguiente &rarr;</button>
             </div>
-            <button class="close-modal-btn" onclick="closeModal('teacher-modal')">Cerrar</button>
-        </div>
-    </div>
-    
-    <div id="student-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>👨‍🎓 Unirse a Clase</h2>
-            <div class="student-form">
-                <input type="text" placeholder="Tu nombre" id="student-name">
-                <input type="text" placeholder="Código de clase" id="room-code" maxlength="6" style="text-transform: uppercase;">
-                <button onclick="joinClaseRoom()">🚪 ENTRAR A CLASE</button>
-            </div>
-            <div class="join-help">
-                <small>💡 El profesor te dará el código de 6 dígitos</small>
-            </div>
-            <button class="close-modal-btn" onclick="closeModal('student-modal')">Cerrar</button>
-        </div>
-    </div>
-
-    <div class="share-section">
-        <div id="share-panel" class="share-panel hidden">
-            <div class="share-url">
-                <input type="text" id="share-url-input" readonly>
-                <button onclick="copyURL()">📋 Copiar</button>
-            </div>
-            <div class="share-options">
-                <button onclick="shareWhatsApp()">💬 WhatsApp</button>
-                <button onclick="shareEmail()">📧 Email</button>
-                <button onclick="shareTwitter()">🐦 Twitter</button>
-                <button onclick="generateQR()">📱 QR Code</button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="qr-modal" class="qr-modal hidden">
-        <div class="qr-content">
-            <h3>📱 Escanea para abrir el circuito</h3>
-            <img id="qr-image" src="" alt="QR Code">
-            <button onclick="closeModal('qr-modal')">Cerrar</button>
         </div>
     </div>
     
     <script>
-        // --- BASE DE DATOS DE EJEMPLOS (puedes expandirlo) ---
-        const examples = {
-            'led_basic': {
-                name: 'Mi Primera Luz LED',
-                components: [
-                    { type: 'battery', id: 'bat1', voltage: 9 },
-                    { type: 'resistor', id: 'r1', value: 220 },
-                    { type: 'led', id: 'led1', color: 'red' }
-                ],
-                connections: [
-                    { from: 'bat1_pos', to: 'r1_left' },
-                    { from: 'r1_right', to: 'led1_anode' },
-                    { from: 'led1_cathode', to: 'bat1_neg' }
-                ]
-            }
-        };
+        // --- Page Routing ---
+        const navLinks = document.querySelectorAll('#main-nav a');
+        const pages = document.querySelectorAll('.page-content');
+        
+        function handleRouting() {
+            const hash = window.location.hash || '#home';
+            showPage(hash);
+        }
 
-        // --- FUNCIONES DE NAVEGACIÓN ---
-        function navigateTo(path) {
-            let screenId;
-            if (path === '/') { screenId = 'startScreen'; } 
-            else if (path === '/simulator') { screenId = 'appContainer'; } 
-            else if (path === '/examples') { screenId = 'examplesSection'; } 
-            else if (path === '/tutorial') { screenId = 'tutorialSection'; } 
-            else if (path === '/calcflux') { screenId = 'calfluxSection'; } 
-            else { screenId = 'startScreen'; }
+        function showPage(hash) {
+            pages.forEach(page => page.style.display = 'none');
+            navLinks.forEach(link => link.classList.remove('active'));
 
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
+            const activePage = document.querySelector(hash);
+            const activeLink = document.querySelector(`a[href="${hash}"]`);
 
-            const componentsPanel = document.getElementById('components-panel');
-            if (path === '/simulator') {
-                componentsPanel.classList.remove('hidden');
+            if (activePage) {
+                activePage.style.display = 'flex';
+                activePage.style.flexDirection = 'column';
+                activePage.style.flexGrow = '1';
+                activeLink.classList.add('active');
             } else {
-                componentsPanel.classList.add('hidden');
+                // Default to home if hash is not found
+                document.querySelector('#home').style.display = 'flex';
+                document.querySelector('a[href="#home"]').classList.add('active');
+            }
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                window.location.hash = e.target.getAttribute('href');
+            });
+        });
+
+        window.addEventListener('hashchange', handleRouting);
+
+        // --- Simulator Logic (Placeholder) ---
+        const canvas = document.getElementById('circuit-canvas');
+        const ctx = canvas.getContext('2d');
+        let circuitState = { components: [], connections: [], measurements: [] };
+
+        function setupCanvas() {
+            const container = document.getElementById('simulator-container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            drawGrid();
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#23354d';
+            ctx.lineWidth = 0.5;
+            const gridSize = 20;
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
             }
         }
         
-        // --- FUNCIONES DE GESTIÓN DE URL DINÁMICA ---
-
-        // Función principal para obtener el estado del circuito
-        function getCurrentCircuitState() { 
-            // **IMPORTANTE:** Debes implementar esta función para que devuelva un objeto con el estado actual
-            // del circuito. Por ejemplo: { components: [], connections: [] }
-            // Este es solo un placeholder
-            return {
-                components: [
-                    { type: 'resistor', id: 'r1', value: 220 },
-                    { type: 'battery', id: 'bat1', voltage: 9 },
-                    { type: 'led', id: 'led1', color: 'red' }
-                ],
-                connections: [] 
-            };
+        // This is a simplified function to demonstrate the examples functionality
+        function openExample(exampleName) {
+            // In a real application, this would load the circuit state from a database or a predefined object
+            console.log(`Opening example: ${exampleName}`);
+            // Let's just switch to the simulator page for now
+            window.location.hash = '#simulator';
+            
+            // Here you would have a more complex function that
+            // loads the circuit data based on the exampleName
+            // For instance, you could call:
+            // loadCircuitFromExample(exampleName);
         }
 
-        // Genera una URL completa a partir del estado de un circuito
-        function generateURLFromCircuit(circuit) {
-            const baseURL = window.location.origin + window.location.pathname;
-            const params = new URLSearchParams();
-
-            // Detectar el tipo de circuito (opcional) o usar un ID genérico
-            params.append('circuit_id', 'custom');
-
-            // Procesar cada componente y agregarlo a los parámetros
-            circuit.components.forEach((component, index) => {
-                let paramKey = `${component.type}_${component.id || index}`;
-                let paramValue = '';
-                switch(component.type) {
-                    case 'resistor':
-                        paramValue = `value=${component.value}`;
-                        break;
-                    case 'battery':
-                        paramValue = `voltage=${component.voltage}`;
-                        break;
-                    case 'led':
-                        paramValue = `color=${component.color}`;
-                        break;
-                    // Agrega más casos para otros componentes
-                    default:
-                        paramValue = 'default';
-                        break;
-                }
-                params.append(paramKey, paramValue);
-            });
-            return `${baseURL}?${params.toString()}`;
-        }
-
-        // Actualiza la URL en la barra de direcciones sin recargar la página
-        function updateURLWithoutReload() {
-            const currentCircuit = getCurrentCircuitState();
-            const newURL = generateURLFromCircuit(currentCircuit);
-            window.history.replaceState({ circuit: currentCircuit }, document.title, newURL);
-            console.log('URL actualizada:', newURL);
-        }
-
-        // Reconstruye el circuito a partir de los parámetros de la URL
-        function buildCircuitFromURL(params) {
-            const circuit = {
-                components: [],
-                connections: []
-            };
-
-            for (const [key, value] of params.entries()) {
-                const [type, id] = key.split('_');
-
-                let component = { type: type, id: id };
-                
-                // Extraer el valor del parámetro
-                const prop = value.split('=')[0];
-                const val = value.split('=')[1];
-                component[prop] = val;
-
-                circuit.components.push(component);
+        // --- Tour Logic ---
+        const tourSteps = [
+            {
+                title: "Componentes",
+                text: "Arrastra componentes desde esta barra lateral para añadirlos al simulador.",
+                target: "#sidebar"
+            },
+            {
+                title: "Canvas de Trabajo",
+                text: "Este es tu área de trabajo. Arrastra y suelta componentes aquí para construir tu circuito.",
+                target: "#circuit-canvas"
+            },
+            {
+                title: "Barra de Herramientas",
+                text: "Utiliza estas herramientas para conectar, mover, y simular tu circuito.",
+                target: "#toolbar"
+            },
+            {
+                title: "Resultados",
+                text: "Aquí se mostrarán los resultados de la simulación, como voltajes y corrientes.",
+                target: "#simulator-results"
             }
-            return circuit;
-        }
+        ];
 
-        // Carga un circuito de ejemplo, reemplazando el actual
-        function loadExample(exampleName, params) {
-            const example = examples[exampleName];
-            if (!example) {
-                console.error('Ejemplo no encontrado:', exampleName);
+        let currentTourStep = -1;
+        let tourInterval;
+
+        document.getElementById('tour-btn').addEventListener('click', () => {
+            currentTourStep = 0;
+            showTourStep(currentTourStep);
+        });
+
+        function showTourStep(stepIndex) {
+            if (stepIndex >= tourSteps.length) {
+                hideTourTooltip();
                 return;
             }
+
+            const step = tourSteps[stepIndex];
+            const targetElement = document.querySelector(step.target);
+            const tooltip = document.getElementById('tourTooltip');
+            const tooltipHeader = document.getElementById('tourTitle');
+            const tooltipText = document.getElementById('tourText');
             
-            // **IMPORTANTE:** Debes implementar estas funciones para tu simulador
-            // (1) Limpia el canvas y el estado del simulador
-            // clearSimulator(); 
-            
-            // (2) Construye el circuito a partir de la data del ejemplo
-            // placeComponents(example.components);
-            // makeConnections(example.connections);
+            if (targetElement) {
+                document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+                targetElement.classList.add('tour-highlight');
+                
+                tooltipHeader.textContent = step.title;
+                tooltipText.textContent = step.text;
 
-            // (3) Actualiza la URL para reflejar el ejemplo cargado
-            updateURLWithoutReload();
-        }
+                const targetRect = targetElement.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
 
-        // --- FUNCIONES DEL BOTÓN DE COMPARTIR ---
-        const sharePanel = document.getElementById('share-panel');
-        document.querySelector('.share-button').addEventListener('click', (event) => {
-            event.stopPropagation();
-            sharePanel.classList.toggle('hidden');
-            if (!sharePanel.classList.contains('hidden')) {
-                showSharePanel();
-            }
-        });
-        document.addEventListener('click', (event) => {
-            if (!sharePanel.contains(event.target) && !document.querySelector('.share-button').contains(event.target)) {
-                sharePanel.classList.add('hidden');
-            }
-        });
+                let top, left;
 
-        function showSharePanel() {
-            // La URL ya está actualizada por onCircuitChange, solo hay que mostrarla
-            document.getElementById('share-url-input').value = window.location.href;
-        }
+                // Simple logic to position the tooltip
+                if (targetRect.bottom + tooltipRect.height < window.innerHeight) {
+                    // Position below target
+                    top = targetRect.bottom + 10;
+                    left = targetRect.left;
+                } else if (targetRect.top - tooltipRect.height > 0) {
+                    // Position above target
+                    top = targetRect.top - tooltipRect.height - 10;
+                    left = targetRect.left;
+                } else { // Fallback to center
+                    top = (window.innerHeight - tooltipRect.height) / 2;
+                    left = (window.innerWidth - tooltipRect.width) / 2;
+                }
 
-        function copyURL() {
-            const urlInput = document.getElementById('share-url-input');
-            urlInput.select();
-            navigator.clipboard.writeText(urlInput.value).then(() => {
-                showNotification('✅ URL copiada al portapapeles');
-            });
-        }
-        function showNotification(message) {
-            alert(message);
-        }
-        // ... (resto de funciones de compartir, WhatsApp, Email, etc.)
-        function shareWhatsApp() { /* ... */ }
-        function shareEmail() { /* ... */ }
-        function shareTwitter() { /* ... */ }
-        function generateQR() { /* ... */ }
-        function showQRModal(qrImageURL) { /* ... */ }
+                // Adjust for out-of-bounds
+                if (top < 0) top = 10;
+                if (left < 0) left = 10;
+                if (left + tooltipRect.width > window.innerWidth) left = window.innerWidth - tooltipRect.width - 10;
+                if (top + tooltipRect.height > window.innerHeight) top = window.innerHeight - tooltipRect.height - 10;
 
-        // --- FUNCIONES DEL BOTÓN DE CLASE ---
-        function showClaseOptions() {
-            document.getElementById('clase-modal').classList.remove('hidden');
-        }
-        function createClase() {
-            closeModal('clase-modal');
-            document.getElementById('teacher-modal').classList.remove('hidden');
-        }
-        function joinClase() {
-            closeModal('clase-modal');
-            document.getElementById('student-modal').classList.remove('hidden');
-        }
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-        function generateRoomCode() {
-            return Math.random().toString(36).substr(2, 6).toUpperCase();
-        }
-        function generateClaseRoom() {
-            const roomCode = generateRoomCode();
-            alert('Sala creada con el código: ' + roomCode);
-            closeModal('teacher-modal');
-        }
-        function joinClaseRoom() {
-            const roomCode = document.getElementById('room-code').value;
-            alert('Intentando unirse a la sala: ' + roomCode);
-            closeModal('student-modal');
-        }
-
-        // --- LÓGICA DE INICIALIZACIÓN ---
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.has('circuit_id') && params.get('circuit_id') === 'custom') {
-                const circuit = buildCircuitFromURL(params);
-                // **IMPORTANTE:** Llama a tu función para renderizar el circuito
-                // renderCircuit(circuit); 
-                navigateTo('/simulator');
-            } else if (params.has('example')) {
-                loadExample(params.get('example'), params);
-                navigateTo('/simulator');
+                tooltip.style.top = `${top + window.scrollY}px`;
+                tooltip.style.left = `${left}px`;
+                tooltip.classList.add('visible');
             } else {
-                navigateTo('/');
+                console.error(`Tour target not found: ${step.target}`);
+                nextTourStep();
             }
+        }
+        function hideTourTooltip() {
+            document.getElementById('tourTooltip').classList.remove('visible');
+            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+        }
+        function nextTourStep() {
+            currentTourStep++;
+            if (currentTourStep < tourSteps.length) {
+                showTourStep(currentTourStep);
+            } else {
+                hideTourTooltip();
+                clearInterval(tourInterval);
+                currentTourStep = -1;
+            }
+        }
+        
+        // --- Initialization ---
+        window.onload = () => {
+            setupCanvas();
+            handleRouting();
         };
+        window.onresize = setupCanvas;
     </script>
 </body>
 </html>
