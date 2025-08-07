@@ -3,1565 +3,439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluxionics - Simulador de Circuitos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>Fluxionics - Simulador Profesional de Circuitos</title>
     <style>
-        /* Base Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; }
+        /* Estilos básicos de la página */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0e14; color: #e6edf3; overflow: hidden; line-height: 1.6;
-            animation: gradientBackground 20s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        @keyframes gradientBackground {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        body { background: linear-gradient(-45deg, #0a0e14, #1a1f2e, #0a0e14); background-size: 400% 400%; }
-
-        /* Screen Management */
-        .screen {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow-y: auto; -webkit-overflow-scrolling: touch; flex-direction: column;
-        }
-        .screen.active { display: flex; }
-
-        /* Start Screen */
-        #startScreen {
-            align-items: center; justify-content: center;
-            background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0e14 100%);
-            padding: 40px; text-align: center; position: relative; overflow-y: auto;
-        }
-        #startScreen::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,0 L10,5 M10,15 L10,20 M0,10 L5,10 M15,10 L20,10" stroke="%2300d4ff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>') repeat;
-            opacity: 0.05; z-index: 0;
-        }
-        .logo-container { position: relative; z-index: 1; margin-bottom: 50px; }
-        .main-logo {
-            width: 150px; height: 150px; margin: 0 auto 20px;
-            background-image: url('https://imgur.com/pxjxVqC.png');
-            background-size: contain; background-repeat: no-repeat;
-            background-position: center; animation: logoFloat 6s ease-in-out infinite;
-            border-radius: 20px; box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
-            user-select: none; cursor: default;
-        }
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(3deg); }
-        }
-        .app-title {
-            font-family: 'Orbitron', sans-serif; font-size: 4.5em; font-weight: 900;
-            color: #00d4ff; text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-            letter-spacing: 4px; background: linear-gradient(45deg, #00d4ff, #ffffff, #00d4ff);
-            background-size: 200% auto; -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; animation: textShimmer 3s ease-in-out infinite;
-            user-select: none; cursor: default;
-        }
-        @keyframes textShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .app-subtitle { font-size: 1.4em; color: #8b949e; font-weight: 500; margin-bottom: 40px; user-select: none; cursor: default; }
-        .feature-highlights {
-            display: flex; gap: 40px; margin-bottom: 50px; z-index: 1; position: relative; flex-wrap: wrap; justify-content: center;
-        }
-        .feature-item {
-            display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px;
-            background: rgba(0, 212, 255, 0.05); border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.2);
-            transition: all 0.3s ease; min-width: 180px;
-        }
-        .feature-item:hover {
-            background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.4); transform: translateY(-5px);
-        }
-        .feature-item i { font-size: 2em; color: #00d4ff; }
-        .feature-item span { font-size: 0.9em; font-weight: 600; color: #c9d1d9; text-align: center; }
-        .start-options { display: flex; gap: 30px; z-index: 1; position: relative; flex-wrap: wrap; justify-content: center; }
-        .start-button {
-            padding: 18px 35px; border: none; border-radius: 12px; font-size: 1.2em; font-weight: 700;
-            cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;
-            gap: 12px; text-transform: uppercase; letter-spacing: 1px; min-width: 200px; justify-content: center;
-        }
-        .start-button.primary {
-            background: linear-gradient(45deg, #00d4ff, #0088cc); color: #0a0e14;
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
-        }
-        .start-button.primary:hover {
-            background: linear-gradient(45deg, #00e6ff, #00a3e6); transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0, 212, 255, 0.4);
-        }
-        .start-button.secondary {
-            background: rgba(22, 27, 34, 0.8); border: 2px solid #30363d; color: #e6edf3;
-            backdrop-filter: blur(10px);
-        }
-        .start-button.secondary:hover {
-            background: rgba(33, 38, 45, 0.9); border-color: #00d4ff; color: #00d4ff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* App Container */
-        #appContainer { flex-direction: column; height: 100vh; background: #0a0e14; }
-
-        /* Header */
-        .header {
-            position: fixed; top: 0; left: 0; right: 0; height: 70px;
-            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; z-index: 1000; border-bottom: 1px solid #30363d;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
-        .header-center { display: flex; align-items: center; }
-        .menu-btn {
-            width: 50px; height: 50px; background: none; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 12px; transition: background 0.2s; color: #e6edf3; font-size: 18px;
-        }
-        .menu-btn:hover { background: rgba(0, 212, 255, 0.1); }
-        .logo { display: flex; align-items: center; gap: 12px; user-select: none; cursor: default; }
-        .logo-img {
-            width: 40px; height: 40px; background-image: url('https://imgur.com/pxjxVqC.png');
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            border-radius: 8px;
-        }
-        .logo-text-container { position: relative; display: flex; flex-direction: column; align-items: center; line-height: 1; }
-        .logo-text {
-            font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700;
-            color: #00d4ff; text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
-        .beta-badge {
-            background-color: #ffffff; color: #0a0e14; font-size: 0.7em; font-weight: 700;
-            padding: 2px 6px; border-radius: 5px; text-transform: uppercase;
-            letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            user-select: none; cursor: default; margin-bottom: 2px;
-        }
-        .simulation-controls {
-            display: flex; gap: 10px; background: rgba(48, 54, 61, 0.8);
-            padding: 8px; border-radius: 12px; border: 1px solid #30363d;
-        }
-        .control-btn {
-            width: 45px; height: 45px; background: none; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; transition: all 0.2s; color: #e6edf3; font-size: 16px;
-        }
-        .control-btn:hover { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
-        .control-btn.active { background: linear-gradient(45deg, #00d4ff, #0088cc); color: #0a0e14; }
-
-        /* Main Content */
-        .main-content { display: flex; height: calc(100vh - 70px); margin-top: 70px; }
-        
-        /* Components Sidebar */
-        .components-sidebar {
-            width: 320px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            padding: 20px; border-right: 1px solid #30363d; overflow-y: auto;
-            flex-shrink: 0; transition: transform 0.3s ease-in-out; transform: translateX(-100%);
-            position: fixed; top: 70px; left: 0; height: calc(100% - 70px); z-index: 1500;
-        }
-        .components-sidebar.open { transform: translateX(0); }
-        .search-container { margin-bottom: 25px; }
-        .search-box { position: relative; display: flex; align-items: center; }
-        .search-box i { position: absolute; left: 15px; color: #8b949e; z-index: 1; }
-        .search-box input {
-            width: 100%; padding: 12px 15px 12px 45px; background: rgba(48, 54, 61, 0.6);
-            border: 2px solid transparent; border-radius: 10px; color: #e6edf3;
-            font-size: 14px; transition: all 0.3s ease;
-        }
-        .search-box input:focus { outline: none; border-color: #00d4ff; background: rgba(48, 54, 61, 0.8); box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1); }
-        .component-category { margin-bottom: 30px; }
-        .category-title {
-            font-size: 14px; font-weight: 700; color: #00d4ff; margin-bottom: 15px;
-            text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-            padding-bottom: 8px; display: flex; align-items: center; gap: 8px;
-        }
-        .component-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .component-item {
-            width: 85px; height: 85px; background: rgba(33, 38, 45, 0.8); border-radius: 12px;
-            cursor: grab; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; transition: all 0.3s ease; border: 2px solid transparent;
-            position: relative; overflow: hidden;
-        }
-        .component-item::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-        .component-item:hover::before { left: 100%; }
-        .component-item:hover {
-            background: rgba(48, 54, 61, 0.9); border-color: #00d4ff; transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-        .component-item.selected { background: rgba(0, 212, 255, 0.2); border-color: #00d4ff; box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
-        .component-icon {
-            width: 40px; height: 40px; background: rgba(0, 212, 255, 0.1); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; font-size: 16px;
-            font-weight: bold; color: #00d4ff; margin-bottom: 6px; transition: all 0.2s;
-        }
-        .component-item:hover .component-icon { background: rgba(0, 212, 255, 0.2); transform: scale(1.1); }
-        .component-name { font-size: 11px; color: #c9d1d9; text-align: center; font-weight: 600; line-height: 1.2; }
-
-        /* Canvas Container */
-        .canvas-container { flex: 1; display: flex; flex-direction: column; background: #0a0e14; position: relative; }
-        .canvas-toolbar {
-            height: 60px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid #30363d; display: flex; align-items: center;
-            justify-content: space-between; padding: 0 20px;
-        }
-        .tool-group { display: flex; gap: 5px; background: rgba(48, 54, 61, 0.6); padding: 5px; border-radius: 10px; }
-        .tool-btn {
-            width: 40px; height: 40px; background: none; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px; transition: all 0.2s; color: #e6edf3; font-size: 16px;
-        }
-        .tool-btn:hover { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
-        .tool-btn.active { background: #00d4ff; color: #0a0e14; }
-        .zoom-controls {
-            display: flex; align-items: center; gap: 10px; background: rgba(48, 54, 61, 0.6);
-            padding: 5px 10px; border-radius: 10px;
-        }
-        .zoom-btn {
-            width: 35px; height: 35px; background: none; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px; transition: all 0.2s; color: #e6edf3;
-        }
-        .zoom-btn:hover { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
-        .zoom-level { font-size: 12px; color: #8b949e; min-width: 50px; text-align: center; }
-        .canvas-area { flex: 1; position: relative; overflow: auto; -webkit-overflow-scrolling: touch; }
-        .placed-component {
-            position: absolute; width: 50px; height: 50px; background: #30363d;
-            border: 2px solid #00d4ff; border-radius: 8px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; cursor: grab; user-select: none; z-index: 5;
-        }
-        .placed-component:hover { border-color: #00e6ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
-        .placed-component.selected { border-color: #ffffff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); z-index: 10; }
-        .placed-component .icon { font-size: 24px; color: #ffffff; }
-        .component-pins { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
-        .component-pin {
-            position: absolute; width: 10px; height: 10px; background-color: #ff00ff;
-            border: 1px solid #ffffff; border-radius: 50%; cursor: crosshair;
-            pointer-events: auto; z-index: 15; opacity: 0; transition: opacity 0.2s;
-        }
-        .placed-component:hover .component-pin, .tool-btn[data-tool="wire"].active ~ .canvas-area .placed-component .component-pin, .component-pin.selected-for-wire { opacity: 1; }
-        .component-pin.selected-for-wire { background-color: #00d4ff; box-shadow: 0 0 10px #00d4ff; }
-        .pin-label {
-            position: absolute; background-color: rgba(0, 0, 0, 0.7); color: #fff;
-            padding: 3px 8px; border-radius: 5px; font-size: 0.7em; white-space: nowrap;
-            pointer-events: none; z-index: 20; transform: translate(-50%, -120%); opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .component-pin:hover .pin-label { opacity: 1; }
-        #circuitCanvas {
-            background: linear-gradient(to right, rgba(0, 212, 255, 0.1) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px; background-color: #0a0e14; position: absolute;
-            top: 0; left: 0; z-index: 1; width: 4000px; height: 4000px;
-        }
-        .status-bar {
-            height: 40px; background: rgba(13, 17, 23, 0.95); border-top: 1px solid #30363d;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; font-size: 12px;
-        }
-        .status-info { color: #8b949e; }
-        .status-info.short-circuit { color: #ff6b6b; font-weight: bold; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
-        .simulation-stats { display: flex; gap: 20px; color: #8b949e; }
-        .simulation-stats span { display: flex; align-items: center; gap: 5px; }
-
-        /* Properties Panel */
-        .properties-panel {
-            width: 300px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            border-left: 1px solid #30363d; padding: 20px; overflow-y: auto;
-            flex-shrink: 0; display: none; transition: transform 0.3s ease-in-out;
-            position: fixed; top: 70px; right: 0; height: calc(100% - 70px); z-index: 1500;
-        }
-        .properties-panel.open { transform: translateX(0); display: block; }
-        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .panel-header h3 { font-size: 16px; font-weight: 700; color: #00d4ff; }
-        .close-btn {
-            width: 30px; height: 30px; background: none; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px; transition: all 0.2s; color: #8b949e;
-        }
-        .close-btn:hover { background: rgba(255, 0, 0, 0.2); color: #ff6b6b; }
-        .panel-content { color: #8b949e; }
-        .property-group { margin-bottom: 15px; }
-        .property-group label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 600; color: #c9d1d9; }
-        .property-group input, .property-group select {
-            width: 100%; padding: 8px; background: #30363d; border: 1px solid #444c56;
-            border-radius: 6px; color: #e6edf3;
-        }
-
-        /* --- New UI elements --- */
-        /* Hamburger Menu Panel */
-        #hamburgerMenuPanel {
-            position: fixed; top: 70px; left: 0; width: 250px; height: calc(100% - 70px);
-            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            border-right: 1px solid #30363d; padding: 20px 0; z-index: 2000;
-            transform: translateX(-100%); transition: transform 0.3s ease-in-out;
-            display: flex; flex-direction: column;
-        }
-        #hamburgerMenuPanel.open {
-            transform: translateX(0);
-        }
-        #hamburgerMenuPanel a, #hamburgerMenuPanel button {
-            display: block; width: 100%; text-align: left; padding: 15px 25px;
-            color: #e6edf3; text-decoration: none; font-size: 16px;
-            background: none; border: none; cursor: pointer;
-            transition: all 0.2s;
-        }
-        #hamburgerMenuPanel a:hover, #hamburgerMenuPanel button:hover {
-            background: rgba(0, 212, 255, 0.1); color: #00d4ff;
-        }
-
-        /* Tutorial Section & AI Tour Styles */
-        #tutorialSection {
-            flex-direction: column; padding: 20px; background: rgba(13, 17, 23, 0.95);
-            backdrop-filter: blur(15px); z-index: 3000; color: #e6edf3; overflow-y: auto;
-        }
-        .tutorial-content {
-            max-width: 900px; margin: 50px auto; padding: 40px; background: rgba(22, 27, 34, 0.95);
-            border-radius: 12px; border: 1px solid #30363d; position: relative;
-        }
-        .tutorial-content h2 { font-size: 2.5em; color: #00d4ff; margin-bottom: 20px; border-bottom: 2px solid rgba(0, 212, 255, 0.3); padding-bottom: 10px; }
-        .tutorial-content h3 { font-size: 1.5em; color: #c9d1d9; margin-top: 30px; margin-bottom: 15px; }
-        .tutorial-content p, .tutorial-content ul { font-size: 1.1em; line-height: 1.8; color: #8b949e; margin-bottom: 20px; }
-        .tutorial-content code { background: #30363d; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; color: #00d4ff; }
-        .ai-tour-container {
-            display: flex; gap: 15px; margin-top: 20px; padding-top: 20px; border-top: 1px dashed rgba(0, 212, 255, 0.2);
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .ai-tour-message {
-            background: rgba(0, 212, 255, 0.1); padding: 15px; border-left: 3px solid #00d4ff;
-            border-radius: 8px; font-style: italic; color: #c9d1d9;
-            transition: opacity 0.5s; opacity: 0;
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
         }
-        .ai-tour-message.visible { opacity: 1; }
-        .tour-highlight {
-            animation: pulse-border 1.5s infinite;
-            z-index: 9999 !important;
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        nav button:hover {
+            background-color: #34495e;
+        }
+
+        /* Estilos para las secciones de la página */
+        .screen {
+            display: none; /* Oculta todas las pantallas por defecto */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .screen.active {
+            display: flex; /* Muestra solo la pantalla activa */
+        }
+        
+        /* Contenido de la pantalla de inicio */
+        #startScreen {
+            background: url('https://picsum.photos/1200/800') no-repeat center center/cover;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        #startScreen h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        #startScreen p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+        .cta-buttons button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .cta-buttons button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Estilos para el panel de componentes */
+        #components-panel {
+            position: fixed;
+            top: 70px; /* Debajo del header */
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 900;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        #components-panel.hidden {
+            display: none;
+        }
+        #components-panel h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        #components-panel button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #components-panel button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Estilos del panel para compartir */
+        .share-section {
             position: relative;
+            display: inline-block;
         }
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.6); }
-            50% { box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.6); }
+        .share-button {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
         }
-
-        /* Cal Flux & Examples Section */
-        .page-content {
-            width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;
+        .share-panel {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
         }
-        .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid rgba(0, 212, 255, 0.3); }
-        .section-header h2 { font-size: 24px; color: #00d4ff; font-weight: 700; }
-        .close-menu-btn { background: none; border: none; font-size: 24px; color: #e6edf3; cursor: pointer; margin-left: auto; }
-        .close-menu-btn:hover { color: #ff6b6b; }
-        .content-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .content-card { background: rgba(22, 27, 34, 0.8); border-radius: 12px; border: 1px solid #30363d; overflow: hidden; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); transition: all 0.3s ease; display: flex; flex-direction: column; cursor: pointer; }
-        .content-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0, 212, 255, 0.2); border-color: #00d4ff; }
-        .content-card-image {
-            height: 150px; background-color: #1a1f2e; display: flex; align-items: center; justify-content: center;
-            font-family: 'Orbitron', sans-serif; font-size: 1.5em; color: #00d4ff; text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-            text-align: center; padding: 10px;
+        .share-panel.hidden {
+            display: none;
         }
-        .content-card-content { padding: 20px; }
-        .content-card-content h3 { font-size: 1.2em; color: #c9d1d9; margin-bottom: 10px; }
-        .content-card-content p { font-size: 0.9em; color: #8b949e; }
-
-        /* Detail pages */
-        .detail-page { padding: 20px; max-width: 900px; margin: 0 auto; background: rgba(22, 27, 34, 0.9); border-radius: 12px; border: 1px solid #30363d; }
-        .detail-page h2 { font-size: 2em; color: #00d4ff; margin-bottom: 15px; }
-        .detail-page-meta { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; }
-        .detail-page-meta span { font-size: 0.9em; color: #8b949e; display: flex; align-items: center; gap: 5px; }
-        .detail-page ul, .detail-page ol { margin-left: 20px; color: #8b949e; }
-        .detail-page li { margin-bottom: 10px; }
-        .detail-page a { color: #00d4ff; text-decoration: none; font-weight: 600; transition: color 0.2s; }
-        .detail-page a:hover { color: #00e6ff; text-decoration: underline; }
-        .action-button { padding: 12px 25px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; background: #00d4ff; color: #0a0e14; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; }
-        .action-button:hover { background: #00e6ff; box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3); }
-
-        /* Calculator Styles */
-        .calflux-calculator-area { background: rgba(33, 38, 45, 0.8); border-radius: 12px; padding: 25px; border: 1px solid #30363d; }
-        .calculator-section h3 { font-size: 1.8em; color: #00d4ff; margin-bottom: 20px; border-bottom: 2px solid rgba(0, 212, 255, 0.3); padding-bottom: 10px; }
-        .calculator-section p { font-size: 1em; color: #c9d1d9; margin-bottom: 15px; }
-        .calculator-input-group { display: flex; flex-direction: column; margin-bottom: 15px; }
-        .calculator-input-group label { margin-bottom: 5px; font-weight: 600; color: #c9d1d9; }
-        .calculator-input-group input, .calculator-input-group select {
-            padding: 10px; border-radius: 6px; border: 1px solid #444c56;
-            background-color: #30363d; color: #e6edf3; font-size: 1em;
+        .share-url {
+            display: flex;
+            margin-bottom: 15px;
         }
-        .calculator-input-group input:focus, .calculator-input-group select:focus {
-            outline: none; border-color: #00d4ff; box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        .share-url input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
-        .calculator-results { margin-top: 25px; padding: 20px; background: rgba(0, 212, 255, 0.1); border: 1px solid #00d4ff; border-radius: 8px; }
-        .action-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
-        .action-buttons button { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: #00d4ff; color: #0a0e14; }
-        .action-buttons button:hover { background: #00e6ff; box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3); }
-
-        /* Modal for AI Tour & Explanations */
-        .modal-backdrop {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7);
-            z-index: 9998; display: none; align-items: center; justify-content: center;
+        .share-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
-        .modal-content {
-            background: rgba(22, 27, 34, 0.95); padding: 25px; border-radius: 12px; max-width: 500px;
-            text-align: center; color: #e6edf3; border: 1px solid #00d4ff;
-        }
-        .modal-content h4 { font-size: 1.5em; color: #00d4ff; margin-bottom: 15px; }
-        .modal-content p { margin-bottom: 20px; }
-        .modal-content button {
-            padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;
-            background: #00d4ff; color: #0a0e14; transition: background 0.2s;
-        }
-        .modal-content button:hover { background: #00e6ff; }
-        .tour-step-tooltip {
-            position: fixed; padding: 15px; background: rgba(22, 27, 34, 0.95); color: #e6edf3;
-            border: 1px solid #00d4ff; border-radius: 8px; z-index: 10000;
-            max-width: 300px; display: none; text-align: left;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .tour-step-tooltip.visible { display: block; }
-        .tour-step-buttons {
-            display: flex; justify-content: space-between; margin-top: 10px;
+        .share-options button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .components-sidebar, .properties-panel { position: fixed; top: 70px; height: calc(100vh - 70px); z-index: 1500; }
-            .properties-panel { right: 0; transform: translateX(100%); }
-            .properties-panel.open { transform: translateX(0); display: block; }
+        /* Modal para el código QR */
+        .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
-        @media (max-width: 768px) {
-            .app-title { font-size: 2.5em; }
-            .app-subtitle { font-size: 1em; }
-            .start-button { width: 100%; }
-            .header { padding: 0 10px; }
-            .logo-text { font-size: 18px; }
-            .menu-btn { width: 40px; height: 40px; font-size: 16px; }
-            .control-btn { width: 40px; height: 40px; }
-            .component-grid { grid-template-columns: repeat(2, 1fr); }
+        .qr-content {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
         }
+        .qr-content img {
+            margin: 15px 0;
+        }
+        .qr-content button {
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="startScreen" class="screen active">
-        <div class="logo-container">
-            <div class="main-logo"></div>
-            <div class="app-title-container">
-                <span class="beta-badge">Beta</span>
-                <h1 class="app-title">Fluxionics</h1>
-            </div>
-            <p class="app-subtitle">Simulador Profesional de Circuitos</p>
-        </div>
-        <div class="feature-highlights">
-            <div class="feature-item">
-                <i class="fas fa-microchip"></i>
-                <span>Componentes Interactivos</span>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-wave-square"></i>
-                <span>Análisis de Osciloscopio</span>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-ruler-combined"></i>
-                <span>Herramientas de Medición</span>
-            </div>
-        </div>
-        <div class="start-options">
-            <button class="start-button primary" onclick="navigateTo('/simulator')">
-                <i class="fas fa-play"></i> Comenzar a Diseñar
-            </button>
-            <button class="start-button secondary" onclick="navigateTo('/tutorial')">
-                <i class="fas fa-graduation-cap"></i> Tutorial de Inicio
-            </button>
-            <button class="start-button secondary" onclick="navigateTo('/examples')">
-                <i class="fas fa-lightbulb"></i> Ejemplos Flux
-            </button>
-            <button class="start-button secondary" onclick="navigateTo('/calcflux')">
-                <i class="fas fa-calculator"></i> Cal Flux
-            </button>
-        </div>
-    </div>
-
-    <div id="appContainer" class="screen">
-        <header class="header" id="appHeader">
-            <div class="header-left">
-                <button class="menu-btn" id="menuButton" onclick="toggleMenuPanel()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="logo">
-                    <div class="logo-img"></div>
-                    <div class="logo-text-container">
-                        <span class="logo-text">Fluxionics</span>
-                        <span class="beta-badge">beta</span>
-                    </div>
-                </div>
-            </div>
-            <div class="header-center">
-                <div class="simulation-controls">
-                    <button id="playBtn" class="control-btn active" data-action="play">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button id="pauseBtn" class="control-btn" data-action="pause">
-                        <i class="fas fa-pause"></i>
-                    </button>
-                    <button id="stopBtn" class="control-btn" data-action="stop">
-                        <i class="fas fa-stop"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="header-right">
-                <button class="menu-btn" onclick="navigateTo('/')">
-                    <i class="fas fa-home"></i>
-                </button>
-            </div>
-        </header>
-
-        <nav id="hamburgerMenuPanel">
-            <button onclick="toggleComponentsSidebar()"><i class="fas fa-microchip"></i> Componentes</button>
-            <button onclick="navigateTo('/calcflux')"><i class="fas fa-calculator"></i> Cal Flux</button>
-            <button onclick="navigateTo('/examples')"><i class="fas fa-lightbulb"></i> Ejemplos</button>
-            <button onclick="navigateTo('/tutorial')"><i class="fas fa-graduation-cap"></i> Tutorial</button>
-            <a href="#" onclick="showPrivacyPolicy()"><i class="fas fa-shield-alt"></i> Política de Privacidad</a>
-            <hr style="border-color: #30363d; margin: 10px 0;">
-            <button onclick="navigateTo('/')"><i class="fas fa-home"></i> Volver a Inicio</button>
+    <header>
+        <a href="#" onclick="navigateTo('/')" class="logo">Fluxionics</a>
+        <nav>
+            <button onclick="navigateTo('/simulator')">Simulador</button>
+            <button onclick="navigateTo('/examples')">Ejemplos</button>
+            <button onclick="navigateTo('/tutorial')">Tutorial</button>
+            <button onclick="navigateTo('/calcflux')">CalcFlux</button>
         </nav>
+    </header>
 
-        <main class="main-content">
-            <aside id="componentsSidebar" class="components-sidebar">
-                <div class="search-container" id="componentSearchContainer">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Buscar componente..." id="componentSearch">
-                    </div>
-                </div>
-                <div class="component-category">
-                    <h4 class="category-title"><i class="fas fa-battery-half"></i> Fuentes</h4>
-                    <div class="component-grid">
-                        <div class="component-item" data-component-type="voltageSource" draggable="true">
-                            <span class="component-icon">V</span>
-                            <span class="component-name">Fuente de Voltaje</span>
-                        </div>
-                        <div class="component-item" data-component-type="currentSource" draggable="true">
-                            <span class="component-icon">A</span>
-                            <span class="component-name">Fuente de Corriente</span>
-                        </div>
-                        <div class="component-item" data-component-type="ground" draggable="true">
-                            <span class="component-icon"><i class="fas fa-globe"></i></span>
-                            <span class="component-name">Tierra</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="component-category">
-                    <h4 class="category-title"><i class="fas fa-bolt"></i> Componentes Pasivos</h4>
-                    <div class="component-grid">
-                        <div class="component-item" data-component-type="resistor" draggable="true">
-                            <span class="component-icon">Ω</span>
-                            <span class="component-name">Resistor</span>
-                        </div>
-                        <div class="component-item" data-component-type="capacitor" draggable="true">
-                            <span class="component-icon">C</span>
-                            <span class="component-name">Capacitor</span>
-                        </div>
-                        <div class="component-item" data-component-type="inductor" draggable="true">
-                            <span class="component-icon">L</span>
-                            <span class="component-name">Inductor</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="component-category">
-                    <h4 class="category-title"><i class="fas fa-microchip"></i> Semiconductores</h4>
-                    <div class="component-grid">
-                        <div class="component-item" data-component-type="diode" draggable="true">
-                            <span class="component-icon"><i class="fas fa-caret-right"></i></span>
-                            <span class="component-name">Diodo</span>
-                        </div>
-                        <div class="component-item" data-component-type="led" draggable="true">
-                            <span class="component-icon"><i class="fas fa-lightbulb"></i></span>
-                            <span class="component-name">LED</span>
-                        </div>
-                        <div class="component-item" data-component-type="transistor" draggable="true">
-                            <span class="component-icon">T</span>
-                            <span class="component-name">Transistor</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="component-category">
-                    <h4 class="category-title"><i class="fas fa-toggle-on"></i> Componentes de Entrada</h4>
-                    <div class="component-grid">
-                        <div class="component-item" data-component-type="switch" draggable="true">
-                            <span class="component-icon"><i class="fas fa-power-off"></i></span>
-                            <span class="component-name">Interruptor</span>
-                        </div>
-                        <div class="component-item" data-component-type="potentiometer" draggable="true">
-                            <span class="component-icon"><i class="fas fa-sliders-h"></i></span>
-                            <span class="component-name">Potenciómetro</span>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-            <section class="canvas-container" id="canvasContainer">
-                <div class="canvas-toolbar" id="canvasToolbar">
-                    <div class="tool-group">
-                        <button class="tool-btn active" data-tool="select"><i class="fas fa-mouse-pointer"></i></button>
-                        <button class="tool-btn" data-tool="wire"><i class="fas fa-link"></i></button>
-                        <button class="tool-btn" data-tool="ai-explain"><i class="fas fa-robot"></i></button>
-                    </div>
-                    <div class="tool-group">
-                        <button class="tool-btn" data-action="export-img"><i class="fas fa-camera"></i></button>
-                        <button class="tool-btn" onclick="clearCanvas()"><i class="fas fa-eraser"></i></button>
-                    </div>
-                    <div class="zoom-controls">
-                        <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
-                        <span class="zoom-level" id="zoomLevel">100%</span>
-                        <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
-                    </div>
-                </div>
-                <div class="canvas-area" id="canvasArea">
-                    <div id="drag-container" style="position: absolute; width: 4000px; height: 4000px; transform-origin: 0 0;">
-                        <canvas id="circuitCanvas"></canvas>
-                        <canvas id="wireCanvas" style="position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></canvas>
-                    </div>
-                </div>
-                <div class="status-bar">
-                    <div class="status-info" id="statusBar">Estado: <span id="simulationStatus">Detenido</span></div>
-                    <div class="simulation-stats">
-                        <span>Voltaje: <span id="voltageStat">-- V</span></span>
-                        <span>Corriente: <span id="currentStat">-- A</span></span>
-                        <span>Resistencia: <span id="resistanceStat">-- Ω</span></span>
-                    </div>
-                </div>
-            </section>
-            <aside id="propertiesPanel" class="properties-panel">
-                <div class="panel-header">
-                    <h3>Propiedades del Componente</h3>
-                    <button class="close-btn" onclick="closePropertiesPanel()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="panel-content" id="propertiesContent">
-                    <p>Selecciona un componente para ver sus propiedades.</p>
-                </div>
-            </aside>
-        </main>
-    </div>
+    <section id="startScreen" class="screen active">
+        <h1>Simulador Profesional de Circuitos</h1>
+        <p>Diseña, simula y comparte circuitos electrónicos</p>
+        <div class="cta-buttons">
+            <button onclick="navigateTo('/simulator')">Comenzar a Diseñar</button>
+            <button onclick="navigateTo('/tutorial')">Ver Tutorial</button>
+        </div>
+    </section>
 
-    <div id="examplesSection" class="screen">
-        <div class="page-content">
-            <div class="section-header">
-                <i class="fas fa-lightbulb" style="font-size: 30px; color: #00d4ff;"></i>
-                <h2>Ejemplos Flux</h2>
-                <button class="close-menu-btn" onclick="navigateTo('/')"><i class="fas fa-times"></i></button>
+    <section id="appContainer" class="screen">
+        <h2>Simulador de Circuitos</h2>
+        <p>Área de trabajo del simulador. Aquí es donde se dibujaría el circuito.</p>
+
+        <div id="components-panel" class="components-panel hidden">
+            <h3>Componentes</h3>
+            <button>Resistencia</button>
+            <button>Batería</button>
+            <button>LED</button>
+            <button>Transistor</button>
+            <button>Capacitor</button>
+            <button>Diodo</button>
+        </div>
+
+        <div class="share-section">
+            <button id="share-btn" class="share-button" onclick="showSharePanel()">
+                📤 Compartir Circuito
+            </button>
+            <div id="share-panel" class="share-panel hidden">
+                <div class="share-url">
+                    <input type="text" id="share-url-input" readonly>
+                    <button onclick="copyURL()">📋 Copiar</button>
+                </div>
+                <div class="share-options">
+                    <button onclick="shareWhatsApp()">💬 WhatsApp</button>
+                    <button onclick="shareEmail()">📧 Email</button>
+                    <button onclick="shareTwitter()">🐦 Twitter</button>
+                    <button onclick="generateQR()">📱 QR Code</button>
+                </div>
             </div>
-            <div id="examplesContent">
-                </div>
         </div>
-    </div>
-    
-    <div id="calfluxSection" class="screen">
-        <div class="page-content">
-            <div class="section-header">
-                <i class="fas fa-calculator" style="font-size: 30px; color: #00d4ff;"></i>
-                <h2>Cal Flux</h2>
-                <button class="close-menu-btn" onclick="navigateTo('/')"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="calfluxContent">
-                </div>
-        </div>
-    </div>
+        
+    </section>
 
-    <div id="tutorialSection" class="screen">
-        <button class="close-menu-btn" style="position: absolute; top: 20px; right: 20px; z-index: 4000;" onclick="navigateTo('/')"><i class="fas fa-times"></i></button>
-        <div class="tutorial-content">
-            <h2>Tutorial de Inicio: Creando tu Primer Circuito</h2>
-            <div class="ai-tour-container">
-                <button onclick="startAITour()">
-                    <i class="fas fa-robot"></i> Iniciar Recorrido por IA
-                </button>
-            </div>
-            <div id="aiMessageContainer" class="ai-tour-message">
-                Hola, soy tu asistente de diseño. Haz clic para comenzar un recorrido guiado por las funciones del simulador.
-            </div>
-            <h3>Paso 1: La Interfaz de Diseño</h3>
-            <p>Al hacer clic en "Comenzar a Diseñar", accederás a la interfaz principal. Esta se divide en tres áreas principales:</p>
-            <ul>
-                <li><strong>Barra Superior:</strong> Controles de simulación (Reproducir, Pausar, Detener), menú y guardado.</li>
-                <li><strong>Barra Lateral (Izquierda):</strong> Catálogo de componentes que puedes arrastrar a la cuadrícula.</li>
-                <li><strong>Área del Simulador:</strong> El lienzo principal donde construirás tu circuito.</li>
-            </ul>
-            <h3>Paso 2: Agregando Componentes</h3>
-            <p>En la barra lateral izquierda, encontrarás diferentes categorías de componentes. Para agregar un resistor, por ejemplo:</p>
-            <ol>
-                <li>Simplemente haz clic en el componente <strong>"Resistor"</strong> en la barra lateral.</li>
-                <li>Arrastra el componente a la cuadrícula.</li>
-                <li>Suéltalo donde lo quieras colocar.</li>
-            </ol>
-            <h3>Paso 3: Conectando los Componentes</h3>
-            <p>Para conectar los componentes con cables, usa la herramienta de cableado:</p>
-            <ol>
-                <li>Selecciona la herramienta de cableado (<i class="fas fa-link"></i>) en la barra de herramientas.</li>
-                <li>Haz clic en un pin (punto de conexión) de un componente. El pin se resaltará.</li>
-                <li>Haz clic en el pin del segundo componente para completar la conexión.</li>
-            </ol>
-            <p>¡Ahora puedes empezar a conectar tus componentes para construir tu circuito!</p>
-        </div>
-    </div>
+    <section id="examplesSection" class="screen">
+        <h2>Ejemplos de Circuitos</h2>
+        <p>Una lista de circuitos de ejemplo para que los usuarios puedan aprender.</p>
+    </section>
 
-    <div class="modal-backdrop" id="tourModalBackdrop">
-        <div class="modal-content">
-            <h4 id="tourModalTitle"></h4>
-            <p id="tourModalMessage"></p>
-            <button onclick="hideModal()">Entendido</button>
-        </div>
-    </div>
+    <section id="tutorialSection" class="screen">
+        <h2>Tutorial</h2>
+        <p>Aquí se mostrarán los pasos y videos para aprender a usar el simulador.</p>
+    </section>
 
-    <div class="modal-backdrop" id="aiExplainModal">
-        <div class="modal-content">
-            <h4 id="aiExplainTitle"></h4>
-            <p id="aiExplainContent"></p>
-            <button onclick="hideAIExplainModal()">Cerrar</button>
-        </div>
-    </div>
-
-    <div id="tourTooltip" class="tour-step-tooltip">
-        <p id="tooltipText"></p>
-    </div>
-
-    <div id="privacyPolicySection" class="screen">
-        <button class="close-menu-btn" style="position: absolute; top: 20px; right: 20px; z-index: 4000;" onclick="navigateTo('/')"><i class="fas fa-times"></i></button>
-        <div class="tutorial-content">
-            <h2>Política de Privacidad</h2>
-            <p><strong>Última actualización: 6 de agosto de 2025</strong></p>
-            <p>Bienvenido a Fluxionics. Valoramos tu privacidad y nos comprometemos a proteger tus datos personales. Esta Política de Privacidad explica cómo recopilamos, utilizamos y protegemos la información cuando utilizas nuestra aplicación.</p>
-            <h3>1. Información que Recopilamos</h3>
-            <p>No recopilamos información personal identificable. Todas las acciones dentro del simulador, como el diseño de circuitos o el uso de calculadoras, se procesan localmente en tu dispositivo y no se envían a nuestros servidores.</p>
-            <h3>2. Uso de la Información</h3>
-            <p>Dado que no recopilamos información personal, no la utilizamos para ningún propósito. Tu privacidad está garantizada ya que todas las operaciones son locales.</p>
-            <h3>3. Almacenamiento de Datos</h3>
-            <p>Cualquier dato de circuito que guardes se almacena localmente en tu navegador. Puedes borrar estos datos en cualquier momento a través de la configuración de tu navegador.</p>
-            <h3>4. Contacto</h3>
-            <p>Si tienes alguna pregunta sobre nuestra política de privacidad, por favor contáctanos a través de tu asistente de IA.</p>
-        </div>
-    </div>
+    <section id="calfluxSection" class="screen">
+        <h2>CalcFlux - Calculadora de Circuitos</h2>
+        <p>Herramientas de cálculo para resistencias, capacitores, etc.</p>
+    </section>
 
     <script>
-        // --- Global Variables ---
-        const canvas = document.getElementById('circuitCanvas');
-        const wireCanvas = document.getElementById('wireCanvas');
-        const dragContainer = document.getElementById('drag-container');
-        const canvasArea = document.getElementById('canvasArea');
-        const ctx = canvas.getContext('2d');
-        const wireCtx = wireCanvas.getContext('2d');
-        const gridSize = 20;
-        let currentZoom = 1.0;
-        let componentsCount = 0;
-        let isDraggingCanvas = false;
-        let lastMousePosition = { x: 0, y: 0 };
-        let currentTool = 'select';
-        let selectedComponentElement = null;
-        let startPin = null;
-        let connections = [];
-        let isDraggingComponent = false;
-        let activeComponent = null;
-
-        // --- Component Data ---
-        const componentData = {
-            voltageSource: { name: "Fuente de Voltaje", icon: "V", pins: [{ id: 'p', x: 25, y: 5, label: '+' }, { id: 'n', x: 25, y: 45, label: '-' }], properties: { voltage: '5V' }, explanation: 'Una fuente de voltaje proporciona una diferencia de potencial constante en un circuito. Es la "presión" que impulsa los electrones a través del circuito. En un circuito ideal, su voltaje no cambia, sin importar la corriente que fluya.' },
-            currentSource: { name: "Fuente de Corriente", icon: "A", pins: [{ id: 'p', x: 25, y: 5, label: '+' }, { id: 'n', x: 25, y: 45, label: '-' }], properties: { current: '1A' }, explanation: 'Una fuente de corriente ideal mantiene una corriente constante, sin importar el voltaje que se desarrolle a través de sus terminales. Es útil para modelar ciertos tipos de fuentes de alimentación y transistores.' },
-            resistor: { name: "Resistor", icon: "Ω", pins: [{ id: '1', x: 5, y: 25 }, { id: '2', x: 45, y: 25 }], properties: { resistance: '1kΩ' }, explanation: 'Un resistor es un componente pasivo que limita el flujo de corriente en un circuito, oponiéndose a él. La Ley de Ohm (V=I*R) define la relación entre voltaje, corriente y resistencia. Se mide en Ohms (Ω).' },
-            capacitor: { name: "Capacitor", icon: "C", pins: [{ id: '1', x: 5, y: 25 }, { id: '2', x: 45, y: 25 }], properties: { capacitance: '10µF' }, explanation: 'Un capacitor almacena energía en un campo eléctrico. Consiste en dos placas conductoras separadas por un material dieléctrico. Su capacidad para almacenar carga se mide en Faradios (F).' },
-            inductor: { name: "Inductor", icon: "L", pins: [{ id: '1', x: 5, y: 25 }, { id: '2', x: 45, y: 25 }], properties: { inductance: '10mH' }, explanation: 'Un inductor almacena energía en un campo magnético. Generalmente es una bobina de alambre que se opone a los cambios en la corriente que fluye a través de él. Su inductancia se mide en Henrios (H).' },
-            ground: { name: "Tierra", icon: "GND", pins: [{ id: '1', x: 25, y: 5 }], properties: {}, explanation: 'La tierra o referencia es el punto de voltaje cero (0V) en un circuito. Todos los demás voltajes se miden en relación con este punto. Es esencial para completar un circuito y proporcionar una referencia común.' },
-            diode: { name: "Diodo", icon: "D", pins: [{ id: 'a', x: 5, y: 25, label: 'ánodo' }, { id: 'c', x: 45, y: 25, label: 'cátodo' }], properties: {}, explanation: 'Un diodo es un semiconductor que permite que la corriente fluya en una sola dirección. Actúa como una válvula de un solo sentido, bloqueando el flujo de corriente en la dirección inversa.' },
-            led: { name: "LED", icon: "LED", pins: [{ id: 'a', x: 5, y: 25, label: 'ánodo' }, { id: 'c', x: 45, y: 25, label: 'cátodo' }], properties: {}, explanation: 'Un LED (Diodo Emisor de Luz) es un tipo especial de diodo que emite luz cuando la corriente fluye a través de él. Se utiliza como indicador luminoso y en iluminación.' },
-            transistor: { name: "Transistor", icon: "T", pins: [{ id: 'b', x: 5, y: 25, label: 'base' }, { id: 'c', x: 25, y: 5, label: 'colector' }, { id: 'e', x: 45, y: 25, label: 'emisor' }], properties: {}, explanation: 'Un transistor es un componente semiconductor utilizado para amplificar o conmutar señales electrónicas y energía eléctrica. Es el componente fundamental de la electrónica moderna.' },
-            switch: { name: "Interruptor", icon: "SW", pins: [{ id: '1', x: 5, y: 25 }, { id: '2', x: 45, y: 25 }], properties: {}, explanation: 'Un interruptor es un componente que puede abrir o cerrar un circuito, permitiendo o bloqueando el flujo de corriente. En su estado normal, el circuito está abierto.' },
-            potentiometer: { name: "Potenciómetro", icon: "POT", pins: [{ id: '1', x: 5, y: 25 }, { id: '2', x: 45, y: 25 }, { id: '3', x: 25, y: 5 }], properties: { resistance: '10kΩ', wiper: '50%' }, explanation: 'Un potenciómetro es un resistor variable. Al girar una perilla o deslizar un control, se puede cambiar la resistencia en el circuito, lo que permite controlar el voltaje o la corriente.' }
-        };
-
-        // Circuitos de ejemplo predefinidos
-        const circuitsData = {
-            'led_basic': {
-                title: 'Mi Primer LED',
-                difficulty: 'Básico (1/5)',
-                time: '5 minutos',
-                objective: 'Aprender Ley de Ohm básica',
-                description: 'Conecta tu primer LED con un resistor limitador para evitar que se queme. La resistencia limita la corriente que fluye a través del LED.',
-                components: [
-                    { type: 'led', properties: { color: 'red' }, pos: { x: 300, y: 300 } },
-                    { type: 'resistor', properties: { resistance: '220Ω' }, pos: { x: 400, y: 300 } },
-                    { type: 'voltageSource', properties: { voltage: '9V' }, pos: { x: 400, y: 400 } },
-                    { type: 'ground', properties: {}, pos: { x: 300, y: 400 } },
-                ],
-                connections: [
-                    { from: { id: 'comp-1', pin: 'a' }, to: { id: 'comp-2', pin: '1' } },
-                    { from: { id: 'comp-2', pin: '2' }, to: { id: 'comp-3', pin: 'p' } },
-                    { from: { id: 'comp-3', pin: 'n' }, to: { id: 'comp-4', pin: '1' } },
-                    { from: { id: 'comp-4', pin: '1' }, to: { id: 'comp-1', pin: 'c' } },
-                ],
-                variations: [
-                    { name: 'LED Azul (3.3V)', url: '/simulator?circuit=led_basic&r1=220&vbat=9&led=blue' },
-                    { name: 'Resistor 470Ω', url: '/simulator?circuit=led_basic&r1=470&vbat=9&led=red' },
-                ]
-            },
-            'voltage_divider': {
-                title: 'Divisor de Voltaje',
-                difficulty: 'Básico (2/5)',
-                time: '10 minutos',
-                objective: 'Entender cómo el voltaje se divide en serie',
-                description: 'Este circuito utiliza dos resistencias en serie para dividir el voltaje de entrada en una proporción específica. Ideal para obtener un voltaje más bajo de una fuente.',
-                components: [
-                    { type: 'voltageSource', properties: { voltage: '12V' }, pos: { x: 300, y: 200 } },
-                    { type: 'resistor', properties: { resistance: '1kΩ' }, pos: { x: 450, y: 200 } },
-                    { type: 'resistor', properties: { resistance: '2kΩ' }, pos: { x: 450, y: 350 } },
-                    { type: 'ground', properties: {}, pos: { x: 300, y: 400 } }
-                ],
-                connections: [
-                    { from: { id: 'comp-1', pin: 'p' }, to: { id: 'comp-2', pin: '1' } },
-                    { from: { id: 'comp-2', pin: '2' }, to: { id: 'comp-3', pin: '1' } },
-                    { from: { id: 'comp-3', pin: '2' }, to: { id: 'comp-4', pin: '1' } },
-                    { from: { id: 'comp-4', pin: '1' }, to: { id: 'comp-1', pin: 'n' } }
-                ]
-            }
-        };
-
-        const calculatorsData = {
-            'ley-ohm': {
-                title: 'Calculadora Ley de Ohm',
-                description: 'Ingresa dos valores para calcular el tercero y la potencia.',
-                render: () => `
-                    <div class="calculator-section">
-                        <h3>Ley de Ohm (V = I * R)</h3>
-                        <p>Calcula el voltaje, la corriente o la resistencia a partir de dos valores dados.</p>
-                        <div class="calculator-input-group">
-                            <label for="ohmVoltage">Voltaje (V):</label>
-                            <input type="number" id="ohmVoltage" placeholder="Ej: 12">
-                        </div>
-                        <div class="calculator-input-group">
-                            <label for="ohmCurrent">Corriente (A):</label>
-                            <input type="number" id="ohmCurrent" placeholder="Ej: 0.5">
-                        </div>
-                        <div class="calculator-input-group">
-                            <label for="ohmResistance">Resistencia (Ω):</label>
-                            <input type="number" id="ohmResistance" placeholder="Ej: 1000">
-                        </div>
-                        <div class="calculator-results">
-                            <p id="ohmResult">Resultado: </p>
-                        </div>
-                        <div class="action-buttons">
-                            <button onclick="calculateAndNavigateOhm()">Calcular y Ver en Simulador</button>
-                        </div>
-                    </div>
-                `
-            }
-        };
-
-        // --- Routing and UI Functions ---
-        function navigateTo(path, replace = false) {
-            history.pushState(null, '', path);
-            handleRouting();
-        }
-
-        window.onpopstate = handleRouting;
-
-        function handleRouting() {
-            const path = window.location.pathname;
-            const params = new URLSearchParams(window.location.search);
-
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-
+        // Funciones de navegación (corregidas para funcionar sin servidor)
+        function navigateTo(path) {
+            let screenId;
             if (path === '/') {
-                document.getElementById('startScreen').classList.add('active');
+                screenId = 'startScreen';
             } else if (path === '/simulator') {
-                document.getElementById('appContainer').classList.add('active');
-                if (params.get('circuit')) {
-                    loadCircuitFromURL(params);
-                }
+                screenId = 'appContainer';
             } else if (path === '/examples') {
-                document.getElementById('examplesSection').classList.add('active');
-                renderExamplesPage();
-            } else if (path.startsWith('/examples/')) {
-                document.getElementById('examplesSection').classList.add('active');
-                renderExampleDetail(path.substring(path.lastIndexOf('/') + 1));
-            } else if (path === '/calcflux') {
-                document.getElementById('calfluxSection').classList.add('active');
-                renderCalcfluxPage();
-            } else if (path.startsWith('/calcflux/')) {
-                document.getElementById('calfluxSection').classList.add('active');
-                renderCalculatorDetail(path.substring(path.lastIndexOf('/') + 1));
+                screenId = 'examplesSection';
             } else if (path === '/tutorial') {
-                document.getElementById('tutorialSection').classList.add('active');
-            } else if (path === '/privacy-policy') {
-                document.getElementById('privacyPolicySection').classList.add('active');
+                screenId = 'tutorialSection';
+            } else if (path === '/calcflux') {
+                screenId = 'calfluxSection';
             } else {
-                // Fallback to home
-                document.getElementById('startScreen').classList.add('active');
-            }
-            hideMenuPanel();
-        }
-
-        function renderExamplesPage() {
-            const examplesContent = document.getElementById('examplesContent');
-            examplesContent.innerHTML = `
-                <div class="examples-category">
-                    <h3 class="examples-category-title"><i class="fas fa-bolt"></i> Nivel Básico</h3>
-                    <div class="content-card-grid">
-                        <div class="content-card" onclick="navigateTo('/examples/led-basico')">
-                            <div class="content-card-image">Mi Primer LED</div>
-                            <div class="content-card-content">
-                                <h3>Mi Primer LED</h3>
-                                <p>Aprende a usar un resistor para proteger un LED. Ideal para principiantes.</p>
-                            </div>
-                        </div>
-                        <div class="content-card" onclick="navigateTo('/examples/divisor-voltaje')">
-                            <div class="content-card-image">Divisor de Voltaje</div>
-                            <div class="content-card-content">
-                                <h3>Divisor de Voltaje</h3>
-                                <p>Un circuito para reducir un voltaje de entrada a un nivel más bajo.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function renderExampleDetail(exampleId) {
-            const examplesContent = document.getElementById('examplesContent');
-            const data = circuitsData[exampleId.replace('-', '_')];
-
-            if (!data) {
-                examplesContent.innerHTML = '<h2>Ejemplo no encontrado</h2><p>Lo sentimos, el circuito que buscas no existe.</p><button class="action-button" onclick="navigateTo(\'/examples\')">Volver a Ejemplos</button>';
-                return;
+                screenId = 'startScreen';
             }
 
-            examplesContent.innerHTML = `
-                <div class="detail-page">
-                    <h2><i class="fas fa-microchip"></i> ${data.title}</h2>
-                    <div class="detail-page-meta">
-                        <span><i class="fas fa-chart-line"></i> Dificultad: ${data.difficulty}</span>
-                        <span><i class="fas fa-clock"></i> Tiempo: ${data.time}</span>
-                        <span><i class="fas fa-bullseye"></i> Objetivo: ${data.objective}</span>
-                    </div>
-                    <p>${data.description}</p>
-                    <h3>Componentes:</h3>
-                    <ul>
-                        ${data.components.map(comp => `<li>1x ${componentData[comp.type].name}</li>`).join('')}
-                    </ul>
-                    <h3>Variaciones:</h3>
-                    <ul>
-                        ${data.variations.map(variation => `<li><a href="#" onclick="navigateTo('${variation.url}')">${variation.name}</a></li>`).join('')}
-                    </ul>
-                    <button class="action-button" onclick="navigateTo('/simulator?circuit=${exampleId.replace('-', '_')}')"><i class="fas fa-play"></i> Abrir en Simulador</button>
-                    <button class="action-button" onclick="navigateTo('/examples')"><i class="fas fa-arrow-left"></i> Volver a Ejemplos</button>
-                </div>
-            `;
-        }
-
-        function renderCalcfluxPage() {
-            const calcfluxContent = document.getElementById('calfluxContent');
-            calcfluxContent.innerHTML = `
-                <div class="calflux-category">
-                    <h3 class="calflux-category-title"><i class="fas fa-bolt"></i> Calculadoras Básicas</h3>
-                    <div class="content-card-grid">
-                        <div class="content-card" onclick="navigateTo('/calcflux/ley-ohm')">
-                            <div class="content-card-image">Ley de Ohm</div>
-                            <div class="content-card-content">
-                                <h3>Ley de Ohm</h3>
-                                <p>Calcula voltaje, corriente, resistencia o potencia.</p>
-                            </div>
-                        </div>
-                        <div class="content-card" onclick="navigateTo('/calcflux/divisor-voltaje')">
-                            <div class="content-card-image">Divisor de Voltaje</div>
-                            <div class="content-card-content">
-                                <h3>Divisor de Voltaje</h3>
-                                <p>Calcula el voltaje de salida de un divisor resistivo.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderCalculatorDetail(calcId) {
-            const calcfluxContent = document.getElementById('calfluxContent');
-            const data = calculatorsData[calcId];
-            if (!data) {
-                calcfluxContent.innerHTML = '<h2>Calculadora no encontrada</h2><p>Lo sentimos, la calculadora que buscas no existe.</p><button class="action-button" onclick="navigateTo(\'/calcflux\')">Volver a Calculadoras</button>';
-                return;
-            }
-
-            calcfluxContent.innerHTML = data.render();
-        }
-
-        function loadCircuitFromURL(params) {
-            const circuitId = params.get('circuit');
-            if (circuitId && circuitsData[circuitId]) {
-                clearCanvas();
-                const circuit = circuitsData[circuitId];
-                circuit.components.forEach((comp, index) => {
-                    const properties = { ...comp.properties };
-                    for (const key of params.keys()) {
-                        if (key.startsWith('r')) {
-                            const rIndex = parseInt(key.substring(1));
-                            if (comp.type === 'resistor' && rIndex === index + 1) {
-                                properties.resistance = params.get(key) + 'Ω';
-                            }
-                        }
-                    }
-                    placeComponent(comp.pos.x, comp.pos.y, comp.type, `comp-${index + 1}`, properties);
-                });
-                circuit.connections.forEach(conn => {
-                    const startPinEl = document.querySelector(`.placed-component[data-id="${conn.from.id}"] .component-pin[data-pin-id="${conn.from.pin}"]`);
-                    const endPinEl = document.querySelector(`.placed-component[data-id="${conn.to.id}"] .component-pin[data-pin-id="${conn.to.pin}"]`);
-                    if (startPinEl && endPinEl) {
-                        connections.push({
-                            startPin: { componentId: conn.from.id, pinId: conn.from.pin },
-                            endPin: { componentId: conn.to.id, pinId: conn.to.pin }
-                        });
-                    }
-                });
-                drawWires();
-            } else {
-                console.log('No circuit found in URL or circuit not defined.');
-            }
-        }
-        
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            hideMenuPanel();
-        }
-        function hideAllSectionsAndShow(id) {
-            showScreen(id);
-            hideMenuPanel();
-        }
-        function toggleComponentsSidebar(forceOpen = null) {
-            const sidebar = document.getElementById('componentsSidebar');
-            if (forceOpen === true) {
-                sidebar.classList.add('open');
-            } else if (forceOpen === false) {
-                sidebar.classList.remove('open');
-            } else {
-                sidebar.classList.toggle('open');
-            }
-        }
-        function closePropertiesPanel() {
-            const panel = document.getElementById('propertiesPanel');
-            panel.classList.remove('open');
-            panel.style.display = 'none';
-        }
-        function toggleMenuPanel() {
-            const menu = document.getElementById('hamburgerMenuPanel');
-            const sidebar = document.getElementById('componentsSidebar');
-            menu.classList.toggle('open');
-            if (menu.classList.contains('open')) {
-                sidebar.classList.remove('open');
-            }
-        }
-        function hideMenuPanel() {
-            document.getElementById('hamburgerMenuPanel').classList.remove('open');
-        }
-        function showPrivacyPolicy() {
-            navigateTo('/privacy-policy');
-        }
-        function showModal(title, message, callback) {
-            const modalBackdrop = document.getElementById('tourModalBackdrop');
-            document.getElementById('tourModalTitle').textContent = title;
-            document.getElementById('tourModalMessage').textContent = message;
-            modalBackdrop.style.display = 'flex';
-            if (callback) {
-                document.querySelector('#tourModalBackdrop button').onclick = () => {
-                    hideModal();
-                    callback();
-                };
-            } else {
-                document.querySelector('#tourModalBackdrop button').onclick = hideModal;
-            }
-        }
-        function hideModal() {
-            document.getElementById('tourModalBackdrop').style.display = 'none';
-        }
-        function showAIExplainModal(title, content) {
-            const modal = document.getElementById('aiExplainModal');
-            document.getElementById('aiExplainTitle').textContent = title;
-            document.getElementById('aiExplainContent').innerHTML = content;
-            modal.style.display = 'flex';
-        }
-        function hideAIExplainModal() {
-            document.getElementById('aiExplainModal').style.display = 'none';
-        }
-        function setupCanvas() {
-            canvas.width = dragContainer.offsetWidth;
-            canvas.height = dragContainer.offsetHeight;
-            wireCanvas.width = dragContainer.offsetWidth;
-            wireCanvas.height = dragContainer.offsetHeight;
-        }
-
-        // --- Drag & Drop for components ---
-        document.querySelectorAll('.component-item').forEach(item => {
-            item.addEventListener('dragstart', (event) => {
-                const componentType = event.target.getAttribute('data-component-type');
-                event.dataTransfer.setData('text/plain', componentType);
-                event.dataTransfer.effectAllowed = 'copy';
-                if (window.innerWidth <= 992) {
-                    toggleComponentsSidebar(false);
-                }
+            // Oculta todas las pantallas y muestra la correcta
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
             });
-        });
-        canvasArea.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = 'copy';
-        });
-        canvasArea.addEventListener('drop', (event) => {
-            event.preventDefault();
-            const componentType = event.dataTransfer.getData('text/plain');
-            if (componentType) {
-                placeComponent(event.offsetX, event.offsetY, componentType);
-            }
-        });
+            document.getElementById(screenId).classList.add('active');
 
-        // --- Component & Canvas Logic ---
-        document.querySelectorAll('.tool-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentTool = btn.getAttribute('data-tool');
-
-                if (currentTool === 'ai-explain') {
-                    if (selectedComponentElement) {
-                        const componentType = selectedComponentElement.getAttribute('data-component-type');
-                        const explanation = componentData[componentType].explanation;
-                        showAIExplainModal(`Explicación: ${componentData[componentType].name}`, explanation);
-                        // Revert tool back to select
-                        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-                        document.querySelector('.tool-btn[data-tool="select"]').classList.add('active');
-                        currentTool = 'select';
-                    } else {
-                        showAIExplainModal('No hay componente seleccionado', 'Por favor, selecciona un componente en el lienzo para recibir una explicación.');
-                        // Revert tool back to select
-                        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-                        document.querySelector('.tool-btn[data-tool="select"]').classList.add('active');
-                        currentTool = 'select';
-                    }
-                }
-            });
-        });
-        function placeComponent(x, y, componentTypeToPlace, componentIdOverride = null, propertiesOverride = {}) {
-            const type = componentTypeToPlace;
-            if (!type) return;
-            const componentId = componentIdOverride || `comp-${++componentsCount}`;
-            if (!componentIdOverride) {
-                componentsCount = Math.max(componentsCount, parseInt(componentId.replace('comp-', '')) || 0);
-            }
-            const componentElement = document.createElement('div');
-            componentElement.classList.add('placed-component');
-            componentElement.setAttribute('data-component-type', type);
-            componentElement.setAttribute('data-id', componentId);
-            const snappedX = Math.round((x / currentZoom) / gridSize) * gridSize - (50 / 2);
-            const snappedY = Math.round((y / currentZoom) / gridSize) * gridSize - (50 / 2);
-            componentElement.style.left = `${snappedX}px`;
-            componentElement.style.top = `${snappedY}px`;
-            const icon = document.createElement('div');
-            icon.classList.add('icon');
-            icon.textContent = componentData[type].icon;
-            componentElement.appendChild(icon);
-            const pinsContainer = document.createElement('div');
-            pinsContainer.classList.add('component-pins');
-            componentData[type].pins.forEach(pinInfo => {
-                const pin = document.createElement('div');
-                pin.classList.add('component-pin');
-                pin.setAttribute('data-pin-id', pinInfo.id);
-                pin.setAttribute('data-component-id', componentId);
-                pin.style.left = `${pinInfo.x - 5}px`;
-                pin.style.top = `${pinInfo.y - 5}px`;
-                const pinLabel = document.createElement('span');
-                pinLabel.classList.add('pin-label');
-                pinLabel.textContent = pinInfo.label || pinInfo.id;
-                pin.appendChild(pinLabel);
-                pin.addEventListener('click', handlePinClick);
-                pinsContainer.appendChild(pin);
-            });
-            componentElement.appendChild(pinsContainer);
-            componentElement.componentProperties = { ...componentData[type].properties, ...propertiesOverride };
-            componentElement.addEventListener('mousedown', startDrag);
-            componentElement.addEventListener('touchstart', startDrag, { passive: false });
-            componentElement.addEventListener('click', (event) => {
-                event.stopPropagation();
-                if (currentTool === 'select' && !isDraggingComponent) {
-                    selectPlacedComponent(componentElement);
-                } else if (currentTool === 'delete') {
-                    deletePlacedComponent(componentElement);
-                }
-            });
-            componentElement.addEventListener('dblclick', (event) => {
-                event.stopPropagation();
-                showPropertiesPanel(componentElement);
-            });
-            dragContainer.appendChild(componentElement);
-            selectPlacedComponent(componentElement);
-        }
-        function selectPlacedComponent(element) {
-            document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedComponentElement = element;
-            showPropertiesPanel(element);
-        }
-        function deletePlacedComponent(element) {
-            const componentIdToDelete = element.getAttribute('data-id');
-            connections = connections.filter(conn => conn.startPin.componentId !== componentIdToDelete && conn.endPin.componentId !== componentIdToDelete);
-            element.remove();
-            closePropertiesPanel();
-            if (selectedComponentElement === element) {
-                selectedComponentElement = null;
-            }
-            drawWires();
-        }
-        function showPropertiesPanel(componentElement) {
-            const panel = document.getElementById('propertiesPanel');
-            const content = document.getElementById('propertiesContent');
-            panel.classList.add('open');
-            const componentType = componentElement.getAttribute('data-component-type');
-            const currentProperties = componentElement.componentProperties;
-            if (!currentProperties || Object.keys(currentProperties).length === 0) {
-                content.innerHTML = '<p>No hay propiedades disponibles para este componente.</p>';
-                return;
-            }
-            let html = `<h3>${componentData[componentType].name} (ID: ${componentElement.getAttribute('data-id')})</h3>`;
-            html += '<div class="panel-properties">';
-            for (const key in currentProperties) {
-                html += `
-                    <div class="property-group">
-                        <label for="prop-${componentElement.getAttribute('data-id')}-${key}">${key.charAt(0).toUpperCase() + key.slice(1)}:</label>
-                        <input type="text" id="prop-${componentElement.getAttribute('data-id')}-${key}" value="${currentProperties[key]}" onchange="updateComponentProperty('${componentElement.getAttribute('data-id')}', '${key}', this.value)">
-                    </div>
-                `;
-            }
-            html += '</div>';
-            content.innerHTML = html;
-        }
-        function updateComponentProperty(componentId, propertyKey, newValue) {
-            const componentElement = document.querySelector(`.placed-component[data-id="${componentId}"]`);
-            if (componentElement && componentElement.componentProperties) {
-                componentElement.componentProperties[propertyKey] = newValue;
-            }
-        }
-        
-        // --- Drag & Zoom Handling ---
-        dragContainer.addEventListener('wheel', (event) => {
-            event.preventDefault();
-            const oldZoom = currentZoom;
-            if (event.deltaY < 0) {
-                currentZoom = Math.min(2.0, currentZoom + 0.1);
+            // Muestra u oculta el panel de componentes
+            const componentsPanel = document.getElementById('components-panel');
+            if (path === '/simulator') {
+                componentsPanel.classList.remove('hidden');
             } else {
-                currentZoom = Math.max(0.5, currentZoom - 0.1);
-            }
-            const mouseX = event.offsetX;
-            const mouseY = event.offsetY;
-            const scaleChange = currentZoom / oldZoom;
-            const newX = dragContainer.offsetLeft - (mouseX * (scaleChange - 1));
-            const newY = dragContainer.offsetTop - (mouseY * (scaleChange - 1));
-            dragContainer.style.transform = `scale(${currentZoom})`;
-            document.getElementById('zoomLevel').textContent = `${Math.round(currentZoom * 100)}%`;
-            dragContainer.style.left = `${newX}px`;
-            dragContainer.style.top = `${newY}px`;
-        });
-        dragContainer.addEventListener('mousedown', (event) => {
-            if (currentTool === 'select' && event.target.id === 'canvasArea') {
-                isDraggingCanvas = true;
-                lastMousePosition = { x: event.clientX, y: event.clientY };
-                dragContainer.style.cursor = 'grabbing';
-                document.querySelectorAll('.placed-component.selected').forEach(comp => comp.classList.remove('selected'));
-                selectedComponentElement = null;
-                closePropertiesPanel();
-            }
-        });
-        dragContainer.addEventListener('mousemove', (event) => {
-            if (isDraggingCanvas) {
-                const deltaX = event.clientX - lastMousePosition.x;
-                const deltaY = event.clientY - lastMousePosition.y;
-                dragContainer.style.left = `${dragContainer.offsetLeft + deltaX}px`;
-                dragContainer.style.top = `${dragContainer.offsetTop + deltaY}px`;
-                lastMousePosition = { x: event.clientX, y: event.clientY };
-            }
-            if (isDraggingComponent) {
-                const deltaX = (event.clientX - lastMousePosition.x) / currentZoom;
-                const deltaY = (event.clientY - lastMousePosition.y) / currentZoom;
-                let newLeft = parseFloat(activeComponent.style.left) + deltaX;
-                let newTop = parseFloat(activeComponent.style.top) + deltaY;
-                newLeft = Math.round(newLeft / gridSize) * gridSize;
-                newTop = Math.round(newTop / gridSize) * gridSize;
-                activeComponent.style.left = `${newLeft}px`;
-                activeComponent.style.top = `${newTop}px`;
-                lastMousePosition = { x: event.clientX, y: event.clientY };
-                drawWires();
-            }
-        });
-        dragContainer.addEventListener('mouseup', () => {
-            isDraggingCanvas = false;
-            dragContainer.style.cursor = 'grab';
-            if (isDraggingComponent) {
-                isDraggingComponent = false;
-                if (activeComponent) {
-                    activeComponent.style.cursor = 'grab';
-                    activeComponent = null;
-                }
-            }
-        });
-        function zoomIn() {
-            currentZoom = Math.min(2.0, currentZoom + 0.1);
-            dragContainer.style.transform = `scale(${currentZoom})`;
-            document.getElementById('zoomLevel').textContent = `${Math.round(currentZoom * 100)}%`;
-        }
-        function zoomOut() {
-            currentZoom = Math.max(0.5, currentZoom - 0.1);
-            dragContainer.style.transform = `scale(${currentZoom})`;
-            document.getElementById('zoomLevel').textContent = `${Math.round(currentZoom * 100)}%`;
-        }
-        function startDrag(event) {
-            if (currentTool !== 'select') return;
-            isDraggingComponent = true;
-            activeComponent = event.currentTarget;
-            lastMousePosition = { x: event.clientX, y: event.clientY };
-            event.stopPropagation();
-            event.preventDefault();
-            activeComponent.style.cursor = 'grabbing';
-            selectPlacedComponent(activeComponent);
-        }
-        
-        // --- Wire Handling ---
-        function handlePinClick(event) {
-            event.stopPropagation();
-            if (currentTool !== 'wire') return;
-            const clickedPin = event.target;
-            const componentId = clickedPin.getAttribute('data-component-id');
-            const pinLogicalId = clickedPin.getAttribute('data-pin-id');
-            if (!startPin) {
-                const componentType = document.querySelector(`.placed-component[data-id="${componentId}"]`).getAttribute('data-component-type');
-                const pinInfo = componentData[componentType].pins.find(p => p.id === pinLogicalId);
-                startPin = { componentId: componentId, pinId: pinLogicalId, label: pinInfo ? pinInfo.label : pinLogicalId };
-                clickedPin.classList.add('selected-for-wire');
-                const pinLabelElement = clickedPin.querySelector('.pin-label');
-                if (pinLabelElement) pinLabelElement.style.opacity = '1';
-            } else {
-                const endPin = { componentId: componentId, pinId: pinLogicalId };
-                const prevSelectedPinElement = document.querySelector(`.placed-component[data-id="${startPin.componentId}"] .component-pin[data-pin-id="${startPin.pinId}"]`);
-                if (prevSelectedPinElement) {
-                    prevSelectedPinElement.classList.remove('selected-for-wire');
-                    const label = prevSelectedPinElement.querySelector('.pin-label');
-                    if (label) label.style.opacity = '0';
-                }
-                if (startPin.componentId === endPin.componentId || (startPin.componentId === endPin.componentId && startPin.pinId === endPin.pinId)) {
-                    showAIExplainModal('Conexión Inválida', 'No puedes conectar dos pines del mismo componente o un pin a sí mismo.');
-                    startPin = null;
-                    return;
-                }
-                const isDuplicate = connections.some(conn => (conn.startPin.componentId === startPin.componentId && conn.startPin.pinId === startPin.pinId && conn.endPin.componentId === endPin.componentId && conn.endPin.pinId === endPin.pinId) || (conn.startPin.componentId === endPin.componentId && conn.startPin.pinId === endPin.pinId && conn.endPin.componentId === startPin.componentId && conn.endPin.pinId === startPin.pinId));
-                if (isDuplicate) {
-                    showAIExplainModal('Conexión Existente', 'Esta conexión ya existe.');
-                    startPin = null;
-                    return;
-                }
-                connections.push({ startPin: startPin, endPin: endPin });
-                drawWires();
-                startPin = null;
-            }
-        }
-        function getPinPosition(componentId, pinLogicalId) {
-            const componentElement = document.querySelector(`.placed-component[data-id="${componentId}"]`);
-            if (!componentElement) return null;
-            const componentType = componentElement.getAttribute('data-component-type');
-            const pinInfo = componentData[componentType].pins.find(p => p.id === pinLogicalId);
-            if (!pinInfo) return null;
-            const rect = componentElement.getBoundingClientRect();
-            const canvasRect = dragContainer.getBoundingClientRect();
-            const x = (rect.left - canvasRect.left + pinInfo.x) / currentZoom;
-            const y = (rect.top - canvasRect.top + pinInfo.y) / currentZoom;
-            return { x, y };
-        }
-        function drawWires() {
-            wireCtx.clearRect(0, 0, wireCanvas.width, wireCanvas.height);
-            wireCtx.lineWidth = 2;
-            wireCtx.strokeStyle = '#fff';
-            connections.forEach(conn => {
-                const startPos = getPinPosition(conn.startPin.componentId, conn.startPin.pinId);
-                const endPos = getPinPosition(conn.endPin.componentId, conn.endPin.pinId);
-                if (startPos && endPos) {
-                    wireCtx.beginPath();
-                    wireCtx.moveTo(startPos.x, startPos.y);
-                    wireCtx.lineTo(endPos.x, endPos.y);
-                    wireCtx.stroke();
-                }
-            });
-        }
-        function clearCanvas() {
-            dragContainer.querySelectorAll('.placed-component').forEach(comp => comp.remove());
-            connections = [];
-            drawWires();
-            closePropertiesPanel();
-            componentsCount = 0;
-        }
-
-        // --- Cal Flux Calculators ---
-        const colorValues = { 'black': 0, 'brown': 1, 'red': 2, 'orange': 3, 'yellow': 4, 'green': 5, 'blue': 6, 'violet': 7, 'grey': 8, 'white': 9 };
-        const multiplierValues = { 'black': 1, 'brown': 10, 'red': 100, 'orange': 1e3, 'yellow': 1e4, 'green': 1e5, 'blue': 1e6, 'violet': 1e7, 'grey': 1e8, 'white': 1e9, 'gold': 0.1, 'silver': 0.01 };
-        const toleranceValues = { 'brown': '±1%', 'red': '±2%', 'green': '±0.5%', 'blue': '±0.25%', 'violet': '±0.1%', 'grey': '±0.05%', 'gold': '±5%', 'silver': '±10%' };
-        
-        function calculateAndNavigateOhm() {
-            const voltage = parseFloat(document.getElementById('ohmVoltage').value) || 0;
-            const current = parseFloat(document.getElementById('ohmCurrent').value) || 0;
-            const resistance = parseFloat(document.getElementById('ohmResistance').value) || 0;
-            let result = '';
-            let v, i, r;
-
-            if (voltage > 0 && current > 0) {
-                r = voltage / current;
-                result = `Resistencia = ${formatUnitValue(r, 'Ω')}`;
-            } else if (voltage > 0 && resistance > 0) {
-                i = voltage / resistance;
-                result = `Corriente = ${formatUnitValue(i, 'A')}`;
-            } else if (current > 0 && resistance > 0) {
-                v = current * resistance;
-                result = `Voltaje = ${formatUnitValue(v, 'V')}`;
-            } else {
-                result = 'Ingresa al menos dos valores';
-            }
-            
-            document.getElementById('ohmResult').textContent = 'Resultado: ' + result;
-
-            if (v && r) {
-                 navigateTo(`/simulator?circuit=ohm_demo&vbat=${v}&r1=${r}`);
-            } else {
-                alert('No se pudo crear el circuito. Ingresa valores válidos para V y R.');
+                componentsPanel.classList.add('hidden');
             }
         }
         
-        function formatUnitValue(value, unit) {
-            if (isNaN(value)) return 'NaN';
-            if (value === 0) return `0${unit}`;
-            const absValue = Math.abs(value);
-            const sign = value < 0 ? '-' : '';
-            if (absValue >= 1e12) return `${sign}${(value / 1e12).toFixed(2)}T${unit}`;
-            if (absValue >= 1e9) return `${sign}${(value / 1e9).toFixed(2)}G${unit}`;
-            if (absValue >= 1e6) return `${sign}${(value / 1e6).toFixed(2)}M${unit}`;
-            if (absValue >= 1e3) return `${sign}${(value / 1e3).toFixed(2)}k${unit}`;
-            if (absValue >= 1) return `${sign}${value.toFixed(2)}${unit}`;
-            if (absValue >= 1e-3) return `${sign}${(value / 1e-3).toFixed(2)}m${unit}`;
-            if (absValue >= 1e-6) return `${sign}${(value / 1e-6).toFixed(2)}µ${unit}`;
-            if (absValue >= 1e-9) return `${sign}${(value / 1e-9).toFixed(2)}n${unit}`;
-            if (absValue >= 1e-12) return `${sign}${(value / 1e-12).toFixed(2)}p${unit}`;
-            return `${value.toExponential(2)}${unit}`;
-        }
-        
-        // --- AI Tour Logic ---
-        let tourSteps = [
-            { id: 'appHeader', message: '¡Hola! Soy tu guía IA. Te mostraré las funciones principales. Primero, esta es la barra superior donde encontrarás los controles de simulación y el menú.', placement: 'bottom' },
-            { id: 'menuButton', message: 'Este botón es el menú principal. Desde aquí puedes acceder a todas las secciones y abrir la barra lateral de componentes.', placement: 'right' },
-            { id: 'componentsSidebar', message: 'Esta es la barra lateral de componentes. Haz clic en un componente y arrástralo al lienzo para comenzar a diseñar.', placement: 'right' },
-            { id: 'canvasArea', message: 'Este es el área del simulador. Aquí es donde arrastrarás los componentes y los conectarás para construir tu circuito.', placement: 'left' },
-            { id: 'canvasToolbar', message: 'Usa estas herramientas para seleccionar, conectar cables, o explicar un componente con IA. También puedes exportar tu diseño aquí.', placement: 'bottom' },
-            { id: 'propertiesPanel', message: 'Cuando seleccionas un componente, el panel de propiedades se abre aquí. Puedes ajustar valores como la resistencia o el voltaje.', placement: 'left' },
-            { id: 'statusBar', message: 'La barra de estado te muestra información útil sobre el estado de la simulación y las mediciones del circuito.', placement: 'top' },
-            { id: 'startScreen', message: '¡Y eso es todo! Conoces las funciones principales. ¡Ahora, a crear! ¡Mucha suerte! Puedes volver a la pantalla de inicio para empezar a diseñar.', placement: 'center' }
-        ];
-        let currentTourStep = -1;
-        let tourInterval;
-
-        function startAITour() {
-            showScreen('appContainer');
-            showModal('Recorrido por IA', '¡Listo para un recorrido guiado por las funciones del simulador? Se avanzará automáticamente cada 5 segundos.', () => {
-                currentTourStep = 0;
-                showTourStep(currentTourStep);
-                tourInterval = setInterval(nextTourStep, 5000);
-            });
-        }
-        function showTourStep(stepIndex) {
-            const step = tourSteps[stepIndex];
-            const targetElement = document.getElementById(step.id);
-            if (!targetElement) {
-                console.error(`Element with ID '${step.id}' not found for tour step.`);
-                nextTourStep();
-                return;
-            }
-            hideTourTooltip();
-
-            if (step.id === 'componentsSidebar') {
-                toggleComponentsSidebar(true);
-            } else if (step.id === 'propertiesPanel') {
-                toggleComponentsSidebar(false);
-                const firstComponent = document.querySelector('.placed-component');
-                if (firstComponent) {
-                    selectPlacedComponent(firstComponent);
-                } else {
-                    placeComponent(500, 500, 'resistor');
-                }
-            } else if (step.id === 'startScreen') {
-                navigateTo('/');
-                clearInterval(tourInterval);
-                setTimeout(() => { hideTourTooltip(); currentTourStep = -1; }, 5000);
-                return;
-            }
-
-            const tooltip = document.getElementById('tourTooltip');
-            const tooltipText = document.getElementById('tooltipText');
-            tooltipText.textContent = step.message;
-            
-            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
-            targetElement.classList.add('tour-highlight');
-
-            const targetRect = targetElement.getBoundingClientRect();
-            const tooltipRect = tooltip.getBoundingClientRect();
-            let top, left;
-
-            if (step.placement === 'bottom') {
-                top = targetRect.bottom + 10;
-                left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
-            } else if (step.placement === 'right') {
-                top = targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2);
-                left = targetRect.right + 10;
-            } else if (step.placement === 'left') {
-                top = targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2);
-                left = targetRect.left - tooltipRect.width - 10;
-            } else if (step.placement === 'top') {
-                top = targetRect.top - tooltipRect.height - 10;
-                left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
-            } else { // 'center' or default
-                top = window.innerHeight / 2 - tooltipRect.height / 2;
-                left = window.innerWidth / 2 - tooltipRect.width / 2;
-            }
-            
-            if (top < 0) top = 10;
-            if (left < 0) left = 10;
-            if (left + tooltipRect.width > window.innerWidth) left = window.innerWidth - tooltipRect.width - 10;
-            
-            tooltip.style.top = `${top + window.scrollY}px`;
-            tooltip.style.left = `${left}px`;
-            tooltip.classList.add('visible');
-        }
-        function hideTourTooltip() {
-            document.getElementById('tourTooltip').classList.remove('visible');
-            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
-        }
-        function nextTourStep() {
-            currentTourStep++;
-            if (currentTourStep < tourSteps.length) {
-                showTourStep(currentTourStep);
-            } else {
-                hideTourTooltip();
-                clearInterval(tourInterval);
-                currentTourStep = -1;
-            }
-        }
-        
-        // --- Initialization ---
+        // Al cargar la página, siempre muestra la pantalla de inicio
         window.onload = () => {
-            setupCanvas();
-            handleRouting();
+            // setupCanvas(); // Si tienes un canvas, llama a esta función
+            navigateTo('/');
         };
-        window.onresize = setupCanvas;
+
+        // --- Funcionalidad del Botón de Compartir ---
+        
+        // Pestañas de compartir
+        const sharePanel = document.getElementById('share-panel');
+        document.getElementById('share-btn').addEventListener('click', () => {
+            sharePanel.classList.toggle('hidden');
+        });
+
+        // Funciones de compartir (con lógica de placeholder)
+        function getCurrentCircuitState() {
+            // Esta función DEBES implementarla para capturar el estado real del circuito
+            return {
+                components: [
+                    { id: 'r1', type: 'resistor', value: 220 },
+                    { id: 'vbat', type: 'battery', voltage: 9 },
+                    { id: 'led', type: 'led', color: 'red' }
+                ]
+            };
+        }
+
+        function detectCircuitType(circuit) {
+            // Implementa lógica para detectar el tipo de circuito
+            return 'led_basic';
+        }
+
+        function generateShareURL() {
+            const currentCircuit = getCurrentCircuitState();
+            const baseURL = 'https://fluxionics.github.io/';
+            const params = new URLSearchParams();
+
+            params.append('circuit', detectCircuitType(currentCircuit));
+            
+            currentCircuit.components.forEach((comp, index) => {
+                if (comp.type === 'resistor') {
+                    params.append(`r${comp.id}`, comp.value);
+                }
+                if (comp.type === 'battery') {
+                    params.append(`vbat`, comp.voltage);
+                }
+                if (comp.type === 'led') {
+                    params.append(`led`, comp.color);
+                }
+            });
+            const shareURL = `${baseURL}simulator?${params.toString()}`;
+            return shareURL;
+        }
+
+        function showSharePanel() {
+            const shareURL = generateShareURL();
+            document.getElementById('share-url-input').value = shareURL;
+            document.getElementById('share-panel').classList.remove('hidden');
+        }
+
+        function copyURL() {
+            const urlInput = document.getElementById('share-url-input');
+            urlInput.select();
+            navigator.clipboard.writeText(urlInput.value).then(() => {
+                showNotification('✅ URL copiada al portapapeles');
+            });
+        }
+        
+        function shareWhatsApp() {
+            const shareURL = document.getElementById('share-url-input').value;
+            const message = `¡Mira este circuito que diseñé en Fluxionics! ${shareURL}`;
+            const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        function shareEmail() {
+            const shareURL = document.getElementById('share-url-input').value;
+            const subject = 'Circuito diseñado en Fluxionics';
+            const body = `Hola,\n\nTe comparto este circuito que diseñé:\n${shareURL}\n\n¡Ábrelo en tu navegador para verlo funcionar!`;
+            const emailURL = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.open(emailURL);
+        }
+
+        function shareTwitter() {
+            const shareURL = document.getElementById('share-url-input').value;
+            const tweet = `¡Diseñé este circuito en @Fluxionics! 🔌⚡ ${shareURL}`;
+            const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;
+            window.open(twitterURL, '_blank');
+        }
+
+        function generateQR() {
+            const shareURL = document.getElementById('share-url-input').value;
+            const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shareURL)}`;
+            showQRModal(qrURL);
+        }
+        
+        function showQRModal(qrImageURL) {
+            const modal = document.createElement('div');
+            modal.className = 'qr-modal';
+            modal.innerHTML = `
+                <div class="qr-content">
+                    <h3>📱 Escanea para abrir el circuito</h3>
+                    <img src="${qrImageURL}" alt="QR Code">
+                    <button onclick="closeQRModal()">Cerrar</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeQRModal() {
+            const modal = document.querySelector('.qr-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function showNotification(message) {
+            // Implementa una función para mostrar notificaciones
+            alert(message);
+        }
     </script>
+
 </body>
 </html>
