@@ -48,6 +48,38 @@
             transition: background 0.3s ease, color 0.3s ease;
             display: flex; flex-direction: column; overflow: hidden;
         }
+        
+        /* Loading overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            font-size: 1.5em;
+            z-index: 10000;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--accent-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         /* Animated Background Canvas */
         #animatedBackground {
@@ -263,7 +295,16 @@
             background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
             background-size: 20px 20px;
         }
-
+        #wires-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
         /* Component on canvas visual */
         .component-visual {
             position: absolute; background: var(--secondary-bg); width: 85px; height: 85px; cursor: move; user-select: none; z-index: 10;
@@ -277,14 +318,14 @@
         .component-visual .pin {
             position: absolute; width: 8px; height: 8px; background-color: var(--accent-color); border-radius: 50%; border: 1px solid var(--text-color);
             cursor: crosshair; z-index: 15;
+            pointer-events: all; /* Make pins clickable */
         }
         .component-visual .pin:hover {
             transform: scale(1.5);
             box-shadow: 0 0 8px var(--shadow-accent);
         }
         .wire {
-            position: absolute; z-index: 5; background-color: var(--accent-color);
-            height: 2px; width: 2px;
+            position: absolute; height: 2px; background-color: var(--accent-color); transform-origin: 0 0;
             box-shadow: 0 0 5px var(--shadow-accent);
         }
         /* Drag ghost for components */
@@ -293,60 +334,6 @@
             opacity: 0.7;
             pointer-events: none;
             z-index: 2000;
-        }
-
-        /* Tour Tooltip */
-        #tourTooltip {
-            position: absolute;
-            background: var(--primary-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px var(--shadow-color);
-            z-index: 2000;
-            display: none;
-            max-width: 300px;
-            text-align: left;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-        }
-        #tourTooltip.visible {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .tour-content { margin-bottom: 10px; }
-        .tour-content p { font-size: 14px; }
-        .tour-nav { display: flex; justify-content: flex-end; gap: 10px; }
-        .tour-nav button {
-            background: var(--accent-color);
-            color: var(--bg-color);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .tour-highlight {
-            box-shadow: 0 0 0 4px var(--accent-color);
-            position: relative;
-            z-index: 1999;
-            transition: box-shadow 0.3s ease;
-        }
-        .tour-highlight::before {
-            content: '';
-            position: absolute;
-            top: -5px; bottom: -5px; left: -5px; right: -5px;
-            border: 2px dashed var(--accent-color);
-            border-radius: 12px;
-            pointer-events: none;
-            animation: pulse-border 1.5s infinite;
-        }
-        @keyframes pulse-border {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.1); opacity: 0; }
         }
 
         /* New screen for class management */
@@ -481,7 +468,7 @@
         }
 
         /* Arduino Console Screen */
-        #arduinoConsoleScreen {
+        #arduinoConsoleScreen, #calFluxScreen {
             display: none;
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -489,7 +476,7 @@
             background: var(--bg-color);
             z-index: 200;
         }
-        .arduino-header {
+        .app-header {
             height: 70px;
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 25px;
@@ -497,7 +484,7 @@
             border-bottom: 1px solid var(--border-color);
             box-shadow: 0 4px 20px var(--shadow-color);
         }
-        .arduino-content {
+        .app-content {
             display: flex; flex-grow: 1; padding: 20px; gap: 20px;
         }
         .code-editor-container {
@@ -525,7 +512,6 @@
             white-space: pre-wrap; /* Preserve whitespace and line breaks */
             overflow-y: auto;
         }
-
         .action-buttons {
             display: flex; gap: 10px; margin-top: 10px;
         }
@@ -538,26 +524,92 @@
             display: flex; align-items: center; gap: 8px;
             border: none;
         }
-        .action-buttons .btn.compile {
-            background: #28a745; color: white;
-        }
+        .action-buttons .btn.compile { background: #28a745; color: white; }
         .action-buttons .btn.compile:hover { background: #218838; }
-        .action-buttons .btn.upload {
-            background: #007bff; color: white;
-        }
+        .action-buttons .btn.upload { background: #007bff; color: white; }
         .action-buttons .btn.upload:hover { background: #0069d9; }
-        
         .back-to-simulator-btn {
             background: var(--secondary-bg); color: var(--text-color); padding: 10px 15px; border-radius: 8px;
             border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;
         }
-        .back-to-simulator-btn:hover {
-            background: var(--border-color);
+        .back-to-simulator-btn:hover { background: var(--border-color); }
+
+        /* Cal Flux Chat screen */
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 20px;
+            gap: 1rem;
+            overflow: hidden;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 10px;
+            background: var(--primary-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .message {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+        }
+        .ai-message {
+            align-self: flex-start;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+        }
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        #calFluxInput {
+            flex-grow: 1;
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--text-color);
+        }
+        #calFluxSendBtn {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #calFluxSendBtn:hover {
+            background-color: #0088cc;
         }
 
+        /* Custom Alert Modal */
+        #custom-alert { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:#1e293b; padding:2rem; border-radius:0.75rem; box-shadow:0 10px 15px rgba(0,0,0,0.5); z-index:9999; }
+        #alert-message { color:white; margin-bottom:1rem; text-align:center; }
+        #alert-ok-button { background-color:#3b82f6; color:white; padding:0.5rem 1rem; border:none; border-radius:0.5rem; cursor:pointer; }
     </style>
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <span>Cargando...</span>
+    </div>
+
     <!-- Canvas for animated background particles -->
     <canvas id="animatedBackground"></canvas>
 
@@ -624,39 +676,39 @@
             <aside class="components-sidebar">
                 <h3 class="sidebar-title">Componentes</h3>
                 <div class="component-grid">
-                    <div class="component-item" data-component-id="resistor">
+                    <div class="component-item" data-component-id="resistor" data-name="Resistor">
                         <i class="fas fa-battery-three-quarters component-icon"></i>
                         <span class="component-name">Resistencia</span>
                     </div>
-                    <div class="component-item" data-component-id="capacitor">
+                    <div class="component-item" data-component-id="capacitor" data-name="Capacitor">
                         <i class="fas fa-bolt component-icon"></i>
                         <span class="component-name">Condensador</span>
                     </div>
-                    <div class="component-item" data-component-id="inductor">
+                    <div class="component-item" data-component-id="inductor" data-name="Inductor">
                         <i class="fas fa-power-off component-icon"></i>
                         <span class="component-name">Inductor</span>
                     </div>
-                    <div class="component-item" data-component-id="voltage-source">
+                    <div class="component-item" data-component-id="voltage-source" data-name="Voltage Source">
                         <i class="fas fa-plus-circle component-icon"></i>
                         <span class="component-name">Fuente de Voltaje</span>
                     </div>
-                    <div class="component-item" data-component-id="diode">
+                    <div class="component-item" data-component-id="diode" data-name="Diode">
                         <i class="fas fa-arrow-right component-icon"></i>
                         <span class="component-name">Diodo</span>
                     </div>
-                    <div class="component-item" data-component-id="transistor">
+                    <div class="component-item" data-component-id="transistor" data-name="Transistor">
                         <i class="fas fa-microchip component-icon"></i>
                         <span class="component-name">Transistor</span>
                     </div>
-                    <div class="component-item" data-component-id="ground">
+                    <div class="component-item" data-component-id="ground" data-name="Ground">
                         <i class="fas fa-arrows-alt-h component-icon"></i>
                         <span class="component-name">Tierra</span>
                     </div>
-                    <div class="component-item" data-component-id="led">
+                    <div class="component-item" data-component-id="led" data-name="LED">
                         <i class="fas fa-lightbulb component-icon"></i>
                         <span class="component-name">LED</span>
                     </div>
-                    <div class="component-item" data-component-id="switch">
+                    <div class="component-item" data-component-id="switch" data-name="Switch">
                         <i class="fas fa-toggle-on component-icon"></i>
                         <span class="component-name">Interruptor</span>
                     </div>
@@ -668,7 +720,7 @@
                     <div class="tool-group">
                         <button id="selectToolBtn" class="tool-btn active"><i class="fas fa-mouse-pointer"></i></button>
                         <button id="connectToolBtn" class="tool-btn"><i class="fas fa-link"></i></button>
-                        <button class="tool-btn"><i class="fas fa-eraser"></i></button>
+                        <button id="eraserToolBtn" class="tool-btn"><i class="fas fa-eraser"></i></button>
                         <button class="tool-btn"><i class="fas fa-undo"></i></button>
                         <button class="tool-btn"><i class="fas fa-redo"></i></button>
                     </div>
@@ -683,8 +735,9 @@
                         <button id="arduinoConsoleBtn" class="tool-btn"><i class="fas fa-terminal"></i></button>
                     </div>
                 </div>
-                <canvas id="simulatorCanvas"></canvas>
-                <div id="simulatorCanvasOverlay"></div>
+                <div id="simulatorCanvas">
+                    <div id="wires-container"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -731,7 +784,7 @@
 
     <!-- Arduino Console Screen -->
     <div id="arduinoConsoleScreen" class="screen">
-        <header class="arduino-header">
+        <header class="app-header">
             <div style="display:flex; align-items:center; gap:10px;">
                 <i class="fas fa-terminal" style="font-size:24px; color:var(--accent-color);"></i>
                 <h2 style="font-family:'Orbitron', sans-serif; font-weight:700;">Arduino Console</h2>
@@ -740,13 +793,13 @@
                 <i class="fas fa-arrow-left"></i> Volver al Simulador
             </button>
         </header>
-        <div class="arduino-content">
+        <div class="app-content">
             <div class="code-editor-container">
                 <div class="editor-header">Código</div>
                 <textarea class="code-editor" id="arduinoCodeEditor" placeholder="Escribe tu código de Arduino aquí..."></textarea>
                 <div class="action-buttons">
-                    <button class="btn compile"><i class="fas fa-cogs"></i> Compilar</button>
-                    <button class="btn upload"><i class="fas fa-upload"></i> Subir</button>
+                    <button class="btn compile" id="compileBtn"><i class="fas fa-cogs"></i> Compilar</button>
+                    <button class="btn upload" id="uploadBtn"><i class="fas fa-upload"></i> Subir</button>
                 </div>
             </div>
             <div class="console-output-container">
@@ -756,13 +809,50 @@
         </div>
     </div>
 
+    <!-- Cal Flux Chat screen -->
+    <div id="calFluxScreen" class="screen">
+        <header class="app-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-calculator" style="font-size:24px; color:var(--accent-color);"></i>
+                <h2 style="font-family:'Orbitron', sans-serif; font-weight:700;">Cal Flux</h2>
+            </div>
+            <button id="backToStartScreenFromCalFlux" class="back-to-simulator-btn">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+        </header>
+        <div class="app-content">
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message ai-message">¡Hola! Soy Cal Flux. Pregúntame cualquier cosa sobre circuitos o electrónica.</div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="calFluxInput" placeholder="Haz tu pregunta aquí...">
+                    <button id="calFluxSendBtn"><i class="fas fa-paper-plane"></i> Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Alert Modal -->
-    <div id="custom-alert" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:#1e293b; padding:2rem; border-radius:0.75rem; box-shadow:0 10px 15px rgba(0,0,0,0.5); z-index:9999;">
-        <p id="alert-message" style="color:white; margin-bottom:1rem; text-align:center;"></p>
-        <button id="alert-ok-button" style="background-color:#3b82f6; color:white; padding:0.5rem 1rem; border:none; border-radius:0.5rem; cursor:pointer;">OK</button>
+    <div id="custom-alert">
+        <p id="alert-message"></p>
+        <button id="alert-ok-button">OK</button>
     </div>
 
     <script type="text/javascript">
+        // Global variables for API key and models
+        const apiKey = "";
+        const arduinoModel = "gemini-2.5-flash-preview-05-20";
+        const calFluxModel = "gemini-2.5-flash-preview-05-20";
+
+        // Global state management for the simulator
+        let circuitComponents = [];
+        let circuitWires = [];
+        let nextComponentId = 0;
+        let nextWireId = 0;
+        let isConnecting = false;
+        let firstPin = null;
+
         // Diccionario para mapear los IDs de componentes a sus iconos
         const componentIcons = {
             'resistor': 'fas fa-battery-three-quarters',
@@ -796,27 +886,50 @@
             document.getElementById('custom-alert').style.display = 'none';
         });
 
-        // Event Listeners for main navigation
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        // --- Fetch API helper function with exponential backoff ---
+        async function fetchWithBackoff(url, options, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    console.error(`Fetch failed, retrying in ${delay}ms...`, error);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return fetchWithBackoff(url, options, retries - 1, delay * 2);
+                } else {
+                    throw error;
+                }
+            }
+        }
+        
+        // --- Main Navigation & State Management ---
         document.getElementById('btn-iniciar-simulador').addEventListener('click', () => {
             showScreen('appContainer');
         });
         document.getElementById('btn-cal-flux').addEventListener('click', () => {
-            showAlert("Función CAL FLUX no implementada.");
+            showScreen('calFluxScreen');
         });
         document.getElementById('btn-tutoriales').addEventListener('click', () => {
-            showAlert("Tutoriales no disponibles aún.");
+            showAlert("Tutoriales aún no implementados.");
         });
         document.getElementById('btn-clases').addEventListener('click', () => {
             showScreen('roleSelectionScreen');
         });
         
-        // Event Listeners for class management screens
-        document.getElementById('btn-teacher-role').addEventListener('click', () => {
-            showScreen('createRoomScreen');
-        });
-        document.getElementById('btn-student-role').addEventListener('click', () => {
-            showScreen('joinRoomScreen');
-        });
+        // Back buttons
         document.getElementById('backToStartScreen').addEventListener('click', (e) => {
             e.preventDefault();
             showScreen('startScreen');
@@ -832,22 +945,15 @@
         document.getElementById('backToSimulatorBtn').addEventListener('click', () => {
             showScreen('appContainer');
         });
-
-        // Form submission handlers (placeholder functionality)
-        document.getElementById('create-room-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            showAlert('Profesor: Sala creada. Funcionalidad no implementada aún.');
-        });
-        document.getElementById('join-room-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            showAlert('Alumno: Intentando unirse a la sala. Funcionalidad no implementada aún.');
+        document.getElementById('backToStartScreenFromCalFlux').addEventListener('click', () => {
+            showScreen('startScreen');
         });
         
         // --- Sidebar and Toolbar Functionality ---
         const mainSidebar = document.getElementById('mainSidebar');
         const toggleMenuBtn = document.getElementById('toggleMenuBtn');
-        const mainLinks = mainSidebar.querySelectorAll('a');
-        const toolButtons = document.querySelectorAll('.canvas-toolbar .tool-btn');
+        const canvasContainer = document.querySelector('.canvas-container');
+        const simulatorCanvas = document.getElementById('simulatorCanvas');
         let currentTool = 'select'; // Default tool
 
         // Toggle main menu sidebar
@@ -856,53 +962,114 @@
             toggleMenuBtn.classList.toggle('active');
         });
 
-        // Handle clicks on main menu links
-        mainLinks.forEach(link => {
-            if (link.id !== 'startTourBtn') {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showAlert(`Función "${link.textContent.trim()}" no implementada.`);
-                });
-            }
+        // Menu links functionality
+        document.getElementById('newProjectLink').addEventListener('click', () => {
+            simulatorCanvas.innerHTML = '<div id="wires-container"></div>';
+            circuitComponents = [];
+            circuitWires = [];
+            nextComponentId = 0;
+            nextWireId = 0;
+            showAlert("Proyecto reiniciado.");
+            mainSidebar.classList.remove('open');
+            toggleMenuBtn.classList.remove('active');
         });
 
-        // Handle clicks on toolbar buttons (active state)
+        document.getElementById('saveProjectLink').addEventListener('click', async () => {
+            const data = {
+                components: circuitComponents,
+                wires: circuitWires,
+            };
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fluxionics_project.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showAlert("Proyecto guardado como 'fluxionics_project.json'.");
+            mainSidebar.classList.remove('open');
+            toggleMenuBtn.classList.remove('active');
+        });
+
+        document.getElementById('openProjectLink').addEventListener('click', () => {
+            showAlert("Función 'Abrir Proyecto' no implementada. Por favor, reinicia el canvas para comenzar un nuevo proyecto.");
+            mainSidebar.classList.remove('open');
+            toggleMenuBtn.classList.remove('active');
+        });
+
+        document.getElementById('exportLink').addEventListener('click', async () => {
+            mainSidebar.classList.remove('open');
+            toggleMenuBtn.classList.remove('active');
+            showAlert("Preparando PDF para descarga...");
+            await new Promise(r => setTimeout(r, 500)); // Wait for sidebar to close
+            html2canvas(document.getElementById('appContainer')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = window.open();
+                pdf.document.write(`<img src="${imgData}" style="width:100%;">`);
+                showAlert("PDF listo. Usa la función de impresión del navegador.");
+            });
+        });
+        document.getElementById('shareLink').addEventListener('click', () => {
+            showAlert("Función 'Compartir' no implementada. Necesita una base de datos para guardar y compartir proyectos.");
+            mainSidebar.classList.remove('open');
+            toggleMenuBtn.classList.remove('active');
+        });
+        document.getElementById('settingsLink').addEventListener('click', () => {
+            showAlert("Configuraciones no implementadas.");
+            mainSidebar.classList.remove('open');
+            toggleMenuBtn.classList.remove('active');
+        });
+        document.getElementById('startTourBtn').addEventListener('click', () => {
+            showAlert("Recorrido rápido no implementado. ¡Pero puedes explorar todas las funciones por ti mismo!");
+            mainSidebar.classList.remove('open');
+            toggleMenuBtn.classList.remove('active');
+        });
+
+        // Theme toggle
+        document.getElementById('lightThemeBtn').addEventListener('click', () => {
+            document.body.classList.add('light-theme');
+            document.getElementById('darkThemeBtn').classList.remove('active');
+            document.getElementById('lightThemeBtn').classList.add('active');
+        });
+        document.getElementById('darkThemeBtn').addEventListener('click', () => {
+            document.body.classList.remove('light-theme');
+            document.getElementById('lightThemeBtn').classList.remove('active');
+            document.getElementById('darkThemeBtn').classList.add('active');
+        });
+
+        // Toolbar buttons (active state)
+        const toolButtons = document.querySelectorAll('.canvas-toolbar .tool-btn');
         toolButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 toolButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
-                // Set the current tool based on the button clicked
+                isConnecting = false;
+                firstPin = null;
+
                 if (btn.id === 'selectToolBtn') {
                     currentTool = 'select';
-                    document.getElementById('simulatorCanvas').style.cursor = 'crosshair';
+                    simulatorCanvas.style.cursor = 'move';
                 } else if (btn.id === 'connectToolBtn') {
                     currentTool = 'connect';
-                    document.getElementById('simulatorCanvas').style.cursor = 'crosshair';
-                    showAlert('Modo de conexión activado. Haz clic en los pines para conectar.');
+                    isConnecting = true;
+                    simulatorCanvas.style.cursor = 'crosshair';
+                } else if (btn.id === 'eraserToolBtn') {
+                    currentTool = 'erase';
+                    simulatorCanvas.style.cursor = 'pointer';
                 }
-                // Placeholder for other tools
             });
         });
         
-        // Handle terminal button specifically
         document.getElementById('arduinoConsoleBtn').addEventListener('click', () => {
             showScreen('arduinoConsoleScreen');
         });
 
-        // --- Component Drag and Drop Functionality ---
+        // --- Component Drag and Drop & Wire Drawing ---
         const componentItems = document.querySelectorAll('.component-item');
-        const canvasContainer = document.querySelector('.canvas-container');
-        const canvasOverlay = document.getElementById('simulatorCanvasOverlay'); // To catch mouse events over the canvas
+        const wiresContainer = document.getElementById('wires-container');
         let draggedComponent = null;
         let dragGhost = null;
-
-        canvasOverlay.style.position = 'absolute';
-        canvasOverlay.style.top = '60px'; // Below the toolbar
-        canvasOverlay.style.left = '0';
-        canvasOverlay.style.width = '100%';
-        canvasOverlay.style.height = 'calc(100% - 60px)';
-        canvasOverlay.style.zIndex = '1';
 
         componentItems.forEach(item => {
             item.addEventListener('mousedown', (e) => {
@@ -910,22 +1077,16 @@
                 const componentId = item.dataset.componentId;
                 const componentName = item.querySelector('.component-name').textContent;
                 const componentIcon = item.querySelector('.component-icon').className;
-
-                // Create a drag ghost element
+                
                 dragGhost = document.createElement('div');
                 dragGhost.className = 'component-visual drag-ghost';
                 dragGhost.innerHTML = `<i class="${componentIcon} comp-icon"></i><span class="comp-label">${componentName}</span>`;
-                dragGhost.style.left = `${e.clientX - item.offsetWidth / 2}px`;
-                dragGhost.style.top = `${e.clientY - item.offsetHeight / 2}px`;
-                dragGhost.style.width = `${item.offsetWidth}px`;
-                dragGhost.style.height = `${item.offsetHeight}px`;
                 document.body.appendChild(dragGhost);
                 
                 draggedComponent = {
                     id: componentId,
                     name: componentName,
                     icon: componentIcon,
-                    item: item,
                 };
             });
         });
@@ -939,30 +1100,48 @@
 
         document.addEventListener('mouseup', (e) => {
             if (draggedComponent) {
-                // Check if the drop was on the canvas container
-                const canvasRect = canvasContainer.getBoundingClientRect();
+                const canvasRect = simulatorCanvas.getBoundingClientRect();
                 if (e.clientX > canvasRect.left && e.clientX < canvasRect.right &&
                     e.clientY > canvasRect.top && e.clientY < canvasRect.bottom) {
                     
                     const newComponent = document.createElement('div');
+                    const componentUID = `comp-${nextComponentId++}`;
                     newComponent.className = 'component-visual';
+                    newComponent.dataset.componentUid = componentUID;
                     newComponent.innerHTML = `
                         <i class="${draggedComponent.icon} comp-icon"></i>
                         <span class="comp-label">${draggedComponent.name}</span>
-                        <!-- Pins for connections -->
-                        <div class="pin" style="top: 50%; left: -4px; transform: translateY(-50%);"></div>
-                        <div class="pin" style="top: 50%; right: -4px; transform: translateY(-50%);"></div>
+                        <div class="pin" data-pin-id="1"></div>
+                        <div class="pin" data-pin-id="2"></div>
                     `;
+                    
+                    // Position the pins based on component type
+                    const pin1 = newComponent.querySelector('[data-pin-id="1"]');
+                    const pin2 = newComponent.querySelector('[data-pin-id="2"]');
+                    pin1.style.top = '50%';
+                    pin1.style.left = '-4px';
+                    pin1.style.transform = 'translateY(-50%)';
+                    pin2.style.top = '50%';
+                    pin2.style.right = '-4px';
+                    pin2.style.transform = 'translateY(-50%)';
+
                     newComponent.style.left = `${e.clientX - canvasRect.left - (newComponent.offsetWidth / 2)}px`;
                     newComponent.style.top = `${e.clientY - canvasRect.top - (newComponent.offsetHeight / 2)}px`;
                     
-                    canvasContainer.appendChild(newComponent);
+                    simulatorCanvas.appendChild(newComponent);
                     
-                    // Make the new component draggable on the canvas
+                    circuitComponents.push({
+                        uid: componentUID,
+                        type: draggedComponent.id,
+                        x: newComponent.offsetLeft,
+                        y: newComponent.offsetTop,
+                        pins: { '1': null, '2': null }
+                    });
+
                     makeDraggable(newComponent);
+                    setupPinEvents(newComponent);
                 }
                 
-                // Clean up the drag ghost and state
                 if (dragGhost) {
                     dragGhost.remove();
                     dragGhost = null;
@@ -974,16 +1153,20 @@
         function makeDraggable(element) {
             let isDragging = false;
             let startX, startY, initialX, initialY;
+            let componentData;
 
             element.addEventListener('mousedown', (e) => {
-                if (e.target.classList.contains('pin')) return; // Ignore drag if clicking on a pin
-                if (currentTool !== 'select') return; // Only allow dragging in select mode
+                if (e.target.classList.contains('pin')) return;
+                if (currentTool !== 'select') return;
                 isDragging = true;
                 startX = e.clientX;
                 startY = e.clientY;
                 initialX = element.offsetLeft;
                 initialY = element.offsetTop;
                 element.style.cursor = 'grabbing';
+
+                const componentUID = element.dataset.componentUid;
+                componentData = circuitComponents.find(c => c.uid === componentUID);
             });
 
             document.addEventListener('mousemove', (e) => {
@@ -997,6 +1180,12 @@
 
                 element.style.left = `${newX}px`;
                 element.style.top = `${newY}px`;
+                
+                if (componentData) {
+                    componentData.x = newX;
+                    componentData.y = newY;
+                }
+                redrawWires();
             });
 
             document.addEventListener('mouseup', () => {
@@ -1005,11 +1194,198 @@
             });
         }
         
+        function setupPinEvents(componentElement) {
+            const pins = componentElement.querySelectorAll('.pin');
+            pins.forEach(pin => {
+                pin.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (currentTool === 'connect') {
+                        handleConnection(pin, componentElement);
+                    } else if (currentTool === 'erase') {
+                        // TODO: Implement wire deletion
+                    }
+                });
+            });
+        }
+
+        function handleConnection(pin, componentElement) {
+            if (!firstPin) {
+                // First pin clicked
+                firstPin = { pin, componentElement };
+                pin.style.backgroundColor = 'red';
+            } else {
+                // Second pin clicked
+                const secondPin = { pin, componentElement };
+                
+                // Prevent connecting a pin to itself
+                if (firstPin.pin === secondPin.pin) {
+                    showAlert("No puedes conectar un pin consigo mismo.");
+                    firstPin.pin.style.backgroundColor = '';
+                    firstPin = null;
+                    return;
+                }
+
+                const wireUID = `wire-${nextWireId++}`;
+                circuitWires.push({
+                    uid: wireUID,
+                    start: {
+                        componentUID: firstPin.componentElement.dataset.componentUid,
+                        pinId: firstPin.pin.dataset.pinId
+                    },
+                    end: {
+                        componentUID: secondPin.componentElement.dataset.componentUid,
+                        pinId: secondPin.pin.dataset.pinId
+                    }
+                });
+
+                firstPin.pin.style.backgroundColor = '';
+                firstPin = null;
+                redrawWires();
+            }
+        }
+        
+        function redrawWires() {
+            wiresContainer.innerHTML = '';
+            circuitWires.forEach(wire => {
+                const startComp = document.querySelector(`[data-component-uid="${wire.start.componentUID}"]`);
+                const endComp = document.querySelector(`[data-component-uid="${wire.end.componentUID}"]`);
+
+                if (!startComp || !endComp) return;
+
+                const startPin = startComp.querySelector(`[data-pin-id="${wire.start.pinId}"]`);
+                const endPin = endComp.querySelector(`[data-pin-id="${wire.end.pinId}"]`);
+
+                const startRect = startPin.getBoundingClientRect();
+                const endRect = endPin.getBoundingClientRect();
+                const canvasRect = simulatorCanvas.getBoundingClientRect();
+
+                const startX = startRect.left + startRect.width / 2 - canvasRect.left;
+                const startY = startRect.top + startRect.height / 2 - canvasRect.top;
+                const endX = endRect.left + endRect.width / 2 - canvasRect.left;
+                const endY = endRect.top + endRect.height / 2 - canvasRect.top;
+
+                const length = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+                const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+
+                const wireElement = document.createElement('div');
+                wireElement.className = 'wire';
+                wireElement.style.left = `${startX}px`;
+                wireElement.style.top = `${startY}px`;
+                wireElement.style.width = `${length}px`;
+                wireElement.style.transform = `rotate(${angle}deg)`;
+                wiresContainer.appendChild(wireElement);
+            });
+        }
+        
+        // --- CAL FLUX Functionality (AI powered) ---
+        const chatMessages = document.getElementById('chatMessages');
+        const calFluxInput = document.getElementById('calFluxInput');
+        const calFluxSendBtn = document.getElementById('calFluxSendBtn');
+
+        calFluxSendBtn.addEventListener('click', handleCalFluxRequest);
+        calFluxInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleCalFluxRequest();
+            }
+        });
+
+        async function handleCalFluxRequest() {
+            const prompt = calFluxInput.value.trim();
+            if (!prompt) return;
+
+            // Add user message to chat
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.textContent = prompt;
+            chatMessages.appendChild(userMessageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            calFluxInput.value = '';
+            showLoading();
+
+            const chatHistory = [{ role: "user", parts: [{ text: `Actúa como un experto en electrónica y circuitos. Responde a la siguiente pregunta de la manera más precisa y útil posible. Pregunta: ${prompt}` }] }];
+            const payload = { contents: chatHistory };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${calFluxModel}:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetchWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const aiMessage = response.candidates[0].content.parts[0].text;
+                const aiMessageDiv = document.createElement('div');
+                aiMessageDiv.className = 'message ai-message';
+                aiMessageDiv.textContent = aiMessage;
+                chatMessages.appendChild(aiMessageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            } catch (error) {
+                console.error('Error fetching from Gemini API:', error);
+                const errorMessageDiv = document.createElement('div');
+                errorMessageDiv.className = 'message ai-message';
+                errorMessageDiv.textContent = 'Lo siento, hubo un error al procesar tu solicitud. Por favor, inténtalo de nuevo.';
+                chatMessages.appendChild(errorMessageDiv);
+            } finally {
+                hideLoading();
+            }
+        }
+
+
+        // --- ARDUINO CONSOLE Functionality (AI powered) ---
+        const arduinoCodeEditor = document.getElementById('arduinoCodeEditor');
+        const consoleOutput = document.getElementById('consoleOutput');
+        const compileBtn = document.getElementById('compileBtn');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        const baseArduinoPrompt = `Actúa como un compilador de código y simulador de un entorno Arduino. Simula la compilación y la ejecución del código.
+        - Para "Compilar", verifica la sintaxis y da un resultado de "Compilación exitosa" o un "Error de compilación" con una explicación.
+        - Para "Subir", simula la ejecución del código y muestra la salida del Serial Monitor, sin añadir información de compilación.
+        - Si el código no es de Arduino, responde que es un código inválido para la plataforma.
+        - Sé breve y directo.
+        `;
+
+        compileBtn.addEventListener('click', () => handleArduinoRequest('compile'));
+        uploadBtn.addEventListener('click', () => handleArduinoRequest('upload'));
+
+        async function handleArduinoRequest(action) {
+            const code = arduinoCodeEditor.value;
+            if (!code.trim()) {
+                consoleOutput.textContent = 'Error: No hay código para procesar.';
+                return;
+            }
+
+            const prompt = `${baseArduinoPrompt}\n\nAcción: ${action}\nCódigo:\n\`\`\`arduino\n${code}\n\`\`\``;
+            const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${arduinoModel}:generateContent?key=${apiKey}`;
+
+            consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] > Ejecutando acción: ${action}...`;
+            showLoading();
+
+            try {
+                const response = await fetchWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const output = response.candidates[0].content.parts[0].text;
+                consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] > ${output}`;
+            } catch (error) {
+                console.error('Error fetching from Gemini API:', error);
+                consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] > Error: No se pudo conectar con el simulador.`;
+            } finally {
+                hideLoading();
+            }
+        }
+        
         // --- Animated Background ---
         const bgCanvas = document.getElementById('animatedBackground');
         const bgCtx = bgCanvas.getContext('2d');
         let particles = [];
-        const particleColor = 'rgba(0, 212, 255, 0.5)'; // Accent color
+        const particleColor = 'rgba(0, 212, 255, 0.5)';
         const particleCount = 100;
         
         function resizeBackgroundCanvas() {
@@ -1031,10 +1407,8 @@
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-
                 if (this.x < 0 || this.x > bgCanvas.width) this.speedX *= -1;
                 if (this.y < 0 || this.y > bgCanvas.height) this.speedY *= -1;
-                
                 this.trail.push({ x: this.x, y: this.y, size: this.size });
                 if (this.trail.length > this.trailLength) {
                     this.trail.shift();
@@ -1042,7 +1416,6 @@
             }
 
             draw() {
-                // Draw trails
                 for (let i = 0; i < this.trail.length; i++) {
                     let trailPart = this.trail[i];
                     let opacity = (i / this.trail.length) * 0.5;
@@ -1051,8 +1424,6 @@
                     bgCtx.arc(trailPart.x, trailPart.y, trailPart.size * (i/this.trail.length), 0, Math.PI * 2);
                     bgCtx.fill();
                 }
-                
-                // Draw head particle
                 bgCtx.fillStyle = particleColor;
                 bgCtx.beginPath();
                 bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -1076,7 +1447,6 @@
             requestAnimationFrame(animateBackground);
         }
 
-        // Initialization
         window.onload = () => {
             resizeBackgroundCanvas();
             initBackground();
