@@ -4,17 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fluxionics - Simulador Profesional de Circuitos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* Estilos básicos de la página */
+        /* Estilos base de la página */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e14;
+            color: #e6edf3;
+            overflow-x: hidden;
+            line-height: 1.6;
             margin: 0;
-            background-color: #f4f7f6;
-            color: #333;
+            padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
+        
+        /* Estilos del encabezado */
         header {
             background-color: #2c3e50;
             color: white;
@@ -49,7 +57,7 @@
 
         /* Estilos para las secciones de la página */
         .screen {
-            display: none; /* Oculta todas las pantallas por defecto */
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -58,7 +66,7 @@
             box-sizing: border-box;
         }
         .screen.active {
-            display: flex; /* Muestra solo la pantalla activa */
+            display: flex;
         }
         
         /* Contenido de la pantalla de inicio */
@@ -96,7 +104,7 @@
         /* Estilos para el panel de componentes */
         #components-panel {
             position: fixed;
-            top: 70px; /* Debajo del header */
+            top: 70px;
             left: 20px;
             background: rgba(255, 255, 255, 0.95);
             border: 1px solid #ddd;
@@ -130,7 +138,102 @@
             background-color: #2980b9;
         }
 
-        /* Estilos del panel para compartir */
+        /* ----- ESTILOS AÑADIDOS PARA COMPARTIR Y CLASE ----- */
+        
+        /* Estilos del modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+        .modal.hidden {
+            display: none;
+        }
+        .modal-content {
+            background: #1e2a39;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        .close-modal-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        /* Estilos para el botón de clase y sus opciones */
+        .clase-btn, .option-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        .clase-btn:hover, .option-btn:hover {
+            background-color: #2980b9;
+        }
+        .clase-options {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .option-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            width: 45%;
+        }
+        .option-btn small {
+            margin-top: 5px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* Estilos del formulario */
+        .teacher-form, .student-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .teacher-form input, .student-form input {
+            padding: 12px;
+            background: #2c3e50;
+            border: 1px solid #455a64;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 16px;
+        }
+        .teacher-form button, .student-form button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Estilos del panel de compartir */
         .share-section {
             position: relative;
             display: inline-block;
@@ -142,16 +245,17 @@
             padding: 10px 20px;
             cursor: pointer;
             border-radius: 5px;
+            margin-left: 10px;
         }
         .share-panel {
             position: absolute;
             top: 50px;
             right: 0;
-            background: white;
-            border: 1px solid #ddd;
+            background: #1e2a39;
+            border: 1px solid #455a64;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 1000;
         }
         .share-panel.hidden {
@@ -164,8 +268,10 @@
         .share-url input {
             flex: 1;
             padding: 8px;
-            border: 1px solid #ccc;
+            background: #2c3e50;
+            border: 1px solid #455a64;
             border-radius: 4px;
+            color: white;
         }
         .share-options {
             display: grid;
@@ -178,6 +284,8 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.2s;
+            background-color: #34495e;
+            color: white;
         }
 
         /* Modal para el código QR */
@@ -187,20 +295,23 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.7);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            z-index: 4000;
         }
         .qr-content {
-            background: white;
+            background: #1e2a39;
             padding: 25px;
             border-radius: 10px;
             text-align: center;
+            color: white;
         }
         .qr-content img {
             margin: 15px 0;
+            border: 5px solid white;
+            border-radius: 8px;
         }
         .qr-content button {
             padding: 10px 20px;
@@ -210,7 +321,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
     </style>
 </head>
 <body>
@@ -222,6 +332,8 @@
             <button onclick="navigateTo('/examples')">Ejemplos</button>
             <button onclick="navigateTo('/tutorial')">Tutorial</button>
             <button onclick="navigateTo('/calcflux')">CalcFlux</button>
+            <button class="clase-btn" onclick="showClaseOptions()">👨‍🏫 CLASE</button>
+            <button class="share-button" onclick="showSharePanel()">📤 COMPARTIR</button>
         </nav>
     </header>
 
@@ -238,34 +350,14 @@
         <h2>Simulador de Circuitos</h2>
         <p>Área de trabajo del simulador. Aquí es donde se dibujaría el circuito.</p>
 
-        <div id="components-panel" class="components-panel hidden">
+        <div id="components-panel">
             <h3>Componentes</h3>
             <button>Resistencia</button>
             <button>Batería</button>
             <button>LED</button>
-            <button>Transistor</button>
-            <button>Capacitor</button>
-            <button>Diodo</button>
         </div>
 
-        <div class="share-section">
-            <button id="share-btn" class="share-button" onclick="showSharePanel()">
-                📤 Compartir Circuito
-            </button>
-            <div id="share-panel" class="share-panel hidden">
-                <div class="share-url">
-                    <input type="text" id="share-url-input" readonly>
-                    <button onclick="copyURL()">📋 Copiar</button>
-                </div>
-                <div class="share-options">
-                    <button onclick="shareWhatsApp()">💬 WhatsApp</button>
-                    <button onclick="shareEmail()">📧 Email</button>
-                    <button onclick="shareTwitter()">🐦 Twitter</button>
-                    <button onclick="generateQR()">📱 QR Code</button>
-                </div>
-            </div>
-        </div>
-        
+        <canvas id="circuit-canvas"></canvas>
     </section>
 
     <section id="examplesSection" class="screen">
@@ -283,6 +375,72 @@
         <p>Herramientas de cálculo para resistencias, capacitores, etc.</p>
     </section>
 
+    <div id="clase-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎓 Modo Clase</h2>
+            <div class="clase-options">
+                <button class="option-btn teacher" onclick="createClase()">
+                    👨‍🏫 CREAR CLASE <small>Soy profesor/instructor</small>
+                </button>
+                <button class="option-btn student" onclick="joinClase()">
+                    👨‍🎓 UNIRME A CLASE <small>Soy estudiante</small>
+                </button>
+            </div>
+            <button class="close-modal-btn" onclick="closeModal('clase-modal')">Cerrar</button>
+        </div>
+    </div>
+    
+    <div id="teacher-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>👨‍🏫 Crear Nueva Clase</h2>
+            <div class="teacher-form">
+                <input type="text" placeholder="Nombre del profesor" id="teacher-name">
+                <input type="text" placeholder="Nombre de la clase" id="class-name">
+                <input type="number" placeholder="Máximo estudiantes (20)" id="max-students" value="20">
+                <button onclick="generateClaseRoom()">🚀 CREAR SALA</button>
+            </div>
+            <button class="close-modal-btn" onclick="closeModal('teacher-modal')">Cerrar</button>
+        </div>
+    </div>
+    
+    <div id="student-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>👨‍🎓 Unirse a Clase</h2>
+            <div class="student-form">
+                <input type="text" placeholder="Tu nombre" id="student-name">
+                <input type="text" placeholder="Código de clase" id="room-code" maxlength="6" style="text-transform: uppercase;">
+                <button onclick="joinClaseRoom()">🚪 ENTRAR A CLASE</button>
+            </div>
+            <div class="join-help">
+                <small>💡 El profesor te dará el código de 6 dígitos</small>
+            </div>
+            <button class="close-modal-btn" onclick="closeModal('student-modal')">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="share-section">
+        <div id="share-panel" class="share-panel hidden">
+            <div class="share-url">
+                <input type="text" id="share-url-input" readonly>
+                <button onclick="copyURL()">📋 Copiar</button>
+            </div>
+            <div class="share-options">
+                <button onclick="shareWhatsApp()">💬 WhatsApp</button>
+                <button onclick="shareEmail()">📧 Email</button>
+                <button onclick="shareTwitter()">🐦 Twitter</button>
+                <button onclick="generateQR()">📱 QR Code</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="qr-modal" class="qr-modal hidden">
+        <div class="qr-content">
+            <h3>📱 Escanea para abrir el circuito</h3>
+            <img id="qr-image" src="" alt="QR Code">
+            <button onclick="closeModal('qr-modal')">Cerrar</button>
+        </div>
+    </div>
+    
     <script>
         // Funciones de navegación (corregidas para funcionar sin servidor)
         function navigateTo(path) {
@@ -322,12 +480,22 @@
             navigateTo('/');
         };
 
-        // --- Funcionalidad del Botón de Compartir ---
+        // --- FUNCIONES DEL BOTÓN DE COMPARTIR ---
         
-        // Pestañas de compartir
+        // Muestra u oculta el panel de compartir
         const sharePanel = document.getElementById('share-panel');
-        document.getElementById('share-btn').addEventListener('click', () => {
+        document.querySelector('.share-button').addEventListener('click', (event) => {
+            event.stopPropagation(); // Evita que el clic en el botón cierre el panel inmediatamente
             sharePanel.classList.toggle('hidden');
+            if (!sharePanel.classList.contains('hidden')) {
+                showSharePanel();
+            }
+        });
+        document.addEventListener('click', (event) => {
+            // Cierra el panel si se hace clic fuera de él
+            if (!sharePanel.contains(event.target) && !document.querySelector('.share-button').contains(event.target)) {
+                sharePanel.classList.add('hidden');
+            }
         });
 
         // Funciones de compartir (con lógica de placeholder)
@@ -372,7 +540,6 @@
         function showSharePanel() {
             const shareURL = generateShareURL();
             document.getElementById('share-url-input').value = shareURL;
-            document.getElementById('share-panel').classList.remove('hidden');
         }
 
         function copyURL() {
@@ -412,30 +579,53 @@
         }
         
         function showQRModal(qrImageURL) {
-            const modal = document.createElement('div');
-            modal.className = 'qr-modal';
-            modal.innerHTML = `
-                <div class="qr-content">
-                    <h3>📱 Escanea para abrir el circuito</h3>
-                    <img src="${qrImageURL}" alt="QR Code">
-                    <button onclick="closeQRModal()">Cerrar</button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        function closeQRModal() {
-            const modal = document.querySelector('.qr-modal');
-            if (modal) {
-                modal.remove();
-            }
+            const modal = document.getElementById('qr-modal');
+            document.getElementById('qr-image').src = qrImageURL;
+            modal.classList.remove('hidden');
         }
         
         function showNotification(message) {
-            // Implementa una función para mostrar notificaciones
             alert(message);
         }
-    </script>
+        
+        // --- FUNCIONES DEL BOTÓN DE CLASE ---
+        
+        // Muestra el modal principal de clase
+        function showClaseOptions() {
+            document.getElementById('clase-modal').classList.remove('hidden');
+        }
 
+        // Abre el modal para crear clase (profesor)
+        function createClase() {
+            closeModal('clase-modal');
+            document.getElementById('teacher-modal').classList.remove('hidden');
+        }
+
+        // Abre el modal para unirse a clase (estudiante)
+        function joinClase() {
+            closeModal('clase-modal');
+            document.getElementById('student-modal').classList.remove('hidden');
+        }
+        
+        // Cierra cualquier modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Ejemplo de placeholders para funciones clave:
+        function generateRoomCode() {
+            return Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+        function generateClaseRoom() {
+            const roomCode = generateRoomCode();
+            alert('Sala creada con el código: ' + roomCode);
+            closeModal('teacher-modal');
+        }
+        function joinClaseRoom() {
+            const roomCode = document.getElementById('room-code').value;
+            alert('Intentando unirse a la sala: ' + roomCode);
+            closeModal('student-modal');
+        }
+    </script>
 </body>
 </html>
