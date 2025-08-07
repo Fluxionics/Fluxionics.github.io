@@ -48,193 +48,84 @@
             content: ''; position: absolute; left: 0; bottom: -5px; width: 100%; height: 2px;
             background: #61dafb; box-shadow: 0 0 5px rgba(97, 218, 251, 0.5);
         }
-        .cta-button {
+        .clase-btn, .cta-button {
             background: #61dafb; color: #0a0e14; padding: 0.5rem 1rem; border-radius: 5px;
-            font-weight: 600; text-decoration: none; transition: background 0.3s ease, transform 0.3s ease;
+            font-weight: 600; text-decoration: none; border: none; cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
         }
-        .cta-button:hover {
-            background: #4ab1d4; transform: translateY(-2px);
-        }
+        .clase-btn { background: #3498db; margin-left: 1rem; }
+        .clase-btn:hover { background: #2980b9; transform: translateY(-2px); }
+        .cta-button { background: #61dafb; }
+        .cta-button:hover { background: #4ab1d4; transform: translateY(-2px); }
 
         /* Main Content */
         main { display: flex; flex-grow: 1; }
+        .page-content {
+            flex-grow: 1; padding: 2rem; overflow-y: auto; display: none;
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        #home { display: flex; }
 
-        /* Sidebar */
-        #sidebar {
-            width: 250px; background: #151e29; padding: 1.5rem 1rem; border-right: 1px solid #23354d;
-            display: flex; flex-direction: column; overflow-y: auto; z-index: 900;
+        .home-content {
+            text-align: center; max-width: 800px;
         }
-        .sidebar-title {
-            font-size: 1.2rem; font-weight: 600; color: #61dafb; margin-bottom: 1rem;
-            text-align: center; border-bottom: 1px solid #23354d; padding-bottom: 0.5rem;
+        .home-content h2 {
+            font-family: 'Orbitron', sans-serif; font-size: 3rem; margin-bottom: 1rem;
+            color: #61dafb; text-shadow: 0 0 15px rgba(97, 218, 251, 0.6);
         }
-        .component-list {
-            list-style: none; padding: 0; flex-grow: 1;
+        .home-content p {
+            font-size: 1.2rem; color: #b3c2d4; margin-bottom: 2rem;
         }
-        .component-item {
-            display: flex; align-items: center; padding: 0.75rem; margin-bottom: 0.5rem;
-            background: #1e2a39; border-radius: 8px; cursor: grab;
-            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            user-select: none;
+        .home-actions {
+            display: flex; justify-content: center; gap: 1.5rem;
         }
-        .component-item:hover {
-            background: #23354d; transform: translateX(5px); box-shadow: 0 0 10px rgba(97, 218, 251, 0.2);
+        .home-actions button {
+            padding: 1rem 2rem; font-size: 1.1rem; border-radius: 8px; font-weight: 600;
+            border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease;
         }
-        .component-item i {
-            margin-right: 0.75rem; color: #61dafb; font-size: 1.2rem;
-        }
-        .component-item span {
-            font-weight: 500;
-        }
-        .sidebar-footer {
-            margin-top: auto; text-align: center; padding-top: 1rem; border-top: 1px solid #23354d;
-            color: #556677;
-        }
-
-        /* Simulator Canvas */
-        #simulator-container {
-            flex-grow: 1; position: relative; background: radial-gradient(#1e2a39 1px, transparent 1px);
-            background-size: 20px 20px; border: 1px solid #23354d;
-        }
-        #circuit-canvas {
-            width: 100%; height: 100%; cursor: crosshair;
-        }
-        #component-info {
-            position: absolute; top: 1rem; right: 1rem; background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px); border-radius: 8px; padding: 1rem;
-            border: 1px solid #23354d; width: 250px; z-index: 10;
-        }
-        #component-info h3 {
-            font-size: 1.2rem; margin-bottom: 1rem; color: #61dafb;
-        }
-        .property-group { margin-bottom: 1rem; }
-        .property-group label {
-            display: block; font-size: 0.9rem; color: #b3c2d4; margin-bottom: 0.5rem;
-        }
-        .property-group input {
-            width: 100%; padding: 0.5rem; background: #0a0e14; border: 1px solid #23354d;
-            border-radius: 4px; color: #e6edf3;
-        }
-
-        /* Toolbar */
-        #toolbar {
-            position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
-            border-radius: 12px; padding: 0.5rem; display: flex; gap: 0.5rem;
-            border: 1px solid #23354d; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 50;
-        }
-        .toolbar-btn {
-            background: #1e2a39; color: #b3c2d4; border: none; padding: 0.75rem;
-            border-radius: 8px; cursor: pointer; font-size: 1rem;
-            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-        }
-        .toolbar-btn:hover {
-            background: #23354d; color: #61dafb; transform: translateY(-2px);
-        }
-        .toolbar-btn.active {
+        #start-simulator {
             background: #61dafb; color: #0a0e14;
         }
-        #play-btn { background: #4caf50; color: white; }
-        #play-btn:hover { background: #409243; transform: scale(1.05); }
-        #stop-btn { background: #e53e3e; color: white; }
-        #stop-btn:hover { background: #c53030; transform: scale(1.05); }
+        #start-simulator:hover {
+            background: #4ab1d4; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(97, 218, 251, 0.4);
+        }
+        #learn-more {
+            background: transparent; color: #61dafb; border-color: #61dafb;
+        }
+        #learn-more:hover {
+            background: #61dafb; color: #0a0e14; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(97, 218, 251, 0.4);
+        }
 
-        /* Simulator Results */
-        #simulator-results {
-            position: absolute; bottom: 1rem; left: 1rem; background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px); border-radius: 8px; padding: 1rem;
-            border: 1px solid #23354d; width: 300px; z-index: 10;
+        /* Modal Styles */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center;
+            z-index: 2000; transition: opacity 0.3s ease;
         }
-        #simulator-results h3 {
-            font-size: 1.2rem; margin-bottom: 1rem; color: #61dafb;
-        }
-        .result-item {
-            display: flex; justify-content: space-between; padding: 0.5rem 0;
-            border-bottom: 1px dashed #23354d;
-        }
-        .result-item:last-child { border-bottom: none; }
-
-        /* Other Pages */
-        .page-content {
-            flex-grow: 1; padding: 2rem; overflow-y: auto;
-        }
-        .page-content h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 2.5rem; margin-bottom: 1rem;
-            color: #61dafb; text-align: center;
-        }
-        .page-content p {
-            max-width: 800px; margin: 0 auto 1.5rem; text-align: center;
-        }
-        .content-card {
+        .modal.hidden { opacity: 0; visibility: hidden; }
+        .modal-content {
             background: #151e29; padding: 2rem; border-radius: 12px; border: 1px solid #23354d;
-            margin-bottom: 2rem;
+            text-align: center; max-width: 400px; width: 90%;
         }
-        .content-card h3 {
-            font-size: 1.8rem; color: #b3c2d4; margin-bottom: 1rem;
+        .modal-content h2 { font-family: 'Orbitron', sans-serif; color: #61dafb; margin-bottom: 1.5rem; }
+        .clase-options { display: flex; gap: 1rem; }
+        .option-btn {
+            flex: 1; padding: 1.5rem; border-radius: 8px; border: 1px solid #23354d;
+            background: #1e2a39; color: #e6edf3; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease;
+            display: flex; flex-direction: column; align-items: center;
         }
-        .example-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+        .option-btn:hover { background: #23354d; transform: translateY(-3px); }
+        .option-btn small { margin-top: 0.5rem; color: #b3c2d4; font-size: 0.8rem; }
+        .teacher-form input, .student-form input {
+            width: 100%; padding: 0.75rem; margin-bottom: 1rem; background: #0a0e14;
+            border: 1px solid #23354d; border-radius: 4px; color: #e6edf3;
         }
-        .example-card {
-            background: #1e2a39; padding: 1.5rem; border-radius: 8px;
-            text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
+        .teacher-form button, .student-form button {
+            width: 100%; padding: 0.75rem; border: none; border-radius: 4px;
+            background: #61dafb; color: #0a0e14; font-weight: 600; cursor: pointer;
+            transition: background 0.2s ease;
         }
-        .example-card:hover {
-            transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        .example-card img {
-            max-width: 100%; height: auto; border-radius: 4px; margin-bottom: 1rem;
-        }
-        .example-card h4 {
-            font-size: 1.2rem; color: #61dafb; margin-bottom: 0.5rem;
-        }
-        .example-card p {
-            font-size: 0.9rem; color: #b3c2d4; text-align: center;
-        }
-
-        /* Tour Tooltip */
-        #tourTooltip {
-            position: absolute; z-index: 2000; background: #1e2a39;
-            border: 1px solid #61dafb; border-radius: 8px; padding: 1rem;
-            max-width: 300px; opacity: 0; visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        #tourTooltip.visible {
-            opacity: 1; visibility: visible;
-        }
-        #tourTooltip .tooltip-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        #tourTooltip h4 {
-            color: #61dafb; margin: 0;
-        }
-        #tourTooltip button {
-            background: none; border: none; color: #b3c2d4; cursor: pointer;
-        }
-        #tourTooltip .tooltip-nav {
-            margin-top: 1rem; text-align: right;
-        }
-        .tour-highlight {
-            position: relative;
-            z-index: 2001; /* Must be higher than the tooltip */
-        }
-        .tour-highlight::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border: 2px solid #61dafb;
-            border-radius: 10px;
-            pointer-events: none;
-            box-shadow: 0 0 15px #61dafb;
-        }
+        .join-help { margin-top: 1rem; color: #b3c2d4; }
     </style>
 </head>
 <body>
@@ -248,128 +139,133 @@
                 <a href="#calcuflux">CalcuFlux</a>
                 <a href="#help">Ayuda</a>
             </nav>
-            <a href="#" class="cta-button" id="tour-btn">Empezar Tour</a>
+            <div style="display: flex; align-items: center;">
+                <button class="clase-btn" onclick="showClaseOptions()">
+                    👨‍🏫 CLASE
+                </button>
+                <a href="#" class="cta-button" id="tour-btn">Empezar Tour</a>
+            </div>
         </header>
 
         <main>
-            <section id="simulator" class="page-content" style="display: none;">
-                <div id="sidebar">
-                    <h2 class="sidebar-title">Componentes</h2>
-                    <ul class="component-list">
-                        <li class="component-item" data-component="resistor"><i class="fas fa-microchip"></i><span>Resistor</span></li>
-                        <li class="component-item" data-component="capacitor"><i class="fas fa-battery-half"></i><span>Capacitor</span></li>
-                        <li class="component-item" data-component="inductor"><i class="fas fa-bolt"></i><span>Inductor</span></li>
-                        <li class="component-item" data-component="voltage-source"><i class="fas fa-plug"></i><span>Fuente de Voltaje</span></li>
-                        <li class="component-item" data-component="ground"><i class="fas fa-ellipsis-h"></i><span>Tierra</span></li>
-                        <li class="component-item" data-component="led"><i class="fas fa-lightbulb"></i><span>LED</span></li>
-                        <li class="component-item" data-component="diode"><i class="fas fa-dot-circle"></i><span>Diodo</span></li>
-                    </ul>
-                    <div class="sidebar-footer">
-                        Arrastra para añadir
-                    </div>
-                </div>
-                <div id="simulator-container">
-                    <canvas id="circuit-canvas"></canvas>
-                    <div id="component-info" style="display: none;">
-                        <h3>Propiedades</h3>
-                        <div class="property-group">
-                            <label for="component-value">Valor</label>
-                            <input type="text" id="component-value">
-                        </div>
-                        <div class="property-group">
-                            <label for="component-unit">Unidad</label>
-                            <input type="text" id="component-unit">
-                        </div>
-                    </div>
-                    <div id="toolbar">
-                        <button class="toolbar-btn" id="pointer-btn"><i class="fas fa-mouse-pointer"></i></button>
-                        <button class="toolbar-btn" id="wire-btn"><i class="fas fa-link"></i></button>
-                        <button class="toolbar-btn" id="delete-btn"><i class="fas fa-trash-alt"></i></button>
-                        <button class="toolbar-btn" id="play-btn"><i class="fas fa-play"></i></button>
-                        <button class="toolbar-btn" id="stop-btn"><i class="fas fa-stop"></i></button>
-                    </div>
-                    <div id="simulator-results" style="display: none;">
-                        <h3>Resultados</h3>
-                        <div class="result-item">
-                            <span>Voltaje:</span>
-                            <span id="result-voltage">0 V</span>
-                        </div>
-                        <div class="result-item">
-                            <span>Corriente:</span>
-                            <span id="result-current">0 A</span>
-                        </div>
+            <section id="home" class="page-content" style="display: flex;">
+                <div class="home-content">
+                    <h2>Construye. Simula. Aprende.</h2>
+                    <p>Crea circuitos electrónicos en segundos. Explora la electrónica de forma intuitiva, desde los fundamentos hasta los sistemas más complejos, en un entorno de simulación profesional.</p>
+                    <div class="home-actions">
+                        <button id="start-simulator" onclick="window.location.hash = '#simulator';">
+                            Iniciar Simulador
+                        </button>
+                        <button id="learn-more" onclick="window.location.hash = '#examples';">
+                            Ver Ejemplos
+                        </button>
                     </div>
                 </div>
             </section>
-
-            <section id="home" class="page-content">
-                <h2>Crea, Simula, Aprende</h2>
-                <p>Fluxionics es un simulador de circuitos interactivo y profesional diseñado para estudiantes, técnicos e ingenieros. Explora la electrónica de forma intuitiva, desde los fundamentos hasta los sistemas más complejos.</p>
-                <div class="content-card">
-                    <h3>Características Destacadas</h3>
-                    <p>Diseña circuitos, visualiza el flujo de corriente, mide voltajes, y prueba tus ideas sin límites. Con nuestra interfaz minimalista, la curva de aprendizaje es mínima y la creatividad es máxima.</p>
-                </div>
-                <div class="content-card">
-                    <h3>Empezar ahora</h3>
-                    <p>Usa la barra de navegación para explorar las distintas secciones. ¿Eres nuevo? Te recomendamos empezar con el tour interactivo para conocer las funcionalidades básicas.</p>
-                </div>
-            </section>
-
-            <section id="examples" class="page-content" style="display: none;">
-                <h2>Ejemplos de Circuitos</h2>
-                <p>Selecciona un ejemplo para abrirlo directamente en el simulador. Aprende la teoría y la práctica de forma visual.</p>
-                <div class="example-grid">
-                    <div class="example-card" onclick="openExample('led_basic')">
-                        <img src="https://i.ibb.co/VMy4P3X/led-basic.png" alt="LED Básico">
-                        <h4>Mi Primera Luz LED</h4>
-                        <p>⭐ Básico | ⏱️ 5 min</p>
-                    </div>
-                    <div class="example-card" onclick="openExample('voltage_divider')">
-                        <img src="https://i.ibb.co/Mh1wR0M/voltage-divider.png" alt="Divisor de Voltaje">
-                        <h4>Divisor de Voltaje</h4>
-                        <p>⭐ Básico | ⏱️ 10 min</p>
-                    </div>
-                    <div class="example-card" onclick="openExample('555_timer')">
-                        <img src="https://i.ibb.co/M2wFjD7/555-timer.png" alt="555 Timer Astable">
-                        <h4>Oscilador 555</h4>
-                        <p>⭐⭐ Intermedio | ⏱️ 20 min</p>
-                    </div>
-                    <div class="example-card" onclick="openExample('rc_filter')">
-                        <img src="https://i.ibb.co/r7b8nK8/rc-filter.png" alt="Filtro RC">
-                        <h4>Filtro Pasa Bajos RC</h4>
-                        <p>⭐⭐ Intermedio | ⏱️ 15 min</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="calcuflux" class="page-content" style="display: none;">
-                <h2>CalcuFlux - Calculadora de Circuitos</h2>
-                <p>Calcula valores de componentes, resistencias, capacitancias, frecuencias de corte y más. Una herramienta indispensable para tus diseños.</p>
-                <div class="content-card">
-                    <h3>Calculadora de Ley de Ohm</h3>
-                    <p>Ingresa dos valores para obtener los otros dos. (V, I, R, P)</p>
-                </div>
-            </section>
-
-            <section id="help" class="page-content" style="display: none;">
-                <h2>Ayuda y Documentación</h2>
-                <p>¿Tienes dudas? Aquí encontrarás tutoriales, preguntas frecuentes y la guía de referencia de todos nuestros componentes.</p>
-            </section>
+            
+            <section id="simulator" class="page-content"></section>
+            <section id="examples" class="page-content"></section>
+            <section id="calcuflux" class="page-content"></section>
+            <section id="help" class="page-content"></section>
         </main>
         
-        <div id="tourTooltip">
-            <div class="tooltip-header">
-                <h4 id="tourTitle">Paso 1</h4>
-                <button onclick="hideTourTooltip()"><i class="fas fa-times"></i></button>
+        <div id="clase-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>🎓 Modo Clase</h2>
+                <div class="clase-options">
+                    <button class="option-btn teacher" onclick="showTeacherModal()">
+                        👨‍🏫 CREAR CLASE
+                        <small>Soy profesor/instructor</small>
+                    </button>
+                    <button class="option-btn student" onclick="showStudentModal()">
+                        👨‍🎓 UNIRME A CLASE
+                        <small>Soy estudiante</small>
+                    </button>
+                </div>
             </div>
-            <p id="tourText">Texto del tour</p>
-            <div class="tooltip-nav">
-                <button onclick="nextTourStep()">Siguiente &rarr;</button>
+        </div>
+
+        <div id="teacher-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>👨‍🏫 Crear Nueva Clase</h2>
+                <div class="teacher-form">
+                    <input type="text" placeholder="Nombre del profesor" id="teacher-name">
+                    <input type="text" placeholder="Nombre de la clase (ej: Electrónica Básica)" id="class-name">
+                    <input type="number" placeholder="Máximo estudiantes (20)" id="max-students" value="20">
+                    <button onclick="generateClaseRoom()">🚀 CREAR SALA</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="student-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>👨‍🎓 Unirse a Clase</h2>
+                <div class="student-form">
+                    <input type="text" placeholder="Tu nombre" id="student-name">
+                    <input type="text" placeholder="Código de clase" id="room-code" maxlength="6" style="text-transform: uppercase; font-size: 20px; text-align: center;">
+                    <button onclick="joinClaseRoom()">🚪 ENTRAR A CLASE</button>
+                </div>
+                <div class="join-help">
+                    <small>💡 El profesor te dará el código de 6 dígitos</small>
+                </div>
             </div>
         </div>
     </div>
-    
     <script>
+        // --- Modal Control ---
+        function showClaseOptions() {
+            document.getElementById('clase-modal').classList.remove('hidden');
+        }
+        function hideClaseOptions() {
+            document.getElementById('clase-modal').classList.add('hidden');
+        }
+        function showTeacherModal() {
+            hideClaseOptions();
+            document.getElementById('teacher-modal').classList.remove('hidden');
+        }
+        function hideTeacherModal() {
+            document.getElementById('teacher-modal').classList.add('hidden');
+        }
+        function showStudentModal() {
+            hideClaseOptions();
+            document.getElementById('student-modal').classList.remove('hidden');
+        }
+        function hideStudentModal() {
+            document.getElementById('student-modal').classList.add('hidden');
+        }
+
+        // --- Teacher Flow (Simplified) ---
+        function generateClaseRoom() {
+            const teacherName = document.getElementById('teacher-name').value;
+            const className = document.getElementById('class-name').value;
+            const maxStudents = document.getElementById('max-students').value;
+            const roomCode = generateRoomCode();
+            
+            console.log(`Creando sala: ${roomCode}`);
+            alert(`Clase creada. Código: ${roomCode}`);
+            hideTeacherModal();
+            // In a real app, you would navigate to the teacher dashboard
+        }
+        
+        function generateRoomCode() {
+            return Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+
+        // --- Student Flow (Simplified) ---
+        function joinClaseRoom() {
+            const studentName = document.getElementById('student-name').value;
+            const roomCode = document.getElementById('room-code').value;
+            
+            console.log(`Uniendo a sala: ${roomCode} como ${studentName}`);
+            if (roomCode.length === 6) {
+                alert(`Te has unido a la clase con el código ${roomCode}.`);
+                hideStudentModal();
+                // In a real app, you would navigate to the student interface
+            } else {
+                alert('Código de sala inválido.');
+            }
+        }
+        
         // --- Page Routing ---
         const navLinks = document.querySelectorAll('#main-nav a');
         const pages = document.querySelectorAll('.page-content');
@@ -388,11 +284,8 @@
 
             if (activePage) {
                 activePage.style.display = 'flex';
-                activePage.style.flexDirection = 'column';
-                activePage.style.flexGrow = '1';
                 activeLink.classList.add('active');
             } else {
-                // Default to home if hash is not found
                 document.querySelector('#home').style.display = 'flex';
                 document.querySelector('a[href="#home"]').classList.add('active');
             }
@@ -405,156 +298,7 @@
         });
 
         window.addEventListener('hashchange', handleRouting);
-
-        // --- Simulator Logic (Placeholder) ---
-        const canvas = document.getElementById('circuit-canvas');
-        const ctx = canvas.getContext('2d');
-        let circuitState = { components: [], connections: [], measurements: [] };
-
-        function setupCanvas() {
-            const container = document.getElementById('simulator-container');
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
-            drawGrid();
-        }
-
-        function drawGrid() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = '#23354d';
-            ctx.lineWidth = 0.5;
-            const gridSize = 20;
-            for (let x = 0; x < canvas.width; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.stroke();
-            }
-            for (let y = 0; y < canvas.height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
-        }
-        
-        // This is a simplified function to demonstrate the examples functionality
-        function openExample(exampleName) {
-            // In a real application, this would load the circuit state from a database or a predefined object
-            console.log(`Opening example: ${exampleName}`);
-            // Let's just switch to the simulator page for now
-            window.location.hash = '#simulator';
-            
-            // Here you would have a more complex function that
-            // loads the circuit data based on the exampleName
-            // For instance, you could call:
-            // loadCircuitFromExample(exampleName);
-        }
-
-        // --- Tour Logic ---
-        const tourSteps = [
-            {
-                title: "Componentes",
-                text: "Arrastra componentes desde esta barra lateral para añadirlos al simulador.",
-                target: "#sidebar"
-            },
-            {
-                title: "Canvas de Trabajo",
-                text: "Este es tu área de trabajo. Arrastra y suelta componentes aquí para construir tu circuito.",
-                target: "#circuit-canvas"
-            },
-            {
-                title: "Barra de Herramientas",
-                text: "Utiliza estas herramientas para conectar, mover, y simular tu circuito.",
-                target: "#toolbar"
-            },
-            {
-                title: "Resultados",
-                text: "Aquí se mostrarán los resultados de la simulación, como voltajes y corrientes.",
-                target: "#simulator-results"
-            }
-        ];
-
-        let currentTourStep = -1;
-        let tourInterval;
-
-        document.getElementById('tour-btn').addEventListener('click', () => {
-            currentTourStep = 0;
-            showTourStep(currentTourStep);
-        });
-
-        function showTourStep(stepIndex) {
-            if (stepIndex >= tourSteps.length) {
-                hideTourTooltip();
-                return;
-            }
-
-            const step = tourSteps[stepIndex];
-            const targetElement = document.querySelector(step.target);
-            const tooltip = document.getElementById('tourTooltip');
-            const tooltipHeader = document.getElementById('tourTitle');
-            const tooltipText = document.getElementById('tourText');
-            
-            if (targetElement) {
-                document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
-                targetElement.classList.add('tour-highlight');
-                
-                tooltipHeader.textContent = step.title;
-                tooltipText.textContent = step.text;
-
-                const targetRect = targetElement.getBoundingClientRect();
-                const tooltipRect = tooltip.getBoundingClientRect();
-
-                let top, left;
-
-                // Simple logic to position the tooltip
-                if (targetRect.bottom + tooltipRect.height < window.innerHeight) {
-                    // Position below target
-                    top = targetRect.bottom + 10;
-                    left = targetRect.left;
-                } else if (targetRect.top - tooltipRect.height > 0) {
-                    // Position above target
-                    top = targetRect.top - tooltipRect.height - 10;
-                    left = targetRect.left;
-                } else { // Fallback to center
-                    top = (window.innerHeight - tooltipRect.height) / 2;
-                    left = (window.innerWidth - tooltipRect.width) / 2;
-                }
-
-                // Adjust for out-of-bounds
-                if (top < 0) top = 10;
-                if (left < 0) left = 10;
-                if (left + tooltipRect.width > window.innerWidth) left = window.innerWidth - tooltipRect.width - 10;
-                if (top + tooltipRect.height > window.innerHeight) top = window.innerHeight - tooltipRect.height - 10;
-
-                tooltip.style.top = `${top + window.scrollY}px`;
-                tooltip.style.left = `${left}px`;
-                tooltip.classList.add('visible');
-            } else {
-                console.error(`Tour target not found: ${step.target}`);
-                nextTourStep();
-            }
-        }
-        function hideTourTooltip() {
-            document.getElementById('tourTooltip').classList.remove('visible');
-            document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
-        }
-        function nextTourStep() {
-            currentTourStep++;
-            if (currentTourStep < tourSteps.length) {
-                showTourStep(currentTourStep);
-            } else {
-                hideTourTooltip();
-                clearInterval(tourInterval);
-                currentTourStep = -1;
-            }
-        }
-        
-        // --- Initialization ---
-        window.onload = () => {
-            setupCanvas();
-            handleRouting();
-        };
-        window.onresize = setupCanvas;
+        window.onload = handleRouting;
     </script>
 </body>
 </html>
