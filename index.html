@@ -6,1456 +6,2217 @@
     <title>Fluxionics - Simulador Profesional de Circuitos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* CSS Variables for Theming */
-        :root {
-            --bg-color: #0a0e14;
-            --primary-bg: #1a1f2e;
-            --secondary-bg: #21262d;
-            --border-color: #30363d;
-            --text-color: #e6edf3;
-            --accent-color: #00d4ff;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --shadow-accent: rgba(0, 212, 255, 0.3);
-            --logo-color: #00d4ff;
-            --canvas-bg: #1a1f2e;
-            --grid-color: rgba(48, 54, 61, 0.6);
-            --placeholder-text: #8b949e;
+        /*
+         * Estilos CSS para el diseño completo de la aplicación.
+         * Se incluyen todas las secciones: pantalla de inicio, simulador, Cal Flux, tutorial y clases.
+         * Los estilos están diseñados para ser modernos, oscuros y con un tema de alta tecnología.
+         */
+
+        /* Reset y Estilos Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body.light-theme {
-            --bg-color: #f0f2f5;
-            --primary-bg: #ffffff;
-            --secondary-bg: #e2e4e6;
-            --border-color: #d1d5db;
-            --text-color: #1f2937;
-            --accent-color: #007bff;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            --shadow-accent: rgba(0, 123, 255, 0.3);
-            --logo-color: #007bff;
-            --canvas-bg: #f8f9fa;
-            --grid-color: rgba(209, 213, 219, 0.8);
-            --placeholder-text: #6b7280;
-        }
-
-        /* Base Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-color); color: var(--text-color);
-            transition: background 0.3s ease, color 0.3s ease;
-            display: flex; flex-direction: column; overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e14;
+            color: #e6edf3;
+            overflow: hidden;
+            line-height: 1.6;
         }
-        
-        /* Loading overlay */
-        #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            display: none;
+
+        /* Pantalla de Inicio */
+        .start-screen {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            gap: 20px;
-            font-size: 1.5em;
-            z-index: 10000;
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0e14 100%);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid var(--accent-color);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Animated Background Canvas */
-        #animatedBackground {
-            position: fixed;
+        .start-screen::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.2;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,0 L10,5 M10,15 L10,20 M0,10 L5,10 M15,10 L20,10" stroke="%2300d4ff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>') repeat;
+            opacity: 0.05;
+            z-index: 0;
         }
 
-        /* Screen Management */
-        .screen {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            flex-direction: column;
+        .logo-container {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 50px;
         }
-        .screen.active { display: flex; }
-        
-        /* Start Screen */
-        #startScreen {
-            align-items: center; justify-content: center;
-            background: radial-gradient(ellipse at center, var(--primary-bg) 0%, var(--bg-color) 100%);
-            padding: 40px; text-align: center; position: relative; overflow-y: auto;
-        }
-        
+
         .main-logo {
-            width: 150px; height: 150px; margin: 0 auto 20px;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
             background-image: url('https://imgur.com/pxjxVqC.png');
-            background-size: contain; background-repeat: no-repeat;
-            background-position: center; animation: logoFloat 6s ease-in-out infinite;
-            border-radius: 20px; box-shadow: 0 0 30px var(--shadow-accent);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: logoFloat 6s ease-in-out infinite;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
         }
+
         @keyframes logoFloat {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-15px) rotate(3deg); }
         }
+
         .app-title {
-            font-family: 'Orbitron', sans-serif; font-size: 4.5em; font-weight: 900;
-            color: var(--logo-color); text-shadow: 0 0 30px var(--shadow-accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5em;
+            font-weight: 900;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            letter-spacing: 4px;
+            background: linear-gradient(45deg, #00d4ff, #ffffff, #00d4ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 3s ease-in-out infinite;
         }
-        .app-subtitle { font-size: 1.4em; color: var(--placeholder-text); font-weight: 500; margin-bottom: 40px; }
-        
-        /* New horizontal button layout */
-        .start-buttons-wrapper {
+
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .app-subtitle {
+            font-size: 1.4em;
+            color: #8b949e;
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+
+        .feature-highlights {
             display: flex;
+            gap: 40px;
+            margin-bottom: 50px;
+            z-index: 1;
+            position: relative;
             flex-wrap: wrap;
             justify-content: center;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+            min-width: 180px;
+        }
+
+        .feature-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .feature-item i {
+            font-size: 2em;
+            color: #00d4ff;
+        }
+
+        .feature-item span {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #c9d1d9;
+            text-align: center;
+        }
+
+        .start-options {
+            display: flex;
+            gap: 30px;
+            z-index: 1;
+            position: relative;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .start-button {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .start-button.primary {
+            background: linear-gradient(45deg, #00d4ff, #0088cc);
+            color: #0a0e14;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .start-button.primary:hover {
+            background: linear-gradient(45deg, #00e6ff, #00a3e6);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 212, 255, 0.4);
+        }
+
+        .start-button.secondary {
+            background: rgba(22, 27, 34, 0.8);
+            border: 2px solid #30363d;
+            color: #e6edf3;
+            backdrop-filter: blur(10px);
+        }
+
+        .start-button.secondary:hover {
+            background: rgba(33, 38, 45, 0.9);
+            border-color: #00d4ff;
+            color: #00d4ff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Contenedor de la Aplicación */
+        .app-container {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            background: #0a0e14;
+        }
+
+        /* Header (Encabezado) */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 1000;
+            border-bottom: 1px solid #30363d;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
             gap: 15px;
         }
-        .start-button {
-            padding: 18px 35px; border: none; border-radius: 12px; font-size: 1.2em; font-weight: 700;
-            cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;
-            gap: 12px; text-transform: uppercase; letter-spacing: 1px; min-width: 250px; justify-content: center;
-            flex-grow: 1;
-        }
-        @media (max-width: 768px) {
-            .start-buttons-wrapper {
-                flex-direction: column;
-            }
-        }
-        
-        .start-button.primary {
-            background: linear-gradient(45deg, var(--accent-color), #0088cc); color: var(--bg-color);
-            box-shadow: 0 8px 25px var(--shadow-accent);
-        }
-        .start-button.primary:hover {
-            background: linear-gradient(45deg, #00e6ff, #00a3e6); transform: translateY(-3px);
-            box-shadow: 0 12px 35px var(--shadow-accent);
-        }
-        .start-button.secondary {
-            background: var(--secondary-bg); color: var(--text-color); border: 2px solid var(--border-color);
-            box-shadow: 0 4px 15px var(--shadow-color);
-        }
-        .start-button.secondary:hover {
-            border-color: var(--accent-color); background: var(--border-color); transform: translateY(-3px);
-            box-shadow: 0 8px 20px var(--shadow-accent);
-        }
-        .start-footer {
-            font-size: 12px; color: var(--placeholder-text);
-            margin-top: 40px;
-        }
-        
-        /* Main App Container */
-        #appContainer { flex-direction: column; height: 100vh; background: var(--bg-color); }
 
-        /* Header */
-        .header {
-            height: 70px;
-            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; z-index: 1000; border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px var(--shadow-color);
+        .header-center {
+            display: flex;
+            align-items: center;
         }
-        .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
+
         .menu-btn {
-            width: 50px; height: 50px; background: none; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 12px; transition: background 0.2s; color: var(--text-color); font-size: 18px;
+            width: 50px;
+            height: 50px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: background 0.2s;
+            color: #e6edf3;
+            font-size: 18px;
         }
-        .menu-btn:hover { background: rgba(0, 212, 255, 0.1); }
-        .menu-btn.active {
-            background: var(--accent-color);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px var(--shadow-accent);
+
+        .menu-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
         }
-        .logo { display: flex; align-items: center; gap: 12px; }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .logo-img {
-            width: 40px; height: 40px; background-image: url('https://imgur.com/pxjxVqC.png');
-            background-size: contain; background-repeat: no-repeat; background-position: center;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://imgur.com/pxjxVqC.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             border-radius: 8px;
         }
-        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; color: var(--logo-color); }
-        
-        /* Main Content */
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .simulation-controls {
+            display: flex;
+            gap: 10px;
+            background: rgba(48, 54, 61, 0.8);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+        }
+
+        .control-btn {
+            width: 45px;
+            height: 45px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+            color: #e6edf3;
+            font-size: 16px;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .control-btn.active {
+            background: linear-gradient(45deg, #00d4ff, #0088cc);
+            color: #0a0e14;
+        }
+
+        /* Contenido Principal */
         .main-content {
             display: flex;
             height: calc(100vh - 70px);
-            width: 100%;
+            margin-top: 70px;
         }
 
-        /* Main Menu Sidebar */
-        .main-sidebar {
-            width: 320px;
-            background: rgba(22, 27, 34, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-right: 1px solid var(--border-color);
-            overflow-y: auto;
-            flex-shrink: 0;
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(-100%);
-            position: absolute;
-            top: 70px;
-            left: 0;
-            height: calc(100% - 70px);
-            z-index: 1500;
-        }
-        .main-sidebar.open { transform: translateX(0); }
-        .sidebar-title {
-            font-size: 14px; font-weight: 700; color: var(--accent-color); margin-bottom: 20px;
-            text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 8px;
-        }
-        .sidebar-links a {
-            display: block; padding: 12px; border-radius: 8px; color: var(--text-color); text-decoration: none;
-            transition: background 0.2s; font-weight: 500;
-        }
-        .sidebar-links a:hover { background: var(--border-color); }
-        .theme-toggle-container {
-            display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);
-        }
-        .theme-btn {
-            flex: 1; padding: 12px; border: 2px solid var(--border-color); border-radius: 12px;
-            background: var(--primary-bg); color: var(--text-color); font-weight: 600; cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .theme-btn:hover { border-color: var(--accent-color); background: var(--secondary-bg); }
-        .theme-btn.active {
-            border-color: var(--accent-color); background: var(--accent-color); color: var(--bg-color);
-            box-shadow: 0 0 15px var(--shadow-accent);
-        }
-
-        /* Components Sidebar (Always Open) */
+        /* Barra lateral de Componentes */
         .components-sidebar {
             width: 320px;
             background: rgba(22, 27, 34, 0.95);
             backdrop-filter: blur(10px);
             padding: 20px;
-            border-right: 1px solid var(--border-color);
+            border-right: 1px solid #30363d;
             overflow-y: auto;
             flex-shrink: 0;
-            z-index: 1000;
         }
-        .component-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .component-item {
-            width: 85px; height: 85px; background: var(--secondary-bg); border-radius: 12px;
-            cursor: grab; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; transition: all 0.3s ease; border: 2px solid transparent;
-        }
-        .component-item:hover { background: var(--border-color); border-color: var(--accent-color); }
-        .component-item .component-icon { font-size: 24px; margin-bottom: 5px; }
-        .component-item .component-name { font-size: 12px; text-align: center; }
 
-        /* Canvas Container */
+        .search-container {
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            color: #8b949e;
+            z-index: 1;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            background: rgba(48, 54, 61, 0.6);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            color: #e6edf3;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(48, 54, 61, 0.8);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .component-category {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .component-item {
+            width: 85px;
+            height: 85px;
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .component-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .component-item:hover::before {
+            left: 100%;
+        }
+
+        .component-item:hover {
+            background: rgba(48, 54, 61, 0.9);
+            border-color: #00d4ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .component-item.selected {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .component-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .component-item:hover .component-icon {
+            background: rgba(0, 212, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .component-name {
+            font-size: 11px;
+            color: #c9d1d9;
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* Contenedor del Lienzo */
         .canvas-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: var(--bg-color);
+            background: #0a0e14;
+            position: relative;
+        }
+
+        .canvas-toolbar {
+            height: 60px;
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 5px;
+            background: rgba(48, 54, 61, 0.6);
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .tool-btn {
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+            color: #e6edf3;
+        }
+
+        .tool-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .tool-btn.active {
+            background: #00d4ff;
+            color: #0a0e14;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(48, 54, 61, 0.6);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .zoom-btn {
+            width: 35px;
+            height: 35px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+            color: #e6edf3;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .zoom-level {
+            font-size: 12px;
+            color: #8b949e;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .canvas-area {
+            flex: 1;
             position: relative;
             overflow: hidden;
+            border: none;
         }
-        .canvas-toolbar {
-            height: 60px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; flex-shrink: 0;
-        }
-        .tool-group { display: flex; gap: 5px; background: rgba(48, 54, 61, 0.6); padding: 5px; border-radius: 10px; }
-        .tool-btn {
-            width: 40px; height: 40px; background: none; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px; transition: all 0.2s; color: var(--text-color); font-size: 16px;
-        }
-        .tool-btn:hover { background: rgba(0, 212, 255, 0.2); color: var(--accent-color); }
-        .tool-btn.active { background: var(--accent-color); color: var(--bg-color); }
         
-        #simulatorCanvas {
-            flex-grow: 1;
-            position: relative;
+        .placed-component {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #30363d;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+        
+        .placed-component:hover {
+            border-color: #00e6ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        
+        .placed-component.selected {
+            border-color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+            z-index: 10;
+        }
+        
+        .placed-component .icon {
+            font-size: 24px;
+            color: #ffffff;
+        }
+        
+        #circuitCanvas {
+            width: 100%;
+            height: 100%;
             cursor: crosshair;
-            background-color: var(--canvas-bg);
-            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background: 
+                radial-gradient(circle at 20px 20px, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 0px 0px, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
             background-size: 20px 20px;
         }
-        #wires-container {
+
+        .grid-overlay {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             pointer-events: none;
-            z-index: 5;
-        }
-        
-        /* Component on canvas visual */
-        .component-visual {
-            position: absolute; background: var(--secondary-bg); width: 85px; height: 85px; cursor: move; user-select: none; z-index: 10;
-            border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 5px 15px var(--shadow-color);
-        }
-        .component-visual .comp-icon { font-size: 24px; margin-bottom: 5px; }
-        .component-visual .comp-label {
-            font-size: 12px; text-align: center; color: var(--text-color);
-        }
-        .component-visual .pin {
-            position: absolute; width: 8px; height: 8px; background-color: var(--accent-color); border-radius: 50%; border: 1px solid var(--text-color);
-            cursor: crosshair; z-index: 15;
-            pointer-events: all; /* Make pins clickable */
-        }
-        .component-visual .pin:hover {
-            transform: scale(1.5);
-            box-shadow: 0 0 8px var(--shadow-accent);
-        }
-        .wire {
-            position: absolute; height: 2px; background-color: var(--accent-color); transform-origin: 0 0;
-            box-shadow: 0 0 5px var(--shadow-accent);
-        }
-        /* Drag ghost for components */
-        .drag-ghost {
-            position: absolute;
-            opacity: 0.7;
-            pointer-events: none;
-            z-index: 2000;
+            opacity: 0.1;
         }
 
-        /* New screen for class management */
-        .class-screen {
+        .status-bar {
+            height: 40px;
+            background: rgba(13, 17, 23, 0.95);
+            border-top: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-size: 12px;
+        }
+
+        .status-info {
+            color: #8b949e;
+        }
+        
+        .status-info.short-circuit {
+            color: #ff6b6b;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .simulation-stats {
+            display: flex;
+            gap: 20px;
+            color: #8b949e;
+        }
+
+        .simulation-stats span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Panel de Propiedades */
+        .properties-panel {
+            width: 300px;
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid #30363d;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
             display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .panel-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(ellipse at center, var(--primary-bg) 0%, var(--bg-color) 100%);
-            z-index: 100;
-            padding: 2rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            color: #8b949e;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6b6b;
+        }
+
+        .panel-content {
+            color: #8b949e;
+        }
+        
+        .property-group {
+            margin-bottom: 15px;
+        }
+        
+        .property-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #c9d1d9;
+        }
+        
+        .property-group input, .property-group select {
+            width: 100%;
+            padding: 8px;
+            background: #30363d;
+            border: 1px solid #444c56;
+            border-radius: 6px;
+            color: #e6edf3;
+        }
+
+        /* Menú Lateral */
+        .sidebar-menu {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(22, 27, 34, 0.98);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid #30363d;
+            z-index: 2000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-menu.open {
+            left: 0;
+        }
+
+        .menu-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .menu-header h3 {
+            font-size: 20px;
+            color: #00d4ff;
+            font-weight: 700;
+        }
+
+        .close-menu-btn {
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+            color: #8b949e;
+            font-size: 18px;
+        }
+
+        .close-menu-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6b6b;
+        }
+
+        .menu-items {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e6edf3;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-left-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .menu-item i {
+            width: 20px;
             text-align: center;
         }
-        .class-screen.active {
-            display: flex;
+        
+        /* Sección de Clases */
+        .class-section {
+            display: none;
+            padding: 20px;
+            background: rgba(22, 27, 34, 0.95);
+            border-radius: 12px;
+            margin: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            z-index: 2500;
         }
-        .class-screen-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3em;
+
+        .class-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .class-header h2 {
+            font-size: 24px;
+            color: #00d4ff;
             font-weight: 700;
-            color: var(--logo-color);
-            margin-bottom: 1rem;
         }
-        .class-screen-subtitle {
-            font-size: 1.2em;
-            color: var(--placeholder-text);
-            margin-bottom: 2rem;
-        }
-        .class-button-wrapper {
+
+        .class-role-selector {
             display: flex;
-            gap: 1rem;
+            gap: 15px;
+            margin-bottom: 25px;
         }
-        .class-button {
-            padding: 1rem 2rem;
-            border-radius: 0.75rem;
-            font-size: 1.2em;
+        
+        .class-role-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #30363d;
+            background: rgba(33, 38, 45, 0.8);
+            color: #e6edf3;
+            font-size: 1.1em;
             font-weight: 600;
-            color: var(--bg-color);
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .class-button.teacher {
-            background: linear-gradient(45deg, #3b82f6, #60a5fa);
-        }
-        .class-button.teacher:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(45deg, #1e40af, #2563eb);
-        }
-        .class-button.student {
-            background: linear-gradient(45deg, #10b981, #34d399);
-        }
-        .class-button.student:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(45deg, #047857, #059669);
-        }
-        .back-button {
-            margin-top: 2rem;
-            color: var(--placeholder-text);
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-        .back-button:hover {
-            color: var(--text-color);
         }
         
-        .form-screen {
+        .class-role-btn:hover {
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .class-role-btn.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .class-form {
             display: none;
+        }
+        
+        .class-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #c9d1d9;
+        }
+        
+        .class-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: #30363d;
+            border: 1px solid #444c56;
+            border-radius: 8px;
+            color: #e6edf3;
+        }
+        
+        .class-form input:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        
+        .class-form button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #00d4ff, #0088cc);
+            color: #0a0e14;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .class-form button:hover {
+            background: linear-gradient(45deg, #00e6ff, #00a3e6);
+        }
+
+        /* Sección Cal Flux */
+        .calflux-section {
+            display: none;
+            padding: 20px;
+            background: rgba(22, 27, 34, 0.95);
+            border-radius: 12px;
+            margin: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 1200px;
+            z-index: 2500;
+        }
+
+        .calflux-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .calflux-header h2 {
+            font-size: 24px;
+            color: #00d4ff;
+            font-weight: 700;
+        }
+
+        /* Tarjetas de Cal Flux */
+        .component-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .component-card {
+            background: rgba(33, 38, 45, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #30363d;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .component-card:hover {
+            background: rgba(0, 212, 255, 0.05);
+            border-color: #00d4ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            color: #00d4ff;
+            font-weight: 700;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00d4ff;
+            font-size: 16px;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            font-size: 13px;
+            color: #c9d1d9;
+        }
+
+        .detail-item strong {
+            color: #8b949e;
+        }
+        
+        .card-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+        
+        .card-list li {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+            font-size: 14px;
+            color: #c9d1d9;
+        }
+        
+        .card-list li::before {
+            content: "\f058";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: #00d4ff;
+            position: absolute;
+            left: 0;
+        }
+
+        .card-description p {
+            font-style: italic;
+            font-size: 14px;
+            color: #8b949e;
+            border-left: 3px solid #30363d;
+            padding-left: 10px;
+        }
+        
+        .resistor-bands {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .resistor-band {
+            width: 20px;
+            height: 50px;
+            border-radius: 5px;
+        }
+
+        /* Sección de Tutorial */
+        .tutorial-section {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(ellipse at center, var(--primary-bg) 0%, var(--bg-color) 100%);
-            z-index: 100;
-        }
-        .form-screen.active {
-            display: flex;
-        }
-        .form-container {
-            background: var(--primary-bg);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            max-width: 400px;
-            width: 90%;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .form-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-        }
-        .form-submit-button {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: var(--bg-color);
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .form-submit-button.teacher {
-            background: linear-gradient(45deg, #3b82f6, #60a5fa);
-        }
-        .form-submit-button.teacher:hover {
-            background: linear-gradient(45deg, #1e40af, #2563eb);
-        }
-        .form-submit-button.student {
-            background: linear-gradient(45deg, #10b981, #34d399);
-        }
-        .form-submit-button.student:hover {
-            background: linear-gradient(45deg, #047857, #059669);
-        }
-
-        /* Arduino Console Screen */
-        #arduinoConsoleScreen, #calFluxScreen {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            flex-direction: column;
-            background: var(--bg-color);
-            z-index: 200;
-        }
-        .app-header {
-            height: 70px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px;
-            background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px var(--shadow-color);
-        }
-        .app-content {
-            display: flex; flex-grow: 1; padding: 20px; gap: 20px;
-        }
-        .code-editor-container {
-            flex: 2; display: flex; flex-direction: column;
-        }
-        .console-output-container {
-            flex: 1; display: flex; flex-direction: column;
-        }
-        .editor-header, .output-header {
-            font-size: 1.2em; font-weight: 600; margin-bottom: 10px; color: var(--accent-color);
-        }
-        .code-editor, .console-output {
-            flex-grow: 1;
-            background: var(--primary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 14px;
-            color: var(--text-color);
-            resize: none;
-            overflow: auto;
-        }
-        .console-output {
-            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 3000;
+            color: #e6edf3;
             overflow-y: auto;
         }
-        .action-buttons {
-            display: flex; gap: 10px; margin-top: 10px;
-        }
-        .action-buttons .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex; align-items: center; gap: 8px;
-            border: none;
-        }
-        .action-buttons .btn.compile { background: #28a745; color: white; }
-        .action-buttons .btn.compile:hover { background: #218838; }
-        .action-buttons .btn.upload { background: #007bff; color: white; }
-        .action-buttons .btn.upload:hover { background: #0069d9; }
-        .back-to-simulator-btn {
-            background: var(--secondary-bg); color: var(--text-color); padding: 10px 15px; border-radius: 8px;
-            border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;
-        }
-        .back-to-simulator-btn:hover { background: var(--border-color); }
-
-        /* Cal Flux Chat screen */
-        .chat-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--secondary-bg);
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 20px;
-            gap: 1rem;
-            overflow: hidden;
-        }
-        .chat-messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            padding: 10px;
-            background: var(--primary-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-        .message {
-            max-width: 80%;
-            padding: 10px;
+        
+        .tutorial-content {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(22, 27, 34, 0.95);
             border-radius: 12px;
-            word-wrap: break-word;
+            border: 1px solid #30363d;
+            position: relative;
         }
-        .user-message {
-            align-self: flex-end;
-            background-color: var(--accent-color);
-            color: var(--bg-color);
+        
+        .tutorial-content h2 {
+            font-size: 2.5em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 10px;
         }
-        .ai-message {
-            align-self: flex-start;
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
+        
+        .tutorial-content h3 {
+            font-size: 1.5em;
+            color: #c9d1d9;
+            margin-top: 30px;
+            margin-bottom: 15px;
         }
-        .chat-input-container {
-            display: flex;
-            gap: 10px;
+        
+        .tutorial-content p, .tutorial-content ul {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #8b949e;
+            margin-bottom: 20px;
         }
-        #calFluxInput {
-            flex-grow: 1;
-            background-color: var(--primary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px;
-            color: var(--text-color);
+        
+        .tutorial-content li {
+            margin-bottom: 10px;
         }
-        #calFluxSendBtn {
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        #calFluxSendBtn:hover {
-            background-color: #0088cc;
+        
+        .tutorial-content code {
+            background: #30363d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00d4ff;
         }
 
-        /* Custom Alert Modal */
-        #custom-alert { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:#1e293b; padding:2rem; border-radius:0.75rem; box-shadow:0 10px 15px rgba(0,0,0,0.5); z-index:9999; }
-        #alert-message { color:white; margin-bottom:1rem; text-align:center; }
-        #alert-ok-button { background-color:#3b82f6; color:white; padding:0.5rem 1rem; border:none; border-radius:0.5rem; cursor:pointer; }
+        /* Diseño Adaptable (Responsive) */
+        @media (max-width: 1200px) {
+            .feature-highlights {
+                gap: 20px;
+            }
+            
+            .feature-item {
+                min-width: 150px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-title {
+                font-size: 3em;
+            }
+            
+            .feature-highlights {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .start-options {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .components-sidebar {
+                width: 280px;
+            }
+            
+            .properties-panel {
+                width: 250px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <span>Cargando...</span>
-    </div>
-
-    <!-- Canvas for animated background particles -->
-    <canvas id="animatedBackground"></canvas>
-
-    <!-- Start Screen -->
-    <div id="startScreen" class="screen active">
-        <div class="main-logo"></div>
-        <h1 class="app-title">Fluxionics</h1>
-        <p class="app-subtitle">Simulador Profesional de Circuitos</p>
-        <div class="start-buttons-wrapper">
-            <button id="btn-iniciar-simulador" class="start-button primary">
-                <i class="fas fa-play-circle"></i> INICIAR SIMULADOR
+    <div class="start-screen" id="startScreen">
+        <div class="logo-container">
+            <div class="main-logo"></div>
+            <h1 class="app-title">FLUXIONICS</h1>
+            <p class="app-subtitle">Simulador Profesional de Circuitos</p>
+        </div>
+        
+        <div class="feature-highlights">
+            <div class="feature-item">
+                <i class="fas fa-microchip"></i>
+                <span>Componentes Avanzados</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-bolt"></i>
+                <span>Simulación en Tiempo Real</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-project-diagram"></i>
+                <span>Análisis de Circuitos</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Protección contra Cortocircuitos</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-table"></i>
+                <span>Cal Flux - Documentación</span>
+            </div>
+        </div>
+        
+        <div class="start-options">
+            <button class="start-button primary" onclick="startApplication()">
+                <i class="fas fa-play"></i>
+                Comenzar a Diseñar
             </button>
-            <button id="btn-cal-flux" class="start-button secondary">
-                <i class="fas fa-calculator"></i> CAL FLUX
+            <button class="start-button secondary" onclick="showCalFlux()">
+                <i class="fas fa-table"></i>
+                Cal Flux
             </button>
-            <button id="btn-tutoriales" class="start-button secondary">
-                <i class="fas fa-book-open"></i> TUTORIALES
+            <button class="start-button secondary" onclick="showTutorial()">
+                <i class="fas fa-graduation-cap"></i>
+                Tutorial
             </button>
-            <button id="btn-clases" class="start-button secondary">
-                <i class="fas fa-chalkboard-teacher"></i> CLASES
+            <button class="start-button secondary" onclick="showClassSection()">
+                <i class="fas fa-chalkboard-teacher"></i>
+                Clases
             </button>
         </div>
-        <p class="start-footer">© 2024 Fluxionics. Todos los derechos reservados.</p>
     </div>
 
-    <!-- Main App Interface (Initially hidden) -->
-    <div id="appContainer" class="screen">
-        <!-- HEADER -->
-        <header class="header">
-            <div class="header-left">
-                <button id="toggleMenuBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
-                <div class="logo">
-                    <div class="logo-img"></div>
-                    <span class="logo-text">Fluxionics</span>
+    <div class="calflux-section" id="calfluxSection">
+        <div class="calflux-header">
+            <i class="fas fa-table"></i>
+            <h2>Cal Flux - Documentación de Componentes</h2>
+            <button class="start-button secondary" onclick="hideAllSections()" style="margin-left: auto;">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </button>
+        </div>
+
+        <div class="component-cards-container" id="componentCardsContainer">
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Resistor</h3>
+                    <div class="card-icon"><i class="fas fa-ohm"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Referencia:</strong> R1</div>
+                    <div class="detail-item"><strong>Valor:</strong> 1kΩ</div>
+                    <div class="detail-item"><strong>Tolerancia:</strong> 5%</div>
+                    <div class="detail-item"><strong>Potencia:</strong> 0.25W</div>
+                    <div class="detail-item"><strong>Voltaje:</strong> -</div>
+                </div>
+                <div class="card-description">
+                    <p>Resistor de propósito general</p>
                 </div>
             </div>
-            <div class="header-right">
-                <button id="runSimulationBtn" class="menu-btn active"><i class="fas fa-play"></i></button>
-                <button id="pauseSimulationBtn" class="menu-btn"><i class="fas fa-pause"></i></button>
-                <button id="stopSimulationBtn" class="menu-btn"><i class="fas fa-stop"></i></button>
-                <button id="resetSimulationBtn" class="menu-btn"><i class="fas fa-sync-alt"></i></button>
-            </div>
-        </header>
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <!-- Main Menu Sidebar -->
-            <aside id="mainSidebar" class="main-sidebar">
-                <h3 class="sidebar-title">Menú Principal</h3>
-                <div class="sidebar-links">
-                    <a href="#" id="newProjectLink"><i class="fas fa-file-alt"></i> Nuevo Proyecto</a>
-                    <a href="#" id="openProjectLink"><i class="fas fa-folder-open"></i> Abrir Proyecto</a>
-                    <a href="#" id="saveProjectLink"><i class="fas fa-save"></i> Guardar Proyecto</a>
-                    <a href="#" id="shareLink"><i class="fas fa-share-alt"></i> Compartir</a>
-                    <a href="#" id="exportLink"><i class="fas fa-download"></i> Exportar como PDF</a>
-                    <a href="#" id="settingsLink"><i class="fas fa-cog"></i> Configuraciones</a>
-                    <a href="#" id="startTourBtn"><i class="fas fa-info-circle"></i> Recorrido Rápido</a>
+
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Capacitor</h3>
+                    <div class="card-icon"><i class="fas fa-bolt"></i></div>
                 </div>
-                <div class="theme-toggle-container">
-                    <button id="lightThemeBtn" class="theme-btn">Claro</button>
-                    <button id="darkThemeBtn" class="theme-btn active">Oscuro</button>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Referencia:</strong> C1</div>
+                    <div class="detail-item"><strong>Valor:</strong> 100µF</div>
+                    <div class="detail-item"><strong>Tolerancia:</strong> 20%</div>
+                    <div class="detail-item"><strong>Potencia:</strong> -</div>
+                    <div class="detail-item"><strong>Voltaje:</strong> 25V</div>
                 </div>
-            </aside>
-            <!-- Components Sidebar -->
-            <aside class="components-sidebar">
-                <h3 class="sidebar-title">Componentes</h3>
-                <div class="component-grid">
-                    <div class="component-item" data-component-id="resistor" data-name="Resistor">
-                        <i class="fas fa-battery-three-quarters component-icon"></i>
-                        <span class="component-name">Resistencia</span>
-                    </div>
-                    <div class="component-item" data-component-id="capacitor" data-name="Capacitor">
-                        <i class="fas fa-bolt component-icon"></i>
-                        <span class="component-name">Condensador</span>
-                    </div>
-                    <div class="component-item" data-component-id="inductor" data-name="Inductor">
-                        <i class="fas fa-power-off component-icon"></i>
-                        <span class="component-name">Inductor</span>
-                    </div>
-                    <div class="component-item" data-component-id="voltage-source" data-name="Voltage Source">
-                        <i class="fas fa-plus-circle component-icon"></i>
-                        <span class="component-name">Fuente de Voltaje</span>
-                    </div>
-                    <div class="component-item" data-component-id="diode" data-name="Diode">
-                        <i class="fas fa-arrow-right component-icon"></i>
-                        <span class="component-name">Diodo</span>
-                    </div>
-                    <div class="component-item" data-component-id="transistor" data-name="Transistor">
-                        <i class="fas fa-microchip component-icon"></i>
-                        <span class="component-name">Transistor</span>
-                    </div>
-                    <div class="component-item" data-component-id="ground" data-name="Ground">
-                        <i class="fas fa-arrows-alt-h component-icon"></i>
-                        <span class="component-name">Tierra</span>
-                    </div>
-                    <div class="component-item" data-component-id="led" data-name="LED">
-                        <i class="fas fa-lightbulb component-icon"></i>
-                        <span class="component-name">LED</span>
-                    </div>
-                    <div class="component-item" data-component-id="switch" data-name="Switch">
-                        <i class="fas fa-toggle-on component-icon"></i>
-                        <span class="component-name">Interruptor</span>
-                    </div>
-                </div>
-            </aside>
-            <!-- Canvas and Toolbar -->
-            <div class="canvas-container">
-                <div class="canvas-toolbar">
-                    <div class="tool-group">
-                        <button id="selectToolBtn" class="tool-btn active"><i class="fas fa-mouse-pointer"></i></button>
-                        <button id="connectToolBtn" class="tool-btn"><i class="fas fa-link"></i></button>
-                        <button id="eraserToolBtn" class="tool-btn"><i class="fas fa-eraser"></i></button>
-                        <button class="tool-btn"><i class="fas fa-undo"></i></button>
-                        <button class="tool-btn"><i class="fas fa-redo"></i></button>
-                    </div>
-                    <div class="tool-group">
-                        <button class="tool-btn"><i class="fas fa-magnifying-glass-plus"></i></button>
-                        <button class="tool-btn"><i class="fas fa-magnifying-glass-minus"></i></button>
-                        <button class="tool-btn"><i class="fas fa-expand"></i></button>
-                    </div>
-                    <div class="tool-group">
-                        <button class="tool-btn"><i class="fas fa-table"></i></button>
-                        <button class="tool-btn"><i class="fas fa-chart-line"></i></button>
-                        <button id="arduinoConsoleBtn" class="tool-btn"><i class="fas fa-terminal"></i></button>
-                    </div>
-                </div>
-                <div id="simulatorCanvas">
-                    <div id="wires-container"></div>
+                <div class="card-description">
+                    <p>Capacitor electrolítico</p>
                 </div>
             </div>
+
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>LED</h3>
+                    <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Referencia:</strong> D1</div>
+                    <div class="detail-item"><strong>Valor:</strong> -</div>
+                    <div class="detail-item"><strong>Tolerancia:</strong> -</div>
+                    <div class="detail-item"><strong>Potencia:</strong> 0.1W</div>
+                    <div class="detail-item"><strong>Voltaje:</strong> 2.1V</div>
+                </div>
+                <div class="card-description">
+                    <p>LED rojo estándar</p>
+                </div>
+            </div>
+            
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Batería</h3>
+                    <div class="card-icon"><i class="fas fa-battery-three-quarters"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Referencia:</strong> BAT1</div>
+                    <div class="detail-item"><strong>Valor:</strong> 9V</div>
+                    <div class="detail-item"><strong>Tolerancia:</strong> -</div>
+                    <div class="detail-item"><strong>Potencia:</strong> -</div>
+                    <div class="detail-item"><strong>Voltaje:</strong> 9V</div>
+                </div>
+                <div class="card-description">
+                    <p>Batería alcalina</p>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Colores de Resistencia</h3>
+                    <div class="card-icon"><i class="fas fa-palette"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Negro:</strong> 0</div>
+                    <div class="detail-item"><strong>Marrón:</strong> 1</div>
+                    <div class="detail-item"><strong>Rojo:</strong> 2</div>
+                    <div class="detail-item"><strong>Naranja:</strong> 3</div>
+                    <div class="detail-item"><strong>Amarillo:</strong> 4</div>
+                    <div class="detail-item"><strong>Verde:</strong> 5</div>
+                    <div class="detail-item"><strong>Azul:</strong> 6</div>
+                    <div class="detail-item"><strong>Violeta:</strong> 7</div>
+                    <div class="detail-item"><strong>Gris:</strong> 8</div>
+                    <div class="detail-item"><strong>Blanco:</strong> 9</div>
+                </div>
+                <div class="resistor-bands">
+                    <div class="resistor-band" style="background-color: maroon;"></div>
+                    <div class="resistor-band" style="background-color: black;"></div>
+                    <div class="resistor-band" style="background-color: orange;"></div>
+                    <div class="resistor-band" style="background-color: gold; width: 10px;"></div>
+                </div>
+            </div>
+            
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Voltaje Sinusoidal</h3>
+                    <div class="card-icon"><i class="fas fa-wave-square"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Valor Pico (Vp):</strong> Máxima amplitud de la onda.</div>
+                    <div class="detail-item"><strong>Valor RMS (Vrms):</strong> Equivalente a la potencia de DC.</div>
+                    <div class="detail-item"><strong>Frecuencia (f):</strong> Número de ciclos por segundo (Hz).</div>
+                    <div class="detail-item"><strong>Período (T):</strong> Duración de un ciclo completo (T = 1/f).</div>
+                </div>
+                <div class="card-description">
+                    <p>Fórmula: V(t) = Vp * sin(2πft)</p>
+                </div>
+            </div>
+            
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Código de Resistencias SMD</h3>
+                    <div class="card-icon"><i class="fas fa-barcode"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Código de 3 dígitos:</strong> Los primeros 2 son el valor, el 3ro es el multiplicador (número de ceros). Ej: 102 = 1000 Ω (1kΩ).</div>
+                    <div class="detail-item"><strong>Código de 4 dígitos:</strong> Los primeros 3 son el valor, el 4to es el multiplicador. Ej: 4702 = 47kΩ.</div>
+                    <div class="detail-item"><strong>Código EIA-96:</strong> Combina 2 dígitos para el valor y una letra para el multiplicador.</div>
+                </div>
+                <div class="card-description">
+                    <p>Guía rápida para la lectura de resistencias de montaje superficial.</p>
+                </div>
+            </div>
+            
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Código de Inductores</h3>
+                    <div class="card-icon"><i class="fas fa-magnet"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Primeros 2 dígitos:</strong> Valor numérico.</div>
+                    <div class="detail-item"><strong>Tercer dígito:</strong> Multiplicador (en µH).</div>
+                </div>
+                <div class="card-description">
+                    <p>Ejemplo: Un código 102 significa 10 x 10^2 = 1000 µH (1 mH).</p>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <div class="card-header">
+                    <h3>Pin-outs (Op-Amp)</h3>
+                    <div class="card-icon"><i class="fas fa-microchip"></i></div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><strong>Pin 2:</strong> Entrada Inversora (-)</div>
+                    <div class="detail-item"><strong>Pin 3:</strong> Entrada No Inversora (+)</div>
+                    <div class="detail-item"><strong>Pin 4:</strong> V- (Voltaje Negativo)</div>
+                    <div class="detail-item"><strong>Pin 6:</strong> Salida</div>
+                    <div class="detail-item"><strong>Pin 7:</strong> V+ (Voltaje Positivo)</div>
+                </div>
+                <div class="card-description">
+                    <p>Configuración básica del popular amplificador operacional LM741.</p>
+                </div>
+            </div>
+
         </div>
     </div>
     
-    <!-- Class Management Screens -->
-    <div id="roleSelectionScreen" class="class-screen">
-        <h2 class="class-screen-title">Acceso a Clases</h2>
-        <p class="class-screen-subtitle">Selecciona tu rol para continuar:</p>
-        <div class="class-button-wrapper">
-            <button id="btn-teacher-role" class="class-button teacher">
-                <i class="fas fa-user-tie"></i> Soy Profesor
+    <div class="tutorial-section" id="tutorialSection">
+        <div class="tutorial-content">
+            <button class="close-menu-btn" onclick="hideAllSections()" style="position: absolute; top: 20px; right: 20px;">
+                <i class="fas fa-times"></i>
             </button>
-            <button id="btn-student-role" class="class-button student">
-                <i class="fas fa-user-graduate"></i> Soy Alumno
+            <h2>Tutorial de Fluxionics</h2>
+            <p>Bienvenido al tutorial de Fluxionics. Aquí te explicamos cómo utilizar las principales funciones de nuestra plataforma de simulación.</p>
+            
+            <h3>1. Diseño del Circuito</h3>
+            <ul>
+                <li><strong>Añadir Componentes:</strong> En la barra lateral izquierda, encontrarás las categorías de componentes. Haz clic en un componente para seleccionarlo y luego haz clic en el área de trabajo para colocarlo.</li>
+                <li><strong>Conectar Componentes:</strong> Selecciona la herramienta de 'Cable' (<i class="fas fa-route"></i>) en la barra de herramientas superior. Haz clic en el pin de un componente y luego en el pin de otro para crear una conexión.</li>
+                <li><strong>Editar Propiedades:</strong> Con la herramienta de 'Selección' (<i class="fas fa-mouse-pointer"></i>) activada, haz doble clic en un componente para abrir el panel de propiedades a la derecha. Allí podrás ajustar valores como la resistencia, el voltaje, etc.</li>
+            </ul>
+            
+            <h3>2. Simulación</h3>
+            <ul>
+                <li><strong>Iniciar/Pausar:</strong> Usa el botón de 'Reproducir' (<i class="fas fa-play"></i>) para iniciar la simulación. El botón cambiará a 'Pausa' (<i class="fas fa-pause"></i>) para que puedas detenerla temporalmente.</li>
+                <li><strong>Detener/Reiniciar:</strong> El botón de 'Detener' (<i class="fas fa-stop"></i>) detiene la simulación y reinicia todos los valores.</li>
+                <li><strong>Estado de la Simulación:</strong> En la barra de estado inferior, verás los valores de voltaje, corriente y potencia en tiempo real. Si hay un cortocircuito, la barra de estado te lo notificará con una alerta.</li>
+            </ul>
+            
+            <h3>3. Guardar y Exportar</h3>
+            <ul>
+                <li><strong>Guardar:</strong> Usa el botón 'Guardar' (<i class="fas fa-save"></i>) en el menú o la cabecera para guardar tu circuito como un archivo <code>.json</code>.</li>
+                <li><strong>Abrir:</strong> Para cargar un circuito previamente guardado, haz clic en 'Abrir' (<i class="fas fa-folder-open"></i>).</li>
+                <li><strong>Exportar:</strong> El botón 'Exportar Imagen' (<i class="fas fa-image"></i>) en el menú te permitirá guardar una imagen de tu circuito. Para exportar tu circuito a un formato de texto (como XML), usa el botón 'Exportar Circuito' en la cabecera.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="class-section" id="classSection">
+        <div class="class-header">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <h2>Clases</h2>
+            <button class="start-button secondary" onclick="hideAllSections()" style="margin-left: auto;">
+                <i class="fas fa-arrow-left"></i>
+                Volver
             </button>
         </div>
-        <a href="#" id="backToStartScreen" class="back-button"><i class="fas fa-arrow-left"></i> Volver al Menú Principal</a>
-    </div>
-
-    <div id="createRoomScreen" class="form-screen">
-        <div class="form-container">
-            <h3 class="form-title">Crear una Sala de Clase</h3>
-            <form id="create-room-form">
-                <input type="text" id="teacher-name" class="form-input" placeholder="Tu Nombre" required>
-                <input type="password" id="room-password" class="form-input" placeholder="Contraseña de la Sala" required>
-                <button type="submit" class="form-submit-button teacher">Crear Sala</button>
-            </form>
-            <a href="#" id="backToRoleSelectionFromTeacher" class="back-button"><i class="fas fa-arrow-left"></i> Volver</a>
+        
+        <div class="class-role-selector">
+            <button class="class-role-btn" id="professorBtn" onclick="showForm('professor')">Soy Profesor</button>
+            <button class="class-role-btn" id="studentBtn" onclick="showForm('student')">Soy Alumno</button>
+        </div>
+        
+        <div class="class-form" id="professorForm">
+            <label for="profName">Nombre del Profesor:</label>
+            <input type="text" id="profName">
+            <label for="profRoomId">ID de la Sala:</label>
+            <input type="text" id="profRoomId" readonly>
+            <label for="profPassword">Contraseña:</label>
+            <input type="password" id="profPassword">
+            <button onclick="createClass()">Crear Clase</button>
+        </div>
+        
+        <div class="class-form" id="studentForm">
+            <label for="studentName">Nombre del Alumno:</label>
+            <input type="text" id="studentName">
+            <label for="studentRoomId">ID de la Sala:</label>
+            <input type="text" id="studentRoomId">
+            <label for="studentPassword">Contraseña de la Sala:</label>
+            <input type="password" id="studentPassword">
+            <button onclick="joinClass()">Unirse a Clase</button>
         </div>
     </div>
 
-    <div id="joinRoomScreen" class="form-screen">
-        <div class="form-container">
-            <h3 class="form-title">Unirse a una Sala de Clase</h3>
-            <form id="join-room-form">
-                <input type="text" id="student-name" class="form-input" placeholder="Tu Nombre" required>
-                <input type="text" id="room-id" class="form-input" placeholder="ID de la Sala" required>
-                <input type="password" id="room-password-join" class="form-input" placeholder="Contraseña de la Sala" required>
-                <button type="submit" class="form-submit-button student">Unirse a la Sala</button>
-            </form>
-            <a href="#" id="backToRoleSelectionFromStudent" class="back-button"><i class="fas fa-arrow-left"></i> Volver</a>
-        </div>
-    </div>
 
-    <!-- Arduino Console Screen -->
-    <div id="arduinoConsoleScreen" class="screen">
-        <header class="app-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <i class="fas fa-terminal" style="font-size:24px; color:var(--accent-color);"></i>
-                <h2 style="font-family:'Orbitron', sans-serif; font-weight:700;">Arduino Console</h2>
+    <div class="app-container" id="appContainer">
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="logo">
+                    <div class="logo-img"></div>
+                    <span class="logo-text">FLUXIONICS</span>
+                </div>
             </div>
-            <button id="backToSimulatorBtn" class="back-to-simulator-btn">
-                <i class="fas fa-arrow-left"></i> Volver al Simulador
-            </button>
+            
+            <div class="header-center">
+                <div class="simulation-controls">
+                    <button class="control-btn" id="playBtn" onclick="toggleSimulation()">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" onclick="pauseSimulation()">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="control-btn" onclick="resetSimulation()">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="control-btn" onclick="saveCircuit()">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button class="control-btn" onclick="loadCircuit()">
+                    <i class="fas fa-folder-open"></i>
+                </button>
+                <button class="control-btn" onclick="exportCircuit()">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
         </header>
-        <div class="app-content">
-            <div class="code-editor-container">
-                <div class="editor-header">Código</div>
-                <textarea class="code-editor" id="arduinoCodeEditor" placeholder="Escribe tu código de Arduino aquí..."></textarea>
-                <div class="action-buttons">
-                    <button class="btn compile" id="compileBtn"><i class="fas fa-cogs"></i> Compilar</button>
-                    <button class="btn upload" id="uploadBtn"><i class="fas fa-upload"></i> Subir</button>
+
+        <div class="main-content">
+            <div class="components-sidebar">
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar componentes..." id="componentSearch">
+                    </div>
+                </div>
+                
+                <div class="component-categories" id="componentCategories">
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-circle"></i>
+                            Componentes Básicos
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="resistor">
+                                <div class="component-icon">R</div>
+                                <div class="component-name">Resistor</div>
+                            </div>
+                            <div class="component-item" data-component="capacitor">
+                                <div class="component-icon">C</div>
+                                <div class="component-name">Capacitor</div>
+                            </div>
+                            <div class="component-item" data-component="inductor">
+                                <div class="component-icon">L</div>
+                                <div class="component-name">Inductor</div>
+                            </div>
+                            <div class="component-item" data-component="battery">
+                                <div class="component-icon">BAT</div>
+                                <div class="component-name">Batería</div>
+                            </div>
+                            <div class="component-item" data-component="switch">
+                                <div class="component-icon">SW</div>
+                                <div class="component-name">Switch</div>
+                            </div>
+                            <div class="component-item" data-component="ground">
+                                <div class="component-icon">GND</div>
+                                <div class="component-name">Tierra</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-plug"></i>
+                            Componentes de Potencia
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="voltage-source">
+                                <div class="component-icon">V</div>
+                                <div class="component-name">Fuente de Voltaje</div>
+                            </div>
+                            <div class="component-item" data-component="current-source">
+                                <div class="component-icon">I</div>
+                                <div class="component-name">Fuente de Corriente</div>
+                            </div>
+                            <div class="component-item" data-component="motor">
+                                <div class="component-icon">M</div>
+                                <div class="component-name">Motor</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-microchip"></i>
+                            Semiconductores
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="diode">
+                                <div class="component-icon">D</div>
+                                <div class="component-name">Diodo</div>
+                            </div>
+                            <div class="component-item" data-component="led">
+                                <div class="component-icon">LED</div>
+                                <div class="component-name">LED</div>
+                            </div>
+                            <div class="component-item" data-component="transistor">
+                                <div class="component-icon">Q</div>
+                                <div class="component-name">Transistor</div>
+                            </div>
+                            <div class="component-item" data-component="mosfet">
+                                <div class="component-icon">M</div>
+                                <div class="component-name">MOSFET</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-memory"></i>
+                            Circuitos Integrados
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="opamp">
+                                <div class="component-icon">U</div>
+                                <div class="component-name">Op-Amp</div>
+                            </div>
+                            <div class="component-item" data-component="timer555">
+                                <div class="component-icon">555</div>
+                                <div class="component-name">Timer 555</div>
+                            </div>
+                            <div class="component-item" data-component="arduino">
+                                <div class="component-icon">ARD</div>
+                                <div class="component-name">Arduino</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-category">
+                        <div class="category-title">
+                            <i class="fas fa-satellite-dish"></i>
+                            Sensores
+                        </div>
+                        <div class="component-grid">
+                            <div class="component-item" data-component="thermistor">
+                                <div class="component-icon">TH</div>
+                                <div class="component-name">Termistor</div>
+                            </div>
+                            <div class="component-item" data-component="photoresistor">
+                                <div class="component-icon">LDR</div>
+                                <div class="component-name">LDR</div>
+                            </div>
+                            <div class="component-item" data-component="ultrasonic">
+                                <div class="component-icon">US</div>
+                                <div class="component-name">Ultrasónico</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="console-output-container">
-                <div class="output-header">Salida de la Consola</div>
-                <pre class="console-output" id="consoleOutput"></pre>
+
+            <div class="canvas-container">
+                <div class="canvas-toolbar">
+                    <div class="tool-group">
+                        <button class="tool-btn active" data-tool="select" onclick="selectTool('select')">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </button>
+                        <button class="tool-btn" data-tool="wire" onclick="selectTool('wire')">
+                            <i class="fas fa-route"></i>
+                        </button>
+                        <button class="tool-btn" data-tool="delete" onclick="selectTool('delete')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" onclick="zoomIn()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <span class="zoom-level">100%</span>
+                        <button class="zoom-btn" onclick="zoomOut()">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="canvas-area" id="canvasArea">
+                    <div class="grid-overlay"></div>
+                </div>
+                
+                <div class="status-bar">
+                    <div class="status-info">
+                        <span id="statusText">Listo para diseñar circuitos</span>
+                    </div>
+                    <div class="simulation-stats">
+                        <span>Voltaje: <span id="voltageDisplay">0V</span></span>
+                        <span>Corriente: <span id="currentDisplay">0A</span></span>
+                        <span>Potencia: <span id="powerDisplay">0W</span></span>
+                        <span>Temperatura: <span id="temperatureDisplay">25°C</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="properties-panel" id="propertiesPanel">
+                <div class="panel-header">
+                    <h3>Propiedades</h3>
+                    <button class="close-btn" onclick="closePropertiesPanel()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="panel-content" id="propertiesContent">
+                    <p>Selecciona un componente para editar sus propiedades</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-menu" id="sidebarMenu">
+            <div class="menu-header">
+                <h3>Menú</h3>
+                <button class="close-menu-btn" onclick="closeSidebar()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="menu-items">
+                <div class="menu-item" onclick="newCircuit()">
+                    <i class="fas fa-file"></i>
+                    <span>Nuevo Circuito</span>
+                </div>
+                <div class="menu-item" onclick="openCircuit()">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Abrir Circuito</span>
+                </div>
+                <div class="menu-item" onclick="saveCircuit()">
+                    <i class="fas fa-save"></i>
+                    <span>Guardar Circuito</span>
+                </div>
+                <div class="menu-item" onclick="showCalFlux()">
+                    <i class="fas fa-table"></i>
+                    <span>Cal Flux</span>
+                </div>
+                <div class="menu-item" onclick="showTutorial()">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Tutorial</span>
+                </div>
+                <div class="menu-item" onclick="showClassSection()">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Clases</span>
+                </div>
+                <div class="menu-item" onclick="exportImage()">
+                    <i class="fas fa-image"></i>
+                    <span>Exportar Imagen</span>
+                </div>
+                <div class="menu-item" onclick="exportXMLCircuit()">
+                    <i class="fas fa-file-export"></i>
+                    <span>Exportar a XML</span>
+                </div>
+                <div class="menu-item" onclick="showAnalysis()">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Análisis</span>
+                </div>
+                <div class="menu-item" onclick="showSettings()">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </div>
+                <div class="menu-item" onclick="showHelp()">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ayuda</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Cal Flux Chat screen -->
-    <div id="calFluxScreen" class="screen">
-        <header class="app-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <i class="fas fa-calculator" style="font-size:24px; color:var(--accent-color);"></i>
-                <h2 style="font-family:'Orbitron', sans-serif; font-weight:700;">Cal Flux</h2>
-            </div>
-            <button id="backToStartScreenFromCalFlux" class="back-to-simulator-btn">
-                <i class="fas fa-arrow-left"></i> Volver
-            </button>
-        </header>
-        <div class="app-content">
-            <div class="chat-container">
-                <div id="chatMessages" class="chat-messages">
-                    <div class="message ai-message">¡Hola! Soy Cal Flux. Pregúntame cualquier cosa sobre circuitos o electrónica.</div>
-                </div>
-                <div class="chat-input-container">
-                    <input type="text" id="calFluxInput" placeholder="Haz tu pregunta aquí...">
-                    <button id="calFluxSendBtn"><i class="fas fa-paper-plane"></i> Enviar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Custom Alert Modal -->
-    <div id="custom-alert">
-        <p id="alert-message"></p>
-        <button id="alert-ok-button">OK</button>
-    </div>
-
-    <script type="text/javascript">
-        // Global variables for API key and models
-        const apiKey = "";
-        const arduinoModel = "gemini-2.5-flash-preview-05-20";
-        const calFluxModel = "gemini-2.5-flash-preview-05-20";
-
-        // Global state management for the simulator
-        let circuitComponents = [];
-        let circuitWires = [];
-        let nextComponentId = 0;
-        let nextWireId = 0;
-        let isConnecting = false;
-        let firstPin = null;
-
-        // Diccionario para mapear los IDs de componentes a sus iconos
-        const componentIcons = {
-            'resistor': 'fas fa-battery-three-quarters',
-            'capacitor': 'fas fa-bolt',
-            'inductor': 'fas fa-power-off',
-            'voltage-source': 'fas fa-plus-circle',
-            'diode': 'fas fa-arrow-right',
-            'transistor': 'fas fa-microchip',
-            'ground': 'fas fa-arrows-alt-h',
-            'led': 'fas fa-lightbulb',
-            'switch': 'fas fa-toggle-on'
+    <script>
+        // Variables globales
+        let currentTool = 'select';
+        let selectedComponentType = null;
+        let selectedComponentElement = null;
+        let componentsCount = 0;
+        let isSimulationRunning = false;
+        
+        // Datos de componentes para el panel de propiedades y la barra lateral
+        const componentData = {
+            'resistor': { name: 'Resistor', properties: { value: '1kΩ', tolerance: '5%', power: '0.25W' }, icon: 'R' },
+            'capacitor': { name: 'Capacitor', properties: { value: '100µF', voltage: '25V' }, icon: 'C' },
+            'inductor': { name: 'Inductor', properties: { value: '10mH' }, icon: 'L' },
+            'battery': { name: 'Batería', properties: { voltage: '9V' }, icon: 'BAT' },
+            'switch': { name: 'Switch', properties: { state: 'Abierto' }, icon: 'SW' },
+            'ground': { name: 'Tierra', properties: {}, icon: 'GND' },
+            'voltage-source': { name: 'Fuente de Voltaje', properties: { value: '5V' }, icon: 'V' },
+            'current-source': { name: 'Fuente de Corriente', properties: { value: '1A' }, icon: 'I' },
+            'motor': { name: 'Motor', properties: { speed: '1000 RPM' }, icon: 'M' },
+            'diode': { name: 'Diodo', properties: { type: 'Rectificador' }, icon: 'D' },
+            'led': { name: 'LED', properties: { color: 'Rojo' }, icon: 'LED' },
+            'transistor': { name: 'Transistor', properties: { type: 'NPN' }, icon: 'Q' },
+            'mosfet': { name: 'MOSFET', properties: { type: 'N-Channel' }, icon: 'M' },
+            'opamp': { name: 'Op-Amp', properties: { model: 'LM741' }, icon: 'U' },
+            'timer555': { name: 'Timer 555', properties: { mode: 'Astable' }, icon: '555' },
+            'arduino': { name: 'Arduino', properties: { model: 'UNO' }, icon: 'ARD' },
+            'thermistor': { name: 'Termistor', properties: { temp: '25°C' }, icon: 'TH' },
+            'photoresistor': { name: 'LDR', properties: { light: '50%' }, icon: 'LDR' },
+            'ultrasonic': { name: 'Ultrasónico', properties: { range: '10cm' }, icon: 'US' },
         };
+        
 
-        // Helper function to show a screen and hide others
-        function showScreen(screenId) {
-            const screens = document.querySelectorAll('.screen');
-            screens.forEach(screen => screen.classList.remove('active'));
-            const newScreen = document.getElementById(screenId);
-            if (newScreen) {
-                newScreen.classList.add('active');
+        // Funciones de la aplicación
+        function startApplication() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            document.getElementById('calfluxSection').style.display = 'none';
+            document.getElementById('tutorialSection').style.display = 'none';
+            document.getElementById('classSection').style.display = 'none';
+        }
+
+        function showCalFlux() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('tutorialSection').style.display = 'none';
+            document.getElementById('classSection').style.display = 'none';
+            document.getElementById('calfluxSection').style.display = 'block';
+        }
+
+        function showTutorial() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('calfluxSection').style.display = 'none';
+            document.getElementById('classSection').style.display = 'none';
+            document.getElementById('tutorialSection').style.display = 'block';
+        }
+
+        function showClassSection() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('calfluxSection').style.display = 'none';
+            document.getElementById('tutorialSection').style.display = 'none';
+            document.getElementById('classSection').style.display = 'block';
+        }
+
+        function hideAllSections() {
+             document.getElementById('startScreen').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('calfluxSection').style.display = 'none';
+            document.getElementById('tutorialSection').style.display = 'none';
+            document.getElementById('classSection').style.display = 'none';
+        }
+
+        function showForm(role) {
+            document.getElementById('professorBtn').classList.remove('active');
+            document.getElementById('studentBtn').classList.remove('active');
+            document.getElementById('professorForm').style.display = 'none';
+            document.getElementById('studentForm').style.display = 'none';
+            
+            if (role === 'professor') {
+                document.getElementById('professorBtn').classList.add('active');
+                document.getElementById('professorForm').style.display = 'block';
+                // Genera un ID de sala aleatorio para el profesor
+                document.getElementById('profRoomId').value = Math.random().toString(36).substring(2, 8).toUpperCase();
+            } else if (role === 'student') {
+                document.getElementById('studentBtn').classList.add('active');
+                document.getElementById('studentForm').style.display = 'block';
             }
         }
 
-        // Custom alert function to replace window.alert
-        function showAlert(message) {
-            const alertBox = document.getElementById('custom-alert');
-            document.getElementById('alert-message').textContent = message;
-            alertBox.style.display = 'block';
-        }
-        document.getElementById('alert-ok-button').addEventListener('click', () => {
-            document.getElementById('custom-alert').style.display = 'none';
-        });
-
-        // Show loading overlay
-        function showLoading() {
-            document.getElementById('loading-overlay').style.display = 'flex';
+        function createClass() {
+            const profName = document.getElementById('profName').value;
+            const profRoomId = document.getElementById('profRoomId').value;
+            const profPassword = document.getElementById('profPassword').value;
+            
+            if (profName && profRoomId && profPassword) {
+                // Aquí iría la lógica para enviar estos datos al backend para crear la sala.
+                alert(`Clase creada con éxito!\nNombre: ${profName}\nID de Sala: ${profRoomId}\nContraseña: ${profPassword}`);
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
         }
 
-        // Hide loading overlay
-        function hideLoading() {
-            document.getElementById('loading-overlay').style.display = 'none';
+        function joinClass() {
+            const studentName = document.getElementById('studentName').value;
+            const studentRoomId = document.getElementById('studentRoomId').value;
+            const studentPassword = document.getElementById('studentPassword').value;
+
+            if (studentName && studentRoomId && studentPassword) {
+                // Aquí iría la lógica para enviar la solicitud de unión al backend.
+                alert(`Solicitud para unirse a la sala ${studentRoomId} enviada.\nNombre: ${studentName}`);
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
         }
 
-        // --- Fetch API helper function with exponential backoff ---
-        async function fetchWithBackoff(url, options, retries = 3, delay = 1000) {
-            try {
-                const response = await fetch(url, options);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+
+        // Funciones de Herramientas
+        function selectTool(tool) {
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            currentTool = tool;
+            
+            const canvasArea = document.getElementById('canvasArea');
+            switch(tool) {
+                case 'select':
+                    canvasArea.style.cursor = 'default';
+                    selectedComponentType = null;
+                    document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                    break;
+                case 'wire':
+                    canvasArea.style.cursor = 'crosshair';
+                    selectedComponentType = null;
+                    document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                    break;
+                case 'delete':
+                    canvasArea.style.cursor = 'not-allowed';
+                    selectedComponentType = null;
+                    document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+                    break;
+            }
+        }
+
+        // Funciones de Componentes
+        function selectComponent(type) {
+            document.querySelectorAll('.component-item').forEach(item => item.classList.remove('selected'));
+            document.querySelector(`[data-component="${type}"]`).classList.add('selected');
+            selectedComponentType = type;
+            selectTool('select');
+        }
+        
+        function placeComponent(x, y) {
+            if (!selectedComponentType) return;
+            
+            componentsCount++;
+            
+            const componentElement = document.createElement('div');
+            componentElement.classList.add('placed-component');
+            componentElement.setAttribute('data-component-type', selectedComponentType);
+            componentElement.setAttribute('data-id', componentsCount);
+            componentElement.style.left = `${x}px`;
+            componentElement.style.top = `${y}px`;
+            
+            const icon = document.createElement('div');
+            icon.classList.add('icon');
+            icon.textContent = componentData[selectedComponentType].icon;
+            componentElement.appendChild(icon);
+            
+            componentElement.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (currentTool === 'select') {
+                    selectPlacedComponent(componentElement);
+                } else if (currentTool === 'delete') {
+                    deletePlacedComponent(componentElement);
                 }
-                return await response.json();
-            } catch (error) {
-                if (retries > 0) {
-                    console.error(`Fetch failed, retrying in ${delay}ms...`, error);
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    return fetchWithBackoff(url, options, retries - 1, delay * 2);
-                } else {
-                    throw error;
-                }
+            });
+            
+            componentElement.addEventListener('dblclick', (event) => {
+                event.stopPropagation();
+                showPropertiesPanel(componentElement);
+            });
+            
+            document.getElementById('canvasArea').appendChild(componentElement);
+            
+            selectPlacedComponent(componentElement);
+        }
+        
+        function selectPlacedComponent(element) {
+            document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedComponentElement = element;
+            showPropertiesPanel(element);
+        }
+        
+        function deletePlacedComponent(element) {
+            if (confirm('¿Estás seguro de que quieres eliminar este componente?')) {
+                element.remove();
+                closePropertiesPanel();
             }
         }
         
-        // --- Main Navigation & State Management ---
-        document.getElementById('btn-iniciar-simulador').addEventListener('click', () => {
-            showScreen('appContainer');
-        });
-        document.getElementById('btn-cal-flux').addEventListener('click', () => {
-            showScreen('calFluxScreen');
-        });
-        document.getElementById('btn-tutoriales').addEventListener('click', () => {
-            showAlert("Tutoriales aún no implementados.");
-        });
-        document.getElementById('btn-clases').addEventListener('click', () => {
-            showScreen('roleSelectionScreen');
-        });
-        
-        // Back buttons
-        document.getElementById('backToStartScreen').addEventListener('click', (e) => {
-            e.preventDefault();
-            showScreen('startScreen');
-        });
-        document.getElementById('backToRoleSelectionFromTeacher').addEventListener('click', (e) => {
-            e.preventDefault();
-            showScreen('roleSelectionScreen');
-        });
-        document.getElementById('backToRoleSelectionFromStudent').addEventListener('click', (e) => {
-            e.preventDefault();
-            showScreen('roleSelectionScreen');
-        });
-        document.getElementById('backToSimulatorBtn').addEventListener('click', () => {
-            showScreen('appContainer');
-        });
-        document.getElementById('backToStartScreenFromCalFlux').addEventListener('click', () => {
-            showScreen('startScreen');
-        });
-        
-        // --- Sidebar and Toolbar Functionality ---
-        const mainSidebar = document.getElementById('mainSidebar');
-        const toggleMenuBtn = document.getElementById('toggleMenuBtn');
-        const canvasContainer = document.querySelector('.canvas-container');
-        const simulatorCanvas = document.getElementById('simulatorCanvas');
-        let currentTool = 'select'; // Default tool
+        function showPropertiesPanel(componentElement) {
+            const panel = document.getElementById('propertiesPanel');
+            const content = document.getElementById('propertiesContent');
+            panel.style.display = 'block';
+            
+            const componentType = componentElement.getAttribute('data-component-type');
+            const data = componentData[componentType];
+            
+            if (!data) {
+                content.innerHTML = '<p>No hay propiedades disponibles para este componente.</p>';
+                return;
+            }
+            
+            let html = `<h3>${data.name} (ID: ${componentElement.getAttribute('data-id')})</h3>`;
+            html += '<div class="panel-properties">';
+            
+            for (const key in data.properties) {
+                html += `
+                    <div class="property-group">
+                        <label for="${key}">${key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+                        <input type="text" id="${key}" value="${data.properties[key]}">
+                    </div>
+                `;
+            }
+            html += '</div>';
+            
+            content.innerHTML = html;
+        }
 
-        // Toggle main menu sidebar
-        toggleMenuBtn.addEventListener('click', () => {
-            mainSidebar.classList.toggle('open');
-            toggleMenuBtn.classList.toggle('active');
-        });
+        // Funciones de Simulación
+        function toggleSimulation() {
+            const playBtn = document.getElementById('playBtn');
+            if (isSimulationRunning) {
+                pauseSimulation();
+            } else {
+                startSimulation();
+            }
+        }
 
-        // Menu links functionality
-        document.getElementById('newProjectLink').addEventListener('click', () => {
-            simulatorCanvas.innerHTML = '<div id="wires-container"></div>';
-            circuitComponents = [];
-            circuitWires = [];
-            nextComponentId = 0;
-            nextWireId = 0;
-            showAlert("Proyecto reiniciado.");
-            mainSidebar.classList.remove('open');
-            toggleMenuBtn.classList.remove('active');
-        });
+        function startSimulation() {
+            isSimulationRunning = true;
+            document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+            document.getElementById('playBtn').classList.add('active');
+            
+            const isShortCircuit = Math.random() < 0.2;
+            
+            if (isShortCircuit) {
+                document.getElementById('statusText').textContent = '¡Cortocircuito detectado!';
+                document.getElementById('statusText').classList.add('short-circuit');
+                document.getElementById('voltageDisplay').textContent = '0V';
+                document.getElementById('currentDisplay').textContent = '∞A';
+                document.getElementById('powerDisplay').textContent = '∞W';
+                pauseSimulation();
+            } else {
+                document.getElementById('statusText').textContent = 'Simulación en ejecución';
+                document.getElementById('statusText').classList.remove('short-circuit');
+                simulateValues();
+            }
+        }
 
-        document.getElementById('saveProjectLink').addEventListener('click', async () => {
+        function pauseSimulation() {
+            isSimulationRunning = false;
+            document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
+            document.getElementById('playBtn').classList.remove('active');
+            document.getElementById('statusText').textContent = 'Simulación pausada';
+        }
+
+        function resetSimulation() {
+            isSimulationRunning = false;
+            document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i>';
+            document.getElementById('playBtn').classList.remove('active');
+            document.getElementById('statusText').textContent = 'Listo para diseñar circuitos';
+            document.getElementById('statusText').classList.remove('short-circuit');
+            
+            document.getElementById('voltageDisplay').textContent = '0V';
+            document.getElementById('currentDisplay').textContent = '0A';
+            document.getElementById('powerDisplay').textContent = '0W';
+            document.getElementById('temperatureDisplay').textContent = '25°C';
+        }
+
+        function simulateValues() {
+            if (isSimulationRunning) {
+                // Lógica de simulación (simulada)
+                const voltage = (Math.random() * 10).toFixed(1);
+                const current = (Math.random() * 2).toFixed(2);
+                const power = (voltage * current).toFixed(2);
+                const temperature = (25 + Math.random() * 10).toFixed(1);
+                
+                document.getElementById('voltageDisplay').textContent = voltage + 'V';
+                document.getElementById('currentDisplay').textContent = current + 'A';
+                document.getElementById('powerDisplay').textContent = power + 'W';
+                document.getElementById('temperatureDisplay').textContent = temperature + '°C';
+                
+                setTimeout(simulateValues, 1000);
+            }
+        }
+
+        // Funciones del Menú
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebarMenu');
+            sidebar.classList.toggle('open');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebarMenu').classList.remove('open');
+        }
+
+        function closePropertiesPanel() {
+            document.getElementById('propertiesPanel').style.display = 'none';
+        }
+
+        // Funciones de Archivos
+        function newCircuit() {
+            if (confirm('¿Crear un nuevo circuito? Se perderán los cambios no guardados.')) {
+                document.getElementById('canvasArea').innerHTML = '<div class="grid-overlay"></div>';
+                componentsCount = 0;
+                closePropertiesPanel();
+                closeSidebar();
+            }
+        }
+
+        function openCircuit() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json, .xml';
+            input.click();
+            closeSidebar();
+        }
+
+        function saveCircuit() {
+            const components = Array.from(document.querySelectorAll('.placed-component')).map(comp => ({
+                type: comp.getAttribute('data-component-type'),
+                id: comp.getAttribute('data-id'),
+                x: comp.style.left,
+                y: comp.style.top,
+            }));
+            
             const data = {
-                components: circuitComponents,
-                wires: circuitWires,
+                components: components,
+                timestamp: new Date().toISOString()
             };
-            const json = JSON.stringify(data, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'fluxionics_project.json';
+            a.download = 'circuito_fluxionics.json';
             a.click();
             URL.revokeObjectURL(url);
-            showAlert("Proyecto guardado como 'fluxionics_project.json'.");
-            mainSidebar.classList.remove('open');
-            toggleMenuBtn.classList.remove('active');
-        });
+            closeSidebar();
+        }
 
-        document.getElementById('openProjectLink').addEventListener('click', () => {
-            showAlert("Función 'Abrir Proyecto' no implementada. Por favor, reinicia el canvas para comenzar un nuevo proyecto.");
-            mainSidebar.classList.remove('open');
-            toggleMenuBtn.classList.remove('active');
-        });
-
-        document.getElementById('exportLink').addEventListener('click', async () => {
-            mainSidebar.classList.remove('open');
-            toggleMenuBtn.classList.remove('active');
-            showAlert("Preparando PDF para descarga...");
-            await new Promise(r => setTimeout(r, 500)); // Wait for sidebar to close
-            html2canvas(document.getElementById('appContainer')).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = window.open();
-                pdf.document.write(`<img src="${imgData}" style="width:100%;">`);
-                showAlert("PDF listo. Usa la función de impresión del navegador.");
-            });
-        });
-        document.getElementById('shareLink').addEventListener('click', () => {
-            showAlert("Función 'Compartir' no implementada. Necesita una base de datos para guardar y compartir proyectos.");
-            mainSidebar.classList.remove('open');
-            toggleMenuBtn.classList.remove('active');
-        });
-        document.getElementById('settingsLink').addEventListener('click', () => {
-            showAlert("Configuraciones no implementadas.");
-            mainSidebar.classList.remove('open');
-            toggleMenuBtn.classList.remove('active');
-        });
-        document.getElementById('startTourBtn').addEventListener('click', () => {
-            showAlert("Recorrido rápido no implementado. ¡Pero puedes explorar todas las funciones por ti mismo!");
-            mainSidebar.classList.remove('open');
-            toggleMenuBtn.classList.remove('active');
-        });
-
-        // Theme toggle
-        document.getElementById('lightThemeBtn').addEventListener('click', () => {
-            document.body.classList.add('light-theme');
-            document.getElementById('darkThemeBtn').classList.remove('active');
-            document.getElementById('lightThemeBtn').classList.add('active');
-        });
-        document.getElementById('darkThemeBtn').addEventListener('click', () => {
-            document.body.classList.remove('light-theme');
-            document.getElementById('lightThemeBtn').classList.remove('active');
-            document.getElementById('darkThemeBtn').classList.add('active');
-        });
-
-        // Toolbar buttons (active state)
-        const toolButtons = document.querySelectorAll('.canvas-toolbar .tool-btn');
-        toolButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                toolButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                isConnecting = false;
-                firstPin = null;
-
-                if (btn.id === 'selectToolBtn') {
-                    currentTool = 'select';
-                    simulatorCanvas.style.cursor = 'move';
-                } else if (btn.id === 'connectToolBtn') {
-                    currentTool = 'connect';
-                    isConnecting = true;
-                    simulatorCanvas.style.cursor = 'crosshair';
-                } else if (btn.id === 'eraserToolBtn') {
-                    currentTool = 'erase';
-                    simulatorCanvas.style.cursor = 'pointer';
-                }
-            });
-        });
+        function exportImage() {
+            alert('Función de exportar imagen pendiente.');
+            closeSidebar();
+        }
         
-        document.getElementById('arduinoConsoleBtn').addEventListener('click', () => {
-            showScreen('arduinoConsoleScreen');
-        });
-
-        // --- Component Drag and Drop & Wire Drawing ---
-        const componentItems = document.querySelectorAll('.component-item');
-        const wiresContainer = document.getElementById('wires-container');
-        let draggedComponent = null;
-        let dragGhost = null;
-
-        componentItems.forEach(item => {
-            item.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                const componentId = item.dataset.componentId;
-                const componentName = item.querySelector('.component-name').textContent;
-                const componentIcon = item.querySelector('.component-icon').className;
-                
-                dragGhost = document.createElement('div');
-                dragGhost.className = 'component-visual drag-ghost';
-                dragGhost.innerHTML = `<i class="${componentIcon} comp-icon"></i><span class="comp-label">${componentName}</span>`;
-                document.body.appendChild(dragGhost);
-                
-                draggedComponent = {
-                    id: componentId,
-                    name: componentName,
-                    icon: componentIcon,
-                };
+        function exportXMLCircuit() {
+            const components = Array.from(document.querySelectorAll('.placed-component')).map(comp => ({
+                type: comp.getAttribute('data-component-type'),
+                id: comp.getAttribute('data-id'),
+                x: comp.style.left,
+                y: comp.style.top,
+            }));
+            const xmlContent = generateCircuitXML(components);
+            const blob = new Blob([xmlContent], { type: 'text/xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'circuito_fluxionics.xml';
+            a.click();
+            URL.revokeObjectURL(url);
+            closeSidebar();
+        }
+        
+        function generateCircuitXML(components) {
+            let xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n<circuit>\n';
+            components.forEach(comp => {
+                xmlString += `  <component type="${comp.type}">\n`;
+                xmlString += `    <id>${comp.id}</id>\n`;
+                xmlString += `    <x>${comp.x}</x>\n`;
+                xmlString += `    <y>${comp.y}</y>\n`;
+                xmlString += '  </component>\n';
             });
-        });
+            xmlString += '</circuit>';
+            return xmlString;
+        }
 
-        document.addEventListener('mousemove', (e) => {
-            if (dragGhost) {
-                dragGhost.style.left = `${e.clientX - dragGhost.offsetWidth / 2}px`;
-                dragGhost.style.top = `${e.clientY - dragGhost.offsetHeight / 2}px`;
+        // Funciones de Zoom
+        function zoomIn() {
+            const zoomLevel = document.querySelector('.zoom-level');
+            let currentZoom = parseInt(zoomLevel.textContent);
+            if (currentZoom < 200) {
+                currentZoom += 10;
+                zoomLevel.textContent = currentZoom + '%';
             }
-        });
+        }
 
-        document.addEventListener('mouseup', (e) => {
-            if (draggedComponent) {
-                const canvasRect = simulatorCanvas.getBoundingClientRect();
-                if (e.clientX > canvasRect.left && e.clientX < canvasRect.right &&
-                    e.clientY > canvasRect.top && e.clientY < canvasRect.bottom) {
-                    
-                    const newComponent = document.createElement('div');
-                    const componentUID = `comp-${nextComponentId++}`;
-                    newComponent.className = 'component-visual';
-                    newComponent.dataset.componentUid = componentUID;
-                    newComponent.innerHTML = `
-                        <i class="${draggedComponent.icon} comp-icon"></i>
-                        <span class="comp-label">${draggedComponent.name}</span>
-                        <div class="pin" data-pin-id="1"></div>
-                        <div class="pin" data-pin-id="2"></div>
-                    `;
-                    
-                    // Position the pins based on component type
-                    const pin1 = newComponent.querySelector('[data-pin-id="1"]');
-                    const pin2 = newComponent.querySelector('[data-pin-id="2"]');
-                    pin1.style.top = '50%';
-                    pin1.style.left = '-4px';
-                    pin1.style.transform = 'translateY(-50%)';
-                    pin2.style.top = '50%';
-                    pin2.style.right = '-4px';
-                    pin2.style.transform = 'translateY(-50%)';
-
-                    newComponent.style.left = `${e.clientX - canvasRect.left - (newComponent.offsetWidth / 2)}px`;
-                    newComponent.style.top = `${e.clientY - canvasRect.top - (newComponent.offsetHeight / 2)}px`;
-                    
-                    simulatorCanvas.appendChild(newComponent);
-                    
-                    circuitComponents.push({
-                        uid: componentUID,
-                        type: draggedComponent.id,
-                        x: newComponent.offsetLeft,
-                        y: newComponent.offsetTop,
-                        pins: { '1': null, '2': null }
-                    });
-
-                    makeDraggable(newComponent);
-                    setupPinEvents(newComponent);
-                }
-                
-                if (dragGhost) {
-                    dragGhost.remove();
-                    dragGhost = null;
-                    draggedComponent = null;
-                }
+        function zoomOut() {
+            const zoomLevel = document.querySelector('.zoom-level');
+            let currentZoom = parseInt(zoomLevel.textContent);
+            if (currentZoom > 50) {
+                currentZoom -= 10;
+                zoomLevel.textContent = currentZoom + '%';
             }
-        });
+        }
 
-        function makeDraggable(element) {
+        // Otras Funciones
+        function showAnalysis() {
+            alert('Análisis de circuitos próximamente disponible');
+            closeSidebar();
+        }
+
+        function showSettings() {
+            alert('Configuración próximamente disponible');
+            closeSidebar();
+        }
+
+        function showHelp() {
+            alert('Ayuda próximamente disponible');
+            closeSidebar();
+        }
+
+        // Escuchadores de eventos
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.component-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    selectComponent(this.dataset.component);
+                });
+            });
+
+            const canvasArea = document.getElementById('canvasArea');
             let isDragging = false;
-            let startX, startY, initialX, initialY;
-            let componentData;
-
-            element.addEventListener('mousedown', (e) => {
-                if (e.target.classList.contains('pin')) return;
-                if (currentTool !== 'select') return;
-                isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                initialX = element.offsetLeft;
-                initialY = element.offsetTop;
-                element.style.cursor = 'grabbing';
-
-                const componentUID = element.dataset.componentUid;
-                componentData = circuitComponents.find(c => c.uid === componentUID);
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-
-                let newX = initialX + dx;
-                let newY = initialY + dy;
-
-                element.style.left = `${newX}px`;
-                element.style.top = `${newY}px`;
-                
-                if (componentData) {
-                    componentData.x = newX;
-                    componentData.y = newY;
+            let currentPlacedComponent = null;
+            let offset = { x: 0, y: 0 };
+            
+            canvasArea.addEventListener('mousedown', (event) => {
+                if (currentTool === 'select' && event.target.classList.contains('placed-component')) {
+                    isDragging = true;
+                    currentPlacedComponent = event.target;
+                    const rect = currentPlacedComponent.getBoundingClientRect();
+                    offset.x = event.clientX - rect.left;
+                    offset.y = event.clientY - rect.top;
+                    currentPlacedComponent.style.cursor = 'grabbing';
                 }
-                redrawWires();
+            });
+            
+            canvasArea.addEventListener('mousemove', (event) => {
+                if (isDragging && currentPlacedComponent) {
+                    const rect = canvasArea.getBoundingClientRect();
+                    let x = event.clientX - rect.left - offset.x;
+                    let y = event.clientY - rect.top - offset.y;
+                    
+                    x = Math.max(0, Math.min(x, rect.width - currentPlacedComponent.offsetWidth));
+                    y = Math.max(0, Math.min(y, rect.height - currentPlacedComponent.offsetHeight));
+                    
+                    currentPlacedComponent.style.left = `${x}px`;
+                    currentPlacedComponent.style.top = `${y}px`;
+                }
+            });
+            
+            canvasArea.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    if (currentPlacedComponent) {
+                        currentPlacedComponent.style.cursor = 'move';
+                    }
+                    currentPlacedComponent = null;
+                }
             });
 
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-                element.style.cursor = 'move';
+            canvasArea.addEventListener('click', (event) => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                if (selectedComponentType && currentTool === 'select') {
+                    placeComponent(x, y);
+                }
             });
-        }
-        
-        function setupPinEvents(componentElement) {
-            const pins = componentElement.querySelectorAll('.pin');
-            pins.forEach(pin => {
-                pin.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (currentTool === 'connect') {
-                        handleConnection(pin, componentElement);
-                    } else if (currentTool === 'erase') {
-                        // TODO: Implement wire deletion
+            
+            canvasArea.addEventListener('click', (event) => {
+                if (event.target.id === 'canvasArea' || event.target.classList.contains('grid-overlay')) {
+                    document.querySelectorAll('.placed-component').forEach(comp => comp.classList.remove('selected'));
+                    closePropertiesPanel();
+                }
+            });
+
+            // Funcionalidad de búsqueda
+            document.getElementById('componentSearch').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.component-item').forEach(item => {
+                    const name = item.querySelector('.component-name').textContent.toLowerCase();
+                    if (name.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
                     }
                 });
             });
-        }
-
-        function handleConnection(pin, componentElement) {
-            if (!firstPin) {
-                // First pin clicked
-                firstPin = { pin, componentElement };
-                pin.style.backgroundColor = 'red';
-            } else {
-                // Second pin clicked
-                const secondPin = { pin, componentElement };
-                
-                // Prevent connecting a pin to itself
-                if (firstPin.pin === secondPin.pin) {
-                    showAlert("No puedes conectar un pin consigo mismo.");
-                    firstPin.pin.style.backgroundColor = '';
-                    firstPin = null;
-                    return;
-                }
-
-                const wireUID = `wire-${nextWireId++}`;
-                circuitWires.push({
-                    uid: wireUID,
-                    start: {
-                        componentUID: firstPin.componentElement.dataset.componentUid,
-                        pinId: firstPin.pin.dataset.pinId
-                    },
-                    end: {
-                        componentUID: secondPin.componentElement.dataset.componentUid,
-                        pinId: secondPin.pin.dataset.pinId
-                    }
-                });
-
-                firstPin.pin.style.backgroundColor = '';
-                firstPin = null;
-                redrawWires();
-            }
-        }
-        
-        function redrawWires() {
-            wiresContainer.innerHTML = '';
-            circuitWires.forEach(wire => {
-                const startComp = document.querySelector(`[data-component-uid="${wire.start.componentUID}"]`);
-                const endComp = document.querySelector(`[data-component-uid="${wire.end.componentUID}"]`);
-
-                if (!startComp || !endComp) return;
-
-                const startPin = startComp.querySelector(`[data-pin-id="${wire.start.pinId}"]`);
-                const endPin = endComp.querySelector(`[data-pin-id="${wire.end.pinId}"]`);
-
-                const startRect = startPin.getBoundingClientRect();
-                const endRect = endPin.getBoundingClientRect();
-                const canvasRect = simulatorCanvas.getBoundingClientRect();
-
-                const startX = startRect.left + startRect.width / 2 - canvasRect.left;
-                const startY = startRect.top + startRect.height / 2 - canvasRect.top;
-                const endX = endRect.left + endRect.width / 2 - canvasRect.left;
-                const endY = endRect.top + endRect.height / 2 - canvasRect.top;
-
-                const length = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
-                const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
-
-                const wireElement = document.createElement('div');
-                wireElement.className = 'wire';
-                wireElement.style.left = `${startX}px`;
-                wireElement.style.top = `${startY}px`;
-                wireElement.style.width = `${length}px`;
-                wireElement.style.transform = `rotate(${angle}deg)`;
-                wiresContainer.appendChild(wireElement);
-            });
-        }
-        
-        // --- CAL FLUX Functionality (AI powered) ---
-        const chatMessages = document.getElementById('chatMessages');
-        const calFluxInput = document.getElementById('calFluxInput');
-        const calFluxSendBtn = document.getElementById('calFluxSendBtn');
-
-        calFluxSendBtn.addEventListener('click', handleCalFluxRequest);
-        calFluxInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleCalFluxRequest();
-            }
         });
-
-        async function handleCalFluxRequest() {
-            const prompt = calFluxInput.value.trim();
-            if (!prompt) return;
-
-            // Add user message to chat
-            const userMessageDiv = document.createElement('div');
-            userMessageDiv.className = 'message user-message';
-            userMessageDiv.textContent = prompt;
-            chatMessages.appendChild(userMessageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            calFluxInput.value = '';
-            showLoading();
-
-            const chatHistory = [{ role: "user", parts: [{ text: `Actúa como un experto en electrónica y circuitos. Responde a la siguiente pregunta de la manera más precisa y útil posible. Pregunta: ${prompt}` }] }];
-            const payload = { contents: chatHistory };
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${calFluxModel}:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetchWithBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                const aiMessage = response.candidates[0].content.parts[0].text;
-                const aiMessageDiv = document.createElement('div');
-                aiMessageDiv.className = 'message ai-message';
-                aiMessageDiv.textContent = aiMessage;
-                chatMessages.appendChild(aiMessageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            } catch (error) {
-                console.error('Error fetching from Gemini API:', error);
-                const errorMessageDiv = document.createElement('div');
-                errorMessageDiv.className = 'message ai-message';
-                errorMessageDiv.textContent = 'Lo siento, hubo un error al procesar tu solicitud. Por favor, inténtalo de nuevo.';
-                chatMessages.appendChild(errorMessageDiv);
-            } finally {
-                hideLoading();
-            }
-        }
-
-
-        // --- ARDUINO CONSOLE Functionality (AI powered) ---
-        const arduinoCodeEditor = document.getElementById('arduinoCodeEditor');
-        const consoleOutput = document.getElementById('consoleOutput');
-        const compileBtn = document.getElementById('compileBtn');
-        const uploadBtn = document.getElementById('uploadBtn');
-
-        const baseArduinoPrompt = `Actúa como un compilador de código y simulador de un entorno Arduino. Simula la compilación y la ejecución del código.
-        - Para "Compilar", verifica la sintaxis y da un resultado de "Compilación exitosa" o un "Error de compilación" con una explicación.
-        - Para "Subir", simula la ejecución del código y muestra la salida del Serial Monitor, sin añadir información de compilación.
-        - Si el código no es de Arduino, responde que es un código inválido para la plataforma.
-        - Sé breve y directo.
-        `;
-
-        compileBtn.addEventListener('click', () => handleArduinoRequest('compile'));
-        uploadBtn.addEventListener('click', () => handleArduinoRequest('upload'));
-
-        async function handleArduinoRequest(action) {
-            const code = arduinoCodeEditor.value;
-            if (!code.trim()) {
-                consoleOutput.textContent = 'Error: No hay código para procesar.';
-                return;
-            }
-
-            const prompt = `${baseArduinoPrompt}\n\nAcción: ${action}\nCódigo:\n\`\`\`arduino\n${code}\n\`\`\``;
-            const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-            const payload = { contents: chatHistory };
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${arduinoModel}:generateContent?key=${apiKey}`;
-
-            consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] > Ejecutando acción: ${action}...`;
-            showLoading();
-
-            try {
-                const response = await fetchWithBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                const output = response.candidates[0].content.parts[0].text;
-                consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] > ${output}`;
-            } catch (error) {
-                console.error('Error fetching from Gemini API:', error);
-                consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] > Error: No se pudo conectar con el simulador.`;
-            } finally {
-                hideLoading();
-            }
-        }
-        
-        // --- Animated Background ---
-        const bgCanvas = document.getElementById('animatedBackground');
-        const bgCtx = bgCanvas.getContext('2d');
-        let particles = [];
-        const particleColor = 'rgba(0, 212, 255, 0.5)';
-        const particleCount = 100;
-        
-        function resizeBackgroundCanvas() {
-            bgCanvas.width = window.innerWidth;
-            bgCanvas.height = window.innerHeight;
-        }
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * bgCanvas.width;
-                this.y = Math.random() * bgCanvas.height;
-                this.size = Math.random() * 2 + 1;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * 1 - 0.5;
-                this.trail = [];
-                this.trailLength = 20;
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > bgCanvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > bgCanvas.height) this.speedY *= -1;
-                this.trail.push({ x: this.x, y: this.y, size: this.size });
-                if (this.trail.length > this.trailLength) {
-                    this.trail.shift();
-                }
-            }
-
-            draw() {
-                for (let i = 0; i < this.trail.length; i++) {
-                    let trailPart = this.trail[i];
-                    let opacity = (i / this.trail.length) * 0.5;
-                    bgCtx.fillStyle = particleColor.replace(')', opacity + ')');
-                    bgCtx.beginPath();
-                    bgCtx.arc(trailPart.x, trailPart.y, trailPart.size * (i/this.trail.length), 0, Math.PI * 2);
-                    bgCtx.fill();
-                }
-                bgCtx.fillStyle = particleColor;
-                bgCtx.beginPath();
-                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                bgCtx.fill();
-            }
-        }
-
-        function initBackground() {
-            particles = [];
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animateBackground() {
-            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animateBackground);
-        }
-
-        window.onload = () => {
-            resizeBackgroundCanvas();
-            initBackground();
-            animateBackground();
-        };
-        window.onresize = () => {
-            resizeBackgroundCanvas();
-            initBackground();
-        };
     </script>
 </body>
 </html>
