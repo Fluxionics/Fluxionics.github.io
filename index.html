@@ -917,11 +917,9 @@
         // Función para cargar componentes desde la base de datos de Google Sheets (CORREGIDA)
    // Función para cargar componentes desde el archivo local en GitHub Pages (CORREGIDA)
 async function fetchComponentsFromDatabase() {
-    // La URL apunta al archivo CSV en tu repositorio de GitHub Pages
     const fileUrl = 'components.csv';
 
     try {
-        console.log('Fetching from URL:', fileUrl);
         const response = await fetch(fileUrl);
         
         if (!response.ok) {
@@ -929,7 +927,8 @@ async function fetchComponentsFromDatabase() {
         }
 
         const csvText = await response.text();
-        const rows = csvText.trim().split('\n');
+        // Limpiamos los saltos de línea y los espacios en blanco antes de procesar
+        const rows = csvText.trim().split(/\r?\n/);
         
         if (rows.length < 2) {
             throw new Error('El archivo CSV está vacío o solo contiene encabezados.');
@@ -949,7 +948,6 @@ async function fetchComponentsFromDatabase() {
                 return null;
             }
             
-            // Mapea el objeto a la estructura deseada
             return {
                 id: obj.id_base,
                 name: obj.nombre,
@@ -959,7 +957,8 @@ async function fetchComponentsFromDatabase() {
                 min: obj.valor_min,
                 max: obj.valor_max,
                 imageUrl: obj.imagen_url,
-                pins: parseInt(obj.pines, 10),
+                // Aquí usamos parseInt con una verificación para evitar NaN
+                pins: parseInt(obj.pines, 10) || 0, 
                 description: obj.descripcion
             };
         }).filter(item => item !== null);
@@ -971,7 +970,6 @@ async function fetchComponentsFromDatabase() {
         componentListContainer.innerHTML = `<p style="color: #ff6b6b; text-align: center;">Error: Falló la carga del archivo de datos. Por favor, verifica el formato del CSV.</p>`;
     }
 }
-
         
         // Función para poblar el menú de componentes
         function populateComponentMenu() {
