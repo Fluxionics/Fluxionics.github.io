@@ -915,49 +915,62 @@
         let componentDatabase = [];
 
         // Función para cargar componentes desde la base de datos de Google Sheets (CORREGIDA)
-    async function fetchComponentsFromDatabase() {
-        // La URL apunta al archivo CSV en tu repositorio de GitHub Pages
-        // Asegúrate de que el nombre del archivo sea correcto.
-        const fileUrl = 'components.csv';
+   // Función para cargar componentes desde el archivo local en GitHub Pages (CORREGIDA)
+async function fetchComponentsFromDatabase() {
+    // La URL apunta al archivo CSV en tu repositorio de GitHub Pages
+    const fileUrl = 'components.csv';
 
-        try {
-            console.log('Fetching from URL:', fileUrl);
-            const response = await fetch(fileUrl);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    try {
+        console.log('Fetching from URL:', fileUrl);
+        const response = await fetch(fileUrl);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-            const csvText = await response.text();
-            const rows = csvText.split('\n');
-            const headers = rows[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
-            
-            componentDatabase = rows.slice(1).map(row => {
-                const values = row.split(',').map(value => value.trim().replace(/^"|"$/g, ''));
-                const obj = {};
+        const csvText = await response.text();
+        const rows = csvText.trim().split('\n');
+        
+        if (rows.length < 2) {
+            throw new Error('El archivo CSV está vacío o solo contiene encabezados.');
+        }
+
+        const headers = rows[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
+        
+        componentDatabase = rows.slice(1).map(row => {
+            const values = row.split(',').map(value => value.trim().replace(/^"|"$/g, ''));
+            const obj = {};
+            if (headers.length === values.length) {
                 headers.forEach((header, index) => {
                     obj[header] = values[index];
                 });
-                return {
-                    id: obj.id_base,
-                    name: obj.nombre,
-                    type: obj.tipo,
-                    section: obj.seccion,
-                    defaultValue: obj.valor_default,
-                    min: obj.valor_min,
-                    max: obj.valor_max,
-                    imageUrl: obj.imagen_url,
-                    pins: parseInt(obj.pines, 10),
-                    description: obj.descripcion
-                };
-            });
-            console.log('✅ Componentes cargados desde el archivo local:', componentDatabase);
-            populateComponentMenu();
-        } catch (error) {
-            console.error('❌ Error al cargar el archivo de componentes:', error);
-            componentListContainer.innerHTML = `<p style="color: #ff6b6b; text-align: center;">Error: Falló la carga del archivo de datos.</p>`;
-        }
+            } else {
+                console.warn(`Saltando fila debido a una discrepancia de columnas: ${row}`);
+                return null;
+            }
+            
+            // Mapea el objeto a la estructura deseada
+            return {
+                id: obj.id_base,
+                name: obj.nombre,
+                type: obj.tipo,
+                section: obj.seccion,
+                defaultValue: obj.valor_default,
+                min: obj.valor_min,
+                max: obj.valor_max,
+                imageUrl: obj.imagen_url,
+                pins: parseInt(obj.pines, 10),
+                description: obj.descripcion
+            };
+        }).filter(item => item !== null);
+
+        console.log('✅ Componentes cargados desde el archivo local:', componentDatabase);
+        populateComponentMenu();
+    } catch (error) {
+        console.error('❌ Error al cargar el archivo de componentes:', error);
+        componentListContainer.innerHTML = `<p style="color: #ff6b6b; text-align: center;">Error: Falló la carga del archivo de datos. Por favor, verifica el formato del CSV.</p>`;
     }
+}
 
         
         // Función para poblar el menú de componentes
