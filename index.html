@@ -142,6 +142,11 @@
             user-select: none;
             z-index: 10;
         }
+        .component-box[data-id="a1"], .component-box[data-id="a2"] {
+            /* Estilos específicos para Arduino y ESP32 */
+            width: 150px;
+            height: 100px;
+        }
         .component-box.dragging { cursor: grabbing; z-index: 100; }
         .component-box:hover { border-color: #00e6ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
         .component-box img { max-width: 100%; max-height: 100%; }
@@ -342,7 +347,7 @@
         }
         .chat-input button:hover { background: #00e6ff; }
     
-        /* Estilos del Modal de Edición (NUEVO) */
+        /* Estilos del Modal de Edición */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
             overflow: auto; background-color: rgba(0,0,0,0.7);
@@ -993,7 +998,7 @@
             }
         }
 
-        // Lógica de la populación del menú con secciones (NUEVA)
+        // Lógica de la populación del menú con secciones
         function populateComponentMenu() {
             componentListContainer.innerHTML = '';
             
@@ -1059,7 +1064,7 @@
 
             component.innerHTML = `<img src="${data.imageUrl}" alt="${data.name}">`;
 
-            // Lógica de creación de pines
+            // Lógica de creación de pines (MEJORADA)
             if (data.pins === 2) {
                 const pin1 = document.createElement('div');
                 pin1.classList.add('component-pin', 'left');
@@ -1114,12 +1119,35 @@
                 pin4.style.top = '75%';
                 pin4.dataset.pinId = `${component.id}-pin-4`;
                 component.appendChild(pin4);
+            } else if (data.pins > 4) {
+                // Nueva lógica para componentes con muchos pines (ej. Arduino, ESP32)
+                const pinsPerSide = Math.ceil(data.pins / 2);
+                for (let i = 0; i < data.pins; i++) {
+                    const pin = document.createElement('div');
+                    pin.classList.add('component-pin');
+                    pin.dataset.pinId = `${component.id}-pin-${i + 1}`;
+                    
+                    let side;
+                    let pinIndex;
+                    if (i < pinsPerSide) {
+                        side = 'left';
+                        pinIndex = i;
+                    } else {
+                        side = 'right';
+                        pinIndex = i - pinsPerSide;
+                    }
+
+                    pin.classList.add(side);
+                    
+                    const topPosition = 100 / (pinsPerSide + 1) * (pinIndex + 1);
+                    pin.style.top = `${topPosition}%`;
+                    
+                    component.appendChild(pin);
+                }
             }
-            // Para más pines (como el Arduino), se necesita una lógica de posicionamiento más compleja.
-            // Para fines de esta prueba, el código mostrará solo los pines para 2, 3 o 4 pines.
 
             component.addEventListener('mousedown', dragComponentStart);
-            component.addEventListener('dblclick', handleComponentClick); // Doble clic para editar
+            component.addEventListener('dblclick', handleComponentClick);
             component.querySelectorAll('.component-pin').forEach(pin => {
                 pin.addEventListener('mousedown', startWire);
             });
@@ -1160,7 +1188,7 @@
             }
         });
 
-        // Lógica del modal de edición (NUEVA)
+        // Lógica del modal de edición
         const editModal = document.getElementById('editModal');
         const modalBody = document.getElementById('modal-body');
 
