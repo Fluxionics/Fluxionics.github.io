@@ -142,11 +142,6 @@
             user-select: none;
             z-index: 10;
         }
-        .component-box[data-id="a1"], .component-box[data-id="a2"] {
-            /* Estilos específicos para Arduino y ESP32 */
-            width: 150px;
-            height: 100px;
-        }
         .component-box.dragging { cursor: grabbing; z-index: 100; }
         .component-box:hover { border-color: #00e6ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
         .component-box img { max-width: 100%; max-height: 100%; }
@@ -1064,8 +1059,41 @@
 
             component.innerHTML = `<img src="${data.imageUrl}" alt="${data.name}">`;
 
-            // Lógica de creación de pines (MEJORADA)
-            if (data.pins === 2) {
+            // Lógica de creación de pines (MEJORADA PARA PINES DINÁMICOS)
+            let boxWidth = 50;
+            let boxHeight = 50;
+
+            if (data.pins > 4) {
+                const pinsPerSide = Math.ceil(data.pins / 2);
+                boxWidth = 150; // Ancho fijo para componentes grandes como Arduinos
+                boxHeight = 20 * (pinsPerSide + 1); // Altura dinámica basada en el número de pines
+                component.style.width = `${boxWidth}px`;
+                component.style.height = `${boxHeight}px`;
+
+                for (let i = 0; i < data.pins; i++) {
+                    const pin = document.createElement('div');
+                    pin.classList.add('component-pin');
+                    pin.dataset.pinId = `${component.id}-pin-${i + 1}`;
+                    
+                    let side;
+                    let pinIndex;
+                    if (i < pinsPerSide) {
+                        side = 'left';
+                        pinIndex = i;
+                    } else {
+                        side = 'right';
+                        pinIndex = i - pinsPerSide;
+                    }
+
+                    pin.classList.add(side);
+                    
+                    // Posicionamiento de los pines usando porcentajes para que sea flexible con la nueva altura
+                    const topPosition = 100 / (pinsPerSide + 1) * (pinIndex + 1);
+                    pin.style.top = `${topPosition}%`;
+                    
+                    component.appendChild(pin);
+                }
+            } else if (data.pins === 2) {
                 const pin1 = document.createElement('div');
                 pin1.classList.add('component-pin', 'left');
                 pin1.dataset.pinId = `${component.id}-pin-1`;
@@ -1076,7 +1104,6 @@
                 pin2.dataset.pinId = `${component.id}-pin-2`;
                 component.appendChild(pin2);
             } else if (data.pins === 3) {
-                // Pines para transistores
                 const pin1 = document.createElement('div');
                 pin1.classList.add('component-pin', 'left');
                 pin1.style.top = '25%';
@@ -1095,7 +1122,6 @@
                 pin3.dataset.pinId = `${component.id}-pin-3`;
                 component.appendChild(pin3);
             } else if (data.pins === 4) {
-                // Pines para fuente USB
                 const pin1 = document.createElement('div');
                 pin1.classList.add('component-pin', 'left');
                 pin1.style.top = '25%';
@@ -1119,31 +1145,6 @@
                 pin4.style.top = '75%';
                 pin4.dataset.pinId = `${component.id}-pin-4`;
                 component.appendChild(pin4);
-            } else if (data.pins > 4) {
-                // Nueva lógica para componentes con muchos pines (ej. Arduino, ESP32)
-                const pinsPerSide = Math.ceil(data.pins / 2);
-                for (let i = 0; i < data.pins; i++) {
-                    const pin = document.createElement('div');
-                    pin.classList.add('component-pin');
-                    pin.dataset.pinId = `${component.id}-pin-${i + 1}`;
-                    
-                    let side;
-                    let pinIndex;
-                    if (i < pinsPerSide) {
-                        side = 'left';
-                        pinIndex = i;
-                    } else {
-                        side = 'right';
-                        pinIndex = i - pinsPerSide;
-                    }
-
-                    pin.classList.add(side);
-                    
-                    const topPosition = 100 / (pinsPerSide + 1) * (pinIndex + 1);
-                    pin.style.top = `${topPosition}%`;
-                    
-                    component.appendChild(pin);
-                }
             }
 
             component.addEventListener('mousedown', dragComponentStart);
