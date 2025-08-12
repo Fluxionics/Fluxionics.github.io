@@ -627,13 +627,13 @@
         const chatMessages = document.getElementById('chatMessages');
         const userInput = document.getElementById('userInput');
         const emotionUrls = {
-            normal: 'https://imgur.com/qmphvuK.png',
-            feliz: 'https://imgur.com/oIeoXI4.png',
-            pensando: 'https://imgur.com/X9r23Fe.png',
-            celebrando: 'https://imgur.com/f78GBdc.png',
-            confundido: 'https://imgur.com/5XrVsc9.png',
-            alerta: 'https://imgur.com/VaMxNvl.png',
-            tecnico: 'https://imgur.com/u19wakl.png',
+            normal: 'https://i.imgur.com/qmphvuK.png',
+            feliz: 'https://i.imgur.com/oIeoXI4.png',
+            pensando: 'https://i.imgur.com/X9r23Fe.png',
+            celebrando: 'https://i.imgur.com/f78GBdc.png',
+            confundido: 'https://i.imgur.com/5XrVsc9.png',
+            alerta: 'https://i.imgur.com/VaMxNvl.png',
+            tecnico: 'https://i.imgur.com/u19wakl.png',
         };
 
         function setFluxyEmotion(emotion) {
@@ -914,64 +914,51 @@
         // Base de datos de componentes
         let componentDatabase = [];
 
-        // Función para cargar componentes desde la base de datos de Google Sheets (CORREGIDA)
-   // Función para cargar componentes desde el archivo local en GitHub Pages (CORREGIDA)
-async function fetchComponentsFromDatabase() {
-    const fileUrl = 'components.csv';
-
-    try {
-        const response = await fetch(fileUrl);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const csvText = await response.text();
-        // Limpiamos los saltos de línea y los espacios en blanco antes de procesar
-        const rows = csvText.trim().split(/\r?\n/);
-        
-        if (rows.length < 2) {
-            throw new Error('El archivo CSV está vacío o solo contiene encabezados.');
-        }
-
-        const headers = rows[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
-        
-        componentDatabase = rows.slice(1).map(row => {
-            const values = row.split(',').map(value => value.trim().replace(/^"|"$/g, ''));
-            const obj = {};
-            if (headers.length === values.length) {
-                headers.forEach((header, index) => {
-                    obj[header] = values[index];
-                });
-            } else {
-                console.warn(`Saltando fila debido a una discrepancia de columnas: ${row}`);
-                return null;
+        // Lógica completa desde la base de datos hasta los pines
+        async function fetchComponentsFromDatabase() {
+            const fileUrl = 'components.csv';
+            try {
+                const response = await fetch(fileUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const csvText = await response.text();
+                const rows = csvText.trim().split(/\r?\n/);
+                if (rows.length < 2) {
+                    throw new Error('El archivo CSV está vacío o solo contiene encabezados.');
+                }
+                const headers = rows[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
+                componentDatabase = rows.slice(1).map(row => {
+                    const values = row.split(',').map(value => value.trim().replace(/^"|"$/g, ''));
+                    const obj = {};
+                    if (headers.length === values.length) {
+                        headers.forEach((header, index) => {
+                            obj[header] = values[index];
+                        });
+                    } else {
+                        return null; // Omitir filas mal formadas
+                    }
+                    return {
+                        id: obj.id_base,
+                        name: obj.nombre,
+                        type: obj.tipo,
+                        section: obj.seccion,
+                        defaultValue: obj.valor_default,
+                        min: obj.valor_min,
+                        max: obj.valor_max,
+                        imageUrl: obj.imagen_url,
+                        pins: parseInt(obj.pines, 10) || 0,
+                        description: obj.descripcion
+                    };
+                }).filter(item => item !== null);
+                console.log('✅ Componentes cargados desde el archivo local:', componentDatabase);
+                populateComponentMenu();
+            } catch (error) {
+                console.error('❌ Error al cargar el archivo de componentes:', error);
+                componentListContainer.innerHTML = `<p style="color: #ff6b6b; text-align: center;">Error: Falló la carga del archivo de datos. Por favor, verifica el formato del CSV.</p>`;
             }
-            
-            return {
-                id: obj.id_base,
-                name: obj.nombre,
-                type: obj.tipo,
-                section: obj.seccion,
-                defaultValue: obj.valor_default,
-                min: obj.valor_min,
-                max: obj.valor_max,
-                imageUrl: obj.imagen_url,
-                // Aquí usamos parseInt con una verificación para evitar NaN
-                pins: parseInt(obj.pines, 10) || 0, 
-                description: obj.descripcion
-            };
-        }).filter(item => item !== null);
-
-        console.log('✅ Componentes cargados desde el archivo local:', componentDatabase);
-        populateComponentMenu();
-    } catch (error) {
-        console.error('❌ Error al cargar el archivo de componentes:', error);
-        componentListContainer.innerHTML = `<p style="color: #ff6b6b; text-align: center;">Error: Falló la carga del archivo de datos. Por favor, verifica el formato del CSV.</p>`;
-    }
-}
+        }
         
-        // Función para poblar el menú de componentes
         function populateComponentMenu() {
             componentListContainer.innerHTML = '';
             componentDatabase.forEach(comp => {
@@ -1020,20 +1007,64 @@ async function fetchComponentsFromDatabase() {
 
             component.innerHTML = `<img src="${data.imageUrl}" alt="${data.name}">`;
 
-            // Add pins for connections
-            if (data.pins > 0) {
+            // Lógica de creación de pines
+            if (data.pins === 2) {
                 const pin1 = document.createElement('div');
                 pin1.classList.add('component-pin', 'left');
                 pin1.dataset.pinId = `${component.id}-pin-1`;
                 component.appendChild(pin1);
 
-                if (data.pins === 2) {
-                    const pin2 = document.createElement('div');
-                    pin2.classList.add('component-pin', 'right');
-                    pin2.dataset.pinId = `${component.id}-pin-2`;
-                    component.appendChild(pin2);
-                }
+                const pin2 = document.createElement('div');
+                pin2.classList.add('component-pin', 'right');
+                pin2.dataset.pinId = `${component.id}-pin-2`;
+                component.appendChild(pin2);
+            } else if (data.pins === 3) {
+                // Pines para transistores
+                const pin1 = document.createElement('div');
+                pin1.classList.add('component-pin', 'left');
+                pin1.style.top = '25%';
+                pin1.dataset.pinId = `${component.id}-pin-1`;
+                component.appendChild(pin1);
+
+                const pin2 = document.createElement('div');
+                pin2.classList.add('component-pin', 'left');
+                pin2.style.top = '75%';
+                pin2.dataset.pinId = `${component.id}-pin-2`;
+                component.appendChild(pin2);
+
+                const pin3 = document.createElement('div');
+                pin3.classList.add('component-pin', 'right');
+                pin3.style.top = '50%';
+                pin3.dataset.pinId = `${component.id}-pin-3`;
+                component.appendChild(pin3);
+            } else if (data.pins === 4) {
+                // Pines para fuente USB
+                const pin1 = document.createElement('div');
+                pin1.classList.add('component-pin', 'left');
+                pin1.style.top = '25%';
+                pin1.dataset.pinId = `${component.id}-pin-1`;
+                component.appendChild(pin1);
+
+                const pin2 = document.createElement('div');
+                pin2.classList.add('component-pin', 'left');
+                pin2.style.top = '75%';
+                pin2.dataset.pinId = `${component.id}-pin-2`;
+                component.appendChild(pin2);
+
+                const pin3 = document.createElement('div');
+                pin3.classList.add('component-pin', 'right');
+                pin3.style.top = '25%';
+                pin3.dataset.pinId = `${component.id}-pin-3`;
+                component.appendChild(pin3);
+
+                const pin4 = document.createElement('div');
+                pin4.classList.add('component-pin', 'right');
+                pin4.style.top = '75%';
+                pin4.dataset.pinId = `${component.id}-pin-4`;
+                component.appendChild(pin4);
             }
+            // Por ahora, el código solo maneja 2, 3 o 4 pines. Para más pines (como el Arduino),
+            // se necesitaría una lógica de posicionamiento más compleja.
 
             component.addEventListener('mousedown', dragComponentStart);
             component.addEventListener('click', handleComponentClick);
@@ -1187,12 +1218,13 @@ async function fetchComponentsFromDatabase() {
             showSection('simulator');
         }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        showSection('start');
-        populateColorSelects();
-        updateResistorColor();
-        fetchComponentsFromDatabase(); // <<-- Se llama a la nueva función
-    });
-</script>
+        // Al cargar la página, mostrar solo la pantalla de inicio
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('start');
+            populateColorSelects();
+            updateResistorColor();
+            fetchComponentsFromDatabase();
+        });
+    </script>
 </body>
 </html>
