@@ -1,0 +1,11 @@
+id_base	nombre	tipo	seccion	valor_default	valor_min	valor_max	imagen_url	pines	descripcion
+r1	Resistencia	Pasivo	Resistencias	220	1	1000000	https://imgur.com/BNVLnQk.png	2	Resistencia genérica editable para cualquier valor.
+c1	Capacitor	Pasivo	Capacitores	1	1	0.1	https://imgur.com/1s8kgz7.png	2	Capacitor genérico, configurable en microfaradios o nanofaradios.
+d1	Diodo	Semiconductores	Diodos	0.7	0.1	1	https://imgur.com/uigFxku.png	2	Diodo genérico de silicio.
+led1	LED	Optoelectrónicos	LEDs	2	1.8	3.3	https://imgur.com/M4fc5p4.png	2	LED genérico de color configurable.
+a1	Arduino Uno	Microcontrolador	Microcontroladores	5	3.3	12	https://imgur.com/mr05Y5F.png	14	Arduino Uno R3 con ATmega328P.
+a2	ESP32	Microcontrolador	Microcontroladores	3.3	3.0	5	https://imgur.com/mr05Y5F.png	38	Microcontrolador Wi-Fi y Bluetooth.
+t1	Transistor NPN	Semiconductores	Transistores	0.7	0.1	1	https://imgur.com/MR8757F.png	3	Transistor NPN genérico.
+t2	Transistor PNP	Semiconductores	Transistores	0.7	0.1	1	https://imgur.com/MR8757F.png	3	Transistor PNP genérico.
+bat1	Batería 9V	Fuente	Fuentes	9	1	12	https://imgur.com/PoSgAxq.png	2	Batería estándar de 9V.
+usb1	Fuente USB 5V	Fuente	Fuentes	5	4.5	5.5	https://imgur.com/Fc5UQsF.png	4	Alimentación por puerto USB.
