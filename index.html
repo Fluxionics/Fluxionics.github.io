@@ -105,6 +105,9 @@
         .section-content h3 { color: #00d4ff; margin-bottom: 15px; }
 
         /* Simulador */
+        .simulator-container {
+            flex: 1; display: flex; overflow: hidden;
+        }
         .simulator-grid {
             flex: 1; position: relative; overflow: hidden;
             background-color: #0a0e14;
@@ -347,55 +350,61 @@
         }
         .chat-input button:hover { background: #00e6ff; }
     
-        /* Estilos del Modal de Edición */
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
-            overflow: auto; background-color: rgba(0,0,0,0.7);
-            align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background-color: #161b22; margin: auto; padding: 20px; border: 1px solid #00d4ff;
-            width: 80%; max-width: 500px; border-radius: 10px;
+        /* Estilos del Panel de Propiedades */
+        #propertiesPanel {
+            width: 300px;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid #30363d;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
             position: relative;
+            z-index: 100;
         }
-        .close-btn {
-            color: #aaa; float: right; font-size: 28px; font-weight: bold;
-            position: absolute; top: 10px; right: 15px;
+
+        #propertiesPanel.visible {
+            display: flex;
         }
-        .close-btn:hover, .close-btn:focus {
-            color: #00d4ff; text-decoration: none; cursor: pointer;
+
+        #propertiesPanel h3 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 10px;
         }
-        .modal-body p { margin: 10px 0; }
-        .modal-body strong { color: #00d4ff; }
-        .modal-body input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            background: #0a0e14;
-            border: 1px solid #30363d;
+
+        #propertiesPanel label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
             color: #e6edf3;
-            border-radius: 5px;
         }
-        .modal-body .pin-list {
+
+        #propertiesPanel input,
+        #propertiesPanel textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #e6edf3;
+            font-size: 1em;
+        }
+
+        #propertiesPanel .pin-list {
             list-style: none;
             padding: 0;
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid #30363d;
-            border-radius: 5px;
             margin-top: 10px;
         }
-        .modal-body .pin-list li {
-            padding: 8px 12px;
-            border-bottom: 1px solid #30363d;
-            display: flex;
-            justify-content: space-between;
-        }
-        .modal-body .pin-list li:last-child {
-            border-bottom: none;
-        }
-        .modal-body .pin-list strong {
-            color: #ffffff;
+
+        #propertiesPanel .pin-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #30363d;
+            font-size: 0.9em;
+            color: #8b949e;
         }
     </style>
 </head>
@@ -443,9 +452,19 @@
             </div>
         </div>
 
-        <div class="simulator-grid" id="simulatorSection">
-            <svg id="wire-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></svg>
+        <div class="simulator-container">
+            <div class="simulator-grid" id="simulatorSection">
+                <svg id="wire-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></svg>
+            </div>
+            <div id="propertiesPanel">
+                <h3>Propiedades</h3>
+                <div id="componentProperties">
+                    <p>Haz doble clic en un componente para editar sus propiedades.</p>
+                </div>
+                <button class="calflux-button" style="width: 100%; margin-top: auto;" onclick="saveComponentChanges()">Guardar Cambios</button>
+            </div>
         </div>
+
 
         <div class="simulator-toolbar">
             <button class="toolbar-button" onclick="toggleSimulation()">
@@ -651,16 +670,6 @@
         </div>
     </div>
 
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeEditModal()">&times;</span>
-            <h3>Editar Componente</h3>
-            <div id="modal-body">
-                </div>
-            <button class="calflux-button" style="width: 100%; margin-top: 20px;" onclick="saveComponentChanges()">Guardar Cambios</button>
-        </div>
-    </div>
-
     <script>
         // Lógica de SPA y navegación
         const sections = {
@@ -697,13 +706,13 @@
         const chatMessages = document.getElementById('chatMessages');
         const userInput = document.getElementById('userInput');
         const emotionUrls = {
-            normal: 'https://i.imgur.com/qmphvuK.png',
-            feliz: 'https://i.imgur.com/oIeoXI4.png',
-            pensando: 'https://i.imgur.com/X9r23Fe.png',
-            celebrando: 'https://i.imgur.com/f78GBdc.png',
-            confundido: 'https://i.imgur.com/5XrVsc9.png',
-            alerta: 'https://i.imgur.com/VaMxNvl.png',
-            tecnico: 'https://i.imgur.com/u19wakl.png',
+            normal: 'https://imgur.com/qmphvuK.png',
+            feliz: 'https://imgur.com/oIeoXI4.png',
+            pensando: 'https://imgur.com/X9r23Fe.png',
+            celebrando: 'https://imgur.com/f78GBdc.png',
+            confundido: 'https://imgur.com/5XrVsc9.png',
+            alerta: 'https://imgur.com/VaMxNvl.png',
+            tecnico: 'https://imgur.com/u19wakl.png',
         };
 
         function setFluxyEmotion(emotion) {
@@ -970,6 +979,8 @@
         const simulatorGrid = document.getElementById('simulatorSection');
         const wireLayer = document.getElementById('wire-layer');
         const componentListContainer = document.getElementById('componentList');
+        const propertiesPanel = document.getElementById('propertiesPanel');
+        const componentProperties = document.getElementById('componentProperties');
         let componentsOnGrid = [];
         let componentCounter = 0;
         let isDraggingComponent = false;
@@ -1031,11 +1042,11 @@
 
         function updateGridTransform() {
             simulatorGrid.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            connections.forEach(conn => updateWirePosition(conn.lineElement));
         }
 
         let isWiring = false;
         let startPin = null;
-        let currentWire = null;
 
         // Base de datos de componentes
         let componentDatabase = [];
@@ -1256,7 +1267,7 @@
             }
 
             component.addEventListener('mousedown', dragComponentStart);
-            component.addEventListener('dblclick', handleComponentClick);
+            component.addEventListener('dblclick', handleComponentDoubleClick);
             component.querySelectorAll('.component-pin').forEach(pin => {
                 pin.addEventListener('mousedown', startWire);
             });
@@ -1297,12 +1308,10 @@
             }
         });
 
-        // Lógica del modal de edición
-        const editModal = document.getElementById('editModal');
-        const modalBody = document.getElementById('modal-body');
+        // Lógica del panel de propiedades
         let selectedComponent = null;
 
-        function handleComponentClick(e) {
+        function handleComponentDoubleClick(e) {
             e.stopPropagation();
             if (e.target.classList.contains('component-pin')) return;
             selectedComponent = this;
@@ -1323,7 +1332,7 @@
                 pinsHtml += `</ul>`;
             }
 
-            modalBody.innerHTML = `
+            componentProperties.innerHTML = `
                 <p><strong>ID:</strong> ${componentData.id}</p>
                 <p><strong>Nombre:</strong> ${componentData.name}</p>
                 <p><strong>Tipo:</strong> ${componentData.type}</p>
@@ -1343,32 +1352,23 @@
                 ${pinsHtml}
             `;
 
-            editModal.style.display = 'flex';
+            propertiesPanel.classList.add('visible');
         }
 
         function saveComponentChanges() {
+            if (!selectedComponent) return;
+
             const value = document.getElementById('component-value').value;
             const minValue = document.getElementById('component-min-value').value;
             const maxValue = document.getElementById('component-max-value').value;
 
-            if (selectedComponent) {
-                selectedComponent.dataset.value = value;
-                selectedComponent.dataset.minValue = minValue;
-                selectedComponent.dataset.maxValue = maxValue;
-                console.log(`Componente ${selectedComponent.id} actualizado:`, { value, minValue, maxValue });
-            }
-            closeEditModal();
-        }
-
-        function closeEditModal() {
-            editModal.style.display = 'none';
+            selectedComponent.dataset.value = value;
+            selectedComponent.dataset.minValue = minValue;
+            selectedComponent.dataset.maxValue = maxValue;
+            
+            console.log(`Componente ${selectedComponent.id} actualizado:`, { value, minValue, maxValue });
+            propertiesPanel.classList.remove('visible');
             selectedComponent = null;
-        }
-
-        window.onclick = function(event) {
-            if (event.target == editModal) {
-                closeEditModal();
-            }
         }
 
         // Lógica de cables
