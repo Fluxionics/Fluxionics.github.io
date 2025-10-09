@@ -1,39 +1,41 @@
+// posts.js
+
 const publicaciones = [
     {
-        titulo: "¡Nuevo Shippeo a la vista!",
-        descripcion: "Parece que 'M' y 'J' estuvieron muy juntos en el recreo de hoy...",
-        urlMedia: "https://ejemplo.com/imagen-shippeo.jpg",
+        titulo: "¡Nuevo Shippeo a la vista en la cafetería!",
+        descripcion: "Parece que 'M' y 'J' estuvieron muy juntos en el recreo de hoy, compartiendo audífonos. ¿Confirmamos?",
+        urlMedia: "https://via.placeholder.com/600x400?text=Shippeo+M+y+J",
         seccion: "Shippeos"
     },
     {
-        titulo: "El meme de la semana",
-        descripcion: "Cuando el profesor de matemáticas deja 50 ejercicios de tarea. 😂",
-        urlMedia: "https://ejemplo.com/video-humor.mp4",
+        titulo: "El meme del examen sorpresa de Física",
+        descripcion: "Cuando el profesor de Física dice 'saquen una hoja' y todos reaccionan así. 😂",
+        urlMedia: "https://via.placeholder.com/600x400?text=Meme+Examen+Sorpresa",
         seccion: "Humor"
     },
     {
-        titulo: "Reglas de Contenido y Uso",
-        descripcion: "Aviso importante sobre lo que SÍ y NO se puede publicar en esta plataforma.",
+        titulo: "Transcripción: 'El debate del almuerzo'",
+        descripcion: "Diálogo completo de la conversación más intensa sobre quién tiene el mejor lugar para comer en la secundaria.",
         urlMedia: "", // Sin imagen o video
-        seccion: "Política"
-    },
-    {
-        titulo: "Transcripción: 'El examen sorpresa'",
-        descripcion: "Diálogo completo de la conversación más épica de la clase de Historia.",
-        urlMedia: "",
         seccion: "Conversaciones"
     },
     {
-        titulo: "El Misterio del Lápiz Perdido",
-        descripcion: "Un caso sin resolver en 4to año: ¿Dónde está el lápiz de la suerte de 'P'?",
-        urlMedia: "https://ejemplo.com/misterio.png",
+        titulo: "¡Exclusiva! 'A' se tiñó el cabello",
+        descripcion: "El cambio de look más radical del año. ¡Parece que el azul está de moda!",
+        urlMedia: "https://via.placeholder.com/600x400?text=Chisme+Cabello+Azul",
+        seccion: "Chismes"
+    },
+    {
+        titulo: "El Misterio del Locker Abierto",
+        descripcion: "Un caso sin resolver en 4to año: El locker 3B apareció abierto toda la mañana. ¿Fue un olvido o un intruso?",
+        urlMedia: "https://via.placeholder.com/600x400?text=Misterio+Locker+Abierto",
         seccion: "Misterios"
     },
-    // ¡Añade más publicaciones aquí!
     {
-        titulo: "Chisme: El cambio de color de cabello",
-        descripcion: "¡Exclusiva! 'A' se tiñó el cabello de un color radical este fin de semana. Fotos adentro.",
-        urlMedia: "https://ejemplo.com/chisme-cabello.jpg",
-        seccion: "Chismes"
+        titulo: "Aviso de Contenido y Uso (No Oficial)",
+        descripcion: "Recuerda, este contenido es gestionado por alumnos. Revisa el enlace de 'Política y Reglas' para más detalles.",
+        urlMedia: "",
+        seccion: "Política" // Este post se excluye de "Todo" en el script.
     }
+    // Añade más publicaciones aquí
 ];
