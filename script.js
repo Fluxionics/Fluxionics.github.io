@@ -112,7 +112,7 @@ enlacesNav.forEach(enlace => {
         if (seccion) {
             e.preventDefault();
             mostrarPublicaciones(seccion);
-            // Opcional: Cerrar el modal por si acaso
+            // Asegura que el modal esté cerrado si se navega
             if(modalSubir) modalSubir.style.display = 'none'; 
             document.body.style.overflow = 'auto'; 
         }
