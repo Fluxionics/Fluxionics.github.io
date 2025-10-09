@@ -1,104 +1,57 @@
-body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
+/* --- Estilos para la Nueva Sección "Subir" --- */
+
+/* Destacar el enlace en la navegación */
+.nav-link.highlight {
+    background-color: #e74c3c; /* Un color llamativo (rojo/naranja) */
+    color: white;
+    font-weight: bold;
+    animation: pulse 1.5s infinite; /* Animación simple para atraer la vista */
 }
 
-header {
-    background-color: #4a90e2;
-    color: white;
-    padding: 20px;
+.nav-link.highlight:hover {
+    background-color: #c0392b;
+}
+
+/* Estilo para la caja de llamada a la acción */
+.call-to-action {
+    grid-column: 1 / -1; /* Ocupa todo el ancho en el grid */
     text-align: center;
+    padding: 25px;
+    margin-bottom: 20px;
+    background-color: #ecf0f1; /* Fondo gris claro */
+    border: 2px dashed #95a5a6;
+    border-radius: 10px;
 }
 
-nav {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap; /* Permite que los enlaces se envuelvan en pantallas pequeñas */
-    padding: 10px 0;
-    border-bottom: 2px solid #3a7bd5;
+.call-to-action h2 {
+    color: #34495e;
+    margin-bottom: 10px;
 }
 
-.nav-link {
+.tiktok-link {
+    display: inline-block;
+    background-color: #2c3e50;
     color: white;
+    padding: 10px 20px;
+    margin: 15px 0;
+    border-radius: 50px;
     text-decoration: none;
-    padding: 8px 15px;
-    margin: 5px;
-    border-radius: 5px;
+    font-size: 1.1em;
     transition: background-color 0.3s;
 }
 
-.nav-link:hover {
-    background-color: #3a7bd5;
+.tiktok-link:hover {
+    background-color: #1a242f;
 }
 
-main {
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 0 15px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+.nota-subida {
+    font-size: 0.9em;
+    color: #7f8c8d;
 }
 
-.post {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.post-titulo {
-    color: #4a90e2;
-    margin-top: 0;
-    border-bottom: 1px dashed #ccc;
-    padding-bottom: 5px;
-}
-
-.post-seccion span {
-    font-weight: bold;
-    color: #d0021b; /* Color distintivo para la sección */
-}
-
-.post-media img, .post-media video {
-    width: 100%;
-    height: auto;
-    max-height: 250px;
-    object-fit: cover;
-    margin: 10px 0;
-    border-radius: 4px;
-}
-
-/* Estilos específicos para la sección de Política */
-.politica-contenido {
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.alerta-roja {
-    background-color: #fdd;
-    color: #a00;
-    padding: 15px;
-    border: 1px solid #a00;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-.volver-home {
-    color: white;
-    text-decoration: none;
-    display: block;
-    margin-top: 10px;
-}
-
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #333;
-    color: white;
-    margin-top: 20px;
+/* Animación de pulsación para el botón */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
