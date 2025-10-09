@@ -37,5 +37,14 @@ const publicaciones = [
         urlMedia: "",
         seccion: "Política" // Este post se excluye de "Todo" en el script.
     }
+
+    // posts.js (Añade este nuevo objeto)
+    {
+        titulo: "¡EL SHIPPEO ES OFICIAL! 😍",
+        descripcion: "Después de meses de rumores, 'L' y 'G' confirmaron su relación. ¡Felicidades a la pareja de la secundaria!",
+        urlMedia: "https://via.placeholder.com/600x400?text=Pareja+Oficial+L+G",
+        seccion: "Pareja Oficial" // ¡Nueva Sección!
+    },
+// ... (continúa con tus otras publicaciones)
     // Añade más publicaciones aquí
 ];
