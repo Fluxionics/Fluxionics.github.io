@@ -4,19 +4,20 @@
 const contenedor = document.getElementById('contenedor-publicaciones');
 const enlacesNav = document.querySelectorAll('.nav-link');
 
+// 🔴 CRÍTICO: ENLACE DE INVITACIÓN AL CHAT DE DISCORD
+const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C"; 
+
+
 // ----------------------------------------------------
 // 1. FUNCIONES PARA CREAR Y MOSTRAR EL CONTENIDO
 // ----------------------------------------------------
 
-// Función para crear el HTML de una publicación
 function crearPostHTML(post) {
     const articulo = document.createElement('article');
-    // Genera una clase para el diseño dinámico (e.g., 'shippeos', 'pareja-oficial')
     articulo.classList.add('post', post.seccion.toLowerCase().replace(' ', '-')); 
 
     let contenidoMedia = '';
     
-    // Verifica si hay una URL de imagen o video válida
     if (post.urlMedia) {
         const mediaTag = post.urlMedia.toLowerCase().includes('.mp4') 
             ? `<video src="${post.urlMedia}" controls></video>`
@@ -25,57 +26,77 @@ function crearPostHTML(post) {
         contenidoMedia = `<div class="post-media">${mediaTag}</div>`;
     }
     
-    // Inyecta el contenido
     articulo.innerHTML = `
         <h2 class="post-titulo">${post.titulo}</h2>
         <p class="post-seccion">Sección: <span>${post.seccion}</span></p>
         ${contenidoMedia}
         ${post.seccion !== 'Pareja Oficial' ? `<p class="post-descripcion">${post.descripcion}</p>` : ''} 
-        `;
+    `;
     return articulo;
 }
 
-// Función principal para mostrar y filtrar posts
 function mostrarPublicaciones(filtroSeccion) {
     contenedor.innerHTML = ''; 
 
-    // Determina qué publicaciones mostrar
     const postsFiltrados = publicaciones.filter(post => {
-        // Excluye "Política" de la vista "Todo"
         if (post.seccion === "Política") {
             return false;
         }
-        
-        // Filtra por la sección seleccionada o muestra todos si es "Todo"
         return filtroSeccion === "Todo" || post.seccion === filtroSeccion;
     });
 
-    // Muestra un mensaje si no hay posts para el filtro
     if (postsFiltrados.length === 0) {
         contenedor.innerHTML = `<p class="mensaje-vacio">Aún no hay publicaciones en la sección de <strong>${filtroSeccion}</strong>. ¡Sé el primero en mandar tu contenido!</p>`;
         return;
     }
     
-    // Agrega las publicaciones filtradas al contenedor
     postsFiltrados.forEach(post => {
         contenedor.appendChild(crearPostHTML(post));
     });
 }
 
 // ----------------------------------------------------
-// 2. LÓGICA DEL MODAL "SUBIR"
+// 2. LÓGICA DEL CHAT ANÓNIMO (NUEVA SECCIÓN)
+// ----------------------------------------------------
+
+const linkChatAnonimo = document.getElementById('link-chat');
+
+if(linkChatAnonimo) {
+    linkChatAnonimo.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Cierra el modal de "Enviar Chisme" si está abierto
+        if(modalSubir) modalSubir.style.display = 'none'; 
+        document.body.style.overflow = 'auto'; 
+        
+        // Pide el nombre de usuario de TikTok
+        const tiktokUser = prompt("Para entrar al chat, ingresa tu nombre de usuario de TikTok (ej: @jlcojvjcl).");
+
+        if (tiktokUser && tiktokUser.trim() !== "") {
+            // Abre el enlace de Discord en una nueva pestaña
+            alert(`¡Perfecto! Te redirigiremos a Discord. Tu nombre de TikTok: ${tiktokUser}`);
+            window.open(CHAT_ANONIMO_URL, '_blank'); 
+        } else {
+            alert("Necesitas ingresar un nombre de usuario para acceder al chat.");
+        }
+    });
+}
+
+
+// ----------------------------------------------------
+// 3. LÓGICA DEL MODAL "ENVIAR CHISME"
 // ----------------------------------------------------
 
 const linkSubir = document.getElementById('link-subir');
 const modalSubir = document.getElementById('modal-subir');
 const closeModal = document.querySelector('.close-modal');
 
-// Abrir modal al hacer clic en "Subir"
+// Abrir modal al hacer clic en "Enviar Chisme"
 if(linkSubir && modalSubir) {
     linkSubir.addEventListener('click', (e) => {
         e.preventDefault();
         modalSubir.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Evita el scroll
+        document.body.style.overflow = 'hidden';
     });
 }
 
@@ -100,7 +121,7 @@ if(modalSubir) {
 
 
 // ----------------------------------------------------
-// 3. EVENTOS Y CARGA INICIAL
+// 4. EVENTOS Y CARGA INICIAL
 // ----------------------------------------------------
 
 // Añade el evento de click a los enlaces de navegación para filtrar
@@ -108,11 +129,9 @@ enlacesNav.forEach(enlace => {
     enlace.addEventListener('click', (e) => {
         const seccion = e.target.getAttribute('data-seccion');
 
-        // Solo filtra si tiene el atributo data-seccion
         if (seccion) {
             e.preventDefault();
             mostrarPublicaciones(seccion);
-            // Asegura que el modal esté cerrado si se navega
             if(modalSubir) modalSubir.style.display = 'none'; 
             document.body.style.overflow = 'auto'; 
         }
@@ -121,7 +140,6 @@ enlacesNav.forEach(enlace => {
 
 // Cargar la sección "Todo" por defecto al cargar la página
 window.onload = function() {
-    // Validamos que el array exista y tenga contenido
     if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) {
         mostrarPublicaciones("Todo");
     } else {
