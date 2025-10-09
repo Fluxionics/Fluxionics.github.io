@@ -3,54 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Publicaciones Dinámicas</title>
+    <title>SECUNDARIA DEL ESTADO | Noticias y Contenido</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
-        #filtros { margin-bottom: 20px; }
-        .filtro-btn { padding: 10px 15px; margin-right: 10px; margin-bottom: 8px; cursor: pointer; border: none; background-color: #3498db; color: white; border-radius: 5px; }
-        .filtro-btn:hover, .filtro-btn.activo { background-color: #2980b9; }
-        .publicacion { background-color: white; border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-        .publicacion h3 { margin-top: 0; color: #e74c3c; }
-        .publicacion img { max-width: 100%; height: auto; display: block; margin-top: 10px; border-radius: 4px; }
-        .publicacion .seccion-tag { display: inline-block; padding: 5px 10px; background-color: #2ecc71; color: white; border-radius: 3px; font-size: 0.8em; margin-bottom: 5px; }
+        /* Diseño Profesional y Limpio */
+        body { font-family: 'Arial', sans-serif; margin: 0; background-color: #f0f2f5; color: #333; }
+        header { background-color: #1a4a87; color: white; padding: 20px 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 2.5em; }
+        main { padding: 20px 40px; max-width: 1200px; margin: 0 auto; }
+
+        /* Estilo de Filtros */
+        #filtros { margin-bottom: 30px; border-bottom: 2px solid #ddd; padding-bottom: 15px; }
+        .filtro-btn { 
+            padding: 10px 18px; margin-right: 10px; margin-bottom: 8px; 
+            cursor: pointer; border: 1px solid #1a4a87; 
+            background-color: white; color: #1a4a87; 
+            border-radius: 20px; font-weight: bold; 
+            transition: all 0.2s;
+        }
+        .filtro-btn:hover, .filtro-btn.activo { 
+            background-color: #1a4a87; color: white; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+        }
+
+        /* Estilo de Publicaciones (Cards) */
+        #publicaciones-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .publicacion { 
+            background-color: white; border: 1px solid #e0e0e0; 
+            border-radius: 10px; overflow: hidden; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+            transition: transform 0.3s;
+        }
+        .publicacion:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+
+        .publicacion-body { padding: 15px; }
+        .publicacion h3 { margin-top: 0; color: #1a4a87; font-size: 1.4em; }
+        .publicacion img { width: 100%; height: 200px; object-fit: cover; display: block; }
+        
+        /* Estilo de Tags para diferenciar secciones */
+        .seccion-tag { 
+            display: inline-block; padding: 5px 10px; 
+            color: white; border-radius: 5px; 
+            font-size: 0.8em; margin-bottom: 10px; 
+            font-weight: bold;
+        }
+        /* Colores por Sección */
+        .Shippeos { background-color: #e74c3c; }
+        .Conversaciones { background-color: #2ecc71; }
+        .General { background-color: #95a5a6; }
+        .Chismes { background-color: #f39c12; }
+        .Misterios { background-color: #34495e; }
+        .Humor { background-color: #e67e22; }
+        .Política { background-color: #3498db; }
     </style>
 </head>
 <body>
 
-    <h1>Publicaciones (Control Manual y Modular)</h1>
-    
-    <div id="filtros">
-        <button class="filtro-btn activo" data-seccion="Todas">Todas</button>
-        <button class="filtro-btn" data-seccion="Shippeos">Parecen Shippeos</button>
-        <button class="filtro-btn" data-seccion="Conversaciones">Conversación Normal</button>
-        <button class="filtro-btn" data-seccion="General">General</button>
-        <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;">
-        <button class="filtro-btn" data-seccion="Chismes">Chismes</button>
-        <button class="filtro-btn" data-seccion="Misterios">Misterios</button>
-        <button class="filtro-btn" data-seccion="Humor">Humor</button>
-    </div>
+    <header>
+        <h1>SECUNDARIA DEL ESTADO</h1>
+    </header>
 
-    <div id="publicaciones-container">
+    <main>
+        <h2>Filtrar Publicaciones</h2>
+        
+        <div id="filtros">
+            <button class="filtro-btn activo" data-seccion="Todas">Todas</button>
+            <button class="filtro-btn" data-seccion="Shippeos">Shippeos</button>
+            <button class="filtro-btn" data-seccion="Conversaciones">Conversaciones</button>
+            <button class="filtro-btn" data-seccion="Chismes">Chismes</button>
+            <button class="filtro-btn" data-seccion="Misterios">Misterios</button>
+            <button class="filtro-btn" data-seccion="Humor">Humor</button>
+            <button class="filtro-btn" data-seccion="Política">Política</button>
+            <button class="filtro-btn" data-seccion="General">General</button>
         </div>
 
+        <div id="publicaciones-container">
+            </div>
+    </main>
+
     <script>
-        // DATA: Array de publicaciones. Ahora incluye las nuevas secciones.
+        // DATA: Array de publicaciones CON TODAS LAS SECCIONES REQUERIDAS
         const publicaciones = [
-            // Secciones Antiguas
-            { id: 1, titulo: "La Teoría de la Cita Perdida", imagen: "https://via.placeholder.com/400x200?text=Shippeo+1", descripcion: "Una captura de pantalla que parece confirmar el 'shippeo' entre Juan y María. ¡La evidencia es clara!", seccion: "Shippeos" },
-            { id: 2, titulo: "Discusión sobre la Nueva Ley", imagen: null, descripcion: "Toda la transcripción de la conversación sobre el impacto de la nueva legislación en el sector A.", seccion: "Conversaciones" },
-            { id: 3, titulo: "Anuncio de Mantenimiento", imagen: "https://via.placeholder.com/400x150?text=General+2", descripcion: "Información importante sobre el mantenimiento de la plataforma programado para el sábado.", seccion: "General" },
-            { id: 4, titulo: "¡Nuevo Meme Viral!", imagen: "https://via.placeholder.com/400x250?text=Conversacion+3", descripcion: "El meme que todos están compartiendo y un análisis de por qué se hizo tan popular.", seccion: "Conversaciones" },
-            
-            // Secciones Nuevas
-            { id: 5, titulo: "El Drama de la Fiesta VIP", imagen: null, descripcion: "Toda la verdad sobre quién no fue invitado y por qué. ¡Exclusivo!", seccion: "Chismes" },
-            { id: 6, titulo: "¿Quién dejó la Nota en el Casillero?", imagen: "https://via.placeholder.com/400x200?text=Pista+Misterio", descripcion: "Analizando la letra de la misteriosa nota encontrada hoy por la mañana. ¡Resolvemos el enigma!", seccion: "Misterios" },
-            { id: 7, titulo: "El Fail Épico de Hoy", imagen: "https://via.placeholder.com/400x200?text=Risa+Humor", descripcion: "No podrás creer lo que pasó cuando intentó hacer la coreografía viral. 😂", seccion: "Humor" },
-            { id: 8, titulo: "Chisme de Última Hora", imagen: "https://via.placeholder.com/400x200?text=Chisme+2", descripcion: "Se revela un nuevo detalle sobre la pareja que todos creían separada.", seccion: "Chismes" }
+            // Sección: Humor
+            { id: 1, titulo: "El Examen que No Existió 🤣", imagen: "https://via.placeholder.com/400x200?text=Humor+Examen", descripcion: "Cuando el profesor dice 'no hay examen' y todos celebramos. ¡Puro alivio!", seccion: "Humor" },
+            // Sección: Misterios
+            { id: 2, titulo: "La Desaparición del Borrador Maestro", imagen: "https://via.placeholder.com/400x200?text=Misterio+Pizarra", descripcion: "Investigamos dónde fue a parar el borrador de la sala de maestros. Un caso sin resolver...", seccion: "Misterios" },
+            // Sección: Shippeos
+            { id: 3, titulo: "La Historia de los Mensajes Cruzados", imagen: "https://via.placeholder.com/400x200?text=Shippeo+Chat", descripcion: "Capturas que confirman que A y B se mandan mensajes a las 3 AM. ¡El shippeo es real!", seccion: "Shippeos" },
+            // Sección: Conversaciones
+            { id: 4, titulo: "Debate sobre el Nuevo Horario", imagen: null, descripcion: "Transcripción completa de la reunión sobre la modificación de horarios de la tarde.", seccion: "Conversaciones" },
+            // Sección: Chismes
+            { id: 5, titulo: "El Rumor del Director en la Cafetería", imagen: "https://via.placeholder.com/400x200?text=Chisme+Cafeteria", descripcion: "Nos cuentan que vieron al director comprando ¡cuatro cafés! ¿Qué estará planeando?", seccion: "Chismes" },
+            // Sección: Política (Nueva)
+            { id: 6, titulo: "Resultados de la Elección del Consejo Estudiantil", imagen: "https://via.placeholder.com/400x200?text=Politica+Votos", descripcion: "Análisis de los votos y la nueva mesa directiva para el período 2025-2026.", seccion: "Política" },
+            // Sección: General
+            { id: 7, titulo: "Aviso: Suspensión de Agua Temporal", imagen: null, descripcion: "Importante: Mañana habrá corte de agua de 8:00 AM a 1:00 PM por mantenimiento.", seccion: "General" },
+            // Sección: Humor (Otro Ejemplo)
+            { id: 8, titulo: "Clases en Línea vs. Presencial", imagen: "https://via.placeholder.com/400x200?text=Humor+Memes", descripcion: "Un hilo de memes que resumen perfectamente la vida antes y después de la pandemia. 😂", seccion: "Humor" }
         ];
 
         const container = document.getElementById('publicaciones-container');
 
+        // FUNCIÓN MODULAR PARA CREAR EL HTML DE UNA SOLA PUBLICACIÓN
         function crearHTMLPublicacion(post) {
             const imagenHTML = post.imagen 
                 ? `<img src="${post.imagen}" alt="Imagen de ${post.titulo}">` 
@@ -58,14 +111,17 @@
 
             return `
                 <div class="publicacion" data-id="${post.id}">
-                    <span class="seccion-tag">${post.seccion}</span>
-                    <h3>${post.titulo}</h3>
-                    <p>${post.descripcion}</p>
                     ${imagenHTML}
+                    <div class="publicacion-body">
+                        <span class="seccion-tag ${post.seccion}">${post.seccion.toUpperCase()}</span>
+                        <h3>${post.titulo}</h3>
+                        <p>${post.descripcion}</p>
+                    </div>
                 </div>
             `;
         }
 
+        // FUNCIÓN PARA CARGAR TODAS LAS PUBLICACIONES (con filtro)
         function cargarPublicaciones(filtro) {
             container.innerHTML = ''; 
 
@@ -74,7 +130,7 @@
                 : publicaciones.filter(p => p.seccion === filtro);
             
             if (publicacionesFiltradas.length === 0) {
-                container.innerHTML = `<p>No hay publicaciones en la sección de ${filtro}.</p>`;
+                container.innerHTML = `<p>No hay publicaciones para la sección de <strong>${filtro}</strong>.</p>`;
                 return;
             }
 
@@ -83,11 +139,10 @@
             });
         }
 
+        // LÓGICA DE FILTRADO
         document.addEventListener('DOMContentLoaded', () => {
-            // Carga todas las publicaciones al iniciar
-            cargarPublicaciones('Todas'); 
+            cargarPublicaciones('Todas'); // Carga todas al iniciar
 
-            // Asigna el evento de click a todos los botones de filtro
             const botonesFiltro = document.querySelectorAll('.filtro-btn');
             
             botonesFiltro.forEach(btn => {
@@ -95,6 +150,7 @@
                     const seccion = this.getAttribute('data-seccion');
                     cargarPublicaciones(seccion);
 
+                    // Lógica para marcar el botón activo
                     botonesFiltro.forEach(b => b.classList.remove('activo'));
                     this.classList.add('activo');
                 });
