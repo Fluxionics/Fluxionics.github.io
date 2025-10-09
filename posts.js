@@ -2,7 +2,7 @@
 
 const publicaciones = [
     // ----------------------------------------------------
-    // SECCIÓN: PAREJA OFICIAL (Diseño Único - Título e Imagen)
+    // SECCIÓN: PAREJA OFICIAL (Diseño Único)
     // ----------------------------------------------------
     {
         titulo: "¡EL SHIPPEO ES OFICIAL! L y G lo confirman.",
@@ -12,7 +12,7 @@ const publicaciones = [
     },
     
     // ----------------------------------------------------
-    // SECCIÓN: SHIPPEOS (Diseño con corazones/rosa)
+    // SECCIÓN: SHIPPEOS 
     // ----------------------------------------------------
     {
         titulo: "¡Nuevo Shippeo a la vista en la cafetería!",
@@ -28,7 +28,7 @@ const publicaciones = [
     },
 
     // ----------------------------------------------------
-    // SECCIÓN: HUMOR (Diseño vibrante)
+    // SECCIÓN: HUMOR 
     // ----------------------------------------------------
     {
         titulo: "El meme del examen sorpresa de Física",
@@ -54,7 +54,7 @@ const publicaciones = [
     },
     
     // ----------------------------------------------------
-    // SECCIÓN: MISTERIOS (Diseño oscuro)
+    // SECCIÓN: MISTERIOS 
     // ----------------------------------------------------
     {
         titulo: "El Misterio del Locker Abierto 3B",
@@ -71,10 +71,10 @@ const publicaciones = [
         descripcion: "Diálogo completo de la conversación más intensa sobre quién tiene el mejor lugar para comer en la secundaria. (Con permiso de los participantes).",
         urlMedia: "", 
         seccion: "Conversaciones"
-    },
+    }, // <-- ¡COMA AGREGADA! 
 
     // ----------------------------------------------------
-    // SECCIÓN: POLÍTICA (No se muestra en "Todo", solo en el enlace de nav)
+    // SECCIÓN: POLÍTICA (Última publicación)
     // ----------------------------------------------------
     {
         titulo: "Aviso de Contenido y Uso de la Plataforma",
