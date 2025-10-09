@@ -3,90 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicio no disponible</title>
+    <title>Gestor de Publicaciones Dinámicas</title>
     <style>
-        :root {
-            /* Define las variables para los colores del fondo */
-            --color1: #171758;
-            --color2: #380c68;
-            --color3: #581845;
-            --color4: #2B0A4E;
-        }
-
-        body {
-            background: linear-gradient(45deg, var(--color1), var(--color2), var(--color3), var(--color4));
-            background-size: 400% 400%; /* El tamaño grande permite el movimiento */
-            animation: gradientAnimation 15s ease infinite; /* Define la animación del fondo */
-            color: #0011ff;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            text-align: center;
-            overflow: hidden; /* Evita barras de desplazamiento innecesarias */
-        }
-
-        /* La animación del degradado */
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        .container {
-            padding: 20px;
-            max-width: 90%;
-            z-index: 2; /* Asegura que el contenido esté sobre el fondo */
-        }
-
-        img {
-            width: auto;
-            max-height: 350px; /* Tamaño del logo más pequeño */
-            margin-bottom: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        h1 {
-            font-size: clamp(1.5em, 5vw, 3em); /* Tamaño de fuente adaptable */
-            font-weight: bold;
-            text-transform: uppercase;
-            /* Crea el efecto de degradado en el texto */
-            background: linear-gradient(90deg, #6a85b6, #bac8e0, #8077b9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent;
-            
-            animation: textGlow 2s ease-in-out infinite alternate;
-        }
-
-        /* Animación para que las letras tengan un ligero brillo */
-        @keyframes textGlow {
-            from {
-                filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
-            }
-            to {
-                filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
-            }
-        }
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        #filtros { margin-bottom: 20px; }
+        .filtro-btn { padding: 10px 15px; margin-right: 10px; margin-bottom: 8px; cursor: pointer; border: none; background-color: #3498db; color: white; border-radius: 5px; }
+        .filtro-btn:hover, .filtro-btn.activo { background-color: #2980b9; }
+        .publicacion { background-color: white; border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .publicacion h3 { margin-top: 0; color: #e74c3c; }
+        .publicacion img { max-width: 100%; height: auto; display: block; margin-top: 10px; border-radius: 4px; }
+        .publicacion .seccion-tag { display: inline-block; padding: 5px 10px; background-color: #2ecc71; color: white; border-radius: 3px; font-size: 0.8em; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <img src="https://imgur.com/pxjxVqC.png" alt="Logo de Fluxion">
-    <h1>FLUXIONICS ESTA BAJO SERVICIO</h1>
-</div>
+    <h1>Publicaciones (Control Manual y Modular)</h1>
+    
+    <div id="filtros">
+        <button class="filtro-btn activo" data-seccion="Todas">Todas</button>
+        <button class="filtro-btn" data-seccion="Shippeos">Parecen Shippeos</button>
+        <button class="filtro-btn" data-seccion="Conversaciones">Conversación Normal</button>
+        <button class="filtro-btn" data-seccion="General">General</button>
+        <hr style="border: none; border-top: 1px solid #ccc; margin: 10px 0;">
+        <button class="filtro-btn" data-seccion="Chismes">Chismes</button>
+        <button class="filtro-btn" data-seccion="Misterios">Misterios</button>
+        <button class="filtro-btn" data-seccion="Humor">Humor</button>
+    </div>
+
+    <div id="publicaciones-container">
+        </div>
+
+    <script>
+        // DATA: Array de publicaciones. Ahora incluye las nuevas secciones.
+        const publicaciones = [
+            // Secciones Antiguas
+            { id: 1, titulo: "La Teoría de la Cita Perdida", imagen: "https://via.placeholder.com/400x200?text=Shippeo+1", descripcion: "Una captura de pantalla que parece confirmar el 'shippeo' entre Juan y María. ¡La evidencia es clara!", seccion: "Shippeos" },
+            { id: 2, titulo: "Discusión sobre la Nueva Ley", imagen: null, descripcion: "Toda la transcripción de la conversación sobre el impacto de la nueva legislación en el sector A.", seccion: "Conversaciones" },
+            { id: 3, titulo: "Anuncio de Mantenimiento", imagen: "https://via.placeholder.com/400x150?text=General+2", descripcion: "Información importante sobre el mantenimiento de la plataforma programado para el sábado.", seccion: "General" },
+            { id: 4, titulo: "¡Nuevo Meme Viral!", imagen: "https://via.placeholder.com/400x250?text=Conversacion+3", descripcion: "El meme que todos están compartiendo y un análisis de por qué se hizo tan popular.", seccion: "Conversaciones" },
+            
+            // Secciones Nuevas
+            { id: 5, titulo: "El Drama de la Fiesta VIP", imagen: null, descripcion: "Toda la verdad sobre quién no fue invitado y por qué. ¡Exclusivo!", seccion: "Chismes" },
+            { id: 6, titulo: "¿Quién dejó la Nota en el Casillero?", imagen: "https://via.placeholder.com/400x200?text=Pista+Misterio", descripcion: "Analizando la letra de la misteriosa nota encontrada hoy por la mañana. ¡Resolvemos el enigma!", seccion: "Misterios" },
+            { id: 7, titulo: "El Fail Épico de Hoy", imagen: "https://via.placeholder.com/400x200?text=Risa+Humor", descripcion: "No podrás creer lo que pasó cuando intentó hacer la coreografía viral. 😂", seccion: "Humor" },
+            { id: 8, titulo: "Chisme de Última Hora", imagen: "https://via.placeholder.com/400x200?text=Chisme+2", descripcion: "Se revela un nuevo detalle sobre la pareja que todos creían separada.", seccion: "Chismes" }
+        ];
+
+        const container = document.getElementById('publicaciones-container');
+
+        function crearHTMLPublicacion(post) {
+            const imagenHTML = post.imagen 
+                ? `<img src="${post.imagen}" alt="Imagen de ${post.titulo}">` 
+                : '';
+
+            return `
+                <div class="publicacion" data-id="${post.id}">
+                    <span class="seccion-tag">${post.seccion}</span>
+                    <h3>${post.titulo}</h3>
+                    <p>${post.descripcion}</p>
+                    ${imagenHTML}
+                </div>
+            `;
+        }
+
+        function cargarPublicaciones(filtro) {
+            container.innerHTML = ''; 
+
+            const publicacionesFiltradas = filtro === 'Todas' 
+                ? publicaciones 
+                : publicaciones.filter(p => p.seccion === filtro);
+            
+            if (publicacionesFiltradas.length === 0) {
+                container.innerHTML = `<p>No hay publicaciones en la sección de ${filtro}.</p>`;
+                return;
+            }
+
+            publicacionesFiltradas.forEach(post => {
+                container.innerHTML += crearHTMLPublicacion(post);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carga todas las publicaciones al iniciar
+            cargarPublicaciones('Todas'); 
+
+            // Asigna el evento de click a todos los botones de filtro
+            const botonesFiltro = document.querySelectorAll('.filtro-btn');
+            
+            botonesFiltro.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const seccion = this.getAttribute('data-seccion');
+                    cargarPublicaciones(seccion);
+
+                    botonesFiltro.forEach(b => b.classList.remove('activo'));
+                    this.classList.add('activo');
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
