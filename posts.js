@@ -5,8 +5,8 @@ const publicaciones = [
     // SECCIÓN: PAREJA OFICIAL (Diseño Único)
     // ----------------------------------------------------
     {
-        titulo: "¡EL SHIPPEO ES OFICIAL! L y G lo confirman.",
-        descripcion: "Después de meses de rumores, 'L' y 'G' confirmaron su relación este viernes en el patio central. ¡Felicidades a la pareja de la secundaria! 💘",
+        titulo: "¡EL SHIPPEO ES OFICIAL! Freddy y Jadhai lo confirman.",
+        descripcion: "Después de meses de rumores, 'F' y 'G' confirmaron su relación. ¡Felicidades a la pareja de la secundaria! 💘",
         urlMedia: "https://via.placeholder.com/600x400?text=L+y+G+Pareja+Oficial",
         seccion: "Pareja Oficial" 
     },
@@ -16,13 +16,13 @@ const publicaciones = [
     // ----------------------------------------------------
     {
         titulo: "¡Nuevo Shippeo a la vista en la cafetería!",
-        descripcion: "Parece que 'M' y 'J' estuvieron muy juntos en el recreo de hoy, compartiendo audífonos y risas. ¿Confirmamos el siguiente noviazgo?",
+        descripcion: "Parece que 'Clarisa' y 'Francisco' estuvieron muy juntos en el recreo de hoy. ¿Confirmamos el siguiente noviazgo?",
         urlMedia: "https://via.placeholder.com/600x400?text=Shippeo+M+y+J",
         seccion: "Shippeos"
     },
     {
         titulo: "El misterio de los mensajes anónimos",
-        descripcion: "Alguien está dejando notas de admiración en el locker de 'S'. ¡Investigaremos al culpable de este hermoso shippeo secreto!",
+        descripcion: "Por Favor Apoyanos Con una publicacion Nueva En El boton de Subir",
         urlMedia: "",
         seccion: "Shippeos"
     },
@@ -47,8 +47,8 @@ const publicaciones = [
     // SECCIÓN: CHISMES
     // ----------------------------------------------------
     {
-        titulo: "¡Exclusiva! 'A' se tiñó el cabello de azul",
-        descripcion: "El cambio de look más radical del año. ¡Parece que el azul está de moda en 3ero B! Fotos exclusivas adentro.",
+        titulo: "Aqui No ay chisme ",
+        descripcion: "Por Favor Sube un chisme",
         urlMedia: "https://via.placeholder.com/600x400?text=Chisme+Cabello+Azul",
         seccion: "Chismes"
     },
@@ -57,8 +57,8 @@ const publicaciones = [
     // SECCIÓN: MISTERIOS 
     // ----------------------------------------------------
     {
-        titulo: "El Misterio del Locker Abierto 3B",
-        descripcion: "Un caso sin resolver en 4to año: El locker 3B apareció abierto toda la mañana con un solo chicle adentro. ¿Fue un olvido o un mensaje?",
+        titulo: "No ay ningun misterio",
+        descripcion: ". ¿Fue un olvido o un mensaje?",
         urlMedia: "https://via.placeholder.com/600x400?text=Misterio+Locker",
         seccion: "Misterios"
     },
@@ -67,8 +67,8 @@ const publicaciones = [
     // SECCIÓN: CONVERSACIONES
     // ----------------------------------------------------
     {
-        titulo: "Transcripción: 'El debate del almuerzo'",
-        descripcion: "Diálogo completo de la conversación más intensa sobre quién tiene el mejor lugar para comer en la secundaria. (Con permiso de los participantes).",
+        titulo: "Transcripción: 'Las Planillas'",
+        descripcion: "Por Cual Planilla Botaran?.",
         urlMedia: "", 
         seccion: "Conversaciones"
     }, // <-- ¡COMA AGREGADA! 
