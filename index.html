@@ -23,6 +23,11 @@
 
             <a href="#modal-subir" class="nav-link highlight" id="link-subir">➡️ Enviar Chisme</a>
         </nav>
+        
+        <div class="search-bar-container">
+            <input type="text" id="search-input" placeholder="Buscar chismes, shippeos, misterios...">
+            <button id="search-button">🔍 Buscar</button>
+        </div>
     </header>
 
     <main id="contenedor-publicaciones">
@@ -32,7 +37,7 @@
         <div class="modal-content">
             <a href="#" class="close-modal">&times;</a>
             <h2>¿Quieres que tu chisme o publicación aparezca aquí?</h2>
-            <p>Mándanos un mensaje con tu **título, descripción, sección** y la **URL de tu imagen o video** (si aplica).</p>
+            <p>Mándanos un mensaje con tu **título, descripción, sección** y ** tu imagen o video** (si aplica).</p>
             <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank" class="tiktok-link">
                 Contáctanos por TikTok: 
                 <strong>@jlcojvjcl</strong>
@@ -40,6 +45,15 @@
             <p class="nota-subida">⚠️ **Nota:** El contenido será revisado por moderadores estudiantiles antes de ser publicado.</p>
         </div>
     </div>
+    
+    <div id="media-modal" class="media-modal-overlay">
+        <div class="media-modal-content">
+            <span class="close-media-modal">&times;</span>
+            <div id="media-content-viewer"></div>
+            <p id="media-caption"></p>
+        </div>
+    </div>
+
     <footer>
         <p>© Plataforma Estudiantil. Todos los derechos reservados.</p>
     </footer>
