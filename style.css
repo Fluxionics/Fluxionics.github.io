@@ -1,69 +1,81 @@
-/* style.css */
+/* style.css - NUEVO DISEÑO COLORIDO Y MODERNO */
 
-/* ====================================================
-   ASEGÚRATE DE QUE TUS ESTILOS BASE ESTÉN AQUÍ
-   (body, h1, footer, etc.)
-   ====================================================
-*/
-
-/* --- Estilos del Contenedor Principal (GRID CRÍTICO) --- */
-#contenedor-publicaciones {
-    display: grid;
-    /* 3 columnas fluidas, mínimo 280px */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-    gap: 30px; 
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 15px;
+/* --- RESET BÁSICO Y FUENTE --- */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f9; /* Fondo muy claro */
+    color: #333;
+}
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-/* --- Estilos de Navegación y Botones --- */
+/* --- HEADER Y NAVEGACIÓN --- */
+header {
+    background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%); /* Fondo degradado vibrante */
+    color: white;
+    padding: 20px 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+header h1 {
+    text-align: center;
+    margin: 0 0 15px 0;
+    font-size: 2.2em;
+}
 header nav {
     display: flex; 
     justify-content: center;
     flex-wrap: wrap; 
-    gap: 15px; /* CRÍTICO: Espacio entre los enlaces */
+    gap: 10px; 
+    margin-bottom: 20px;
 }
-
+.nav-link {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 0.95em;
+    font-weight: 600;
+}
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+}
 .nav-link.active {
-    background-color: #3a7bd5;
-    font-weight: bold;
+    background-color: white; 
+    color: #6a82fb;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 #link-chat {
-    background-color: #7289da;
+    background-color: #7289da; /* Discord Blue */
 }
 #link-chat:hover {
     background-color: #5b6fb3;
 }
 
-
-/* --- Estilos para la Barra de Búsqueda --- */
+/* --- BUSCADOR --- */
 .search-bar-container {
-    max-width: 800px;
-    margin: 20px auto;
+    max-width: 600px;
+    margin: 0 auto;
     padding: 0 15px;
     display: flex;
     gap: 10px;
-    align-items: center;
-    justify-content: center;
 }
-
 #search-input {
     flex-grow: 1;
     padding: 10px 15px;
-    border: 2px solid #ccc;
+    border: none;
     border-radius: 25px;
     font-size: 1em;
     outline: none;
-    transition: border-color 0.3s;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
-#search-input:focus {
-    border-color: #4a90e2;
-}
-
 #search-button {
-    background-color: #4a90e2;
+    background-color: #4a90e2; /* Azul brillante */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -72,37 +84,135 @@ header nav {
     font-size: 1em;
     transition: background-color 0.3s;
 }
-
 #search-button:hover {
     background-color: #3a7bd5;
 }
 
-/* --- Estilos para el Post de Política (Diseño Único) --- */
+/* --- CONTENEDOR DE PUBLICACIONES (GRID CRÍTICO) --- */
+#contenedor-publicaciones {
+    display: grid;
+    /* 3 columnas fluidas, mínimo 300px */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 25px; 
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+/* --- ESTILO DE POST GENERAL --- */
+.post {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.post-titulo {
+    font-size: 1.3em;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.post-descripcion {
+    font-size: 1em;
+    color: #555;
+    flex-grow: 1; /* Empuja el footer o la sección hacia abajo */
+}
+
+/* Consistencia de imágenes (Aspect Ratio Fijo 4:3) */
+.post-media {
+    width: 100%;
+    /* Truco para el aspect ratio 4:3 */
+    padding-top: 75%; /* (3 / 4) * 100% = 75% */
+    position: relative;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.post-media img, .post-media video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
+    display: block;
+}
+
+.post-seccion {
+    font-size: 0.8em;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+    color: #888;
+}
+.post-seccion span {
+    font-weight: 700;
+}
+
+/* --- ESTILOS POR SECCIÓN (COLORIDO) --- */
+
+.post.shippeos {
+    border-left: 5px solid #ff9a8d;
+}
+.post.shippeos .post-seccion span { color: #ff9a8d; }
+
+.post.pareja-oficial {
+    border: 3px solid #fc5c7d;
+    background-color: #fff0f5; 
+    box-shadow: 0 0 20px rgba(252, 92, 125, 0.3);
+}
+.post.pareja-oficial .post-titulo { color: #fc5c7d; }
+.post.pareja-oficial .post-seccion span { color: #fc5c7d; }
+
+.post.humor {
+    border-left: 5px solid #ffe082;
+}
+.post.humor .post-seccion span { color: #ffe082; }
+
+.post.chismes {
+    border-left: 5px solid #ef5350;
+}
+.post.chismes .post-seccion span { color: #ef5350; }
+
+.post.misterios {
+    border-left: 5px solid #9e9e9e;
+    background-color: #fafafa;
+}
+.post.misterios .post-seccion span { color: #9e9e9e; }
+
+.post.conversaciones {
+    border-left: 5px solid #4db6ac;
+}
+.post.conversaciones .post-seccion span { color: #4db6ac; }
+
+
+/* --- ESTILO DE POLÍTICA (Ancho Completo) --- */
 .post.política {
     border: 3px solid #0056b3; 
     background-color: #e9f0f7; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     grid-column: 1 / -1; /* Ocupa todo el ancho */
-    padding: 20px;
-    margin-bottom: 25px;
 }
 .post.política .post-titulo {
     color: #0056b3;
-    font-size: 1.5em;
-    border-bottom: 2px solid #0056b3;
 }
 .post.política .post-seccion span {
     color: #0056b3;
-    font-weight: 700;
-}
-.post.política .post-descripcion {
-    font-style: italic;
-    color: #333;
 }
 
-/* --- Estilos del Modal "Subir Chisme" --- */
+/* --- MODAL Y LIGHTBOX --- */
 .modal-overlay {
-    display: none; /* CRÍTICO: Oculto por defecto */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
@@ -120,55 +230,48 @@ header nav {
     max-width: 500px;
     text-align: center;
     position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
-.close-modal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    text-decoration: none;
-    color: #333;
+.tiktok-link {
+    display: inline-block;
+    background-color: #25f4ee; 
+    color: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 15px 0;
+    font-weight: bold;
+    transition: background-color 0.2s;
 }
-
-
-/* --- Estilos del Lightbox (Visor de Medios) --- */
-.post-media {
-    cursor: pointer; 
-    transition: opacity 0.2s;
-}
-
-.post-media:hover {
-    opacity: 0.85;
+.tiktok-link:hover {
+    background-color: #1fe0d9;
 }
 
+
+/* --- LIGHTBOX (VISOR DE MEDIOS) --- */
 .media-modal-overlay {
-    display: none; /* CRÍTICO: Oculto por defecto */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9); 
+    background-color: rgba(0, 0, 0, 0.95); 
     justify-content: center;
     align-items: center;
     z-index: 2000; 
 }
-
 .media-modal-content {
     background-color: black; 
-    padding: 20px;
+    padding: 10px;
     border-radius: 5px;
-    max-width: 90%;
-    max-height: 90%;
-    width: auto;
-    height: auto;
+    max-width: 95%;
+    max-height: 95%;
     position: relative;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
 .close-media-modal {
     position: absolute;
     top: 10px;
@@ -178,18 +281,25 @@ header nav {
     cursor: pointer;
     z-index: 2001; 
 }
-
 #media-content-viewer img, #media-content-viewer video {
     max-width: 100%;
     max-height: 80vh; 
-    display: block;
     object-fit: contain;
+    display: block;
     margin: 0 auto;
 }
-
 #media-caption {
     color: white;
     margin-top: 15px;
     font-size: 1.1em;
     text-align: center;
+}
+
+/* --- FOOTER --- */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #bbb;
+    margin-top: 40px;
 }
