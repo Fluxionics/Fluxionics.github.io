@@ -1,4 +1,7 @@
-/* ... (Estilos existentes) ... */
+/* style.css */
+
+/* ... (MANTÉN TODOS TUS ESTILOS CSS EXISTENTES AQUÍ) ... */
+
 
 /* --- Estilos para la Barra de Búsqueda --- */
 .search-bar-container {
@@ -40,8 +43,30 @@
     background-color: #3a7bd5;
 }
 
-/* --- Estilos del Lightbox (Visor de Medios) --- */
+/* 5. Política (Diseño Serio/Informativo) */
+.post.política {
+    border: 3px solid #0056b3; /* Azul oscuro (oficial) */
+    background-color: #e9f0f7; /* Fondo gris claro/azul */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    grid-column: 1 / -1; /* Ocupa todo el ancho */
+    padding: 20px;
+    margin-bottom: 25px;
+}
+.post.política .post-titulo {
+    color: #0056b3;
+    font-size: 1.5em;
+    border-bottom: 2px solid #0056b3;
+}
+.post.política .post-seccion span {
+    color: #0056b3;
+    font-weight: 700;
+}
+.post.política .post-descripcion {
+    font-style: italic;
+    color: #333;
+}
 
+/* --- Estilos del Lightbox (Visor de Medios) --- */
 .post-media {
     cursor: pointer; /* Indica que la imagen/video es clickeable */
     transition: opacity 0.2s;
@@ -104,7 +129,7 @@
     text-align: center;
 }
 
-/* Opcional: Estilo diferente para el chat */
+/* Estilo para el botón de chat */
 #link-chat {
     background-color: #7289da; /* Color de Discord */
 }
