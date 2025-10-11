@@ -13,6 +13,7 @@ const searchButton = document.getElementById('search-button');
 const linkSubir = document.getElementById('link-subir');
 const modalSubir = document.getElementById('modal-subir');
 const closeModal = document.querySelector('.close-modal');
+const linkChatAnonimo = document.getElementById('link-chat'); // CORRECCIÓN CRÍTICA DE VARIABLE
 
 // Obtener elementos del Visor de Medios (Lightbox)
 const mediaModal = document.getElementById('media-modal');
@@ -59,17 +60,14 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     contenedor.innerHTML = ''; 
 
     const postsFiltrados = publicaciones.filter(post => {
-        // La sección Política solo se excluye de la vista 'Todo' si el filtro actual NO es 'Todo' o 'Política'.
-        if (post.seccion === "Política" && filtroSeccion === "Todo") {
-             // Dejamos que Política se muestre en 'Todo' si no hay un filtro de sección activo.
-        } else if (post.seccion === "Política" && filtroSeccion !== "Política") {
-            // Si el usuario filtra por Shippeos, no queremos ver Política.
+        
+        if (post.seccion === "Política" && filtroSeccion !== "Todo" && filtroSeccion !== "Política") {
             return false;
         }
         
         const matchSeccion = filtroSeccion === "Todo" || post.seccion === filtroSeccion;
         
-        // CRÍTICO: El buscador funciona.
+        // Lógica del Buscador
         const matchSearch = searchTerm === '' || 
                           post.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           post.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
@@ -111,6 +109,9 @@ if(linkChatAnonimo) {
 
 // LÓGICA DEL MODAL "ENVIAR CHISME"
 if(linkSubir && modalSubir) {
+    // Aseguramos que inicie oculto si el CSS falló (aunque el CSS debería manejarlo)
+    modalSubir.style.display = 'none'; 
+    
     linkSubir.addEventListener('click', (e) => {
         e.preventDefault();
         modalSubir.style.display = 'flex';
@@ -164,12 +165,11 @@ if (closeMediaModal && mediaModal) {
     });
 }
 
-// CRÍTICO: Delegación de eventos para el Lightbox
+// Delegación de eventos para el Lightbox
 contenedor.addEventListener('click', (e) => {
     let target = e.target;
     let postMediaElement = null;
 
-    // Subimos en el árbol DOM hasta encontrar el contenedor 'post-media'
     while (target && target !== contenedor) {
         if (target.classList && target.classList.contains('post-media')) {
             postMediaElement = target;
