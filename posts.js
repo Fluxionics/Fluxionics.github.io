@@ -7,7 +7,13 @@ const publicaciones = [
     {
         titulo: "¡EL SHIPPEO ES OFICIAL! Freddy y Jadhai lo confirman.",
         descripcion: "Después de meses de rumores, 'F' y 'G' confirmaron su relación. ¡Felicidades a la pareja de la secundaria! 💘",
-        urlMedia: "https://via.placeholder.com/600x400?text=L+y+G+Pareja+Oficial",
+        urlMedia: "https://imgur.com/cNzdBJJ.png",
+        seccion: "Pareja Oficial" 
+    },
+        {
+        titulo: "¡EL SHIPPEO ES OFICIAL! Daila y Manuel lo confirman.",
+        descripcion: "Después de meses de rumores, 'D' y 'M' confirmaron su relación. ¡Felicidades a la pareja de la secundaria! 💘",
+        urlMedia: "https://imgur.com/Wo1DT6o.png",
         seccion: "Pareja Oficial" 
     },
     
