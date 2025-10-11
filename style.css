@@ -7,6 +7,7 @@ body {
     padding: 0;
     background-color: #f4f7f9; /* Fondo muy claro */
     color: #333;
+    line-height: 1.6;
 }
 a {
     text-decoration: none;
@@ -18,7 +19,7 @@ header {
     background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%); /* Fondo degradado vibrante */
     color: white;
     padding: 20px 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 header h1 {
     text-align: center;
@@ -53,9 +54,6 @@ header nav {
 #link-chat {
     background-color: #7289da; /* Discord Blue */
 }
-#link-chat:hover {
-    background-color: #5b6fb3;
-}
 
 /* --- BUSCADOR --- */
 .search-bar-container {
@@ -75,17 +73,13 @@ header nav {
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 #search-button {
-    background-color: #4a90e2; /* Azul brillante */
+    background-color: #4a90e2; 
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 25px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s;
-}
-#search-button:hover {
-    background-color: #3a7bd5;
 }
 
 /* --- CONTENEDOR DE PUBLICACIONES (GRID CRÍTICO) --- */
@@ -97,6 +91,8 @@ header nav {
     max-width: 1200px;
     margin: 30px auto;
     padding: 0 15px;
+    /* CRÍTICO PARA EL SOLAPAMIENTO: Asegura que todos los posts tengan la misma altura por fila */
+    align-items: stretch; 
 }
 
 /* --- ESTILO DE POST GENERAL --- */
@@ -107,6 +103,8 @@ header nav {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
+    /* CRÍTICO PARA EL GRID: Asegura que el post ocupe todo el espacio de su celda */
+    height: 100%; 
     display: flex;
     flex-direction: column;
 }
@@ -126,14 +124,15 @@ header nav {
 .post-descripcion {
     font-size: 1em;
     color: #555;
-    flex-grow: 1; /* Empuja el footer o la sección hacia abajo */
+    /* CRÍTICO: Permite que el texto se expanda y empuje el footer/sección hacia abajo */
+    flex-grow: 1; 
 }
 
-/* Consistencia de imágenes (Aspect Ratio Fijo 4:3) */
+/* 🖼️ CONSISTENCIA DE IMÁGENES (Aspect Ratio Fijo 4:3) */
 .post-media {
     width: 100%;
-    /* Truco para el aspect ratio 4:3 */
-    padding-top: 75%; /* (3 / 4) * 100% = 75% */
+    /* Truco para el aspect ratio 4:3: (3 / 4) * 100% = 75% */
+    padding-top: 75%; 
     position: relative;
     margin-bottom: 15px;
     border-radius: 8px;
@@ -145,7 +144,8 @@ header nav {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
+    /* CRÍTICO: Hace que todas las imágenes cubran el contenedor sin deformarse */
+    object-fit: cover; 
     display: block;
 }
 
@@ -162,9 +162,7 @@ header nav {
 
 /* --- ESTILOS POR SECCIÓN (COLORIDO) --- */
 
-.post.shippeos {
-    border-left: 5px solid #ff9a8d;
-}
+.post.shippeos { border-left: 5px solid #ff9a8d; }
 .post.shippeos .post-seccion span { color: #ff9a8d; }
 
 .post.pareja-oficial {
@@ -175,25 +173,16 @@ header nav {
 .post.pareja-oficial .post-titulo { color: #fc5c7d; }
 .post.pareja-oficial .post-seccion span { color: #fc5c7d; }
 
-.post.humor {
-    border-left: 5px solid #ffe082;
-}
+.post.humor { border-left: 5px solid #ffe082; }
 .post.humor .post-seccion span { color: #ffe082; }
 
-.post.chismes {
-    border-left: 5px solid #ef5350;
-}
+.post.chismes { border-left: 5px solid #ef5350; }
 .post.chismes .post-seccion span { color: #ef5350; }
 
-.post.misterios {
-    border-left: 5px solid #9e9e9e;
-    background-color: #fafafa;
-}
+.post.misterios { border-left: 5px solid #9e9e9e; background-color: #fafafa; }
 .post.misterios .post-seccion span { color: #9e9e9e; }
 
-.post.conversaciones {
-    border-left: 5px solid #4db6ac;
-}
+.post.conversaciones { border-left: 5px solid #4db6ac; }
 .post.conversaciones .post-seccion span { color: #4db6ac; }
 
 
@@ -203,16 +192,12 @@ header nav {
     background-color: #e9f0f7; 
     grid-column: 1 / -1; /* Ocupa todo el ancho */
 }
-.post.política .post-titulo {
-    color: #0056b3;
-}
-.post.política .post-seccion span {
-    color: #0056b3;
-}
+.post.política .post-titulo { color: #0056b3; }
+
 
 /* --- MODAL Y LIGHTBOX --- */
 .modal-overlay {
-    display: none; 
+    display: none; /* Oculto por defecto */
     position: fixed;
     top: 0;
     left: 0;
@@ -232,6 +217,14 @@ header nav {
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    text-decoration: none;
+    color: #333;
+}
 .tiktok-link {
     display: inline-block;
     background-color: #25f4ee; 
@@ -249,7 +242,7 @@ header nav {
 
 /* --- LIGHTBOX (VISOR DE MEDIOS) --- */
 .media-modal-overlay {
-    display: none; 
+    display: none; /* Oculto por defecto */
     position: fixed;
     top: 0;
     left: 0;
