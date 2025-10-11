@@ -87,7 +87,8 @@ header nav {
     display: grid;
     /* 3 columnas fluidas, mínimo 300px */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 25px; 
+    /* CORRECCIÓN: Separación reducida a 10px */
+    gap: 10px; 
     max-width: 1200px;
     margin: 30px auto;
     padding: 0 15px;
