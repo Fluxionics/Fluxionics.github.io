@@ -1,23 +1,30 @@
 /* style.css */
 
-/*
-   AQUÍ DEBEN ESTAR TODOS TUS ESTILOS EXISTENTES ANTERIORES
-   (cuerpo, main, post, h1, etc.)
+/* ====================================================
+   ASEGÚRATE DE QUE TUS ESTILOS BASE ESTÉN AQUÍ
+   (body, h1, footer, etc.)
+   ====================================================
 */
 
-/* -------------------------------------------
-   AJUSTES Y ESTILOS NUEVOS/MODIFICADOS
-   ------------------------------------------- */
+/* --- Estilos del Contenedor Principal (GRID CRÍTICO) --- */
+#contenedor-publicaciones {
+    display: grid;
+    /* 3 columnas fluidas, mínimo 280px */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 30px; 
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
 
-/* CORRECCIÓN CRÍTICA: Separar los enlaces de navegación */
+/* --- Estilos de Navegación y Botones --- */
 header nav {
     display: flex; 
     justify-content: center;
     flex-wrap: wrap; 
-    gap: 15px; /* Aumenta el espacio entre los enlaces */
+    gap: 15px; /* CRÍTICO: Espacio entre los enlaces */
 }
 
-/* Estilo para marcar la sección activa y chat */
 .nav-link.active {
     background-color: #3a7bd5;
     font-weight: bold;
@@ -70,10 +77,10 @@ header nav {
     background-color: #3a7bd5;
 }
 
-/* DISEÑO NUEVO: Política (Diseño Serio/Informativo) */
+/* --- Estilos para el Post de Política (Diseño Único) --- */
 .post.política {
-    border: 3px solid #0056b3; /* Azul oscuro (oficial) */
-    background-color: #e9f0f7; /* Fondo gris claro/azul */
+    border: 3px solid #0056b3; 
+    background-color: #e9f0f7; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     grid-column: 1 / -1; /* Ocupa todo el ancho */
     padding: 20px;
@@ -93,9 +100,40 @@ header nav {
     color: #333;
 }
 
+/* --- Estilos del Modal "Subir Chisme" --- */
+.modal-overlay {
+    display: none; /* CRÍTICO: Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+}
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    text-decoration: none;
+    color: #333;
+}
+
+
 /* --- Estilos del Lightbox (Visor de Medios) --- */
 .post-media {
-    cursor: pointer; /* Indica que la imagen/video es clickeable */
+    cursor: pointer; 
     transition: opacity 0.2s;
 }
 
