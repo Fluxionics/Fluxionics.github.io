@@ -23,7 +23,7 @@ const publicaciones = [
     {
         titulo: "¡Nuevo Shippeo a la vista en la cafetería!",
         descripcion: "Parece que 'Clarisa' y 'Francisco' estuvieron muy juntos en el recreo de hoy. ¿Confirmamos el siguiente noviazgo?",
-        urlMedia: "https://via.placeholder.com/600x400?text=Shippeo+M+y+J",
+        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Shippeo+M+y+J",
         seccion: "Shippeos"
     },
     {
@@ -39,13 +39,13 @@ const publicaciones = [
     {
         titulo: "El meme del examen sorpresa de Física",
         descripcion: "La cara que pones cuando el profesor de Física dice 'saquen una hoja'. ¡Guárdenlo para el lunes! 😂",
-        urlMedia: "https://via.placeholder.com/600x400?text=Meme+Examen+Sorpresa",
+        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Meme+Examen+Sorpresa",
         seccion: "Humor"
     },
     {
         titulo: "El gran debate: ¿Quién es el más despistado?",
         descripcion: "Hemos abierto una encuesta en las historias para saber quién se olvida más veces el cuaderno. ¡Los resultados son impactantes!",
-        urlMedia: "https://via.placeholder.com/600x400?text=Humor+Despistes",
+        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Humor+Despistes",
         seccion: "Humor"
     },
     
@@ -55,7 +55,7 @@ const publicaciones = [
     {
         titulo: "Aqui No ay chisme ",
         descripcion: "Por Favor Sube un chisme",
-        urlMedia: "https://via.placeholder.com/600x400?text=Chisme+Cabello+Azul",
+        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Chisme+Cabello+Azul",
         seccion: "Chismes"
     },
     
@@ -65,7 +65,7 @@ const publicaciones = [
     {
         titulo: "No ay ningun misterio",
         descripcion: ". ¿Fue un olvido o un mensaje?",
-        urlMedia: "https://via.placeholder.com/600x400?text=Misterio+Locker",
+        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Misterio+Locker",
         seccion: "Misterios"
     },
     
@@ -77,8 +77,7 @@ const publicaciones = [
         descripcion: "Por Cual Planilla Botaran?.",
         urlMedia: "", 
         seccion: "Conversaciones"
-    }, 
-
+    }, // <-- ¡ESTA ES LA COMA CRÍTICA QUE FALTABA!
     // ----------------------------------------------------
     // SECCIÓN: POLÍTICA (Última publicación)
     // ----------------------------------------------------
