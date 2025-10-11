@@ -9,7 +9,7 @@ const publicaciones = [
         descripcion: "Después de meses de rumores, 'F' y 'G' confirmaron su relación. ¡Felicidades a la pareja de la secundaria! 💘",
         urlMedia: "https://imgur.com/cNzdBJJ.png",
         seccion: "Pareja Oficial" 
-    }, // <-- COMA AÑADIDA
+    },
     {
         titulo: "¡EL SHIPPEO ES OFICIAL! Daila y Manuel lo confirman.",
         descripcion: "Después de meses de rumores, 'D' y 'M' confirmaron su relación. ¡Felicidades a la pareja de la secundaria! 💘",
