@@ -13,7 +13,7 @@ const searchButton = document.getElementById('search-button');
 const linkSubir = document.getElementById('link-subir');
 const modalSubir = document.getElementById('modal-subir');
 const closeModal = document.querySelector('.close-modal');
-const linkChatAnonimo = document.getElementById('link-chat'); // CORRECCIÓN CRÍTICA DE VARIABLE
+const linkChatAnonimo = document.getElementById('link-chat'); // CORRECCIÓN CRÍTICA: Definición de variable
 
 // Obtener elementos del Visor de Medios (Lightbox)
 const mediaModal = document.getElementById('media-modal');
@@ -109,7 +109,7 @@ if(linkChatAnonimo) {
 
 // LÓGICA DEL MODAL "ENVIAR CHISME"
 if(linkSubir && modalSubir) {
-    // Aseguramos que inicie oculto si el CSS falló (aunque el CSS debería manejarlo)
+    // Aseguramos que inicie oculto si el CSS falló
     modalSubir.style.display = 'none'; 
     
     linkSubir.addEventListener('click', (e) => {
