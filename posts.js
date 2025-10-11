@@ -23,7 +23,7 @@ const publicaciones = [
     {
         titulo: "¡Nuevo Shippeo a la vista en la cafetería!",
         descripcion: "Parece que 'Clarisa' y 'Francisco' estuvieron muy juntos en el recreo de hoy. ¿Confirmamos el siguiente noviazgo?",
-        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Shippeo+M+y+J",
+        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Shippeo+F+y+c",
         seccion: "Shippeos"
     },
     {
@@ -55,7 +55,7 @@ const publicaciones = [
     {
         titulo: "Aqui No ay chisme ",
         descripcion: "Por Favor Sube un chisme",
-        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Chisme+Cabello+Azul",
+        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Chisme+No+Ay",
         seccion: "Chismes"
     },
     
