@@ -1,6 +1,33 @@
 /* style.css */
 
-/* ... (MANTÉN TODOS TUS ESTILOS CSS EXISTENTES AQUÍ) ... */
+/*
+   AQUÍ DEBEN ESTAR TODOS TUS ESTILOS EXISTENTES ANTERIORES
+   (cuerpo, main, post, h1, etc.)
+*/
+
+/* -------------------------------------------
+   AJUSTES Y ESTILOS NUEVOS/MODIFICADOS
+   ------------------------------------------- */
+
+/* CORRECCIÓN CRÍTICA: Separar los enlaces de navegación */
+header nav {
+    display: flex; 
+    justify-content: center;
+    flex-wrap: wrap; 
+    gap: 15px; /* Aumenta el espacio entre los enlaces */
+}
+
+/* Estilo para marcar la sección activa y chat */
+.nav-link.active {
+    background-color: #3a7bd5;
+    font-weight: bold;
+}
+#link-chat {
+    background-color: #7289da;
+}
+#link-chat:hover {
+    background-color: #5b6fb3;
+}
 
 
 /* --- Estilos para la Barra de Búsqueda --- */
@@ -43,7 +70,7 @@
     background-color: #3a7bd5;
 }
 
-/* 5. Política (Diseño Serio/Informativo) */
+/* DISEÑO NUEVO: Política (Diseño Serio/Informativo) */
 .post.política {
     border: 3px solid #0056b3; /* Azul oscuro (oficial) */
     background-color: #e9f0f7; /* Fondo gris claro/azul */
@@ -77,7 +104,7 @@
 }
 
 .media-modal-overlay {
-    display: none; 
+    display: none; /* CRÍTICO: Oculto por defecto */
     position: fixed;
     top: 0;
     left: 0;
@@ -127,18 +154,4 @@
     margin-top: 15px;
     font-size: 1.1em;
     text-align: center;
-}
-
-/* Estilo para el botón de chat */
-#link-chat {
-    background-color: #7289da; /* Color de Discord */
-}
-#link-chat:hover {
-    background-color: #5b6fb3;
-}
-
-/* Estilo para marcar la sección activa */
-.nav-link.active {
-    background-color: #3a7bd5;
-    font-weight: bold;
 }
