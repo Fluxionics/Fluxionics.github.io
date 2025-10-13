@@ -13,7 +13,7 @@ const searchButton = document.getElementById('search-button');
 const linkSubir = document.getElementById('link-subir');
 const modalSubir = document.getElementById('modal-subir');
 const closeModal = document.querySelector('.close-modal');
-const linkChatAnonimo = document.getElementById('link-chat'); // CORRECCIÓN CRÍTICA: Definición de variable
+const linkChatAnonimo = document.getElementById('link-chat'); 
 
 // Obtener elementos del Visor de Medios (Lightbox)
 const mediaModal = document.getElementById('media-modal');
@@ -23,7 +23,38 @@ const mediaCaption = document.getElementById('media-caption');
 
 
 // ----------------------------------------------------
-// 1. FUNCIONES PARA CREAR Y MOSTRAR EL CONTENIDO
+// LÓGICA DE TEMAS Y FECHAS
+// ----------------------------------------------------
+
+function aplicarTemaPorFecha() {
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1; // getMonth() es 0-11, sumamos 1
+    const currentDay = today.getDate();
+    const body = document.body;
+
+    // Se eliminan clases temporales antes de aplicar una nueva
+    body.classList.remove('tema-diademuertos', 'tema-navidad'); 
+    
+    // **DÍA DE MUERTOS** (Ejemplo: 28 de Octubre al 3 de Noviembre)
+    if ((currentMonth === 10 && currentDay >= 28) || (currentMonth === 11 && currentDay <= 3)) {
+        body.classList.add('tema-diademuertos');
+        body.classList.remove('tema-original'); // Desactiva el original si hay tema festivo
+        return; 
+    }
+
+    // **NAVIDAD** (Ejemplo: Del 15 de Diciembre al 5 de Enero)
+    if ((currentMonth === 12 && currentDay >= 15) || (currentMonth === 1 && currentDay <= 5)) {
+        body.classList.add('tema-navidad');
+        body.classList.remove('tema-original'); 
+        return;
+    }
+    
+    // Si no es ninguna festividad, mantiene el tema original (la clase ya está en el HTML)
+}
+
+
+// ----------------------------------------------------
+// FUNCIONES DE POSTS Y LÓGICA DEL SITIO
 // ----------------------------------------------------
 
 function crearPostHTML(post) {
@@ -32,14 +63,12 @@ function crearPostHTML(post) {
 
     let contenidoMedia = '';
     
-    // CRÍTICO: Asegura que la media se envuelve correctamente para el Lightbox.
     if (post.urlMedia) {
         const isVideo = post.urlMedia.toLowerCase().includes('.mp4');
         const mediaTag = isVideo 
             ? `<video src="${post.urlMedia}" controls></video>`
             : `<img src="${post.urlMedia}" alt="${post.titulo}">`;
             
-        // El contenedor es clicable (tiene data-src) y activa el lightbox
         contenidoMedia = `
             <div class="post-media" data-src="${post.urlMedia}" data-title="${post.titulo}">
                 ${mediaTag}
@@ -60,14 +89,13 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     contenedor.innerHTML = ''; 
 
     const postsFiltrados = publicaciones.filter(post => {
-        
+        // ... (lógica de filtro y búsqueda) ...
         if (post.seccion === "Política" && filtroSeccion !== "Todo" && filtroSeccion !== "Política") {
             return false;
         }
         
         const matchSeccion = filtroSeccion === "Todo" || post.seccion === filtroSeccion;
         
-        // Lógica del Buscador
         const matchSearch = searchTerm === '' || 
                           post.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           post.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
@@ -76,7 +104,7 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     });
 
     if (postsFiltrados.length === 0) {
-        contenedor.innerHTML = `<p class="mensaje-vacio">No se encontraron publicaciones en la sección de <strong>${filtroSeccion}</strong> ${searchTerm ? `con el término "${searchTerm}"` : ''}.</p>`;
+        contenedor.innerHTML = `<p class="mensaje-vacio">No se encontraron publicaciones...</p>`;
         return;
     }
     
@@ -85,9 +113,7 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     });
 }
 
-// ----------------------------------------------------
-// 2. LÓGICA DE BOTONES Y MODALES
-// ----------------------------------------------------
+// ... (Resto de la lógica de modales, lightbox, y eventos) ...
 
 // LÓGICA DEL CHAT ANÓNIMO
 if(linkChatAnonimo) {
@@ -109,9 +135,7 @@ if(linkChatAnonimo) {
 
 // LÓGICA DEL MODAL "ENVIAR CHISME"
 if(linkSubir && modalSubir) {
-    // Aseguramos que inicie oculto si el CSS falló
     modalSubir.style.display = 'none'; 
-    
     linkSubir.addEventListener('click', (e) => {
         e.preventDefault();
         modalSubir.style.display = 'flex';
@@ -133,7 +157,6 @@ if(modalSubir) {
         }
     });
 }
-
 
 // LÓGICA DEL VISOR DE MEDIOS (LIGHTBOX)
 function openMediaModal(src, title) {
@@ -185,16 +208,11 @@ contenedor.addEventListener('click', (e) => {
 });
 
 
-// ----------------------------------------------------
-// 3. EVENTOS Y CARGA INICIAL
-// ----------------------------------------------------
-
 // Lógica del buscador
 if (searchButton && searchInput) {
     const performSearch = () => {
         const activeLink = document.querySelector('.nav-link.active[data-seccion]');
         const currentSection = activeLink ? activeLink.getAttribute('data-seccion') : 'Todo';
-        
         mostrarPublicaciones(currentSection, searchInput.value);
     };
 
@@ -228,6 +246,9 @@ enlacesNav.forEach(enlace => {
 
 // Cargar la sección "Todo" por defecto al cargar la página
 window.onload = function() {
+    // Aplica el tema basado en la fecha
+    aplicarTemaPorFecha(); 
+
     if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) {
         mostrarPublicaciones("Todo");
         const todoLink = document.querySelector('.nav-link[data-seccion="Todo"]');
