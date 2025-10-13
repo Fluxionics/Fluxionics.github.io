@@ -1,10 +1,13 @@
-// script.js
+// script.js - LÓGICA DE TEMAS AMPLIADA PARA CADA CELEBRACIÓN
 
 // 🔴 ENLACE DE INVITACIÓN AL CHAT DE DISCORD
 const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C"; 
 
 // 🚨 VARIABLE DE CONTROL: ESTABLECE ESTO EN 'auto' PARA PRODUCCIÓN 🚨
-// Opciones: 'original', 'diademuertos', 'navidad', 'reyes', 'sanvalentin', 'primavera', 'patrio', o 'auto'
+// Opciones para forzado: 'original', 'reyes', 'candelaria', 'constitucion', 'ejercito', 
+// 'sanvalentin', 'bandera', 'mujer', 'expropiacion', 'juarez', 'puebla', 'maestro', 
+// 'marina', 'patrio', 'raza', 'diademuertos', 'revolucion', 'musico', 'virgen', 'navidad',
+// 'carnaval', 'zapataniño', 'abuelo', 'morelos', 'armada', 'inocentes'.
 const TEMA_FORZADO = 'auto'; // CAMBIAR AQUÍ PARA PROBAR UN TEMA ESPECÍFICO
 
 // Obtener elementos principales
@@ -12,8 +15,6 @@ const contenedor = document.getElementById('contenedor-publicaciones');
 const enlacesNav = document.querySelectorAll('.nav-link');
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
-
-// Obtener elementos de modales
 const linkSubir = document.getElementById('link-subir');
 const modalSubir = document.getElementById('modal-subir');
 const closeModal = document.querySelector('.close-modal');
@@ -25,13 +26,22 @@ const mediaCaption = document.getElementById('media-caption');
 
 
 // ----------------------------------------------------
-// LÓGICA DE TEMAS Y FECHAS
+// LÓGICA DE TEMAS Y FECHAS (18 Temas únicos)
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
     const body = document.body;
-    // Eliminamos todas las clases temáticas antes de aplicar la correcta
-    body.classList.remove('tema-diademuertos', 'tema-navidad', 'tema-reyes', 'tema-sanvalentin', 'tema-primavera', 'tema-patrio', 'tema-original'); 
+    // Lista de todas las clases temáticas posibles
+    const temas = [
+        'tema-reyes', 'tema-candelaria', 'tema-constitucion', 'tema-ejercito', 
+        'tema-sanvalentin', 'tema-bandera', 'tema-mujer', 'tema-expropiacion', 
+        'tema-juarez', 'tema-puebla', 'tema-maestro', 'tema-marina', 'tema-patrio', 
+        'tema-raza', 'tema-diademuertos', 'tema-revolucion', 'tema-musico', 'tema-virgen', 
+        'tema-navidad', 'tema-carnaval', 'tema-zapataniño', 'tema-abuelo', 'tema-morelos', 
+        'tema-armada', 'tema-inocentes', 'tema-original'
+    ];
+                   
+    body.classList.remove(...temas.filter(t => t !== 'tema-original')); 
 
     // 1. APLICAR TEMA FORZADO SI ESTÁ DEFINIDO
     if (TEMA_FORZADO !== 'auto' && TEMA_FORZADO !== 'original') {
@@ -45,65 +55,132 @@ function aplicarTemaPorFecha() {
 
     // 2. LÓGICA AUTOMÁTICA
     const today = new Date();
+    const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1; // 1-12
-    const currentDay = today.getDate();
     
-    // Función de ayuda para chequear rangos
+    // Función de ayuda para chequear rangos (m1, d1, m2, d2)
     const inRange = (m1, d1, m2, d2) => {
-        const start = new Date(today.getFullYear(), m1 - 1, d1);
-        const end = new Date(today.getFullYear(), m2 - 1, d2);
+        const start = new Date(currentYear, m1 - 1, d1);
+        const end = new Date(currentYear, m2 - 1, d2);
+        if (m1 > m2) { 
+            const startDec = new Date(currentYear - 1, m1 - 1, d1);
+            const endJan = new Date(currentYear, m2 - 1, d2);
+            return (today >= startDec && currentMonth >= m1) || (today <= endJan && currentMonth <= m2);
+        }
         return today >= start && today <= end;
     };
-
-    // a. REYES MAGOS (Enero 6 al 8) - TEMA CORTO Y ESPECÍFICO
-    if (inRange(1, 6, 1, 8)) {
-        body.classList.add('tema-reyes');
-        return;
-    }
-
-    // b. SAN VALENTÍN (Febrero 12 al 15)
-    if (inRange(2, 12, 2, 15)) {
-        body.classList.add('tema-sanvalentin');
-        return;
-    }
     
-    // c. PRIMAVERA / VACACIONES (Marzo 20 al Abril 3)
-    if (inRange(3, 20, 4, 3)) {
-        body.classList.add('tema-primavera');
-        return;
-    }
+    // --- TEMAS POR PRIORIDAD (De Enero a Diciembre) ---
 
-    // d. FIESTAS PATRIAS (Septiembre 14 al 16)
-    if (inRange(9, 14, 9, 16)) {
-        body.classList.add('tema-patrio');
-        return;
-    }
+    // ENERO
+    // DÍA DE REYES MAGOS (Ene 6)
+    if (inRange(1, 6, 1, 8)) { body.classList.add('tema-reyes'); return; }
+    // AÑO NUEVO (Ene 1) - Extensión de Navidad
+    if (inRange(1, 1, 1, 1)) { body.classList.add('tema-navidad'); return; }
 
-    // e. DÍA DE MUERTOS (Octubre 28 al Noviembre 3)
-    if (inRange(10, 28, 11, 3)) {
-        body.classList.add('tema-diademuertos');
-        return;
-    }
+    // FEBRERO
+    // DÍA DE SAN VALENTÍN (Feb 14)
+    if (inRange(2, 13, 2, 15)) { body.classList.add('tema-sanvalentin'); return; }
+    // DÍA DE LA CANDELARIA (Feb 2)
+    if (inRange(2, 1, 2, 3)) { body.classList.add('tema-candelaria'); return; }
+    // DÍA DE LA CONSTITUCIÓN (Feb 5)
+    if (inRange(2, 4, 2, 5)) { body.classList.add('tema-constitucion'); return; }
+    // DÍA DE LA FUERZA AÉREA (Feb 10)
+    if (inRange(2, 9, 2, 11)) { body.classList.add('tema-ejercito'); return; }
+    // DÍA DEL EJÉRCITO MEXICANO (Feb 19)
+    if (inRange(2, 18, 2, 20)) { body.classList.add('tema-ejercito'); return; }
+    // DÍA DE LA BANDERA (Feb 24)
+    if (inRange(2, 23, 2, 25)) { body.classList.add('tema-bandera'); return; }
+    // ANIVERSARIO CUAUHTÉMOC (Feb 28)
+    if (inRange(2, 27, 2, 28)) { body.classList.add('tema-constitucion'); return; } // Usa tema cívico
+    // CARNAVAL (FECHA VARIABLE) - Simulación
+    if (inRange(2, 26, 3, 2)) { body.classList.add('tema-carnaval'); return; } 
+
+    // MARZO
+    // NATALICIO DE BENITO JUÁREZ (Mar 21)
+    if (inRange(3, 20, 3, 22)) { body.classList.add('tema-juarez'); return; }
+    // EXPROPIACIÓN PETROLERA (Mar 18)
+    if (inRange(3, 17, 3, 18)) { body.classList.add('tema-expropiacion'); return; }
+    // DÍA INTERNACIONAL DE LA MUJER (Mar 8)
+    if (inRange(3, 7, 3, 8)) { body.classList.add('tema-mujer'); return; }
+
+    // ABRIL
+    // ZAPATA / TIERRA (Abr 10 / 22) - Agrupamos
+    if (inRange(4, 9, 4, 22)) { body.classList.add('tema-zapataniño'); return; }
+    // DÍA DEL NIÑO (Abr 30)
+    if (inRange(4, 29, 4, 30)) { body.classList.add('tema-zapataniño'); return; } 
+    // SEMANA SANTA (FECHA VARIABLE) - Simulación
+    if (inRange(4, 1, 4, 8)) { body.classList.add('tema-virgen'); return; } // Usa tema religioso
+
+    // MAYO
+    // DÍA DEL MAESTRO (May 15)
+    if (inRange(5, 14, 5, 16)) { body.classList.add('tema-maestro'); return; }
+    // DÍA DE LAS MADRES (May 10)
+    if (inRange(5, 9, 5, 11)) { body.classList.add('tema-maestro'); return; }
+    // BATALLA DE PUEBLA (May 5)
+    if (inRange(5, 4, 5, 6)) { body.classList.add('tema-puebla'); return; } 
+    // DÍA DEL TRABAJO (May 1)
+    if (inRange(4, 30, 5, 1)) { body.classList.add('tema-puebla'); return; }
+
+    // JUNIO
+    // DÍA DE LA MARINA NACIONAL (Jun 1)
+    if (inRange(5, 30, 6, 2)) { body.classList.add('tema-marina'); return; }
+    // DÍA DEL PADRE (TERCER DOMINGO) - Simulación
+    if (inRange(6, 15, 6, 21)) { body.classList.add('tema-maestro'); return; }
+
+    // JULIO
+    // LA GUELAGUETZA (JULIO)
+    if (inRange(7, 10, 7, 25)) { body.classList.add('tema-cultural'); return; }
     
-    // f. NAVIDAD (Diciembre 15 al Enero 5) - Rango que cambia de año
-    if ((currentMonth === 12 && currentDay >= 15) || (currentMonth === 1 && currentDay <= 5)) {
-        body.classList.add('tema-navidad');
-        return;
-    }
+    // AGOSTO
+    // DÍA DEL ABUELO (Ago 28)
+    if (inRange(8, 27, 8, 29)) { body.classList.add('tema-abuelo'); return; }
     
+    // SEPTIEMBRE
+    // GRITO DE INDEPENDENCIA (Sep 15 - 16)
+    if (inRange(9, 14, 9, 17)) { body.classList.add('tema-patrio'); return; }
+    // NIÑOS HÉROES (Sep 13)
+    if (inRange(9, 12, 9, 13)) { body.classList.add('tema-patrio'); return; }
+    // MORELOS (Sep 30)
+    if (inRange(9, 29, 9, 30)) { body.classList.add('tema-morelos'); return; }
+    // CONSUMACIÓN (Sep 27)
+    if (inRange(9, 26, 9, 27)) { body.classList.add('tema-morelos'); return; }
+    
+    // OCTUBRE
+    // DÍA DE LA RAZA (Oct 12)
+    if (inRange(10, 11, 10, 13)) { body.classList.add('tema-raza'); return; } 
+    
+    // NOVIEMBRE
+    // DÍA DE MUERTOS (Oct 28 - Nov 3)
+    if (inRange(10, 28, 11, 3)) { body.classList.add('tema-diademuertos'); return; }
+    // DÍA DE LA REVOLUCIÓN MEXICANA (Nov 20)
+    if (inRange(11, 19, 11, 21)) { body.classList.add('tema-revolucion'); return; }
+    // DÍA DEL MÚSICO (Nov 22)
+    if (inRange(11, 21, 11, 23)) { body.classList.add('tema-musico'); return; }
+    // DÍA DE LA ARMADA DE MÉXICO (Nov 23)
+    if (inRange(11, 22, 11, 24)) { body.classList.add('tema-armada'); return; }
+
+    // DICIEMBRE
+    // DÍA DE LA VIRGEN (Dic 12)
+    if (inRange(12, 11, 12, 13)) { body.classList.add('tema-virgen'); return; }
+    // POSADAS/NAVIDAD (Dic 16 - 25)
+    if (inRange(12, 16, 12, 26)) { body.classList.add('tema-navidad'); return; }
+    // DÍA DE LOS SANTOS INOCENTES (Dic 28)
+    if (inRange(12, 27, 12, 28)) { body.classList.add('tema-inocentes'); return; }
+    // FIN DE AÑO (Dic 31)
+    if (inRange(12, 30, 12, 31)) { body.classList.add('tema-navidad'); return; }
+
     // 3. TEMA POR DEFECTO: ORIGINAL
     body.classList.add('tema-original'); 
 }
 
-
 // ----------------------------------------------------
-// FUNCIONES DE POSTS Y LÓGICA DEL SITIO (SIN CAMBIOS)
+// FUNCIONES DE POSTS Y LÓGICA DEL SITIO (Se mantiene el resto del código)
 // ----------------------------------------------------
 
 function crearPostHTML(post) {
     const articulo = document.createElement('article');
     articulo.classList.add('post', post.seccion.toLowerCase().replace(/ /g, '-')); 
-    // ... (El resto de la función crearPostHTML sin cambios) ...
     let contenidoMedia = '';
     
     if (post.urlMedia) {
@@ -130,18 +207,14 @@ function crearPostHTML(post) {
 
 function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     contenedor.innerHTML = ''; 
-    
     const postsFiltrados = publicaciones.filter(post => {
         if (post.seccion === "Política" && filtroSeccion !== "Todo" && filtroSeccion !== "Política") {
             return false;
         }
-        
         const matchSeccion = filtroSeccion === "Todo" || post.seccion === filtroSeccion;
-        
         const matchSearch = searchTerm === '' || 
                           post.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           post.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
-        
         return matchSeccion && matchSearch;
     });
 
@@ -149,13 +222,10 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
         contenedor.innerHTML = `<p class="mensaje-vacio">No se encontraron publicaciones...</p>`;
         return;
     }
-    
     postsFiltrados.forEach(post => {
         contenedor.appendChild(crearPostHTML(post));
     });
 }
-
-// ... (Lógica de Modales, Lightbox, Búsqueda y Navegación, sin cambios) ...
 
 if(linkChatAnonimo) {
     linkChatAnonimo.addEventListener('click', (e) => {
@@ -261,11 +331,8 @@ enlacesNav.forEach(enlace => {
         }
     });
 });
-
-// Cargar la sección "Todo" por defecto al cargar la página
 window.onload = function() {
     aplicarTemaPorFecha(); 
-
     if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) {
         mostrarPublicaciones("Todo");
         const todoLink = document.querySelector('.nav-link[data-seccion="Todo"]');
