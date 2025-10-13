@@ -3,9 +3,9 @@
 // 🔴 ENLACE DE INVITACIÓN AL CHAT DE DISCORD
 const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C"; 
 
-// 🚨 VARIABLE DE CONTROL: CAMBIA ESTO PARA FORZAR UN TEMA 🚨
-// Opciones: 'original' (normal), 'diademuertos', 'navidad', o 'auto' (basado en la fecha real)
-const TEMA_FORZADO = 'navidad'; // <-- ¡TEMA DE DÍA DE MUERTOS ACTIVADO!
+// 🚨 VARIABLE DE CONTROL: ESTABLECE ESTO EN 'auto' PARA PRODUCCIÓN 🚨
+// Opciones: 'original', 'diademuertos', 'navidad', 'reyes', 'sanvalentin', 'primavera', 'patrio', o 'auto'
+const TEMA_FORZADO = 'auto'; // CAMBIAR AQUÍ PARA PROBAR UN TEMA ESPECÍFICO
 
 // Obtener elementos principales
 const contenedor = document.getElementById('contenedor-publicaciones');
@@ -13,7 +13,7 @@ const enlacesNav = document.querySelectorAll('.nav-link');
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 
-// Obtener elementos del Modal de Subida y Lightbox
+// Obtener elementos de modales
 const linkSubir = document.getElementById('link-subir');
 const modalSubir = document.getElementById('modal-subir');
 const closeModal = document.querySelector('.close-modal');
@@ -30,15 +30,12 @@ const mediaCaption = document.getElementById('media-caption');
 
 function aplicarTemaPorFecha() {
     const body = document.body;
-    body.classList.remove('tema-diademuertos', 'tema-navidad', 'tema-original'); 
+    // Eliminamos todas las clases temáticas antes de aplicar la correcta
+    body.classList.remove('tema-diademuertos', 'tema-navidad', 'tema-reyes', 'tema-sanvalentin', 'tema-primavera', 'tema-patrio', 'tema-original'); 
 
     // 1. APLICAR TEMA FORZADO SI ESTÁ DEFINIDO
-    if (TEMA_FORZADO === 'diademuertos') {
-        body.classList.add('tema-diademuertos');
-        return;
-    }
-    if (TEMA_FORZADO === 'navidad') {
-        body.classList.add('tema-navidad');
+    if (TEMA_FORZADO !== 'auto' && TEMA_FORZADO !== 'original') {
+        body.classList.add(`tema-${TEMA_FORZADO}`);
         return;
     }
     if (TEMA_FORZADO === 'original') {
@@ -46,38 +43,67 @@ function aplicarTemaPorFecha() {
         return;
     }
 
-    // 2. LÓGICA AUTOMÁTICA (SOLO SI TEMA_FORZADO es 'auto')
-    if (TEMA_FORZADO === 'auto') {
-        const today = new Date();
-        const currentMonth = today.getMonth() + 1; 
-        const currentDay = today.getDate();
+    // 2. LÓGICA AUTOMÁTICA
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1; // 1-12
+    const currentDay = today.getDate();
+    
+    // Función de ayuda para chequear rangos
+    const inRange = (m1, d1, m2, d2) => {
+        const start = new Date(today.getFullYear(), m1 - 1, d1);
+        const end = new Date(today.getFullYear(), m2 - 1, d2);
+        return today >= start && today <= end;
+    };
 
-        // DÍA DE MUERTOS (28 de Octubre al 3 de Noviembre)
-        if ((currentMonth === 10 && currentDay >= 28) || (currentMonth === 11 && currentDay <= 3)) {
-            body.classList.add('tema-diademuertos');
-            return; 
-        }
+    // a. REYES MAGOS (Enero 6 al 8) - TEMA CORTO Y ESPECÍFICO
+    if (inRange(1, 6, 1, 8)) {
+        body.classList.add('tema-reyes');
+        return;
+    }
 
-        // NAVIDAD (15 de Diciembre al 5 de Enero)
-        if ((currentMonth === 12 && currentDay >= 15) || (currentMonth === 1 && currentDay <= 5)) {
-            body.classList.add('tema-navidad');
-            return;
-        }
+    // b. SAN VALENTÍN (Febrero 12 al 15)
+    if (inRange(2, 12, 2, 15)) {
+        body.classList.add('tema-sanvalentin');
+        return;
     }
     
-    // Si no se aplica ningún tema especial, usa el tema original
+    // c. PRIMAVERA / VACACIONES (Marzo 20 al Abril 3)
+    if (inRange(3, 20, 4, 3)) {
+        body.classList.add('tema-primavera');
+        return;
+    }
+
+    // d. FIESTAS PATRIAS (Septiembre 14 al 16)
+    if (inRange(9, 14, 9, 16)) {
+        body.classList.add('tema-patrio');
+        return;
+    }
+
+    // e. DÍA DE MUERTOS (Octubre 28 al Noviembre 3)
+    if (inRange(10, 28, 11, 3)) {
+        body.classList.add('tema-diademuertos');
+        return;
+    }
+    
+    // f. NAVIDAD (Diciembre 15 al Enero 5) - Rango que cambia de año
+    if ((currentMonth === 12 && currentDay >= 15) || (currentMonth === 1 && currentDay <= 5)) {
+        body.classList.add('tema-navidad');
+        return;
+    }
+    
+    // 3. TEMA POR DEFECTO: ORIGINAL
     body.classList.add('tema-original'); 
 }
 
 
 // ----------------------------------------------------
-// FUNCIONES DE POSTS Y LÓGICA DEL SITIO
+// FUNCIONES DE POSTS Y LÓGICA DEL SITIO (SIN CAMBIOS)
 // ----------------------------------------------------
 
 function crearPostHTML(post) {
     const articulo = document.createElement('article');
     articulo.classList.add('post', post.seccion.toLowerCase().replace(/ /g, '-')); 
-
+    // ... (El resto de la función crearPostHTML sin cambios) ...
     let contenidoMedia = '';
     
     if (post.urlMedia) {
@@ -129,15 +155,14 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     });
 }
 
-// LÓGICA DEL CHAT ANÓNIMO
+// ... (Lógica de Modales, Lightbox, Búsqueda y Navegación, sin cambios) ...
+
 if(linkChatAnonimo) {
     linkChatAnonimo.addEventListener('click', (e) => {
         e.preventDefault();
         if(modalSubir) modalSubir.style.display = 'none'; 
         document.body.style.overflow = 'auto'; 
-        
         const tiktokUser = prompt("Para entrar al chat, ingresa tu nombre de usuario de TikTok (ej: @jlcojvjcl).");
-
         if (tiktokUser && tiktokUser.trim() !== "") {
             alert(`¡Perfecto! Te redirigiremos a Discord. Tu nombre de TikTok: ${tiktokUser}`);
             window.open(CHAT_ANONIMO_URL, '_blank'); 
@@ -146,8 +171,6 @@ if(linkChatAnonimo) {
         }
     });
 }
-
-// LÓGICA DEL MODAL "ENVIAR CHISME"
 if(linkSubir && modalSubir) {
     modalSubir.style.display = 'none'; 
     linkSubir.addEventListener('click', (e) => {
@@ -171,23 +194,17 @@ if(modalSubir) {
         }
     });
 }
-
-// LÓGICA DEL VISOR DE MEDIOS (LIGHTBOX)
 function openMediaModal(src, title) {
     mediaContentViewer.innerHTML = '';
     mediaCaption.textContent = title;
-
     if (src.toLowerCase().includes('.mp4')) {
         mediaContentViewer.innerHTML = `<video src="${src}" controls autoplay></video>`;
     } else {
         mediaContentViewer.innerHTML = `<img src="${src}" alt="${title}">`;
     }
-
     mediaModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
-
-// Eventos de cierre para el Lightbox
 if (closeMediaModal && mediaModal) {
     closeMediaModal.addEventListener('click', () => {
         mediaModal.style.display = 'none';
@@ -202,12 +219,9 @@ if (closeMediaModal && mediaModal) {
         }
     });
 }
-
-// Delegación de eventos para el Lightbox
 contenedor.addEventListener('click', (e) => {
     let target = e.target;
     let postMediaElement = null;
-
     while (target && target !== contenedor) {
         if (target.classList && target.classList.contains('post-media')) {
             postMediaElement = target;
@@ -215,22 +229,17 @@ contenedor.addEventListener('click', (e) => {
         }
         target = target.parentElement;
     }
-
     if (postMediaElement && postMediaElement.dataset.src) {
         e.preventDefault(); 
         openMediaModal(postMediaElement.dataset.src, postMediaElement.dataset.title);
     }
 });
-
-
-// Lógica del buscador
 if (searchButton && searchInput) {
     const performSearch = () => {
         const activeLink = document.querySelector('.nav-link.active[data-seccion]');
         const currentSection = activeLink ? activeLink.getAttribute('data-seccion') : 'Todo';
         mostrarPublicaciones(currentSection, searchInput.value);
     };
-
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') {
@@ -238,20 +247,14 @@ if (searchButton && searchInput) {
         }
     });
 }
-
-// Lógica de navegación
 enlacesNav.forEach(enlace => {
     enlace.addEventListener('click', (e) => {
         const seccion = e.target.getAttribute('data-seccion');
-
         if (seccion) {
             e.preventDefault();
-            
             enlacesNav.forEach(link => link.classList.remove('active'));
             e.target.classList.add('active');
-
             if(searchInput) searchInput.value = '';
-
             mostrarPublicaciones(seccion);
             if(modalSubir) modalSubir.style.display = 'none'; 
             document.body.style.overflow = 'auto'; 
@@ -261,7 +264,6 @@ enlacesNav.forEach(enlace => {
 
 // Cargar la sección "Todo" por defecto al cargar la página
 window.onload = function() {
-    // 1. Aplica el tema basado en la variable TEMA_FORZADO o la fecha
     aplicarTemaPorFecha(); 
 
     if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) {
