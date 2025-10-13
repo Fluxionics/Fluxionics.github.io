@@ -28,7 +28,7 @@ a {
     color: inherit;
 }
 
-/* --- HEADER Y NAVEGACIÓN --- */
+/* --- HEADER Y NAVEGACIÓN (Diseño Base) --- */
 header {
     background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%); 
     color: white;
@@ -100,7 +100,6 @@ header nav {
 #contenedor-publicaciones {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    /* Separación de 1cm */
     gap: 10px; 
     max-width: 1200px;
     margin: 30px auto;
@@ -119,7 +118,7 @@ header nav {
     height: 100%; 
     display: flex;
     flex-direction: column;
-    position: relative; /* CRÍTICO para los efectos especiales */
+    position: relative; 
 }
 .post:hover {
     transform: translateY(-3px);
@@ -221,7 +220,7 @@ header nav {
 .tema-original .post.misterios .post-titulo { color: #444; }
 .tema-original .post.misterios:hover {
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-    transform: none; /* Desactivamos el lift para un efecto más misterioso */
+    transform: none; 
 }
 
 /* 4. HUMOR (Colores Pop) */
@@ -255,23 +254,31 @@ header nav {
 
 
 /* ====================================================
-   ESTILOS DE TEMA FESTIVO: DÍA DE MUERTOS (SOBREESCRITURA)
+   ESTILOS DE TEMA FESTIVO: DÍA DE MUERTOS (SOBREESCRITURA TOTAL)
    ==================================================== */
 
 body.tema-diademuertos {
     background-color: #1a1a1a; 
+    color: #f0f0f0;
 }
 body.tema-diademuertos header {
+    /* Naranja y Café */
     background: linear-gradient(90deg, #ff8c00 0%, #a0522d 100%); 
 }
 body.tema-diademuertos .post {
     background-color: #2c2c2c; 
+    box-shadow: 0 6px 15px rgba(255, 140, 0, 0.15); /* Sombra naranja */
 }
 body.tema-diademuertos .post-titulo,
 body.tema-diademuertos .post-descripcion {
     color: #f0f0f0; 
 }
-/* 💀 SOBREESCRITURA: SHIPPEOS EN DÍA DE MUERTOS (Cambia corazones por calabazas/calaveras) */
+body.tema-diademuertos .post-seccion {
+    border-top: 1px dashed #555; /* Separador más tenue */
+    color: #bbb;
+}
+
+/* 💀 SOBREESCRITURA: SHIPPEOS EN DÍA DE MUERTOS (Naranja y Calaveras) */
 body.tema-diademuertos .post.shippeos { 
     border-left: 5px solid #ff8c00; 
 }
@@ -279,36 +286,116 @@ body.tema-diademuertos .post.shippeos .post-seccion span {
     color: #ff8c00; 
 }
 body.tema-diademuertos .post.shippeos::before {
-    content: '🎃'; 
+    content: '🎃'; /* Calabaza */
     animation: none; 
     opacity: 1;
     color: #ff8c00;
 }
 body.tema-diademuertos .post.shippeos::after {
-    content: '💀'; 
+    content: '💀'; /* Calavera */
     animation: none;
     opacity: 1;
     color: #f0f0f0;
 }
-/* 💀 SOBREESCRITURA: CHISMES EN DÍA DE MUERTOS */
+/* 💀 SOBREESCRITURA: CHISMES EN DÍA DE MUERTOS (Vela) */
+body.tema-diademuertos .post.chismes {
+    border-left: 5px solid #ffd700; /* Dorado para la vela */
+}
 body.tema-diademuertos .post.chismes::before {
     content: '🕯️';
     animation: none;
-    color: #ff8c00;
+    color: #ffd700;
 }
 
-/* ====================================================
-   ESTILOS GENERALES (Modales y Footer)
-   ==================================================== */
 
-/* --- MODAL Y LIGHTBOX --- */
+/* --- MODAL Y FOOTER --- */
 .modal-overlay {
-    /* ... (Estilos de Modal) ... */
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    text-decoration: none;
+    color: #333;
+}
+.tiktok-link {
+    display: inline-block;
+    background-color: #25f4ee; 
+    color: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 15px 0;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+/* --- LIGHTBOX (VISOR DE MEDIOS) --- */
 .media-modal-overlay {
-    /* ... (Estilos de Lightbox) ... */
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95); 
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; 
 }
-/* ... (Se omiten por brevedad, usa los que ya tienes) ... */
+.media-modal-content {
+    background-color: black; 
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 95%;
+    max-height: 95%;
+    position: relative;
+    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.close-media-modal {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    z-index: 2001; 
+}
+#media-content-viewer img, #media-content-viewer video {
+    max-width: 100%;
+    max-height: 80vh; 
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+#media-caption {
+    color: white;
+    margin-top: 15px;
+    font-size: 1.1em;
+    text-align: center;
+}
 
 /* --- FOOTER --- */
 footer {
