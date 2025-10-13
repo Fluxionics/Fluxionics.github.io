@@ -3,19 +3,21 @@
 // 🔴 ENLACE DE INVITACIÓN AL CHAT DE DISCORD
 const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C"; 
 
+// 🚨 VARIABLE DE CONTROL: CAMBIA ESTO PARA FORZAR UN TEMA 🚨
+// Opciones: 'original' (normal), 'diademuertos', 'navidad', o 'auto' (basado en la fecha real)
+const TEMA_FORZADO = 'diademuertos'; // <-- CAMBIA AQUÍ PARA PROBAR EL DISEÑO DE DÍA DE MUERTOS
+
 // Obtener elementos principales
 const contenedor = document.getElementById('contenedor-publicaciones');
 const enlacesNav = document.querySelectorAll('.nav-link');
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 
-// Obtener elementos del Modal de Subida
+// Obtener elementos del Modal de Subida y Lightbox
 const linkSubir = document.getElementById('link-subir');
 const modalSubir = document.getElementById('modal-subir');
 const closeModal = document.querySelector('.close-modal');
 const linkChatAnonimo = document.getElementById('link-chat'); 
-
-// Obtener elementos del Visor de Medios (Lightbox)
 const mediaModal = document.getElementById('media-modal');
 const closeMediaModal = document.querySelector('.close-media-modal');
 const mediaContentViewer = document.getElementById('media-content-viewer');
@@ -27,34 +29,49 @@ const mediaCaption = document.getElementById('media-caption');
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
-    const today = new Date();
-    const currentMonth = today.getMonth() + 1; // getMonth() es 0-11, sumamos 1
-    const currentDay = today.getDate();
     const body = document.body;
+    body.classList.remove('tema-diademuertos', 'tema-navidad', 'tema-original'); 
 
-    // Se eliminan clases temporales antes de aplicar una nueva
-    body.classList.remove('tema-diademuertos', 'tema-navidad'); 
-    
-    // **DÍA DE MUERTOS** (Ejemplo: 28 de Octubre al 3 de Noviembre)
-    if ((currentMonth === 10 && currentDay >= 28) || (currentMonth === 11 && currentDay <= 3)) {
+    // 1. APLICAR TEMA FORZADO SI ESTÁ DEFINIDO
+    if (TEMA_FORZADO === 'diademuertos') {
         body.classList.add('tema-diademuertos');
-        body.classList.remove('tema-original'); // Desactiva el original si hay tema festivo
-        return; 
-    }
-
-    // **NAVIDAD** (Ejemplo: Del 15 de Diciembre al 5 de Enero)
-    if ((currentMonth === 12 && currentDay >= 15) || (currentMonth === 1 && currentDay <= 5)) {
-        body.classList.add('tema-navidad');
-        body.classList.remove('tema-original'); 
         return;
     }
+    if (TEMA_FORZADO === 'navidad') {
+        body.classList.add('tema-navidad');
+        return;
+    }
+    if (TEMA_FORZADO === 'original') {
+        body.classList.add('tema-original');
+        return;
+    }
+
+    // 2. LÓGICA AUTOMÁTICA (SOLO SI TEMA_FORZADO es 'auto')
+    if (TEMA_FORZADO === 'auto') {
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1; 
+        const currentDay = today.getDate();
+
+        // DÍA DE MUERTOS (28 de Octubre al 3 de Noviembre)
+        if ((currentMonth === 10 && currentDay >= 28) || (currentMonth === 11 && currentDay <= 3)) {
+            body.classList.add('tema-diademuertos');
+            return; 
+        }
+
+        // NAVIDAD (15 de Diciembre al 5 de Enero)
+        if ((currentMonth === 12 && currentDay >= 15) || (currentMonth === 1 && currentDay <= 5)) {
+            body.classList.add('tema-navidad');
+            return;
+        }
+    }
     
-    // Si no es ninguna festividad, mantiene el tema original (la clase ya está en el HTML)
+    // Si no se aplica ningún tema especial, usa el tema original
+    body.classList.add('tema-original'); 
 }
 
 
 // ----------------------------------------------------
-// FUNCIONES DE POSTS Y LÓGICA DEL SITIO
+// FUNCIONES DE POSTS Y LÓGICA DEL SITIO (SIN CAMBIOS)
 // ----------------------------------------------------
 
 function crearPostHTML(post) {
@@ -87,9 +104,8 @@ function crearPostHTML(post) {
 
 function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     contenedor.innerHTML = ''; 
-
+    // ... (lógica de filtro y búsqueda) ...
     const postsFiltrados = publicaciones.filter(post => {
-        // ... (lógica de filtro y búsqueda) ...
         if (post.seccion === "Política" && filtroSeccion !== "Todo" && filtroSeccion !== "Política") {
             return false;
         }
@@ -113,7 +129,7 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     });
 }
 
-// ... (Resto de la lógica de modales, lightbox, y eventos) ...
+// ... (El resto de la lógica de modales, lightbox, y eventos permanece igual) ...
 
 // LÓGICA DEL CHAT ANÓNIMO
 if(linkChatAnonimo) {
@@ -173,6 +189,7 @@ function openMediaModal(src, title) {
     document.body.style.overflow = 'hidden';
 }
 
+// Eventos de cierre para el Lightbox
 if (closeMediaModal && mediaModal) {
     closeMediaModal.addEventListener('click', () => {
         mediaModal.style.display = 'none';
@@ -246,7 +263,7 @@ enlacesNav.forEach(enlace => {
 
 // Cargar la sección "Todo" por defecto al cargar la página
 window.onload = function() {
-    // Aplica el tema basado en la fecha
+    // 1. Aplica el tema basado en la variable TEMA_FORZADO o la fecha
     aplicarTemaPorFecha(); 
 
     if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) {
