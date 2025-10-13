@@ -5,7 +5,7 @@ const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C";
 
 // 🚨 VARIABLE DE CONTROL: CAMBIA ESTO PARA FORZAR UN TEMA 🚨
 // Opciones: 'original' (normal), 'diademuertos', 'navidad', o 'auto' (basado en la fecha real)
-const TEMA_FORZADO = 'diademuertos'; // <-- CAMBIA AQUÍ PARA PROBAR EL DISEÑO DE DÍA DE MUERTOS
+const TEMA_FORZADO = 'diademuertos'; // <-- ¡TEMA DE DÍA DE MUERTOS ACTIVADO!
 
 // Obtener elementos principales
 const contenedor = document.getElementById('contenedor-publicaciones');
@@ -71,7 +71,7 @@ function aplicarTemaPorFecha() {
 
 
 // ----------------------------------------------------
-// FUNCIONES DE POSTS Y LÓGICA DEL SITIO (SIN CAMBIOS)
+// FUNCIONES DE POSTS Y LÓGICA DEL SITIO
 // ----------------------------------------------------
 
 function crearPostHTML(post) {
@@ -104,7 +104,7 @@ function crearPostHTML(post) {
 
 function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
     contenedor.innerHTML = ''; 
-    // ... (lógica de filtro y búsqueda) ...
+    
     const postsFiltrados = publicaciones.filter(post => {
         if (post.seccion === "Política" && filtroSeccion !== "Todo" && filtroSeccion !== "Política") {
             return false;
@@ -128,8 +128,6 @@ function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
         contenedor.appendChild(crearPostHTML(post));
     });
 }
-
-// ... (El resto de la lógica de modales, lightbox, y eventos permanece igual) ...
 
 // LÓGICA DEL CHAT ANÓNIMO
 if(linkChatAnonimo) {
