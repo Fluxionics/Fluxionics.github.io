@@ -6,11 +6,10 @@
     <title>SECUNDARIA DEL ESTADO 🎓</title>
     
     <script>
-        // Verifica si la bandera de acceso ya fue establecida en la sesión.
+        // Este bloque ya lo tenías para el captcha, lo mantenemos.
         const accesoPermitido = sessionStorage.getItem('AccesoDiaDeMuertos');
 
         if (accesoPermitido !== 'VERIFICADO') {
-            // Si NO hay permiso, redirige a la página del Captcha.
             window.location.replace('captcha.html');
         }
     </script>
@@ -29,7 +28,9 @@
             <a href="#" class="nav-link" data-seccion="Misterios">Misterios</a>
             <a href="#" class="nav-link" data-seccion="Humor">Humor</a>
             <a href="#" class="nav-link" data-seccion="Política">Política</a>
-            <a href="#" class="nav-link" id="link-reglas">Política y Reglas</a>
+            
+            <a href="politica.html" class="nav-link" target="_blank">Política y Reglas</a> 
+            
             <a href="#" class="nav-link" id="link-chat">Chat Anónimo</a>
             <a href="#" class="nav-link" id="link-subir">Subir</a>
         </nav>
@@ -64,27 +65,6 @@
         <div class="media-modal-content">
             <div id="media-content-viewer"></div>
             <p id="media-caption"></p>
-        </div>
-    </div>
-
-    <div id="modal-reglas" class="modal-overlay">
-        <div class="modal-content">
-            <a href="fluxionics.github.io/politica.html" class="close-modal close-modal-reglas">&times;</a>
-            <h2 style="color:#0056b3; border-bottom: 2px solid #ccc; padding-bottom: 10px;">🛡️ Política de Contenido y Reglas de la Plataforma</h2>
-            <p style="font-style: italic; color: #555; margin-top: 15px;">Esta plataforma es un espacio estudiantil. La convivencia se basa en el respeto.</p>
-            <h3 style="color:#333; margin-top: 20px; border-bottom: 1px dashed #eee;">1. Reglas de Contenido</h3>
-            <ul style="text-align: left; list-style-type: disc; margin-left: 20px;">
-                <li>**Respeto Mutuo:** No se tolerarán publicaciones con acoso, difamación, o discursos de odio.</li>
-                <li>**Veracidad:** La difusión de información *seria y falsa* que dañe la reputación está prohibida.</li>
-                <li>**Contenido Explícito:** Está estrictamente prohibido compartir material explícito, violento o ilegal.</li>
-                <li>**Moderación:** Todo contenido será revisado y aprobado antes de ser publicado.</li>
-            </ul>
-            <h3 style="color:#333; margin-top: 20px; border-bottom: 1px dashed #eee;">2. Privacidad</h3>
-            <ul style="text-align: left; list-style-type: disc; margin-left: 20px;">
-                <li>**Anonimato Total:** La plataforma no recopila nombres reales, correos ni números de teléfono.</li>
-                <li>**Moderadores:** El usuario de TikTok se pide **únicamente para contactarte sobre tu publicación**.</li>
-                <li>**Chat:** El usuario de TikTok es para verificación de acceso al Discord.</li>
-            </ul>
         </div>
     </div>
     
