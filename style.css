@@ -1,4 +1,4 @@
-/* style.css - DISEÑO FINAL CON TEMAS ANUALES */
+/* style.css - DISEÑO FINAL CON 18 TEMAS INDIVIDUALES */
 
 /* --- KEYFRAMES PARA ANIMACIONES --- */
 @keyframes caerCorazon {
@@ -47,11 +47,6 @@ header nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
 .nav-link.active { background-color: white; color: #6a82fb; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
 #link-chat { background-color: #7289da; }
 
-/* --- BUSCADOR --- */
-.search-bar-container { max-width: 600px; margin: 0 auto; padding: 0 15px; display: flex; gap: 10px; }
-#search-input { flex-grow: 1; padding: 10px 15px; border: none; border-radius: 25px; font-size: 1em; outline: none; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); }
-#search-button { background-color: #4a90e2; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 1em; }
-
 /* --- CONTENEDOR DE PUBLICACIONES Y POST GENERAL (Diseño Base) --- */
 #contenedor-publicaciones {
     display: grid;
@@ -74,51 +69,21 @@ header nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
     flex-direction: column;
     position: relative; 
 }
-.post:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12); }
 .post-titulo { font-size: 1.3em; color: #333; margin-top: 0; margin-bottom: 10px; line-height: 1.3; }
 .post-descripcion { font-size: 1em; color: #555; flex-grow: 1; }
-/* 🖼️ CONSISTENCIA DE IMÁGENES (Aspect Ratio Fijo 4:3) */
-.post-media { width: 100%; padding-top: 75%; position: relative; margin-bottom: 15px; border-radius: 8px; overflow: hidden; }
-.post-media img, .post-media video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .post-seccion { font-size: 0.8em; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee; color: #888; }
-.post-seccion span { font-weight: 700; }
 
 
 /* ====================================================
-   DISEÑO ESPECIALIZADO POR SECCIÓN (TEMA ORIGINAL)
+   TEMAS ANUALES: BASE Y LIMPIEZA
    ==================================================== */
 
-/* 1. SHIPPEOS (Corazones Cayendo) */
-.tema-original .post.shippeos { border-left: 5px solid #ff9a8d; overflow: hidden; }
-.tema-original .post.shippeos .post-seccion span { color: #ff9a8d; }
-.tema-original .post.shippeos::before, .tema-original .post.shippeos::after { content: '💖'; position: absolute; font-size: 2em; opacity: 0; z-index: 1; animation: caerCorazon 5s linear infinite; }
-.tema-original .post.shippeos::after { content: '💘'; animation: caerCorazon 6s linear infinite 2s; }
-
-/* 2. CHISMES (Mensaje Movimiento Sutil) */
-.tema-original .post.chismes { border-left: 5px solid #ef5350; box-shadow: 0 0 10px rgba(239, 83, 80, 0.5); }
-.tema-original .post.chismes::before { content: '🤫'; position: absolute; top: 5px; right: 5px; font-size: 1.5em; animation: moverMensaje 1s ease-in-out infinite alternate; z-index: 1; }
-/* 3. MISTERIOS */
-.tema-original .post.misterios { border-left: 5px solid #9e9e9e; background-color: #fafafa; }
-/* 4. HUMOR */
-.tema-original .post.humor { border-left: 5px solid #ffe082; }
-/* 5. PAREJA OFICIAL */
-.tema-original .post.pareja-oficial { border: 3px solid #fc5c7d; background-color: #fff0f5; }
-/* 6. CONVERSACIONES */
-.tema-original .post.conversaciones { border-left: 8px double #4db6ac; }
-/* 7. POLÍTICA */
-.post.política { border: 3px solid #0056b3; background-color: #e9f0f7; grid-column: 1 / -1; }
-
-
-/* ====================================================
-   TEMAS ANUALES: SOBREESCRITURAS GLOBALES Y POR SECCIÓN
-   ==================================================== */
-
-/* --- Función General de Sobreescritura de Colores para Temas Oscuros --- */
-body[class*="tema-"] .post { color: #f0f0f0; }
-body[class*="tema-"] .post-titulo { color: #fff; }
-body[class*="tema-"] .post-descripcion { color: #ccc; }
-body[class*="tema-"] .post-seccion { border-top: 1px dashed #555; color: #bbb; }
-/* (Limpia los pseudo-elementos del tema original para reutilizar) */
+/* Limpieza de estilos para temas */
+body[class*="tema-"] .post { color: #333; background-color: #fff; border: 1px solid #ccc; }
+body[class*="tema-"] .post-titulo { color: #333; }
+body[class*="tema-"] .post-descripcion { color: #555; }
+body[class*="tema-"] .post-seccion { border-top: 1px dashed #eee; color: #888; }
+/* Limpia los pseudo-elementos del tema original */
 body[class*="tema-"] .post.shippeos::before, 
 body[class*="tema-"] .post.shippeos::after,
 body[class*="tema-"] .post.chismes::before {
@@ -128,86 +93,206 @@ body[class*="tema-"] .post.chismes::before {
 }
 
 
-/* --- 1. DÍA DE MUERTOS 🎃 (Octubre 28 - Noviembre 3) --- */
+/* --- 1. TEMA ORIGINAL (Por Defecto) --- */
+body.tema-original .post.shippeos { border-left: 5px solid #ff9a8d; overflow: hidden; }
+
+
+/* --- 2. REYES MAGOS 👑 (Ene 6) --- */
+body.tema-reyes { background-color: #fff0f5; }
+body.tema-reyes header { background: linear-gradient(90deg, #8e44ad 0%, #f39c12 100%); } 
+body.tema-reyes .post-titulo { color: #8e44ad; }
+body.tema-reyes .post.shippeos::before { content: '👑'; color: #f39c12; }
+body.tema-reyes .post.chismes::before { content: '🐪'; color: #2ecc71; }
+
+/* --- 3. CANDELARIA 🌽 (Feb 2) --- */
+body.tema-candelaria { background-color: #fcfcfc; }
+body.tema-candelaria header { background: linear-gradient(90deg, #d32f2f 0%, #ffc107 100%); } 
+body.tema-candelaria .post-titulo { color: #d32f2f; }
+body.tema-candelaria .post.shippeos::before { content: '🕯️'; color: #ffc107; }
+body.tema-candelaria .post.chismes::before { content: '🌽'; color: #4caf50; }
+
+/* --- 4. CONSTITUCIÓN 📜 (Feb 5) --- */
+body.tema-constitucion { background-color: #e9f0f7; }
+body.tema-constitucion header { background: linear-gradient(90deg, #0056b3 0%, #3498db 100%); } 
+body.tema-constitucion .post-titulo { color: #0056b3; }
+body.tema-constitucion .post.shippeos::before { content: '📜'; color: #3498db; }
+body.tema-constitucion .post.chismes::before { content: '🏛️'; color: #8a2be2; }
+
+/* --- 5. FUERZA ARMADA/EJÉRCITO 🛡️ (Feb 10 y 19) --- */
+body.tema-ejercito { background-color: #f5f5f5; }
+body.tema-ejercito header { background: linear-gradient(90deg, #5d4037 0%, #795548 100%); } 
+body.tema-ejercito .post-titulo { color: #5d4037; }
+body.tema-ejercito .post.shippeos::before { content: '🛡️'; color: #bcaaa4; }
+body.tema-ejercito .post.chismes::before { content: '🎖️'; color: #ffeb3b; }
+
+/* --- 6. SAN VALENTÍN ❤️ (Feb 14) --- */
+body.tema-sanvalentin { background-color: #ffebee; }
+body.tema-sanvalentin header { background: linear-gradient(90deg, #e91e63 0%, #f48fb1 100%); } 
+body.tema-sanvalentin .post-titulo { color: #e91e63; }
+body.tema-sanvalentin .post.shippeos::before { content: '💘'; color: #e91e63; }
+body.tema-sanvalentin .post.chismes::before { content: '💌'; color: #ff9a8d; }
+
+/* --- 7. BANDERA 🇲🇽 (Feb 24) --- */
+body.tema-bandera { background-color: #e6f7e6; }
+body.tema-bandera header { background: linear-gradient(to right, #1d8348 0%, #ffffff 50%, #c0392b 100%); color: #333; }
+body.tema-bandera .post-titulo { color: #1d8348; }
+body.tema-bandera .post.shippeos::before { content: '🏳️'; color: #c0392b; }
+body.tema-bandera .post.chismes::before { content: '🦅'; color: #1d8348; }
+
+/* --- 8. CARNAVAL 🎭 (Fecha Variable Feb/Mar) --- */
+body.tema-carnaval { background-color: #fff0f5; }
+body.tema-carnaval header { background: linear-gradient(90deg, #9c27b0 0%, #ffeb3b 100%); }
+body.tema-carnaval .post-titulo { color: #9c27b0; }
+body.tema-carnaval .post.shippeos::before { content: '🎉'; color: #ffeb3b; }
+body.tema-carnaval .post.chismes::before { content: '🎭'; color: #4db6ac; }
+
+/* --- 9. DÍA DE LA MUJER ♀️ (Mar 8) --- */
+body.tema-mujer { background-color: #fce4ec; }
+body.tema-mujer header { background: linear-gradient(90deg, #880e4f 0%, #c2185b 100%); }
+body.tema-mujer .post-titulo { color: #880e4f; }
+body.tema-mujer .post.shippeos::before { content: '💜'; color: #9c27b0; }
+body.tema-mujer .post.chismes::before { content: '✊'; color: #c2185b; }
+
+/* --- 10. EXPROPIACIÓN ⛽ (Mar 18) --- */
+body.tema-expropiacion { background-color: #f5f5f5; }
+body.tema-expropiacion header { background: linear-gradient(90deg, #0d47a1 0%, #ff9800 100%); }
+body.tema-expropiacion .post-titulo { color: #0d47a1; }
+body.tema-expropiacion .post.shippeos::before { content: '⛽'; color: #ff9800; }
+body.tema-expropiacion .post.chismes::before { content: '🏭'; color: #0d47a1; }
+
+/* --- 11. BENITO JUÁREZ 🏛️ (Mar 21) --- */
+body.tema-juarez { background-color: #e8f5e9; }
+body.tema-juarez header { background: linear-gradient(90deg, #4caf50 0%, #aed581 100%); }
+body.tema-juarez .post-titulo { color: #4caf50; }
+body.tema-juarez .post.shippeos::before { content: '🏛️'; color: #aed581; }
+body.tema-juarez .post.chismes::before { content: '📜'; color: #81c784; }
+
+/* --- 12. ZAPATA / DÍA DEL NIÑO 🎈 (Abril 10 y 30) --- */
+body.tema-zapataniño { background-color: #f0f7f4; }
+body.tema-zapataniño header { background: linear-gradient(90deg, #388e3c 0%, #448aff 100%); }
+body.tema-zapataniño .post-titulo { color: #388e3c; }
+body.tema-zapataniño .post.shippeos::before { content: '🎈'; color: #448aff; }
+body.tema-zapataniño .post.chismes::before { content: '👨‍🌾'; color: #388e3c; }
+
+/* --- 13. PUEBLA / TRABAJO 🎆 (May 1 y 5) --- */
+body.tema-puebla { background-color: #fff3e0; }
+body.tema-puebla header { background: linear-gradient(90deg, #ff5722 0%, #ffc107 100%); }
+body.tema-puebla .post-titulo { color: #ff5722; }
+body.tema-puebla .post.shippeos::before { content: '🎆'; color: #ffc107; }
+body.tema-puebla .post.chismes::before { content: '💪'; color: #ff5722; }
+
+/* --- 14. MADRES / MAESTRO 🌹 (May 10 y 15) --- */
+body.tema-maestro { background-color: #fff8e1; }
+body.tema-maestro header { background: linear-gradient(90deg, #fbc02d 0%, #d32f2f 100%); }
+body.tema-maestro .post-titulo { color: #fbc02d; }
+body.tema-maestro .post.shippeos::before { content: '🌹'; color: #d32f2f; }
+body.tema-maestro .post.chismes::before { content: '👩‍🏫'; color: #fbc02d; }
+
+/* --- 15. MARINA ⚓ (Jun 1) --- */
+body.tema-marina { background-color: #e0f2f1; }
+body.tema-marina header { background: linear-gradient(90deg, #00838f 0%, #3f51b5 100%); }
+body.tema-marina .post-titulo { color: #00838f; }
+body.tema-marina .post.shippeos::before { content: '⚓'; color: #3f51b5; }
+body.tema-marina .post.chismes::before { content: '🌊'; color: #00838f; }
+
+/* --- 16. GUELAGUETZA / CULTURAL 💃 (Julio) --- */
+body.tema-cultural { background-color: #f5f5f5; }
+body.tema-cultural header { background: linear-gradient(90deg, #795548 0%, #ff9800 100%); } 
+body.tema-cultural .post-titulo { color: #795548; }
+body.tema-cultural .post.shippeos::before { content: '💃'; color: #ff9800; }
+body.tema-cultural .post.chismes::before { content: '🌎'; color: #795548; }
+
+/* --- 17. ABUELO 👴 (Ago 28) --- */
+body.tema-abuelo { background-color: #f0f0e6; }
+body.tema-abuelo header { background: linear-gradient(90deg, #9e9e9e 0%, #757575 100%); }
+body.tema-abuelo .post-titulo { color: #757575; }
+body.tema-abuelo .post.shippeos::before { content: '👴'; color: #9e9e9e; }
+body.tema-abuelo .post.chismes::before { content: '👵'; color: #757575; }
+
+/* --- 18. PATRIO FUEGO 🔔 (Sep 13-16) --- */
+body.tema-patrio { background-color: #f7e8e8; }
+body.tema-patrio header { background: linear-gradient(to right, #1d8348 0%, #ffffff 50%, #c0392b 100%); color: #333; } 
+body.tema-patrio .post-titulo { color: #1d8348; }
+body.tema-patrio .post.shippeos::before { content: '🇲🇽'; color: #c0392b; }
+body.tema-patrio .post.chismes::before { content: '🔔'; color: #c0392b; }
+
+/* --- 19. MORELOS / CONSUMACIÓN 🥁 (Sep 27, 30) --- */
+body.tema-morelos { background-color: #e9f0f7; }
+body.tema-morelos header { background: linear-gradient(90deg, #0056b3 0%, #8a2be2 100%); } 
+body.tema-morelos .post-titulo { color: #0056b3; }
+body.tema-morelos .post.shippeos::before { content: '🥁'; color: #8a2be2; }
+body.tema-morelos .post.chismes::before { content: '🐴'; color: #0056b3; }
+
+/* --- 20. DÍA DE LA RAZA 🌎 (Oct 12) --- */
+body.tema-raza { background-color: #f5f5f5; }
+body.tema-raza header { background: linear-gradient(90deg, #795548 0%, #ff9800 100%); }
+body.tema-raza .post-titulo { color: #795548; }
+body.tema-raza .post.shippeos::before { content: '🌎'; color: #ff9800; }
+body.tema-raza .post.chismes::before { content: '🛶'; color: #00bcd4; }
+
+/* --- 21. DÍA DE MUERTOS 🎃 (Oct 28 - Nov 3) --- */
 body.tema-diademuertos { background-color: #1a1a1a; }
 body.tema-diademuertos header { background: linear-gradient(90deg, #ff8c00 0%, #a0522d 100%); }
-body.tema-diademuertos .post { background-color: #2c2c2c; box-shadow: 0 6px 15px rgba(255, 140, 0, 0.15); }
+body.tema-diademuertos .post { background-color: #2c2c2c; color: #f0f0f0; }
+body.tema-diademuertos .post-titulo { color: #ff8c00; }
+body.tema-diademuertos .post-descripcion { color: #ccc; }
+body.tema-diademuertos .post-seccion { border-top: 1px dashed #555; color: #bbb; }
+body.tema-diademuertos .post.shippeos::before { content: '🎃'; color: #ff8c00; }
+body.tema-diademuertos .post.chismes::before { content: '🕯️'; color: #ffd700; }
 
-body.tema-diademuertos .post.shippeos { border-left: 5px solid #ff8c00; overflow: visible; }
-body.tema-diademuertos .post.shippeos::before { content: '🎃'; position: absolute; top: 5px; right: 10px; color: #ff8c00; font-size: 1.5em; }
-body.tema-diademuertos .post.chismes::before { content: '🕯️'; position: absolute; top: 5px; right: 5px; color: #ffd700; font-size: 1.5em; }
+/* --- 22. REVOLUCIÓN MEXICANA 🚂 (Nov 20) --- */
+body.tema-revolucion { background-color: #f7f7f7; }
+body.tema-revolucion header { background: linear-gradient(90deg, #795548 0%, #d32f2f 100%); }
+body.tema-revolucion .post-titulo { color: #795548; }
+body.tema-revolucion .post.shippeos::before { content: '🚂'; color: #d32f2f; }
+body.tema-revolucion .post.chismes::before { content: '🔫'; color: #ff9800; }
 
-/* --- 2. NAVIDAD 🎄 (Diciembre 15 - Enero 5) --- */
+/* --- 23. MÚSICO 🎶 (Nov 22) --- */
+body.tema-musico { background-color: #fff0f5; }
+body.tema-musico header { background: linear-gradient(90deg, #9c27b0 0%, #e91e63 100%); }
+body.tema-musico .post-titulo { color: #9c27b0; }
+body.tema-musico .post.shippeos::before { content: '🎶'; color: #e91e63; }
+body.tema-musico .post.chismes::before { content: '🎺'; color: #9c27b0; }
+
+/* --- 24. ARMADA 🚢 (Nov 23) --- */
+body.tema-armada { background-color: #e9f0f7; }
+body.tema-armada header { background: linear-gradient(90deg, #0d47a1 0%, #3498db 100%); }
+body.tema-armada .post-titulo { color: #0d47a1; }
+body.tema-armada .post.shippeos::before { content: '🚢'; color: #3498db; }
+body.tema-armada .post.chismes::before { content: '⚓'; color: #0d47a1; }
+
+/* --- 25. VIRGEN 🕊️ (Dic 12) --- */
+body.tema-virgen { background-color: #f0f8ff; }
+body.tema-virgen header { background: linear-gradient(90deg, #00bcd4 0%, #4fc3f7 100%); }
+body.tema-virgen .post-titulo { color: #00bcd4; }
+body.tema-virgen .post.shippeos::before { content: '🕊️'; color: #81c784; }
+body.tema-virgen .post.chismes::before { content: '🌹'; color: #ff9a8d; }
+
+/* --- 26. NAVIDAD/POSADAS 🎄 (Dic 16 - 26) --- */
 body.tema-navidad { background-color: #e6f7e6; }
 body.tema-navidad header { background: linear-gradient(90deg, #c0392b 0%, #27ae60 100%); color: #fff; }
-body.tema-navidad .post { background-color: #fff; box-shadow: 0 0 15px rgba(192, 57, 43, 0.1); }
 body.tema-navidad .post-titulo { color: #27ae60; }
+body.tema-navidad .post.shippeos::before { content: '🎄'; color: #27ae60; }
+body.tema-navidad .post.chismes::before { content: '🎁'; color: #c0392b; }
 
-body.tema-navidad .post.shippeos { border-left: 5px solid #f1c40f; overflow: visible; }
-body.tema-navidad .post.shippeos::before { content: '🎄'; position: absolute; top: 5px; right: 10px; color: #27ae60; font-size: 1.5em; }
-body.tema-navidad .post.chismes { border-left: 5px solid #c0392b; }
-body.tema-navidad .post.chismes::before { content: '🎁'; position: absolute; top: 5px; right: 5px; color: #c0392b; font-size: 1.5em; }
-
-/* --- 3. REYES MAGOS 👑 (Enero 6 - 8) --- */
-body.tema-reyes { background-color: #fff0f5; }
-body.tema-reyes header { background: linear-gradient(90deg, #8e44ad 0%, #f39c12 100%); } /* Morado y Dorado */
-body.tema-reyes .post { background-color: #fff; box-shadow: 0 0 15px rgba(142, 68, 173, 0.1); }
-body.tema-reyes .post-titulo { color: #8e44ad; }
-
-body.tema-reyes .post.shippeos { border-left: 5px solid #f39c12; overflow: visible; }
-body.tema-reyes .post.shippeos::before { content: '👑'; position: absolute; top: 5px; right: 10px; color: #f39c12; font-size: 1.5em; }
-body.tema-reyes .post.chismes { border-left: 5px solid #2ecc71; }
-body.tema-reyes .post.chismes::before { content: '🐪'; position: absolute; top: 5px; right: 5px; color: #2ecc71; font-size: 1.5em; }
-
-/* --- 4. SAN VALENTÍN ❤️ (Febrero 12 - 15) --- */
-body.tema-sanvalentin { background-color: #ffebee; }
-body.tema-sanvalentin header { background: linear-gradient(90deg, #e91e63 0%, #f48fb1 100%); } /* Rosa Fuerte y Claro */
-body.tema-sanvalentin .post { background-color: #fff; border: 1px solid #ffcdd2; }
-body.tema-sanvalentin .post-titulo { color: #e91e63; }
-
-body.tema-sanvalentin .post.shippeos { border-left: 5px solid #e91e63; overflow: visible; }
-body.tema-sanvalentin .post.shippeos::before { content: '💘'; position: absolute; top: 5px; right: 10px; color: #e91e63; font-size: 1.5em; }
-body.tema-sanvalentin .post.chismes { border-left: 5px solid #ff9a8d; }
-body.tema-sanvalentin .post.chismes::before { content: '💌'; position: absolute; top: 5px; right: 5px; color: #ff9a8d; font-size: 1.5em; }
-
-/* --- 5. PRIMAVERA / VACACIONES 🌸 (Marzo 20 - Abril 3) --- */
-body.tema-primavera { background-color: #e8f5e9; }
-body.tema-primavera header { background: linear-gradient(90deg, #4caf50 0%, #aed581 100%); } /* Verde claro y pastel */
-body.tema-primavera .post { background-color: #fff; border: 1px solid #c8e6c9; }
-body.tema-primavera .post-titulo { color: #4caf50; }
-
-body.tema-primavera .post.shippeos { border-left: 5px solid #81c784; overflow: visible; }
-body.tema-primavera .post.shippeos::before { content: '🌸'; position: absolute; top: 5px; right: 10px; color: #81c784; font-size: 1.5em; }
-body.tema-primavera .post.chismes { border-left: 5px solid #ffb300; }
-body.tema-primavera .post.chismes::before { content: '☀️'; position: absolute; top: 5px; right: 5px; color: #ffb300; font-size: 1.5em; }
-
-/* --- 6. FIESTAS PATRIAS 🇲🇽 (Septiembre 14 - 16) --- */
-body.tema-patrio { background-color: #f7e8e8; }
-/* Verde, Blanco, Rojo */
-body.tema-patrio header { background: linear-gradient(to right, #1d8348 0%, #ffffff 50%, #c0392b 100%); color: #333; } 
-body.tema-patrio .post { background-color: #fff; border: 1px solid #1d8348; }
-body.tema-patrio .post-titulo { color: #1d8348; }
-
-body.tema-patrio .post.shippeos { border-left: 5px solid #c0392b; overflow: visible; }
-body.tema-patrio .post.shippeos::before { content: '🇲🇽'; position: absolute; top: 5px; right: 10px; color: #c0392b; font-size: 1.5em; }
-body.tema-patrio .post.chismes { border-left: 5px solid #c0392b; }
-body.tema-patrio .post.chismes::before { content: '🔔'; position: absolute; top: 5px; right: 5px; color: #c0392b; font-size: 1.5em; }
+/* --- 27. INOCENTES 🤪 (Dic 28) --- */
+body.tema-inocentes { background-color: #fef0f0; }
+body.tema-inocentes header { background: linear-gradient(90deg, #ffc107 0%, #f44336 100%); }
+body.tema-inocentes .post-titulo { color: #ffc107; }
+body.tema-inocentes .post.shippeos::before { content: '🤪'; color: #f44336; }
+body.tema-inocentes .post.chismes::before { content: '🔔'; color: #ffc107; }
 
 
-/* --- MODAL Y FOOTER --- */
+/* --- MODAL Y FOOTER (Sin Cambios) --- */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; z-index: 1000; }
 .modal-content { background-color: white; padding: 30px; border-radius: 8px; max-width: 500px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
 .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; text-decoration: none; color: #333; }
 .tiktok-link { display: inline-block; background-color: #25f4ee; color: black; padding: 10px 20px; border-radius: 5px; margin: 15px 0; font-weight: bold; transition: background-color 0.2s; }
-
-/* --- LIGHTBOX (VISOR DE MEDIOS) --- */
 .media-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); justify-content: center; align-items: center; z-index: 2000; }
 .media-modal-content { background-color: black; padding: 10px; border-radius: 5px; max-width: 95%; max-height: 95%; position: relative; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2); display: flex; flex-direction: column; align-items: center; }
 .close-media-modal { position: absolute; top: 10px; right: 20px; font-size: 40px; color: white; cursor: pointer; z-index: 2001; }
 #media-content-viewer img, #media-content-viewer video { max-width: 100%; max-height: 80vh; object-fit: contain; display: block; margin: 0 auto; }
 #media-caption { color: white; margin-top: 15px; font-size: 1.1em; text-align: center; }
-
-/* --- FOOTER --- */
 footer {
     text-align: center;
     padding: 20px;
