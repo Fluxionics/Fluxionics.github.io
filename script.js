@@ -5,7 +5,7 @@ const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C";
 
 // 🚨 VARIABLE DE CONTROL: CAMBIA ESTO PARA FORZAR UN TEMA 🚨
 // Opciones: 'original' (normal), 'diademuertos', 'navidad', o 'auto' (basado en la fecha real)
-const TEMA_FORZADO = 'diademuertos'; // <-- ¡TEMA DE DÍA DE MUERTOS ACTIVADO!
+const TEMA_FORZADO = 'navidad'; // <-- ¡TEMA DE DÍA DE MUERTOS ACTIVADO!
 
 // Obtener elementos principales
 const contenedor = document.getElementById('contenedor-publicaciones');
