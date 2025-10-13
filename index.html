@@ -3,10 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secundaria del Estado | Noticias Estudiantiles</title>
-    <link rel="stylesheet" href="style.css">
+    <title>SECUNDARIA DEL ESTADO 🎓</title>
+    
+    <script>
+        // Verifica si la bandera de acceso ya fue establecida en la sesión.
+        const accesoPermitido = sessionStorage.getItem('AccesoDiaDeMuertos');
+
+        if (accesoPermitido !== 'VERIFICADO') {
+            // Si NO hay permiso, redirige a la página del Captcha.
+            window.location.replace('captcha.html');
+        }
+    </script>
+    <link rel="stylesheet" href="style.css"> 
 </head>
-<body class="tema-original"> 
+<body>
+
     <header>
         <h1>SECUNDARIA DEL ESTADO 🎓</h1>
         <nav>
@@ -17,47 +28,66 @@
             <a href="#" class="nav-link" data-seccion="Chismes">Chismes</a>
             <a href="#" class="nav-link" data-seccion="Misterios">Misterios</a>
             <a href="#" class="nav-link" data-seccion="Humor">Humor</a>
-            <a href="politica.html" class="nav-link">Política y Reglas</a>
-            
-            <a href="#" class="nav-link highlight" id="link-chat">💬 Chat Anónimo</a> 
-
-            <a href="#modal-subir" class="nav-link highlight" id="link-subir">➡️ Enviar Chisme</a>
+            <a href="#" class="nav-link" data-seccion="Política">Política</a>
+            <a href="#" class="nav-link" id="link-reglas">Política y Reglas</a>
+            <a href="#" class="nav-link" id="link-chat">Chat Anónimo</a>
+            <a href="#" class="nav-link" id="link-subir">Subir</a>
         </nav>
-        
+
         <div class="search-bar-container">
             <input type="text" id="search-input" placeholder="Buscar chismes, shippeos, misterios...">
-            <button id="search-button">🔍 Buscar</button>
+            <button id="search-button">Buscar</button>
         </div>
     </header>
 
-    <main id="contenedor-publicaciones">
-        </main>
-    
+    <main>
+        <div id="contenedor-publicaciones">
+            </div>
+    </main>
+
+    <footer>
+        <p>&copy; Plataforma Estudiantil. Todos los derechos reservados.</p>
+    </footer>
+
     <div id="modal-subir" class="modal-overlay">
         <div class="modal-content">
             <a href="#" class="close-modal">&times;</a>
             <h2>¿Quieres que tu chisme o publicación aparezca aquí?</h2>
             <p>Mándanos un mensaje con tu **título, descripción, sección** y la **URL de tu imagen o video** (si aplica).</p>
-            <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank" class="tiktok-link">
-                Contáctanos por TikTok: 
-                <strong>@jlcojvjcl</strong>
-            </a>
-            <p class="nota-subida">⚠️ **Nota:** El contenido será revisado por moderadores estudiantiles antes de ser publicado.</p>
+            <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank" class="tiktok-link">Contáctanos por TikTok: @jlcojvjcl</a>
+            <p>⚠️ **Nota:** El contenido será revisado por moderadores estudiantiles antes de ser publicado.</p>
         </div>
     </div>
     
     <div id="media-modal" class="media-modal-overlay">
+        <span class="close-media-modal">&times;</span>
         <div class="media-modal-content">
-            <span class="close-media-modal">&times;</span>
             <div id="media-content-viewer"></div>
             <p id="media-caption"></p>
         </div>
     </div>
 
-    <footer>
-        <p>© Plataforma Estudiantil. Todos los derechos reservados.</p>
-    </footer>
-
+    <div id="modal-reglas" class="modal-overlay">
+        <div class="modal-content">
+            <a href="#" class="close-modal close-modal-reglas">&times;</a>
+            <h2 style="color:#0056b3; border-bottom: 2px solid #ccc; padding-bottom: 10px;">🛡️ Política de Contenido y Reglas de la Plataforma</h2>
+            <p style="font-style: italic; color: #555; margin-top: 15px;">Esta plataforma es un espacio estudiantil. La convivencia se basa en el respeto.</p>
+            <h3 style="color:#333; margin-top: 20px; border-bottom: 1px dashed #eee;">1. Reglas de Contenido</h3>
+            <ul style="text-align: left; list-style-type: disc; margin-left: 20px;">
+                <li>**Respeto Mutuo:** No se tolerarán publicaciones con acoso, difamación, o discursos de odio.</li>
+                <li>**Veracidad:** La difusión de información *seria y falsa* que dañe la reputación está prohibida.</li>
+                <li>**Contenido Explícito:** Está estrictamente prohibido compartir material explícito, violento o ilegal.</li>
+                <li>**Moderación:** Todo contenido será revisado y aprobado antes de ser publicado.</li>
+            </ul>
+            <h3 style="color:#333; margin-top: 20px; border-bottom: 1px dashed #eee;">2. Privacidad</h3>
+            <ul style="text-align: left; list-style-type: disc; margin-left: 20px;">
+                <li>**Anonimato Total:** La plataforma no recopila nombres reales, correos ni números de teléfono.</li>
+                <li>**Moderadores:** El usuario de TikTok se pide **únicamente para contactarte sobre tu publicación**.</li>
+                <li>**Chat:** El usuario de TikTok es para verificación de acceso al Discord.</li>
+            </ul>
+        </div>
+    </div>
+    
     <script src="posts.js"></script>
     <script src="script.js"></script>
 </body>
