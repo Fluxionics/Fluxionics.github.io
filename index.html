@@ -6,7 +6,7 @@
     <title>SECUNDARIA DEL ESTADO 🎓</title>
     
     <script>
-        // Este bloque ya lo tenías para el captcha, lo mantenemos.
+        // Si la bandera 'AccesoDiaDeMuertos' NO está en la sesión, redirigir al captcha.
         const accesoPermitido = sessionStorage.getItem('AccesoDiaDeMuertos');
 
         if (accesoPermitido !== 'VERIFICADO') {
@@ -29,7 +29,7 @@
             <a href="#" class="nav-link" data-seccion="Humor">Humor</a>
             <a href="#" class="nav-link" data-seccion="Política">Política</a>
             
-            <a href="politica.html" class="nav-link" target="_blank">Política y Reglas</a> 
+            <a href="politica.html" class="nav-link">Política y Reglas</a> 
             
             <a href="#" class="nav-link" id="link-chat">Chat Anónimo</a>
             <a href="#" class="nav-link" id="link-subir">Subir</a>
@@ -52,7 +52,7 @@
 
     <div id="modal-subir" class="modal-overlay">
         <div class="modal-content">
-            <a href="#" class="close-modal">&times;</a>
+            <a href="#" class="close-modal close-modal-subir">&times;</a>
             <h2>¿Quieres que tu chisme o publicación aparezca aquí?</h2>
             <p>Mándanos un mensaje con tu **título, descripción, sección** y la **URL de tu imagen o video** (si aplica).</p>
             <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank" class="tiktok-link">Contáctanos por TikTok: @jlcojvjcl</a>
@@ -67,7 +67,7 @@
             <p id="media-caption"></p>
         </div>
     </div>
-    
+
     <script src="posts.js"></script>
     <script src="script.js"></script>
 </body>
