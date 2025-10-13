@@ -43,7 +43,7 @@
         .pregunta {
             font-size: 1.2em;
             margin-bottom: 20px;
-            min-height: 50px; /* Para evitar saltos al cargar */
+            min-height: 50px; 
         }
         .opciones-container button {
             background-color: #ff8c00;
@@ -104,6 +104,7 @@
     <script>
         // JAVASCRIPT INTEGRADO - LÓGICA DEL CAPTCHA
         const preguntas = [
+            // --- Preguntas 1 a 10 ---
             {
                 pregunta: "¿Cuál es la flor principal usada para decorar el altar y guiar a los difuntos?",
                 opciones: ["Rosa", "Girasol", "Cempasúchil", "Orquídea"],
@@ -115,22 +116,22 @@
                 respuesta: "Calavera de azúcar"
             },
             {
-                pregunta: "¿Cómo se llama el pan endulzado y cubierto de azúcar con 'huesitos' que se come en esta celebración?",
+                pregunta: "¿Cómo se llama el pan endulzado y cubierto de azúcar con 'huesitos'?",
                 opciones: ["Concha", "Pan de Elote", "Pan de Muerto", "Birote"],
                 respuesta: "Pan de Muerto"
             },
             {
-                pregunta: "¿Cuál es el nombre de la figura esquelética elegante creada por José Guadalupe Posada?",
+                pregunta: "¿Cuál es el nombre de la figura esquelética elegante creada por J.G. Posada?",
                 opciones: ["La Huesuda", "La Catrina", "La Flaca", "El Patas"],
                 respuesta: "La Catrina"
             },
             {
-                pregunta: "¿Qué elemento es fundamental en el altar para 'saciar la sed' del difunto tras el viaje?",
+                pregunta: "¿Qué elemento es fundamental en el altar para 'saciar la sed' del difunto?",
                 opciones: ["Vino", "Agua", "Pulque", "Café"],
                 respuesta: "Agua"
             },
             {
-                pregunta: "¿En qué estado mexicano es muy famosa la Noche de Muertos en la Isla de Janitzio?",
+                pregunta: "¿En qué estado mexicano es famosa la Noche de Muertos en la Isla de Janitzio?",
                 opciones: ["Oaxaca", "Puebla", "Michoacán", "Chiapas"],
                 respuesta: "Michoacán"
             },
@@ -145,20 +146,16 @@
                 respuesta: "Tercero"
             },
             {
-                pregunta: "¿Qué fruta de color amarillo/naranja se suele usar como vela o candelabro natural?",
+                pregunta: "¿Qué fruta de color amarillo/naranja se suele usar como candelabro natural?",
                 opciones: ["Mango", "Tangerina", "Calabaza", "Papaya"],
                 respuesta: "Calabaza"
-            },
-            {
-                pregunta: "¿En la antigüedad prehispánica, el Día de Muertos se celebraba en el mes...",
-                opciones: ["Mayo", "Octubre", "Agosto", "Diciembre"],
-                respuesta: "Agosto"
             },
             {
                 pregunta: "¿Cuál es el nombre del dios mexica de la muerte y el inframundo?",
                 opciones: ["Huitzilopochtli", "Quetzalcóatl", "Mictlantecuhtli", "Tláloc"],
                 respuesta: "Mictlantecuhtli"
             },
+            // --- Preguntas 11 a 20 ---
             {
                 pregunta: "¿El papel picado, fundamental en la decoración, representa el...",
                 opciones: ["Fuego", "Agua", "Viento", "Tierra"],
@@ -166,7 +163,7 @@
             },
             {
                 pregunta: "¿En qué días específicos se celebra el Día de Muertos en México?",
-                opciones: ["31 de Octubre y 1 de Noviembre", "1 y 2 de Noviembre", "29 y 30 de Octubre", "2 y 3 de Noviembre"],
+                opciones: ["31 de Octubre y 1 de Nov", "1 y 2 de Noviembre", "29 y 30 de Oct", "2 y 3 de Noviembre"],
                 respuesta: "1 y 2 de Noviembre"
             },
             {
@@ -175,7 +172,7 @@
                 respuesta: "La imagen del santo"
             },
             {
-                pregunta: "¿La luz de las veladoras en el altar sirve para qué propósito?",
+                pregunta: "¿Qué función tiene la luz de las veladoras en el altar?",
                 opciones: ["Calentar la comida", "Iluminar el regreso del alma", "Alejar a los vivos", "Decorar la mesa"],
                 respuesta: "Iluminar el regreso del alma"
             },
@@ -190,7 +187,7 @@
                 respuesta: "Purificación"
             },
             {
-                pregunta: "¿Qué bebida alcohólica, hecha a base de agave, es común ofrendar?",
+                pregunta: "¿Qué bebida alcohólica, a base de agave, es común ofrendar?",
                 opciones: ["Cerveza", "Vino Tinto", "Mezcal o Tequila", "Ron"],
                 respuesta: "Mezcal o Tequila"
             },
@@ -209,6 +206,7 @@
                 opciones: ["Muerte", "Luto Católico", "Alegría", "Fiesta"],
                 respuesta: "Luto Católico"
             },
+            // --- Preguntas 21 a 30 ---
             {
                 pregunta: "¿Qué son las 'calaveritas literarias'?",
                 opciones: ["Dibujos de esqueletos", "Poemas humorísticos", "Recetas de postres", "Cuentos de terror"],
@@ -221,13 +219,43 @@
             },
             {
                 pregunta: "¿Qué significa el incienso de copal?",
-                opciones: ["Para ocultar el olor", "Para atraer a los vivos", "Para guiar y purificar el ambiente", "Para cocinar"],
+                opciones: ["Para cocinar", "Para atraer a los vivos", "Para guiar y purificar el ambiente", "Para ocultar el olor"],
                 respuesta: "Para guiar y purificar el ambiente"
             },
             {
                 pregunta: "¿El pan de muerto se considera una representación de un...",
                 opciones: ["Ataúd", "Craneo", "Cuerpo humano", "Cempasúchil"],
                 respuesta: "Cuerpo humano"
+            },
+            {
+                pregunta: "¿Cómo se llama el destino final de las almas para los Mexicas?",
+                opciones: ["Paraíso", "Tlalocan", "Mictlán", "Valhalla"],
+                respuesta: "Mictlán"
+            },
+            {
+                pregunta: "¿Qué aves pequeñas simbolizan al mensajero entre vivos y muertos?",
+                opciones: ["Colibríes", "Gorrión", "Búho", "Cuervo"],
+                respuesta: "Colibríes"
+            },
+            {
+                pregunta: "¿Qué bebida ancestral de maíz se ofrenda comúnmente?",
+                opciones: ["Horchata", "Atole", "Chai", "Agua de Jamaica"],
+                respuesta: "Atole"
+            },
+            {
+                pregunta: "¿La Cruz de Cal que se pone en el altar representa...",
+                opciones: ["Un mapa", "Los cuatro puntos cardinales", "El inframundo", "Un camino"],
+                respuesta: "Los cuatro puntos cardinales"
+            },
+            {
+                pregunta: "¿La foto del difunto en el altar se coloca en el nivel...",
+                opciones: ["Primero", "Segundo", "Tercero", "Séptimo"],
+                respuesta: "Segundo"
+            },
+            {
+                pregunta: "¿Qué se ofrenda el 28 de octubre?",
+                opciones: ["Almas que murieron ahogadas", "Almas que murieron de forma trágica", "Almas que murieron por causas naturales", "Almas de los niños"],
+                respuesta: "Almas que murieron de forma trágica"
             }
         ];
 
@@ -264,23 +292,31 @@
             if (seleccion === preguntaActual.respuesta) {
                 mensajeResultado.textContent = "¡Respuesta Correcta! Acceso Permitido. ✅";
                 mensajeResultado.style.color = '#2ecc71';
+                
+                // 🔑 ESTABLECER BANDERA: Permite que index.html cargue
+                sessionStorage.setItem('AccesoDiaDeMuertos', 'VERIFICADO'); 
+                
                 accesoBtn.style.display = 'block';
-                // Opcional: Redireccionar automáticamente después de un breve retraso
-                // setTimeout(() => { window.location.href = 'index.html'; }, 2000); 
+                
+                // Redirigir automáticamente a index.html
+                setTimeout(() => { 
+                    window.location.replace('index.html'); 
+                }, 1000); 
+
             } else {
                 mensajeResultado.textContent = "Respuesta Incorrecta. Intenta de nuevo. ❌";
                 mensajeResultado.style.color = '#e74c3c';
                 
-                // Marca la opción incorrecta
+                // Marcar la opción incorrecta
                 botones.forEach(btn => {
                     if (btn.textContent === seleccion) {
                         btn.style.backgroundColor = '#e74c3c';
                     }
                 });
                 
-                // Permite reintentar después de un momento
+                // Permitir reintentar después de un momento
                 setTimeout(() => {
-                    seleccionarPregunta(); // Carga una nueva pregunta
+                    seleccionarPregunta(); // Cargar una nueva pregunta
                 }, 1500); 
             }
         }
