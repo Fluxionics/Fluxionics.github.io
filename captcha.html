@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Temático - Día de Muertos 🕯️</title>
+
+    <style>
+        /* CSS INTEGRADO - DISEÑO DÍA DE MUERTOS */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a235a 100%);
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .captcha-container {
+            background-color: #2c2c2c;
+            border: 3px solid #ff8c00; /* Naranja de Cempasúchil */
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(255, 140, 0, 0.5);
+            max-width: 450px;
+            width: 90%;
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        h1 {
+            color: #ffd700; /* Dorado */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #a0522d;
+            padding-bottom: 10px;
+        }
+        .pregunta {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            min-height: 50px; /* Para evitar saltos al cargar */
+        }
+        .opciones-container button {
+            background-color: #ff8c00;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .opciones-container button:hover {
+            background-color: #ff5722;
+            transform: scale(1.05);
+        }
+        .opciones-container button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        .mensaje {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+        .acceso-btn {
+            background-color: #2ecc71; /* Verde de Acceso */
+            color: white;
+            padding: 12px 30px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: none; /* Oculto inicialmente */
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        .acceso-btn:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="captcha-container">
+        <h1>¡Resuelve el Reto del Inframundo! 🕯️</h1>
+        <p>Responde correctamente una pregunta sobre Día de Muertos para acceder al contenido principal.</p>
+
+        <div class="pregunta" id="pregunta-texto">Cargando pregunta...</div>
+        
+        <div class="opciones-container" id="opciones-container">
+            </div>
+
+        <p class="mensaje" id="mensaje-resultado"></p>
+        
+        <a href="index.html" class="acceso-btn" id="acceso-btn">¡Acceder a la Plataforma!</a>
+    </div>
+
+    <script>
+        // JAVASCRIPT INTEGRADO - LÓGICA DEL CAPTCHA
+        const preguntas = [
+            {
+                pregunta: "¿Cuál es la flor principal usada para decorar el altar y guiar a los difuntos?",
+                opciones: ["Rosa", "Girasol", "Cempasúchil", "Orquídea"],
+                respuesta: "Cempasúchil"
+            },
+            {
+                pregunta: "¿Qué dulce tradicionalmente tiene forma de calavera y lleva el nombre del difunto?",
+                opciones: ["Ate de fruta", "Mazapán", "Calavera de azúcar", "Turrón"],
+                respuesta: "Calavera de azúcar"
+            },
+            {
+                pregunta: "¿Cómo se llama el pan endulzado y cubierto de azúcar con 'huesitos' que se come en esta celebración?",
+                opciones: ["Concha", "Pan de Elote", "Pan de Muerto", "Birote"],
+                respuesta: "Pan de Muerto"
+            },
+            {
+                pregunta: "¿Cuál es el nombre de la figura esquelética elegante creada por José Guadalupe Posada?",
+                opciones: ["La Huesuda", "La Catrina", "La Flaca", "El Patas"],
+                respuesta: "La Catrina"
+            },
+            {
+                pregunta: "¿Qué elemento es fundamental en el altar para 'saciar la sed' del difunto tras el viaje?",
+                opciones: ["Vino", "Agua", "Pulque", "Café"],
+                respuesta: "Agua"
+            },
+            {
+                pregunta: "¿En qué estado mexicano es muy famosa la Noche de Muertos en la Isla de Janitzio?",
+                opciones: ["Oaxaca", "Puebla", "Michoacán", "Chiapas"],
+                respuesta: "Michoacán"
+            },
+            {
+                pregunta: "¿Qué objeto religioso suele colocarse en la parte más alta de un altar de 7 niveles?",
+                opciones: ["La Biblia", "Un Crucifijo", "Una Calavera", "Una Foto"],
+                respuesta: "Un Crucifijo"
+            },
+            {
+                pregunta: "¿Qué nivel de un altar de 7 pisos representa la Tierra?",
+                opciones: ["Primero", "Tercero", "Quinto", "Séptimo"],
+                respuesta: "Tercero"
+            },
+            {
+                pregunta: "¿Qué fruta de color amarillo/naranja se suele usar como vela o candelabro natural?",
+                opciones: ["Mango", "Tangerina", "Calabaza", "Papaya"],
+                respuesta: "Calabaza"
+            },
+            {
+                pregunta: "¿En la antigüedad prehispánica, el Día de Muertos se celebraba en el mes...",
+                opciones: ["Mayo", "Octubre", "Agosto", "Diciembre"],
+                respuesta: "Agosto"
+            },
+            {
+                pregunta: "¿Cuál es el nombre del dios mexica de la muerte y el inframundo?",
+                opciones: ["Huitzilopochtli", "Quetzalcóatl", "Mictlantecuhtli", "Tláloc"],
+                respuesta: "Mictlantecuhtli"
+            },
+            {
+                pregunta: "¿El papel picado, fundamental en la decoración, representa el...",
+                opciones: ["Fuego", "Agua", "Viento", "Tierra"],
+                respuesta: "Viento"
+            },
+            {
+                pregunta: "¿En qué días específicos se celebra el Día de Muertos en México?",
+                opciones: ["31 de Octubre y 1 de Noviembre", "1 y 2 de Noviembre", "29 y 30 de Octubre", "2 y 3 de Noviembre"],
+                respuesta: "1 y 2 de Noviembre"
+            },
+            {
+                pregunta: "¿Qué se coloca en el primer nivel del altar?",
+                opciones: ["Comida", "Fotografía", "Sal y agua", "La imagen del santo"],
+                respuesta: "La imagen del santo"
+            },
+            {
+                pregunta: "¿La luz de las veladoras en el altar sirve para qué propósito?",
+                opciones: ["Calentar la comida", "Iluminar el regreso del alma", "Alejar a los vivos", "Decorar la mesa"],
+                respuesta: "Iluminar el regreso del alma"
+            },
+            {
+                pregunta: "¿Qué mascota prehispánica se cree que acompaña a los difuntos?",
+                opciones: ["Xoloitzcuintle", "Chihuahua", "Quetzal", "Tlacuache"],
+                respuesta: "Xoloitzcuintle"
+            },
+            {
+                pregunta: "¿Qué significa la 'sal' que se coloca en el altar?",
+                opciones: ["Alegría", "Purificación", "Comida", "Amistad"],
+                respuesta: "Purificación"
+            },
+            {
+                pregunta: "¿Qué bebida alcohólica, hecha a base de agave, es común ofrendar?",
+                opciones: ["Cerveza", "Vino Tinto", "Mezcal o Tequila", "Ron"],
+                respuesta: "Mezcal o Tequila"
+            },
+            {
+                pregunta: "¿El 'Petate' se usa en el altar para...",
+                opciones: ["Decoración", "Poner las flores", "Ofrecer un lugar de descanso", "Cubrir la mesa"],
+                respuesta: "Ofrecer un lugar de descanso"
+            },
+            {
+                pregunta: "¿Qué días están dedicados a los niños difuntos (angelitos)?",
+                opciones: ["31 de Octubre", "1 de Noviembre", "2 de Noviembre", "28 de Octubre"],
+                respuesta: "1 de Noviembre"
+            },
+            {
+                pregunta: "¿Qué se dice que representa el color morado en la celebración?",
+                opciones: ["Muerte", "Luto Católico", "Alegría", "Fiesta"],
+                respuesta: "Luto Católico"
+            },
+            {
+                pregunta: "¿Qué son las 'calaveritas literarias'?",
+                opciones: ["Dibujos de esqueletos", "Poemas humorísticos", "Recetas de postres", "Cuentos de terror"],
+                respuesta: "Poemas humorísticos"
+            },
+            {
+                pregunta: "¿Qué se coloca para representar la dualidad vida-muerte?",
+                opciones: ["Agua y sal", "Veladoras y flores", "Semillas y comida", "Tzompantli y calaveras"],
+                respuesta: "Agua y sal"
+            },
+            {
+                pregunta: "¿Qué significa el incienso de copal?",
+                opciones: ["Para ocultar el olor", "Para atraer a los vivos", "Para guiar y purificar el ambiente", "Para cocinar"],
+                respuesta: "Para guiar y purificar el ambiente"
+            },
+            {
+                pregunta: "¿El pan de muerto se considera una representación de un...",
+                opciones: ["Ataúd", "Craneo", "Cuerpo humano", "Cempasúchil"],
+                respuesta: "Cuerpo humano"
+            }
+        ];
+
+        let preguntaActual = {};
+        const preguntaTexto = document.getElementById('pregunta-texto');
+        const opcionesContainer = document.getElementById('opciones-container');
+        const mensajeResultado = document.getElementById('mensaje-resultado');
+        const accesoBtn = document.getElementById('acceso-btn');
+
+        function seleccionarPregunta() {
+            // Selecciona una pregunta aleatoria
+            const indice = Math.floor(Math.random() * preguntas.length);
+            preguntaActual = preguntas[indice];
+            preguntaTexto.textContent = preguntaActual.pregunta;
+            
+            // Renderiza las opciones
+            opcionesContainer.innerHTML = '';
+            preguntaActual.opciones.forEach(opcion => {
+                const boton = document.createElement('button');
+                boton.textContent = opcion;
+                boton.onclick = () => verificarRespuesta(opcion);
+                opcionesContainer.appendChild(boton);
+            });
+            
+            mensajeResultado.textContent = '';
+            accesoBtn.style.display = 'none';
+        }
+
+        function verificarRespuesta(seleccion) {
+            // Deshabilita todos los botones para evitar múltiples clics
+            const botones = opcionesContainer.querySelectorAll('button');
+            botones.forEach(btn => btn.disabled = true);
+
+            if (seleccion === preguntaActual.respuesta) {
+                mensajeResultado.textContent = "¡Respuesta Correcta! Acceso Permitido. ✅";
+                mensajeResultado.style.color = '#2ecc71';
+                accesoBtn.style.display = 'block';
+                // Opcional: Redireccionar automáticamente después de un breve retraso
+                // setTimeout(() => { window.location.href = 'index.html'; }, 2000); 
+            } else {
+                mensajeResultado.textContent = "Respuesta Incorrecta. Intenta de nuevo. ❌";
+                mensajeResultado.style.color = '#e74c3c';
+                
+                // Marca la opción incorrecta
+                botones.forEach(btn => {
+                    if (btn.textContent === seleccion) {
+                        btn.style.backgroundColor = '#e74c3c';
+                    }
+                });
+                
+                // Permite reintentar después de un momento
+                setTimeout(() => {
+                    seleccionarPregunta(); // Carga una nueva pregunta
+                }, 1500); 
+            }
+        }
+
+        // Iniciar el Captcha al cargar
+        window.onload = seleccionarPregunta;
+
+    </script>
+</body>
+</html>
