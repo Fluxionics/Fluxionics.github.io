@@ -23,7 +23,9 @@ const publicaciones = [
     {
         titulo: "¡Nuevo Shippeo a la vista en la cafetería!",
         descripcion: "Parece que 'Clarisa' y 'Francisco' estuvieron muy juntos en el recreo de hoy. ¿Confirmamos el siguiente noviazgo?",
+        urlMedia: "https://i.imgur.com/8WJT8pk.jpeg",
         urlMedia: "https://i.imgur.com/0tce0VY.jpeg",
+        urlMedia: "https://i.imgur.com/zKseAzY.jpeg",
         seccion: "Shippeos"
     },
     {
