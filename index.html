@@ -5,14 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SECUNDARIA DEL ESTADO 🎓</title>
     
-    <script>
-        // Si la bandera 'AccesoDiaDeMuertos' NO está en la sesión, redirigir al captcha.
-        const accesoPermitido = sessionStorage.getItem('AccesoDiaDeMuertos');
-
-        if (accesoPermitido !== 'VERIFICADO') {
-            window.location.replace('captcha.html');
-        }
-    </script>
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
@@ -29,8 +21,7 @@
             <a href="#" class="nav-link" data-seccion="Humor">Humor</a>
             <a href="#" class="nav-link" data-seccion="Política">Política</a>
             
-            <a href="politica.html" class="nav-link">Política y Reglas</a> 
-            
+            <a href="politica.html" class="nav-link">Política y Reglas</a>
             <a href="#" class="nav-link" id="link-chat">Chat Anónimo</a>
             <a href="#" class="nav-link" id="link-subir">Subir</a>
         </nav>
@@ -53,27 +44,18 @@
     <div id="modal-subir" class="modal-overlay">
         <div class="modal-content">
             <a href="#" class="close-modal close-modal-subir">&times;</a>
-            <h2>¡Envía tu Chisme o Publicación! 📮</h2>
+            <h2>¡Envía tu Contenido! 📝</h2>
             
-            <p style="margin-top: 5px;">Completa el formulario **anónimo** para que tu contenido sea revisado y publicado por moderación.</p>
-            
-            <div style="border: 2px solid #333; padding: 10px; margin-bottom: 15px; background-color: #f0f0f0; border-radius: 5px; color: #333;">
-                <p><strong>1. Subida de Media:</strong> Sube tu imagen/video a Imgur o un servicio similar y copia el **enlace directo (URL)**.</p>
-                <p><strong>2. Envío:</strong> Pega el enlace en el campo correspondiente del formulario y completa la información.</p>
-                <p><strong>3. Contacto (Opcional):</strong> Solo incluye tu TikTok si deseas que el equipo de moderación te contacte para aclarar la publicación. ¡De lo contrario, es totalmente anónimo!</p>
-            </div>
+            <p style="margin-top: 20px;">
+                ⚠️ **Esta es la ventana de envío.** Por favor, contacta al administrador por el medio indicado (por ejemplo, TikTok) para mandar tu publicación. 
+            </p>
+            <p style="margin-top: 10px; color: #cc0000;">
+                Actualmente, el envío se gestiona de forma externa para garantizar el anonimato.
+            </p>
 
-            <iframe 
-                src="https://docs.google.com/forms/d/e/1FAIpQLSe9kpPyR_ZAQTlpquE_aQlBVyss2p1dMrvelfKo5mcCSMZbKQ/viewform?embedded=true" 
-                width="100%" 
-                height="450" 
-                frameborder="0" 
-                marginheight="0" 
-                marginwidth="0">
-                Cargando el formulario...
-            </iframe>
-            
-            <p style="margin-top: 15px;">✅ **El botón Enviar te enviará los datos a tu hoja de cálculo privada.** El equipo revisará y publicará los envíos aprobados.</p>
+            <button onclick="document.getElementById('link-chat').click()" style="margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Ir al Chat/Contacto Anónimo
+            </button>
         </div>
     </div>
     
