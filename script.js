@@ -1,12 +1,11 @@
 // ====================================================================
-// script.js - Lógica Principal (Filtrado, Búsqueda, Modales, Horario)
+// script.js - Lógica Principal (Filtrado, Búsqueda, Modales, Horario, Temas)
 // ====================================================================
 
 // --- 0. VARIABLES GLOBALES Y CONFIGURACIÓN ---
 
-// 🚨 VARIABLE DE CONTROL DE TEMAS: ESTABLECE ESTO EN 'auto' PARA PRODUCCIÓN 🚨
 const TEMA_FORZADO = 'auto'; 
-const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C"; // URL de ejemplo, usarás tu TikTok
+const CHAT_ANONIMO_URL = "https://www.tiktok.com/@jlcojvjcl"; // Usamos el link de TikTok
 
 // Obtener elementos principales
 const contenedorPublicaciones = document.getElementById('contenedor-publicaciones');
@@ -18,6 +17,7 @@ const searchButton = document.getElementById('search-button');
 const linkSubir = document.getElementById('link-subir');
 const linkChatAnonimo = document.getElementById('link-chat'); 
 const modalSubir = document.getElementById('modal-subir');
+// El selector correcto es .close-modal-subir (asumiendo tu HTML)
 const closeModalSubir = document.querySelector('.close-modal-subir'); 
 
 // Modal de Media
@@ -26,11 +26,11 @@ const closeMediaModal = document.querySelector('.close-media-modal');
 const mediaContentViewer = document.getElementById('media-content-viewer');
 const mediaCaption = document.getElementById('media-caption');
 
-let postsData = window.posts || []; // Asume que posts.js carga los datos
+let postsData = window.posts || []; 
 
 
 // ----------------------------------------------------
-// 1. LÓGICA DE TEMAS Y FECHAS (Integrada de forma limpia)
+// 1. LÓGICA DE TEMAS Y FECHAS
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
@@ -63,37 +63,23 @@ function aplicarTemaPorFecha() {
         let start = new Date(currentYear, m1 - 1, d1);
         let end = new Date(currentYear, m2 - 1, d2);
         
-        if (m1 > m2) { 
-            start = new Date(currentYear - 1, m1 - 1, d1);
-        }
+        if (m1 > m2) { start = new Date(currentYear - 1, m1 - 1, d1); }
+        if (m1 <= m2) { end.setHours(23, 59, 59, 999); } 
         
-        if (m1 <= m2) {
-             end.setHours(23, 59, 59, 999);
-        } 
         return todayNormalized >= start && todayNormalized <= end;
     };
     
-    // --- TEMAS POR PRIORIDAD (De Enero a Diciembre) ---
-    // (Mantengo solo la lógica de fechas aquí por simplicidad)
-    
-    // DICIEMBRE/ENERO (NAVIDAD y AÑO NUEVO)
+    // Lógica de fechas (Asegúrate de que tus fechas sean correctas)
     if (inRange(12, 16, 1, 5)) { body.classList.add('tema-navidad'); return; }
-
-    // DÍA DE MUERTOS (Oct 28 - Nov 3)
     if (inRange(10, 28, 11, 3)) { body.classList.add('tema-diademuertos'); return; }
+    // ... [Agrega el resto de tu lógica de fechas aquí]
     
-    // [Añade el resto de tu lógica de fechas aquí si lo necesitas]
-    
-    // TEMA POR DEFECTO: ORIGINAL
     body.classList.add('tema-original'); 
 }
 
 
 // --- 2. FUNCIONES DE POSTS Y LÓGICA DE HORARIO ---
 
-/**
- * Renderiza los posts filtrados en el contenedor.
- */
 function renderPosts(postsToDisplay) {
     contenedorPublicaciones.innerHTML = '';
     
@@ -168,18 +154,13 @@ function buscarPosts(query) {
     renderPosts(postsEncontrados);
 }
 
-/**
- * Comprueba si la hora actual está dentro del rango permitido (11:30 AM a 1:00 PM).
- */
 function isUploadTimeAllowed() {
     const now = new Date();
     const currentHour = now.getHours(); 
     const currentMinute = now.getMinutes(); 
 
-    // 11:30 AM = 690 minutos
-    const startTimeInMinutes = 690;
-    // 1:00 PM (13:00) = 780 minutos
-    const endTimeInMinutes = 780;
+    const startTimeInMinutes = 690; // 11:30 AM
+    const endTimeInMinutes = 780;   // 1:00 PM (13:00)
 
     const currentTimeInMinutes = (currentHour * 60) + currentMinute;
 
@@ -239,16 +220,14 @@ enlacesNav.forEach(enlace => {
         const seccion = enlace.getAttribute('data-seccion'); 
         const href = enlace.getAttribute('href');
 
-        // Ignora enlaces con URL real (como politica.html) y enlaces de acción sin data-seccion
-        if (href && href !== '#' && href !== 'javascript:void(0)') {
-            // Permite la navegación directa a politica.html
-            if (href === 'politica.html') {
-                return;
-            }
-            // Si no tiene data-seccion, es un enlace de acción manejado por otra parte (Subir, Chat)
-            if (!seccion) {
-                return; 
-            }
+        // Permite la navegación directa a politica.html
+        if (href === 'politica.html') {
+            return; 
+        }
+
+        // Ignora enlaces de acción (Subir, Chat Anónimo)
+        if (!seccion) {
+            return;
         }
 
         e.preventDefault(); 
@@ -298,12 +277,11 @@ if (modalSubir) {
     });
 }
 
-// 4.4. Modal Chat Anónimo (Redirección a TikTok)
+// 4.4. Chat Anónimo (Redirección a TikTok)
 if (linkChatAnonimo) {
     linkChatAnonimo.addEventListener('click', (e) => {
         e.preventDefault();
-        // Usando la URL de TikTok que mencionaste antes
-        window.open('https://www.tiktok.com/@jlcojvjcl', '_blank'); 
+        window.open(CHAT_ANONIMO_URL, '_blank'); 
     });
 }
 
