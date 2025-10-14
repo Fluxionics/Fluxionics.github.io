@@ -23,7 +23,7 @@ const publicaciones = [
     {
         titulo: "¡Nuevo Shippeo a la vista en la cafetería!",
         descripcion: "Parece que 'Clarisa' y 'Francisco' estuvieron muy juntos en el recreo de hoy. ¿Confirmamos el siguiente noviazgo?",
-        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Shippeo+F+y+c",
+        urlMedia: "https://i.imgur.com/0tce0VY.jpeg",
         seccion: "Shippeos"
     },
     {
