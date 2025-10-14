@@ -1,53 +1,48 @@
-// ====================================================================
-// script.js - CÓDIGO FINAL ESTABLE: Días Festivos, Filtrado, Búsqueda, Modales y Horario
-// ====================================================================
+// script.js - LÓGICA DE TEMAS AMPLIADA PARA TODAS LAS CELEBRACIONES
 
-// --- 0. VARIABLES GLOBALES Y CONFIGURACIÓN ---
+// 🔴 ENLACE DE INVITACIÓN AL CHAT DE DISCORD
+const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C"; 
 
-const TIKTOK_URL = 'https://www.tiktok.com/@jlcojvjcl'; 
+// 🚨 VARIABLE DE CONTROL: ESTABLECE ESTO EN 'auto' PARA PRODUCCIÓN 🚨
+// Opciones para forzado: 'original', 'reyes', 'candelaria', 'constitucion', 'ejercito', 
+// 'sanvalentin', 'bandera', 'mujer', 'expropiacion', 'juarez', 'puebla', 'maestro', 
+// 'marina', 'patrio', 'raza', 'diademuertos', 'revolucion', 'musico', 'virgen', 'navidad'.
+const TEMA_FORZADO = 'auto'; // CAMBIAR AQUÍ PARA PROBAR UN TEMA ESPECÍFICO
 
-// Establece 'auto' para producción. Cambia solo para probar un tema específico.
-const TEMA_FORZADO = 'auto'; 
-
-// Obtener elementos principales
-const contenedorPublicaciones = document.getElementById('contenedor-publicaciones');
+// Obtener elementos principales (sin cambios)
+const contenedor = document.getElementById('contenedor-publicaciones');
 const enlacesNav = document.querySelectorAll('.nav-link');
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
-
-// Modales y Enlaces de Acción
 const linkSubir = document.getElementById('link-subir');
-const linkChatAnonimo = document.getElementById('link-chat'); 
 const modalSubir = document.getElementById('modal-subir');
-const closeModalSubir = document.querySelector('.close-modal-subir'); 
-
-// Modal de Media
+const closeModal = document.querySelector('.close-modal');
+const linkChatAnonimo = document.getElementById('link-chat'); 
 const mediaModal = document.getElementById('media-modal');
 const closeMediaModal = document.querySelector('.close-media-modal');
 const mediaContentViewer = document.getElementById('media-content-viewer');
 const mediaCaption = document.getElementById('media-caption');
 
-let postsData = window.posts || []; 
-
 
 // ----------------------------------------------------
-// 1. LÓGICA DE TEMAS Y FECHAS (DÍAS FESTIVOS)
+// LÓGICA DE TEMAS Y FECHAS (Basada en tu lista exhaustiva)
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
     const body = document.body;
+    // Lista de todas las clases temáticas posibles
     const temas = [
         'tema-reyes', 'tema-candelaria', 'tema-constitucion', 'tema-ejercito', 
         'tema-sanvalentin', 'tema-bandera', 'tema-mujer', 'tema-expropiacion', 
         'tema-juarez', 'tema-puebla', 'tema-maestro', 'tema-marina', 'tema-patrio', 
         'tema-raza', 'tema-diademuertos', 'tema-revolucion', 'tema-musico', 'tema-virgen', 
-        'tema-navidad', 'tema-carnaval', 'tema-zapataniño', 'tema-abuelo', 'tema-morelos', 
-        'tema-armada', 'tema-inocentes', 'tema-original', 'tema-cultural'
+        'tema-navidad', 'tema-original'
     ];
                    
-    // Limpia todas las clases de tema antes de aplicar la nueva
+    // Eliminamos todas las clases temáticas antes de aplicar la correcta
     body.classList.remove(...temas.filter(t => t !== 'tema-original')); 
 
+    // 1. APLICAR TEMA FORZADO SI ESTÁ DEFINIDO
     if (TEMA_FORZADO !== 'auto' && TEMA_FORZADO !== 'original') {
         body.classList.add(`tema-${TEMA_FORZADO}`);
         return;
@@ -57,276 +52,271 @@ function aplicarTemaPorFecha() {
         return;
     }
 
+    // 2. LÓGICA AUTOMÁTICA
     const today = new Date();
     const currentYear = today.getFullYear();
-    const todayNormalized = new Date(currentYear, today.getMonth(), today.getDate()); 
-
+    const currentMonth = today.getMonth() + 1; // 1-12
+    const currentDay = today.getDate();
+    
+    // Función de ayuda para chequear rangos (m1, d1, m2, d2)
     const inRange = (m1, d1, m2, d2) => {
-        let start = new Date(currentYear, m1 - 1, d1);
-        let end = new Date(currentYear, m2 - 1, d2);
-        
-        if (m1 > m2) { start = new Date(currentYear - 1, m1 - 1, d1); }
-        if (m1 <= m2) { end.setHours(23, 59, 59, 999); } 
-        
-        return todayNormalized >= start && todayNormalized <= end;
+        const start = new Date(currentYear, m1 - 1, d1);
+        const end = new Date(currentYear, m2 - 1, d2);
+        // Ajuste para el Fin de Año/Año Nuevo (Dic/Ene)
+        if (m1 > m2) { 
+            const startDec = new Date(currentYear - 1, m1 - 1, d1);
+            const endJan = new Date(currentYear, m2 - 1, d2);
+            return (today >= startDec && currentMonth >= m1) || (today <= endJan && currentMonth <= m2);
+        }
+        return today >= start && today <= end;
     };
     
-    // Lógica de fechas (Rangos basados en temas festivos)
+    // --- TEMAS POR PRIORIDAD (De Enero a Diciembre) ---
+
+    // DICIEMBRE A ENERO
+    // NAVIDAD/POSADAS (Dic 16 - Ene 5)
+    if (inRange(12, 16, 1, 5)) {
+        body.classList.add('tema-navidad');
+        
+        // **PRIORIDAD:** REYES MAGOS (Ene 6 al 8)
+        if (inRange(1, 6, 1, 8)) { body.classList.remove('tema-navidad'); body.classList.add('tema-reyes'); return; }
+        
+        return;
+    }
     
-    if (inRange(1, 1, 1, 6)) { body.classList.add('tema-reyes'); return; }
-    if (inRange(2, 2, 2, 2)) { body.classList.add('tema-candelaria'); return; }
-    if (inRange(2, 5, 2, 5)) { body.classList.add('tema-constitucion'); return; }
-    if (inRange(2, 14, 2, 14)) { body.classList.add('tema-sanvalentin'); return; }
-    if (inRange(2, 24, 2, 24)) { body.classList.add('tema-bandera'); return; }
-    if (inRange(3, 8, 3, 8)) { body.classList.add('tema-mujer'); return; }
-    if (inRange(3, 18, 3, 18)) { body.classList.add('tema-expropiacion'); return; }
-    if (inRange(3, 21, 3, 21)) { body.classList.add('tema-juarez'); return; }
-    if (inRange(5, 5, 5, 5)) { body.classList.add('tema-puebla'); return; }
-    if (inRange(5, 15, 5, 15)) { body.classList.add('tema-maestro'); return; }
-    if (inRange(6, 1, 6, 1)) { body.classList.add('tema-marina'); return; }
-    if (inRange(9, 15, 9, 16)) { body.classList.add('tema-patrio'); return; }
-    if (inRange(9, 27, 9, 30)) { body.classList.add('tema-original'); return; } 
-    if (inRange(10, 12, 10, 12)) { body.classList.add('tema-raza'); return; }
-    if (inRange(10, 28, 11, 3)) { body.classList.add('tema-diademuertos'); return; } 
-    if (inRange(11, 20, 11, 20)) { body.classList.add('tema-revolucion'); return; }
-    if (inRange(11, 22, 11, 22)) { body.classList.add('tema-musico'); return; }
-    if (inRange(12, 12, 12, 12)) { body.classList.add('tema-virgen'); return; }
-    if (inRange(12, 16, 1, 5)) { body.classList.add('tema-navidad'); return; } 
-    if (inRange(12, 28, 12, 28)) { body.classList.add('tema-inocentes'); return; }
+    // FEBRERO
+    // Candelaria (Feb 2)
+    if (inRange(2, 1, 2, 3)) { body.classList.add('tema-candelaria'); return; }
+    // Constitución (Feb 4 - 5)
+    if (inRange(2, 4, 2, 5)) { body.classList.add('tema-constitucion'); return; }
+    // Fuerza Aérea/Ejército (Feb 10 - 19)
+    if (inRange(2, 10, 2, 19)) { body.classList.add('tema-ejercito'); return; }
+    // SAN VALENTÍN (Feb 13 al 15)
+    if (inRange(2, 13, 2, 15)) { body.classList.add('tema-sanvalentin'); return; }
+    // Bandera (Feb 24)
+    if (inRange(2, 23, 2, 25)) { body.classList.add('tema-bandera'); return; }
     
-    // Si no hay ninguna coincidencia
+    // MARZO
+    // Día de la Mujer (Mar 7 - 8)
+    if (inRange(3, 7, 3, 8)) { body.classList.add('tema-mujer'); return; }
+    // Expropiación (Mar 17 - 18)
+    if (inRange(3, 17, 3, 18)) { body.classList.add('tema-expropiacion'); return; }
+    // Benito Juárez / Primavera (Mar 20 - 22)
+    if (inRange(3, 20, 3, 22)) { body.classList.add('tema-juarez'); return; }
+    
+    // ABRIL
+    // Día del Niño / Zapata (Abril 9 - 30)
+    if (inRange(4, 9, 4, 30)) { body.classList.add('tema-puebla'); return; } // Usamos 'puebla' para el tema de niños/héroes
+    
+    // MAYO
+    // Batalla de Puebla / Trabajo (May 1 - 5)
+    if (inRange(5, 1, 5, 5)) { body.classList.add('tema-puebla'); return; } 
+    // Día de las Madres/Maestro (May 9 - 15)
+    if (inRange(5, 9, 5, 15)) { body.classList.add('tema-maestro'); return; } 
+
+    // JUNIO
+    // Marina Nacional (Jun 1)
+    if (inRange(5, 30, 6, 2)) { body.classList.add('tema-marina'); return; }
+
+    // JULIO (Guelaguetza, usaremos Cultural)
+    if (inRange(7, 10, 7, 25)) { body.classList.add('tema-cultural'); return; }
+    
+    // AGOSTO (Abuelo, usaremos Maestro como tema de Reconocimiento)
+    if (inRange(8, 27, 8, 29)) { body.classList.add('tema-maestro'); return; }
+    
+    // SEPTIEMBRE
+    // Niños Héroes / PATRIO (Sep 13 - 16)
+    if (inRange(9, 13, 9, 16)) { body.classList.add('tema-patrio'); return; }
+    // Morelos (Sep 30)
+    if (inRange(9, 29, 9, 30)) { body.classList.add('tema-patrio'); return; }
+    
+    // OCTUBRE
+    // Día de la Raza (Oct 11 - 13)
+    if (inRange(10, 11, 10, 13)) { body.classList.add('tema-raza'); return; } 
+    
+    // NOVIEMBRE
+    // DÍA DE MUERTOS (Oct 28 - Nov 3)
+    if (inRange(10, 28, 11, 3)) { body.classList.add('tema-diademuertos'); return; }
+    // REVOLUCIÓN (Nov 19 - 21)
+    if (inRange(11, 19, 11, 21)) { body.classList.add('tema-revolucion'); return; }
+    // Músico (Nov 21 - 23)
+    if (inRange(11, 21, 11, 23)) { body.classList.add('tema-musico'); return; }
+    
+    // DICIEMBRE
+    // Día de la Virgen (Dic 11 - 13)
+    if (inRange(12, 11, 12, 13)) { body.classList.add('tema-virgen'); return; }
+
+    // 3. TEMA POR DEFECTO: ORIGINAL
     body.classList.add('tema-original'); 
 }
 
 
-// --- 2. FUNCIONES DE POSTS Y LÓGICA DE HORARIO ---
+// ----------------------------------------------------
+// FUNCIONES DE POSTS Y LÓGICA DEL SITIO (SIN CAMBIOS)
+// ----------------------------------------------------
+// ... (El resto del código JavaScript para crearPostHTML, mostrarPublicaciones, 
+//      Modales, Lightbox, Búsqueda y Navegación se mantiene sin cambios) ...
 
-function renderPosts(postsToDisplay) {
-    contenedorPublicaciones.innerHTML = '';
+function crearPostHTML(post) {
+    const articulo = document.createElement('article');
+    articulo.classList.add('post', post.seccion.toLowerCase().replace(/ /g, '-')); 
+    let contenidoMedia = '';
     
-    if (postsToDisplay.length === 0) {
-        contenedorPublicaciones.innerHTML = '<p class="no-results">😔 No se encontraron publicaciones con esos criterios.</p>';
-        return;
-    }
-
-    postsToDisplay.forEach(post => {
-        const postElement = document.createElement('div');
-        postElement.className = 'post-card';
-        postElement.setAttribute('data-seccion', post.seccion);
-        
-        let mediaHTML = '';
-        if (post.media) {
-            const mediaType = post.media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image';
-            const thumbnailURL = post.media.thumbnail || post.media.url; 
+    if (post.urlMedia) {
+        const isVideo = post.urlMedia.toLowerCase().includes('.mp4');
+        const mediaTag = isVideo 
+            ? `<video src="${post.urlMedia}" controls></video>`
+            : `<img src="${post.urlMedia}" alt="${post.titulo}">`;
             
-            mediaHTML = `
-                <div class="post-media" data-url="${post.media.url}" data-type="${mediaType}" data-caption="${post.media.caption || ''}">
-                    <img src="${thumbnailURL}" alt="${post.titulo}" class="media-thumbnail">
-                    <span class="view-icon">🔍</span>
-                </div>
-            `;
-        }
-
-        postElement.innerHTML = `
-            ${mediaHTML}
-            <div class="post-content">
-                <h3 class="post-title">${post.titulo}</h3>
-                <p class="post-seccion">Sección: ${post.seccion}</p>
-                <p class="post-descripcion">${post.descripcion}</p>
-                <p class="post-fecha">${post.fecha}</p>
-                <div class="post-autor" style="border-left-color: ${post.autor.color}">
-                    <p>${post.autor.nombre}</p>
-                </div>
+        contenidoMedia = `
+            <div class="post-media" data-src="${post.urlMedia}" data-title="${post.titulo}">
+                ${mediaTag}
             </div>
         `;
-        contenedorPublicaciones.appendChild(postElement);
-    });
-    
-    document.querySelectorAll('.post-media').forEach(mediaDiv => {
-        mediaDiv.addEventListener('click', openMediaModal);
-    });
-}
-
-function filtrarPostsPorSeccion(seccion) {
-    let postsFiltrados = postsData;
-    if (seccion && seccion !== 'Todo') {
-        postsFiltrados = postsData.filter(post => post.seccion === seccion);
     }
-    renderPosts(postsFiltrados);
+    
+    articulo.innerHTML = `
+        <h2 class="post-titulo">${post.titulo}</h2>
+        <p class="post-seccion">Sección: <span>${post.seccion}</span></p>
+        ${contenidoMedia}
+        <p class="post-descripcion">${post.descripcion}</p>
+    `;
+    return articulo;
 }
 
-function buscarPosts(query) {
-    const termino = query.toLowerCase().trim();
-    if (!termino) {
-        filtrarPostsPorSeccion('Todo'); 
+function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
+    contenedor.innerHTML = ''; 
+    const postsFiltrados = publicaciones.filter(post => {
+        if (post.seccion === "Política" && filtroSeccion !== "Todo" && filtroSeccion !== "Política") {
+            return false;
+        }
+        const matchSeccion = filtroSeccion === "Todo" || post.seccion === filtroSeccion;
+        const matchSearch = searchTerm === '' || 
+                          post.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          post.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchSeccion && matchSearch;
+    });
+
+    if (postsFiltrados.length === 0) {
+        contenedor.innerHTML = `<p class="mensaje-vacio">No se encontraron publicaciones...</p>`;
         return;
     }
-    
-    const postsEncontrados = postsData.filter(post => {
-        const titulo = post.titulo.toLowerCase();
-        const descripcion = post.descripcion.toLowerCase();
-        const seccion = post.seccion.toLowerCase();
-        
-        return titulo.includes(termino) || 
-               descripcion.includes(termino) ||
-               seccion.includes(termino);
+    postsFiltrados.forEach(post => {
+        contenedor.appendChild(crearPostHTML(post));
     });
-    
-    renderPosts(postsEncontrados);
 }
 
-/**
- * Comprueba si la hora actual está dentro del rango permitido (11:30 AM a 1:00 PM).
- */
-function isUploadTimeAllowed() {
-    const now = new Date();
-    const currentHour = now.getHours(); 
-    const currentMinute = now.getMinutes(); 
-
-    const startTimeInMinutes = 690; // 11:30 AM
-    const endTimeInMinutes = 780;   // 1:00 PM (13:00)
-
-    const currentTimeInMinutes = (currentHour * 60) + currentMinute;
-
-    return currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes;
+if(linkChatAnonimo) {
+    linkChatAnonimo.addEventListener('click', (e) => {
+        e.preventDefault();
+        if(modalSubir) modalSubir.style.display = 'none'; 
+        document.body.style.overflow = 'auto'; 
+        const tiktokUser = prompt("Para entrar al chat, ingresa tu nombre de usuario de TikTok (ej: @jlcojvjcl).");
+        if (tiktokUser && tiktokUser.trim() !== "") {
+            alert(`¡Perfecto! Te redirigiremos a Discord. Tu nombre de TikTok: ${tiktokUser}`);
+            window.open(CHAT_ANONIMO_URL, '_blank'); 
+        } else {
+            alert("Necesitas ingresar un nombre de usuario para acceder al chat.");
+        }
+    });
 }
-
-
-// --- 3. MANEJO DE MODALES Y VISTAS ---
-
-function openSubirModal() {
-    if (modalSubir) { 
+if(linkSubir && modalSubir) {
+    modalSubir.style.display = 'none'; 
+    linkSubir.addEventListener('click', (e) => {
+        e.preventDefault();
         modalSubir.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-    }
+    });
 }
-
-function closeSubirModal() {
-    if (modalSubir) {
+if(closeModal && modalSubir) {
+    closeModal.addEventListener('click', (e) => {
+        e.preventDefault();
         modalSubir.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
+        document.body.style.overflow = 'auto'; 
+    });
 }
-
-function openMediaModal(e) {
-    const mediaDiv = e.currentTarget; 
-    const url = mediaDiv.getAttribute('data-url');
-    const type = mediaDiv.getAttribute('data-type');
-    const caption = mediaDiv.getAttribute('data-caption');
-    
+if(modalSubir) {
+    modalSubir.addEventListener('click', (e) => {
+        if (e.target === modalSubir) {
+            modalSubir.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+function openMediaModal(src, title) {
     mediaContentViewer.innerHTML = '';
-    
-    if (type === 'video') {
-        mediaContentViewer.innerHTML = `<video src="${url}" controls autoplay loop></video>`;
-    } else { // image
-        mediaContentViewer.innerHTML = `<img src="${url}" alt="Contenido Expandido">`;
+    mediaCaption.textContent = title;
+    if (src.toLowerCase().includes('.mp4')) {
+        mediaContentViewer.innerHTML = `<video src="${src}" controls autoplay></video>`;
+    } else {
+        mediaContentViewer.innerHTML = `<img src="${src}" alt="${title}">`;
     }
-    
-    mediaCaption.textContent = caption;
     mediaModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
-
-function closeMediaViewer() {
-    if (mediaModal) {
+if (closeMediaModal && mediaModal) {
+    closeMediaModal.addEventListener('click', () => {
         mediaModal.style.display = 'none';
         document.body.style.overflow = 'auto';
         mediaContentViewer.innerHTML = ''; 
-    }
-}
-
-
-// --- 4. EVENT LISTENERS ---
-
-// 4.1. Navegación y Filtrado
-enlacesNav.forEach(enlace => {
-    enlace.addEventListener('click', (e) => {
-        const seccion = enlace.getAttribute('data-seccion'); 
-        const href = enlace.getAttribute('href');
-
-        if (href && href !== '#' && href !== 'javascript:void(0)' && href !== 'politica.html') {
-            return; 
-        }
-
-        e.preventDefault(); 
-        
-        if (seccion) {
-            enlacesNav.forEach(nav => nav.classList.remove('active'));
-            enlace.classList.add('active');
-            filtrarPostsPorSeccion(seccion);
-        }
     });
-});
-
-// 4.2. Búsqueda
-searchButton.addEventListener('click', () => {
-    buscarPosts(searchInput.value);
-});
-
-searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        buscarPosts(searchInput.value);
-    }
-});
-
-// 4.3. Modal Subir (CON RESTRICCIÓN HORARIA)
-if (linkSubir) {
-    linkSubir.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        if (isUploadTimeAllowed()) {
-            openSubirModal(); // Abre el modal genérico
-        } else {
-            alert('❌ El envío de publicaciones está abierto solo de 11:30 AM a 1:00 PM. ¡Vuelve a esa hora!');
-        }
-    });
-}
-if (closeModalSubir) {
-    closeModalSubir.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeSubirModal();
-    });
-}
-if (modalSubir) {
-    modalSubir.addEventListener('click', (e) => {
-        if (e.target === modalSubir) {
-            closeSubirModal();
-        }
-    });
-}
-
-// 4.4. Modal Chat Anónimo (Redirección a TikTok)
-if (linkChatAnonimo) {
-    linkChatAnonimo.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.open(TIKTOK_URL, '_blank'); 
-    });
-}
-
-// 4.5. Modal de Media Viewer
-if (closeMediaModal) {
-    closeMediaModal.addEventListener('click', closeMediaViewer);
-}
-if (mediaModal) {
     mediaModal.addEventListener('click', (e) => {
         if (e.target === mediaModal) {
-            closeMediaViewer();
+            mediaModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            mediaContentViewer.innerHTML = '';
         }
     });
 }
-
-// --- 5. INICIALIZACIÓN ---
-
-window.onload = () => {
-    // 1. Aplica el tema festivo
-    aplicarTemaPorFecha();
-    
-    // 2. Carga inicial de posts
-    filtrarPostsPorSeccion('Todo'); 
-    
-    // 3. Marca la sección "Todo" como activa al inicio
-    const todoLink = document.querySelector('[data-seccion="Todo"]');
-    if (todoLink) {
-        todoLink.classList.add('active');
+contenedor.addEventListener('click', (e) => {
+    let target = e.target;
+    let postMediaElement = null;
+    while (target && target !== contenedor) {
+        if (target.classList && target.classList.contains('post-media')) {
+            postMediaElement = target;
+            break;
+        }
+        target = target.parentElement;
+    }
+    if (postMediaElement && postMediaElement.dataset.src) {
+        e.preventDefault(); 
+        openMediaModal(postMediaElement.dataset.src, postMediaElement.dataset.title);
+    }
+});
+if (searchButton && searchInput) {
+    const performSearch = () => {
+        const activeLink = document.querySelector('.nav-link.active[data-seccion]');
+        const currentSection = activeLink ? activeLink.getAttribute('data-seccion') : 'Todo';
+        mostrarPublicaciones(currentSection, searchInput.value);
+    };
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+}
+enlacesNav.forEach(enlace => {
+    enlace.addEventListener('click', (e) => {
+        const seccion = e.target.getAttribute('data-seccion');
+        if (seccion) {
+            e.preventDefault();
+            enlacesNav.forEach(link => link.classList.remove('active'));
+            e.target.classList.add('active');
+            if(searchInput) searchInput.value = '';
+            mostrarPublicaciones(seccion);
+            if(modalSubir) modalSubir.style.display = 'none'; 
+            document.body.style.overflow = 'auto'; 
+        }
+    });
+});
+window.onload = function() {
+    aplicarTemaPorFecha(); 
+    if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) {
+        mostrarPublicaciones("Todo");
+        const todoLink = document.querySelector('.nav-link[data-seccion="Todo"]');
+        if (todoLink) todoLink.classList.add('active');
+    } else {
+         contenedor.innerHTML = `<p class="mensaje-vacio">⚠️ **Error Crítico:** No se encontraron publicaciones. Revisa el archivo <strong>posts.js</strong> y el orden de los scripts.</p>`;
     }
 };
