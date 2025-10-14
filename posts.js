@@ -43,9 +43,15 @@ const publicaciones = [
         seccion: "Humor"
     },
     {
-        titulo: "El gran debate: ¿Quién es el más despistado?",
-        descripcion: "Hemos abierto una encuesta en las historias para saber quién se olvida más veces el cuaderno. ¡Los resultados son impactantes!",
-        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Humor+Despistes",
+        titulo: "El vicioso que juega solo",
+        descripcion: "Ico Daniel El vicioso ",
+        urlMedia: "https://i.imgur.com/doepqVr.jpeg",
+        seccion: "Humor"
+    },
+        {
+        titulo: "Los viciosos ",
+        descripcion: "Los viciosos ",
+        urlMedia: "https://i.imgur.com/NncU0I9.jpeg",
         seccion: "Humor"
     },
     
