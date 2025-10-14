@@ -4,7 +4,7 @@
 const CHAT_ANONIMO_URL = "https://discord.gg/7SVTvj8C"; 
 
 // 🚨 VARIABLE DE CONTROL: ESTABLECE ESTO EN 'auto' PARA PRODUCCIÓN 🚨
-const TEMA_FORZADO = 'auto'; // CAMBIA A UN TEMA ESPECÍFICO PARA PROBAR (ej: 'navidad')
+const TEMA_FORZADO = 'tema-navidad'; // CAMBIA A UN TEMA ESPECÍFICO PARA PROBAR (ej: 'navidad')
 
 // Obtener elementos principales (Asegúrate de que estos IDs existan en index.html)
 const contenedor = document.getElementById('contenedor-publicaciones');
