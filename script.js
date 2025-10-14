@@ -181,188 +181,259 @@ function aplicarTemaPorFecha() {
     body.classList.add('tema-original'); 
 }
 
-// ----------------------------------------------------
-// FUNCIONES DE POSTS Y LÓGICA DEL SITIO
-// ----------------------------------------------------
+// ====================================================================
+// script.js - Lógica principal del sitio (Filtrado, Búsqueda, Modales, Horario)
+// ====================================================================
 
-function crearPostHTML(post) {
-    const articulo = document.createElement('article');
-    // Asegura que la clase seccion sea segura (ej: "Pareja Oficial" -> "pareja-oficial")
-    articulo.classList.add('post', post.seccion.toLowerCase().replace(/ /g, '-').replace(/á/g, 'a')); 
-    let contenidoMedia = '';
+// --- 1. DECLARACIÓN DE VARIABLES Y ELEMENTOS ---
+
+const contenedorPublicaciones = document.getElementById('contenedor-publicaciones');
+const enlacesNav = document.querySelectorAll('.nav-link');
+const searchInput = document.getElementById('search-input');
+const searchButton = document.getElementById('search-button');
+
+// Modales y Enlaces de Acción
+const linkSubir = document.getElementById('link-subir');
+const linkChatAnonimo = document.getElementById('link-chat'); 
+const modalSubir = document.getElementById('modal-subir');
+const closeModalSubir = document.querySelector('.close-modal-subir'); 
+
+// Modal de Media
+const mediaModal = document.getElementById('media-modal');
+const closeMediaModal = document.querySelector('.close-media-modal');
+const mediaContentViewer = document.getElementById('media-content-viewer');
+const mediaCaption = document.getElementById('media-caption');
+
+let postsData = window.posts || []; // Asume que posts.js carga los datos
+
+
+// --- 2. FUNCIONES PRINCIPALES Y LÓGICA DE HORARIO ---
+
+/**
+ * Renderiza los posts filtrados en el contenedor.
+ */
+function renderPosts(postsToDisplay) {
+    contenedorPublicaciones.innerHTML = '';
     
-    if (post.urlMedia) {
-        const isVideo = post.urlMedia.toLowerCase().includes('.mp4');
-        const mediaTag = isVideo 
-            ? `<video src="${post.urlMedia}" controls preload="metadata"></video>`
-            : `<img src="${post.urlMedia}" alt="${post.titulo}" loading="lazy">`;
-            
-        // El contenedor 'post-media' maneja el tamaño uniforme (CSS)
-        contenidoMedia = `
-            <div class="post-media" data-src="${post.urlMedia}" data-title="${post.titulo}">
-                ${mediaTag}
-            </div>
-        `;
-    }
-    
-    articulo.innerHTML = `
-        <h2 class="post-titulo">${post.titulo}</h2>
-        <p class="post-seccion">Sección: <span>${post.seccion}</span></p>
-        ${contenidoMedia}
-        <p class="post-descripcion">${post.descripcion}</p>
-    `;
-    return articulo;
-}
-
-function mostrarPublicaciones(filtroSeccion, searchTerm = '') {
-    contenedor.innerHTML = ''; 
-    const postsFiltrados = publicaciones.filter(post => {
-        // La sección "Política" se muestra solo si se selecciona explícitamente "Política" o "Todo"
-        if (post.seccion === "Política" && filtroSeccion !== "Todo" && filtroSeccion !== "Política") {
-            return false;
-        }
-        const matchSeccion = filtroSeccion === "Todo" || post.seccion === filtroSeccion;
-        const matchSearch = searchTerm === '' || 
-                          post.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          post.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchSeccion && matchSearch;
-    });
-
-    if (postsFiltrados.length === 0) {
-        contenedor.innerHTML = `<p class="mensaje-vacio">No se encontraron publicaciones que coincidan con los filtros.</p>`;
+    if (postsToDisplay.length === 0) {
+        contenedorPublicaciones.innerHTML = '<p class="no-results">😔 No se encontraron publicaciones con esos criterios.</p>';
         return;
     }
-    postsFiltrados.forEach(post => {
-        contenedor.appendChild(crearPostHTML(post));
-    });
-}
 
-// --- EVENT LISTENERS ---
-
-// Chat Anónimo (Corregido el error de referencia)
-if(linkChatAnonimo) {
-    linkChatAnonimo.addEventListener('click', (e) => {
-        e.preventDefault();
-        if(modalSubir) modalSubir.style.display = 'none'; 
-        document.body.style.overflow = 'auto'; 
-        const tiktokUser = prompt("Para entrar al chat, ingresa tu nombre de usuario de TikTok (ej: @jlcojvjcl).");
-        if (tiktokUser && tiktokUser.trim() !== "") {
-            alert(`¡Perfecto! Te redirigiremos a Discord. Tu nombre de TikTok: ${tiktokUser}`);
-            window.open(CHAT_ANONIMO_URL, '_blank'); 
-        } else {
-            alert("Necesitas ingresar un nombre de usuario para acceder al chat.");
+    postsToDisplay.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.className = 'post-card';
+        postElement.setAttribute('data-seccion', post.seccion);
+        
+        let mediaHTML = '';
+        if (post.media) {
+            const mediaType = post.media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image';
+            const thumbnailURL = post.media.thumbnail || post.media.url; 
+            
+            mediaHTML = `
+                <div class="post-media" data-url="${post.media.url}" data-type="${mediaType}" data-caption="${post.media.caption || ''}">
+                    <img src="${thumbnailURL}" alt="${post.titulo}" class="media-thumbnail">
+                    <span class="view-icon">🔍</span>
+                </div>
+            `;
         }
+
+        postElement.innerHTML = `
+            ${mediaHTML}
+            <div class="post-content">
+                <h3 class="post-title">${post.titulo}</h3>
+                <p class="post-seccion">Sección: ${post.seccion}</p>
+                <p class="post-descripcion">${post.descripcion}</p>
+                <p class="post-fecha">${post.fecha}</p>
+                <div class="post-autor" style="border-left-color: ${post.autor.color}">
+                    <p>${post.autor.nombre}</p>
+                </div>
+            </div>
+        `;
+        contenedorPublicaciones.appendChild(postElement);
+    });
+    
+    document.querySelectorAll('.post-media').forEach(mediaDiv => {
+        mediaDiv.addEventListener('click', openMediaModal);
     });
 }
-// Modal Subir
-if(linkSubir && modalSubir) {
-    modalSubir.style.display = 'none'; 
-    linkSubir.addEventListener('click', (e) => {
-        e.preventDefault();
+
+function filtrarPostsPorSeccion(seccion) {
+    let postsFiltrados = postsData;
+    if (seccion && seccion !== 'Todo') {
+        postsFiltrados = postsData.filter(post => post.seccion === seccion);
+    }
+    renderPosts(postsFiltrados);
+}
+
+function buscarPosts(query) {
+    const termino = query.toLowerCase().trim();
+    if (!termino) {
+        filtrarPostsPorSeccion('Todo'); 
+        return;
+    }
+    
+    const postsEncontrados = postsData.filter(post => {
+        const titulo = post.titulo.toLowerCase();
+        const descripcion = post.descripcion.toLowerCase();
+        const seccion = post.seccion.toLowerCase();
+        
+        return titulo.includes(termino) || 
+               descripcion.includes(termino) ||
+               seccion.includes(termino);
+    });
+    
+    renderPosts(postsEncontrados);
+}
+
+/**
+ * Comprueba si la hora actual está dentro del rango permitido (11:30 AM a 1:00 PM).
+ */
+function isUploadTimeAllowed() {
+    const now = new Date();
+    const currentHour = now.getHours(); 
+    const currentMinute = now.getMinutes(); 
+
+    // 11:30 AM = 690 minutos
+    const startTimeInMinutes = 690;
+    // 1:00 PM (13:00) = 780 minutos
+    const endTimeInMinutes = 780;
+
+    const currentTimeInMinutes = (currentHour * 60) + currentMinute;
+
+    return currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes;
+}
+
+// --- 3. MANEJO DE MODALES Y VISTAS ---
+
+function openSubirModal() {
+    if (modalSubir) { 
         modalSubir.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-    });
-}
-if(closeModal && modalSubir) {
-    closeModal.addEventListener('click', (e) => {
-        e.preventDefault();
-        modalSubir.style.display = 'none';
-        document.body.style.overflow = 'auto'; 
-    });
-}
-if(modalSubir) {
-    modalSubir.addEventListener('click', (e) => {
-        if (e.target === modalSubir) {
-            modalSubir.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-    });
+    }
 }
 
-// Modal de Media (Zoom de Imagen/Video)
-function openMediaModal(src, title) {
-    mediaContentViewer.innerHTML = '';
-    mediaCaption.textContent = title;
-    if (src.toLowerCase().includes('.mp4')) {
-        mediaContentViewer.innerHTML = `<video src="${src}" controls autoplay loop></video>`;
-    } else {
-        mediaContentViewer.innerHTML = `<img src="${src}" alt="${title}">`;
+function closeSubirModal() {
+    if (modalSubir) {
+        modalSubir.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
+}
+
+function openMediaModal(e) {
+    const mediaDiv = e.currentTarget; 
+    const url = mediaDiv.getAttribute('data-url');
+    const type = mediaDiv.getAttribute('data-type');
+    const caption = mediaDiv.getAttribute('data-caption');
+    
+    mediaContentViewer.innerHTML = '';
+    
+    if (type === 'video') {
+        mediaContentViewer.innerHTML = `<video src="${url}" controls autoplay loop></video>`;
+    } else { // image
+        mediaContentViewer.innerHTML = `<img src="${url}" alt="Contenido Expandido">`;
+    }
+    
+    mediaCaption.textContent = caption;
     mediaModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
-if (closeMediaModal && mediaModal) {
-    closeMediaModal.addEventListener('click', () => {
+function closeMediaViewer() {
+    if (mediaModal) {
         mediaModal.style.display = 'none';
         document.body.style.overflow = 'auto';
         mediaContentViewer.innerHTML = ''; 
-    });
-    mediaModal.addEventListener('click', (e) => {
-        if (e.target === mediaModal) {
-            mediaModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            mediaContentViewer.innerHTML = '';
-        }
-    });
+    }
 }
 
-// Delegación de eventos para abrir el modal de media al hacer clic en un post-media
-contenedor.addEventListener('click', (e) => {
-    let target = e.target;
-    let postMediaElement = null;
-    while (target && target !== contenedor) {
-        if (target.classList && target.classList.contains('post-media')) {
-            postMediaElement = target;
-            break;
-        }
-        target = target.parentElement;
-    }
-    if (postMediaElement && postMediaElement.dataset.src) {
-        e.preventDefault(); 
-        openMediaModal(postMediaElement.dataset.src, postMediaElement.dataset.title);
-    }
-});
+// --- 4. EVENT LISTENERS ---
 
-// Búsqueda
-if (searchButton && searchInput) {
-    const performSearch = () => {
-        const activeLink = document.querySelector('.nav-link.active[data-seccion]');
-        const currentSection = activeLink ? activeLink.getAttribute('data-seccion') : 'Todo';
-        mostrarPublicaciones(currentSection, searchInput.value);
-    };
-    searchButton.addEventListener('click', performSearch);
-    searchInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
-    });
-}
-
-// Navegación por Secciones
+// 4.1. Navegación y Filtrado
 enlacesNav.forEach(enlace => {
     enlace.addEventListener('click', (e) => {
-        const seccion = e.target.getAttribute('data-seccion');
+        const seccion = enlace.getAttribute('data-seccion'); 
+        const href = enlace.getAttribute('href');
+
+        // Ignora enlaces con URL real (como politica.html) y enlaces de acción.
+        if (href && href !== '#' && href !== 'javascript:void(0)') {
+            return; 
+        }
+
+        e.preventDefault(); 
+        
         if (seccion) {
-            e.preventDefault();
-            enlacesNav.forEach(link => link.classList.remove('active'));
-            e.target.classList.add('active');
-            if(searchInput) searchInput.value = '';
-            mostrarPublicaciones(seccion);
-            if(modalSubir) modalSubir.style.display = 'none'; 
-            document.body.style.overflow = 'auto'; 
+            enlacesNav.forEach(nav => nav.classList.remove('active'));
+            enlace.classList.add('active');
+            filtrarPostsPorSeccion(seccion);
         }
     });
 });
 
-// Inicialización
-window.onload = function() {
-    aplicarTemaPorFecha(); 
-    if (typeof publicaciones !== 'undefined' && publicaciones.length > 0) {
-        mostrarPublicaciones("Todo");
-        const todoLink = document.querySelector('.nav-link[data-seccion="Todo"]');
-        if (todoLink) todoLink.classList.add('active');
-    } else {
-         contenedor.innerHTML = `<p class="mensaje-vacio">⚠️ **Error Crítico:** No se encontraron publicaciones. Revisa el archivo <strong>posts.js</strong> y el orden de los scripts.</p>`;
+// 4.2. Búsqueda
+searchButton.addEventListener('click', () => {
+    buscarPosts(searchInput.value);
+});
+
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        buscarPosts(searchInput.value);
+    }
+});
+
+// 4.3. Modal Subir (CON RESTRICCIÓN HORARIA)
+if (linkSubir) {
+    linkSubir.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        if (isUploadTimeAllowed()) {
+            openSubirModal();
+        } else {
+            alert('❌ El envío de publicaciones está abierto solo de 11:30 AM a 1:00 PM. ¡Vuelve a esa hora!');
+        }
+    });
+}
+if (closeModalSubir) {
+    closeModalSubir.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeSubirModal();
+    });
+}
+if (modalSubir) {
+    modalSubir.addEventListener('click', (e) => {
+        if (e.target === modalSubir) {
+            closeSubirModal();
+        }
+    });
+}
+
+// 4.4. Modal Chat Anónimo (Redirección a TikTok)
+if (linkChatAnonimo) {
+    linkChatAnonimo.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://www.tiktok.com/@jlcojvjcl', '_blank'); 
+    });
+}
+
+// 4.5. Modal de Media Viewer
+if (closeMediaModal) {
+    closeMediaModal.addEventListener('click', closeMediaViewer);
+}
+if (mediaModal) {
+    mediaModal.addEventListener('click', (e) => {
+        if (e.target === mediaModal) {
+            closeMediaViewer();
+        }
+    });
+}
+
+// --- 5. INICIALIZACIÓN ---
+
+window.onload = () => {
+    filtrarPostsPorSeccion('Todo'); 
+    
+    const todoLink = document.querySelector('[data-seccion="Todo"]');
+    if (todoLink) {
+        todoLink.classList.add('active');
     }
 };
