@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SECUNDARIA DEL ESTADO 🎓</title>
+    
+    <script>
+        // Este bloque ya lo tenías para el captcha, lo mantenemos.
+        const accesoPermitido = sessionStorage.getItem('AccesoDiaDeMuertos');
+
+        if (accesoPermitido !== 'VERIFICADO') {
+            window.location.replace('captcha.html');
+        }
+    </script>
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
@@ -18,7 +27,9 @@
             <a href="#" class="nav-link" data-seccion="Chismes">Chismes</a>
             <a href="#" class="nav-link" data-seccion="Misterios">Misterios</a>
             <a href="#" class="nav-link" data-seccion="Humor">Humor</a>
-            <a href="#" class="nav-link" data-seccion="Política">Política</a>
+            
+            <a href="politica.html" class="nav-link" target="_blank">Política y Reglas</a> 
+            
             <a href="#" class="nav-link" id="link-chat">Chat Anónimo</a>
             <a href="#" class="nav-link" id="link-subir">Subir</a>
         </nav>
@@ -55,7 +66,7 @@
             <p id="media-caption"></p>
         </div>
     </div>
-
+    
     <script src="posts.js"></script>
     <script src="script.js"></script>
 </body>
