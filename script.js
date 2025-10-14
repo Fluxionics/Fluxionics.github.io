@@ -1,11 +1,13 @@
 // ====================================================================
-// script.js - Lógica Principal (Filtrado, Búsqueda, Modales, Horario, Temas)
+// script.js - CÓDIGO FINAL ESTABLE: Días Festivos, Filtrado, Búsqueda, Modales y Horario
 // ====================================================================
 
 // --- 0. VARIABLES GLOBALES Y CONFIGURACIÓN ---
 
+const TIKTOK_URL = 'https://www.tiktok.com/@jlcojvjcl'; 
+
+// Establece 'auto' para producción. Cambia solo para probar un tema específico.
 const TEMA_FORZADO = 'auto'; 
-const CHAT_ANONIMO_URL = "https://www.tiktok.com/@jlcojvjcl"; // Usamos el link de TikTok
 
 // Obtener elementos principales
 const contenedorPublicaciones = document.getElementById('contenedor-publicaciones');
@@ -17,7 +19,6 @@ const searchButton = document.getElementById('search-button');
 const linkSubir = document.getElementById('link-subir');
 const linkChatAnonimo = document.getElementById('link-chat'); 
 const modalSubir = document.getElementById('modal-subir');
-// El selector correcto es .close-modal-subir (asumiendo tu HTML)
 const closeModalSubir = document.querySelector('.close-modal-subir'); 
 
 // Modal de Media
@@ -30,7 +31,7 @@ let postsData = window.posts || [];
 
 
 // ----------------------------------------------------
-// 1. LÓGICA DE TEMAS Y FECHAS
+// 1. LÓGICA DE TEMAS Y FECHAS (DÍAS FESTIVOS)
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
@@ -44,6 +45,7 @@ function aplicarTemaPorFecha() {
         'tema-armada', 'tema-inocentes', 'tema-original', 'tema-cultural'
     ];
                    
+    // Limpia todas las clases de tema antes de aplicar la nueva
     body.classList.remove(...temas.filter(t => t !== 'tema-original')); 
 
     if (TEMA_FORZADO !== 'auto' && TEMA_FORZADO !== 'original') {
@@ -69,11 +71,30 @@ function aplicarTemaPorFecha() {
         return todayNormalized >= start && todayNormalized <= end;
     };
     
-    // Lógica de fechas (Asegúrate de que tus fechas sean correctas)
-    if (inRange(12, 16, 1, 5)) { body.classList.add('tema-navidad'); return; }
-    if (inRange(10, 28, 11, 3)) { body.classList.add('tema-diademuertos'); return; }
-    // ... [Agrega el resto de tu lógica de fechas aquí]
+    // Lógica de fechas (Rangos basados en temas festivos)
     
+    if (inRange(1, 1, 1, 6)) { body.classList.add('tema-reyes'); return; }
+    if (inRange(2, 2, 2, 2)) { body.classList.add('tema-candelaria'); return; }
+    if (inRange(2, 5, 2, 5)) { body.classList.add('tema-constitucion'); return; }
+    if (inRange(2, 14, 2, 14)) { body.classList.add('tema-sanvalentin'); return; }
+    if (inRange(2, 24, 2, 24)) { body.classList.add('tema-bandera'); return; }
+    if (inRange(3, 8, 3, 8)) { body.classList.add('tema-mujer'); return; }
+    if (inRange(3, 18, 3, 18)) { body.classList.add('tema-expropiacion'); return; }
+    if (inRange(3, 21, 3, 21)) { body.classList.add('tema-juarez'); return; }
+    if (inRange(5, 5, 5, 5)) { body.classList.add('tema-puebla'); return; }
+    if (inRange(5, 15, 5, 15)) { body.classList.add('tema-maestro'); return; }
+    if (inRange(6, 1, 6, 1)) { body.classList.add('tema-marina'); return; }
+    if (inRange(9, 15, 9, 16)) { body.classList.add('tema-patrio'); return; }
+    if (inRange(9, 27, 9, 30)) { body.classList.add('tema-original'); return; } 
+    if (inRange(10, 12, 10, 12)) { body.classList.add('tema-raza'); return; }
+    if (inRange(10, 28, 11, 3)) { body.classList.add('tema-diademuertos'); return; } 
+    if (inRange(11, 20, 11, 20)) { body.classList.add('tema-revolucion'); return; }
+    if (inRange(11, 22, 11, 22)) { body.classList.add('tema-musico'); return; }
+    if (inRange(12, 12, 12, 12)) { body.classList.add('tema-virgen'); return; }
+    if (inRange(12, 16, 1, 5)) { body.classList.add('tema-navidad'); return; } 
+    if (inRange(12, 28, 12, 28)) { body.classList.add('tema-inocentes'); return; }
+    
+    // Si no hay ninguna coincidencia
     body.classList.add('tema-original'); 
 }
 
@@ -154,6 +175,9 @@ function buscarPosts(query) {
     renderPosts(postsEncontrados);
 }
 
+/**
+ * Comprueba si la hora actual está dentro del rango permitido (11:30 AM a 1:00 PM).
+ */
 function isUploadTimeAllowed() {
     const now = new Date();
     const currentHour = now.getHours(); 
@@ -220,14 +244,8 @@ enlacesNav.forEach(enlace => {
         const seccion = enlace.getAttribute('data-seccion'); 
         const href = enlace.getAttribute('href');
 
-        // Permite la navegación directa a politica.html
-        if (href === 'politica.html') {
+        if (href && href !== '#' && href !== 'javascript:void(0)' && href !== 'politica.html') {
             return; 
-        }
-
-        // Ignora enlaces de acción (Subir, Chat Anónimo)
-        if (!seccion) {
-            return;
         }
 
         e.preventDefault(); 
@@ -257,7 +275,7 @@ if (linkSubir) {
         e.preventDefault();
         
         if (isUploadTimeAllowed()) {
-            openSubirModal();
+            openSubirModal(); // Abre el modal genérico
         } else {
             alert('❌ El envío de publicaciones está abierto solo de 11:30 AM a 1:00 PM. ¡Vuelve a esa hora!');
         }
@@ -277,11 +295,11 @@ if (modalSubir) {
     });
 }
 
-// 4.4. Chat Anónimo (Redirección a TikTok)
+// 4.4. Modal Chat Anónimo (Redirección a TikTok)
 if (linkChatAnonimo) {
     linkChatAnonimo.addEventListener('click', (e) => {
         e.preventDefault();
-        window.open(CHAT_ANONIMO_URL, '_blank'); 
+        window.open(TIKTOK_URL, '_blank'); 
     });
 }
 
