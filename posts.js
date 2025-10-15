@@ -37,7 +37,7 @@ const publicaciones = [
     {
         titulo: "Nuevo Shippeo H y S ",
         descripcion: "Hellen y S???????? ¡Felicidades a la pareja de la secundaria! 💘 El nombre se revelara cada lestra cada dia ",
-        urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=H+++S",
+        urlMedia: "",
         seccion: "Shippeos" 
     },
     // ----------------------------------------------------
