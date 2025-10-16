@@ -68,7 +68,7 @@ const publicaciones = [
     },
         {
         titulo: "Nuevo Shippeo H y S ",
-        descripcion: "Hellen y S???????? El nombre se revelara cada lestra cada dia ",
+        descripcion: "Hellen y Se??????? El nombre se revelara cada lestra cada dia ",
         urlMedia: "",
         seccion: "Rumores" 
     },
