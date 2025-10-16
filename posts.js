@@ -34,12 +34,7 @@ const publicaciones = [
         urlMedia: "",
         seccion: "Shippeos"
     },
-    {
-        titulo: "Nuevo Shippeo H y S ",
-        descripcion: "Hellen y S???????? El nombre se revelara cada lestra cada dia ",
-        urlMedia: "",
-        seccion: "Shippeos" 
-    },
+
     // ----------------------------------------------------
     // SECCIÓN: HUMOR 
     // ----------------------------------------------------
@@ -63,13 +58,19 @@ const publicaciones = [
     },
     
     // ----------------------------------------------------
-    // SECCIÓN: CHISMES
+    // SECCIÓN: Rumores
     // ----------------------------------------------------
     {
-        titulo: "Aqui No ay chisme ",
+        titulo: "Aqui No ay Rumores ",
         descripcion: "Por Favor Sube un chisme",
         urlMedia: "https://placehold.co/600x400/000000/FFFFFF/png?text=Chisme+No+Ay",
-        seccion: "Chismes"
+        seccion: "Rumores"
+    },
+        {
+        titulo: "Nuevo Shippeo H y S ",
+        descripcion: "Hellen y S???????? El nombre se revelara cada lestra cada dia ",
+        urlMedia: "",
+        seccion: "Rumores" 
     },
     
     // ----------------------------------------------------
