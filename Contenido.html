@@ -24,50 +24,147 @@
             width: 90%;
         }
         h1 {
-            color: #cc0000; /* Color de advertencia */
+            color: #333;
             margin-bottom: 25px;
             font-size: 1.8em;
         }
-        p {
-            color: #555;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
+        #access-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #password-input {
+            padding: 10px;
+            font-size: 1em;
+            width: 100%;
+            max-width: 250px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        #submit-btn {
+            background-color: #cc0000;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        #submit-btn:hover {
+            background-color: #a30000;
+        }
+        #message {
+            margin-top: 20px;
+            color: red;
+            font-weight: bold;
+        }
+        .content-hidden {
+            display: none;
         }
         .tiktok-link {
             display: inline-block;
-            background-color: #000; /* Botón simple, puedes cambiarlo al rojo de TikTok si tienes el color exacto */
+            background-color: #007bff;
             color: white;
-            padding: 15px 30px;
+            padding: 10px 20px;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 5px;
             font-weight: bold;
-            transition: background-color 0.3s;
-            text-transform: uppercase;
-        }
-        .tiktok-link:hover {
-            background-color: #333;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>¡Hola! 👋 Acceso al Contenido Principal</h1>
-        <p>
-            **Por favor, si nos puedes mandar contenido para ver el contenido por favor mandanos un mensaje y te daremos la llave.** 🔑
-        </p>
         
-        <p>
-            Al darnos contenido exclusivo o información relevante, te enviaremos la clave para acceder sin restricciones.
-        </p>
+        <div id="lock-screen">
+            <h1>ACCESO RESTRINGIDO</h1>
+            <p>Por favor, ingresa la clave que te proporcionó el administrador para acceder al contenido principal.</p>
 
-        <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank" class="tiktok-link">
-            Mandar Mensaje a TikTok
-        </a>
-        
-        <p style="margin-top: 30px; font-size: 0.9em; color: #999;">
-            *Serás redirigido a la cuenta del administrador.
-        </p>
+            <form id="access-form">
+                <input type="password" id="password-input" placeholder="Ingresa la clave aquí" required>
+                <button type="submit" id="submit-btn">Acceder</button>
+            </form>
+            <div id="message"></div>
+
+            <p style="margin-top: 30px; font-size: 0.9em; color: #999;">
+                ¿No tienes una clave? <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank">Solicítala por mensaje aquí.</a>
+            </p>
+        </div>
+
+        <div id="secret-content" class="content-hidden">
+            <h1>¡Bienvenido/a al Contenido Principal! 🎉</h1>
+            <p>Aquí pondrías todo el código HTML de tu página principal (posts, navegación, etc.).</p>
+            <p style="color: red; font-weight: bold;">
+                AVISO: Esta clave es de un solo uso. Si la compartes y es utilizada por alguien más, la clave será invalidada inmediatamente y ambos perderán el acceso.
+            </p>
+            <a href="index.html" class="tiktok-link">Volver a la Página Principal</a>
+        </div>
     </div>
+
+    <script>
+        // 🚨🚨 CLAVE SECRETA - ¡DEBES CAMBIAR ESTO MANUALMENTE CADA VEZ QUE LA CLAVE ES USADA O COMPARTIDA! 🚨🚨
+        // Usa una clave única y fácil de reconocer para que sepas cuándo cambiarla.
+        const MASTER_PASSWORD = 'clave-unica-de-prueba'; // <--- ¡EDITA ESTO EN EL REPOSITORIO DE GITHUB!
+        
+        // ----------------------------------------------------------------------
+        
+        const form = document.getElementById('access-form');
+        const input = document.getElementById('password-input');
+        const messageDiv = document.getElementById('message');
+        const lockScreen = document.getElementById('lock-screen');
+        const secretContent = document.getElementById('secret-content');
+
+        // La llave almacenada localmente (simula el uso previo en ESTE navegador)
+        const KEY_USED = 'access_key_used';
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const enteredPassword = input.value.trim();
+
+            if (enteredPassword === MASTER_PASSWORD) {
+                // Éxito: Simula el acceso
+                lockScreen.style.display = 'none';
+                secretContent.style.display = 'block';
+                messageDiv.textContent = '';
+                
+                // Marca la llave como usada en este navegador
+                localStorage.setItem(KEY_USED, MASTER_PASSWORD);
+                
+                // OPCIONAL: Si quieres que el usuario ya NO tenga que volver a meterla
+                // localStorage.setItem('logged_in', 'true'); 
+
+            } else {
+                // Fracaso: Clave incorrecta o compartida
+                messageDiv.textContent = '❌ Clave incorrecta. La clave es de un solo uso. Por favor, solicita una clave nueva.';
+                input.value = ''; // Limpia el input
+            }
+        });
+        
+        // --- Lógica de Detección de Bloqueo (Para el usuario que compartió) ---
+        
+        // Esta función revisa si el usuario ya usó una clave que el administrador invalidó (cambió)
+        window.onload = function() {
+            const storedKey = localStorage.getItem(KEY_USED);
+            
+            // Si hay una clave guardada en este navegador, pero NO coincide con la MASTER_PASSWORD actual
+            if (storedKey && storedKey !== MASTER_PASSWORD) {
+                
+                lockScreen.style.display = 'block';
+                secretContent.style.display = 'none';
+                messageDiv.style.color = 'red';
+                messageDiv.innerHTML = `
+                    ⚠️ **Tu clave anterior ya no es válida.** La clave es de un solo uso. 
+                    Si la compartiste, ha sido invalidada. Por favor, solicita una clave nueva.
+                    <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank">Solicitar Nueva Clave</a>
+                `;
+                // Oculta el formulario de intento
+                form.style.display = 'none'; 
+            }
+        };
+
+    </script>
 </body>
 </html>
