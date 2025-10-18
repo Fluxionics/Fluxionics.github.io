@@ -3,168 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Restringido - SECUNDARIA 🎓</title>
+    <title>Acceso Restringido</title>
     <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 550px;
-            width: 90%;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-        }
-        #access-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            margin-top: 20px;
-        }
-        #password-input {
-            padding: 10px;
-            font-size: 1em;
-            width: 100%;
-            max-width: 250px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-        }
-        #submit-btn {
-            background-color: #cc0000;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
-        }
-        #submit-btn:hover {
-            background-color: #a30000;
-        }
-        #message {
-            margin-top: 20px;
-            color: red;
-            font-weight: bold;
-        }
-        .content-hidden {
-            display: none;
-        }
-        .tiktok-link {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
+        /* [Tus estilos CSS van aquí] */
+        body { font-family: sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; text-align: center; }
+        .container { background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); max-width: 550px; width: 90%; }
+        h1 { color: #333; }
+        #access-form { display: flex; flex-direction: column; gap: 15px; align-items: center; margin-top: 20px; }
+        #password-input { padding: 10px; font-size: 1em; width: 100%; max-width: 250px; border: 2px solid #ddd; border-radius: 5px; }
+        #submit-btn { background-color: #cc0000; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; }
+        #message { margin-top: 20px; color: red; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        
-        <div id="lock-screen">
-            <h1>ACCESO RESTRINGIDO</h1>
-            <p>Por favor, ingresa la clave que te proporcionó el administrador para acceder al contenido principal.</p>
+        <h1>ACCESO RESTRINGIDO</h1>
+        <p>Ingresa la clave de acceso único que te fue proporcionada.</p>
 
-            <form id="access-form">
-                <input type="password" id="password-input" placeholder="Ingresa la clave aquí" required>
-                <button type="submit" id="submit-btn">Acceder</button>
-            </form>
-            <div id="message"></div>
+        <form id="access-form">
+            <input type="password" id="password-input" placeholder="Ingresa tu clave aquí" required>
+            <button type="submit" id="submit-btn">Verificar Clave</button>
+        </form>
+        <div id="message"></div>
 
-            <p style="margin-top: 30px; font-size: 0.9em; color: #999;">
-                ¿No tienes una clave? <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank">Solicítala por mensaje aquí.</a>
-            </p>
-        </div>
-
-        <div id="secret-content" class="content-hidden">
-            <h1>¡Bienvenido/a al Contenido Principal! 🎉</h1>
-            <p>Aquí pondrías todo el código HTML de tu página principal (posts, navegación, etc.).</p>
-            <p style="color: red; font-weight: bold;">
-                AVISO: Esta clave es de un solo uso. Si la compartes y es utilizada por alguien más, la clave será invalidada inmediatamente y ambos perderán el acceso.
-            </p>
-            <a href="index.html" class="tiktok-link">Volver a la Página Principal</a>
-        </div>
+        <p style="margin-top: 30px; font-size: 0.9em; color: #999;">
+            ¿No tienes clave? <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank">Solicítala por mensaje.</a>
+        </p>
     </div>
 
+    <script src="config.js"></script>
+    
     <script>
-        // 🚨🚨 CLAVE SECRETA - ¡DEBES CAMBIAR ESTO MANUALMENTE CADA VEZ QUE LA CLAVE ES USADA O COMPARTIDA! 🚨🚨
-        // Usa una clave única y fácil de reconocer para que sepas cuándo cambiarla.
-        const MASTER_PASSWORD = 'clave-unica-de-prueba'; // <--- ¡EDITA ESTO EN EL REPOSITORIO DE GITHUB!
-        
-        // ----------------------------------------------------------------------
-        
         const form = document.getElementById('access-form');
         const input = document.getElementById('password-input');
         const messageDiv = document.getElementById('message');
-        const lockScreen = document.getElementById('lock-screen');
-        const secretContent = document.getElementById('secret-content');
-
-        // La llave almacenada localmente (simula el uso previo en ESTE navegador)
-        const KEY_USED = 'access_key_used';
+        
+        // Esta nueva clave guarda la clave temporal del usuario en su navegador
+        const USER_TEMP_KEY = 'user_login_key'; 
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const enteredPassword = input.value.trim();
+            
+            // Verificación de lista (config.js debe estar cargado)
+            if (typeof VALID_KEYS === 'undefined') {
+                 messageDiv.textContent = '❌ ERROR: No se pudo cargar la lista de claves. (config.js no encontrado).';
+                 return; 
+            }
 
-            if (enteredPassword === MASTER_PASSWORD) {
-                // Éxito: Simula el acceso
-                lockScreen.style.display = 'none';
-                secretContent.style.display = 'block';
-                messageDiv.textContent = '';
+            if (VALID_KEYS.includes(enteredPassword)) {
+                // Éxito: 
+                // 1. Guarda la clave en localStorage para evitar que la ponga de nuevo.
+                localStorage.setItem(USER_TEMP_KEY, enteredPassword); 
                 
-                // Marca la llave como usada en este navegador
-                localStorage.setItem(KEY_USED, MASTER_PASSWORD);
-                
-                // OPCIONAL: Si quieres que el usuario ya NO tenga que volver a meterla
-                // localStorage.setItem('logged_in', 'true'); 
+                // 2. Redirige al CAPTCHA para el token final.
+                messageDiv.textContent = '✅ Clave correcta. Redirigiendo al desafío...';
+                messageDiv.style.color = 'green';
+                setTimeout(() => {
+                    window.location.href = 'Captcha.html';
+                }, 500);
 
             } else {
-                // Fracaso: Clave incorrecta o compartida
-                messageDiv.textContent = '❌ Clave incorrecta. La clave es de un solo uso. Por favor, solicita una clave nueva.';
-                input.value = ''; // Limpia el input
+                // Fracaso: La clave no está en la lista (o ya fue eliminada/compartida)
+                messageDiv.textContent = '❌ Clave incorrecta o ya no es válida. Solicita una nueva.';
+                input.value = '';
             }
         });
         
-        // --- Lógica de Detección de Bloqueo (Para el usuario que compartió) ---
-        
-        // Esta función revisa si el usuario ya usó una clave que el administrador invalidó (cambió)
+        // Lógica de Pre-Verificación (para evitar bucles después de una revocación)
         window.onload = function() {
-            const storedKey = localStorage.getItem(KEY_USED);
+            const storedKey = localStorage.getItem(USER_TEMP_KEY);
             
-            // Si hay una clave guardada en este navegador, pero NO coincide con la MASTER_PASSWORD actual
-            if (storedKey && storedKey !== MASTER_PASSWORD) {
+            // Si el usuario ya tiene una clave guardada que AÚN es válida
+            if (storedKey && VALID_KEYS.includes(storedKey)) {
+                messageDiv.textContent = '✅ Clave guardada. Redirigiendo al desafío de seguridad...';
+                messageDiv.style.color = 'green';
+                 setTimeout(() => {
+                    window.location.href = 'Captcha.html'; 
+                }, 500);
                 
-                lockScreen.style.display = 'block';
-                secretContent.style.display = 'none';
-                messageDiv.style.color = 'red';
-                messageDiv.innerHTML = `
-                    ⚠️ **Tu clave anterior ya no es válida.** La clave es de un solo uso. 
-                    Si la compartiste, ha sido invalidada. Por favor, solicita una clave nueva.
-                    <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank">Solicitar Nueva Clave</a>
-                `;
-                // Oculta el formulario de intento
-                form.style.display = 'none'; 
+            // Si el usuario tiene una clave guardada que YA NO es válida (Tú la borraste)
+            } else if (storedKey && !VALID_KEYS.includes(storedKey)) {
+                localStorage.removeItem(USER_TEMP_KEY); // Limpia la clave inválida
+                 messageDiv.innerHTML = `⚠️ **Tu clave anterior ya no es válida.** Si la compartiste, fue invalidada. <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank">Solicita una nueva.</a>`;
+                form.style.display = 'none';
             }
         };
-
     </script>
 </body>
 </html>
