@@ -5,7 +5,7 @@
 // Cuando quieras invalidar una clave, simplemente bórrala de esta lista y sube el cambio.
 
 const VALID_KEYS = [
-    '7cre912', '4kpq8m2', '9jnw5vl', '2tsxh6b', '8drfg3c',
+    '7cre962', '4kpq8m2', '9jnw5vl', '2tsxh6b', '8drfg3c',
     '5ywm1vk', '3lbq7nt', '6hxj2ps', '1czk9fw', '4mgr8td',
     '7psd5vw', '2jnk1mb', '9hfx6lr', '5cqw3pt', '8kvj7ys',
     '3rnx2hg', '6tpm4lf', '1bvs9jc', '4wxy5ck', '7dnk2hs',
