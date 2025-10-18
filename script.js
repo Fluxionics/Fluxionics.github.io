@@ -1,23 +1,23 @@
 // ====================================================================
-// script.js - VERSIÓN CONSOLIDADA Y CORREGIDA (Sin doble declaración)
+// script.js - VERSIÓN CON REDIRECCIÓN DIRECTA A TIKTOK (SIN MODAL NI HORARIO)
 // ====================================================================
 
 // --- 0. VARIABLES GLOBALES Y CONFIGURACIÓN ---
 
+// URL de tu perfil de TikTok
 const TIKTOK_URL = 'https://www.tiktok.com/@jlcojvjcl'; 
+
 const TEMA_FORZADO = 'diademuertos'; 
 
 // Obtener elementos principales
 const contenedorPublicaciones = document.getElementById('contenedor-publicaciones');
-const enlacesNav = document.querySelectorAll('.nav-link'); // <-- DECLARACIÓN ÚNICA (CORREGIDO)
+const enlacesNav = document.querySelectorAll('.nav-link'); 
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
 
 // Modales y Enlaces de Acción
 const linkSubir = document.getElementById('link-subir');
 const linkChatAnonimo = document.getElementById('link-chat'); 
-const modalSubir = document.getElementById('modal-subir');
-const closeModalSubir = document.querySelector('.close-modal-subir'); 
 
 // Modal de Media
 const mediaModal = document.getElementById('media-modal');
@@ -29,7 +29,7 @@ let postsData = window.posts || [];
 
 
 // ----------------------------------------------------
-// 1. LÓGICA DE TEMAS Y FECHAS
+// 1. LÓGICA DE TEMAS Y FECHAS (Se mantiene tu lógica)
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
@@ -110,7 +110,7 @@ function aplicarTemaPorFecha() {
 }
 
 
-// --- 2. FUNCIONES PRINCIPALES ---
+// --- 2. FUNCIONES PRINCIPALES (RENDERIZADO Y BÚSQUEDA) ---
 
 function renderPosts(postsToDisplay) {
     contenedorPublicaciones.innerHTML = '';
@@ -126,12 +126,14 @@ function renderPosts(postsToDisplay) {
         postElement.setAttribute('data-seccion', post.seccion);
         
         let mediaHTML = '';
-        if (post.media) {
-            const mediaType = post.media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image';
-            const thumbnailURL = post.media.thumbnail || post.media.url; 
+        if (post.media && post.media.url) { // Verifica si hay una URL de media
+            const url = post.media.url;
+            const mediaType = url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image';
+            // Usa la misma URL para la miniatura si no se especifica una
+            const thumbnailURL = post.media.thumbnail || url; 
             
             mediaHTML = `
-                <div class="post-media" data-url="${post.media.url}" data-type="${mediaType}" data-caption="${post.media.caption || ''}">
+                <div class="post-media" data-url="${url}" data-type="${mediaType}" data-caption="${post.media.caption || ''}">
                     <img src="${thumbnailURL}" alt="${post.titulo}" class="media-thumbnail">
                     <span class="view-icon">🔍</span>
                 </div>
@@ -144,9 +146,9 @@ function renderPosts(postsToDisplay) {
                 <h3 class="post-title">${post.titulo}</h3>
                 <p class="post-seccion">Sección: ${post.seccion}</p>
                 <p class="post-descripcion">${post.descripcion}</p>
-                <p class="post-fecha">${post.fecha}</p>
-                <div class="post-autor" style="border-left-color: ${post.autor.color}">
-                    <p>${post.autor.nombre}</p>
+                <p class="post-fecha">${post.fecha || 'Fecha Desconocida'}</p>
+                <div class="post-autor" style="border-left-color: ${post.autor.color || '#ccc'}">
+                    <p>${post.autor.nombre || 'Anónimo'}</p>
                 </div>
             </div>
         `;
@@ -186,34 +188,7 @@ function buscarPosts(query) {
     renderPosts(postsEncontrados);
 }
 
-function isUploadTimeAllowed() {
-    const now = new Date();
-    const currentHour = now.getHours(); 
-    const currentMinute = now.getMinutes(); 
-
-    const startTimeInMinutes = 690; // 11:30 AM
-    const endTimeInMinutes = 780;   // 1:00 PM (13:00)
-
-    const currentTimeInMinutes = (currentHour * 60) + currentMinute;
-
-    return currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes;
-}
-
-// --- 3. MANEJO DE MODALES ---
-
-function openSubirModal() {
-    if (modalSubir) { 
-        modalSubir.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeSubirModal() {
-    if (modalSubir) {
-        modalSubir.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-}
+// --- 3. MANEJO DE MODALES (Solo Media Viewer) ---
 
 function openMediaModal(e) {
     const mediaDiv = e.currentTarget; 
@@ -243,7 +218,7 @@ function closeMediaViewer() {
 }
 
 
-// --- 4. EVENT LISTENERS ---
+// --- 4. EVENT LISTENERS (Corregidos para TikTok) ---
 
 enlacesNav.forEach(enlace => {
     enlace.addEventListener('click', (e) => {
@@ -274,37 +249,22 @@ searchInput.addEventListener('keypress', (e) => {
     }
 });
 
+
+// 🚨 LÓGICA CORREGIDA: ENLACE SUBIR VA DIRECTO A TIKTOK 🚨
 if (linkSubir) {
     linkSubir.addEventListener('click', (e) => {
         e.preventDefault();
-        
-        if (isUploadTimeAllowed()) {
-            openSubirModal();
-        } else {
-            alert('❌ El envío de publicaciones está abierto solo de 11:30 AM a 1:00 PM. ¡Vuelve a esa hora!');
-        }
+        window.open(TIKTOK_URL, '_blank'); 
     });
 }
-if (closeModalSubir) {
-    closeModalSubir.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeSubirModal();
-    });
-}
-if (modalSubir) {
-    modalSubir.addEventListener('click', (e) => {
-        if (e.target === modalSubir) {
-            closeSubirModal();
-        }
-    });
-}
-
+// 🚨 LÓGICA CORREGIDA: ENLACE CHAT ANÓNIMO VA DIRECTO A TIKTOK 🚨
 if (linkChatAnonimo) {
     linkChatAnonimo.addEventListener('click', (e) => {
         e.preventDefault();
         window.open(TIKTOK_URL, '_blank'); 
     });
 }
+
 
 if (closeMediaModal) {
     closeMediaModal.addEventListener('click', closeMediaViewer);
@@ -320,7 +280,6 @@ if (mediaModal) {
 // --- 5. INICIALIZACIÓN ---
 
 window.onload = () => {
-    // Estas funciones solo se ejecutan si el guarda de index.html NO redirigió al usuario
     aplicarTemaPorFecha();
     filtrarPostsPorSeccion('Todo'); 
     
