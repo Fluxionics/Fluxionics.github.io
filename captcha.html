@@ -3,212 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Temático - Día de Muertos 🕯️</title>
-
+    <title>Verificación de Seguridad - CAPTCHA</title>
     <style>
-        /* CSS INTEGRADO - DISEÑO DÍA DE MUERTOS */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #1a1a1a 0%, #4a235a 100%);
-            color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
+        body { 
+            font-family: sans-serif; 
+            background-color: #f0f0f0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            text-align: center; 
         }
-        .captcha-container {
-            background-color: #2c2c2c;
-            border: 3px solid #ff8c00; /* Naranja de Cempasúchil */
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 0 30px rgba(255, 140, 0, 0.5);
-            max-width: 450px;
-            width: 90%;
-            animation: fadeIn 1s ease-out;
+        .container { 
+            background-color: white; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+            max-width: 500px; 
+            width: 90%; 
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        h1 {
-            color: #ffd700; 
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            border-bottom: 2px dashed #a0522d;
+        h1 { 
+            color: #f39c12; 
+            margin-bottom: 25px; 
+            border-bottom: 2px solid #f39c12;
             padding-bottom: 10px;
         }
-        .fase-pregunta {
-            display: none; /* Oculto inicialmente */
+        .pregunta { 
+            font-size: 1.2em; 
+            margin-bottom: 20px; 
+            font-weight: bold; 
         }
-        .pregunta {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            min-height: 50px; 
-        }
-        .opciones-container button {
-            background-color: #ff8c00;
-            color: #1a1a1a;
+        #opciones-container button {
+            background-color: #e67e22;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 25px;
+            padding: 12px 25px;
+            margin: 8px;
             cursor: pointer;
+            border-radius: 5px;
             font-size: 1em;
-            font-weight: bold;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: background-color 0.3s;
+            width: 90%;
+            max-width: 250px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .opciones-container button:hover {
-            background-color: #ff5722;
-            transform: scale(1.05);
+        #opciones-container button:hover:not(:disabled) { 
+            background-color: #d35400; 
         }
-        .opciones-container button:disabled {
-            background-color: #555;
+        #opciones-container button:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
         }
-        .mensaje {
-            margin-top: 20px;
-            font-weight: bold;
-            min-height: 30px;
-        }
-        .acceso-btn {
-            background-color: #2ecc71; 
-            color: white;
-            padding: 12px 30px;
-            margin-top: 20px;
-            border-radius: 5px;
-            display: none; 
-            text-decoration: none;
-            font-size: 1.1em;
-        }
-
-        /* ESTILO PARA LA CASILLA CLÁSICA DE CAPTCHA */
-        .captcha-simple {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 30px 0;
-            padding: 15px;
-            border: 2px solid #555;
-            border-radius: 5px;
-            background-color: #383838;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .captcha-simple:hover {
-            background-color: #444;
-        }
-        .captcha-simple input[type="checkbox"] {
-            transform: scale(1.5);
-            margin-right: 15px;
-            cursor: pointer;
-        }
-        .captcha-simple label {
-            font-size: 1.3em;
-            font-weight: bold;
+        #mensaje-resultado { 
+            margin-top: 20px; 
+            font-size: 1.2em; 
+            min-height: 20px;
         }
     </style>
 </head>
 <body>
-
-    <div class="captcha-container">
-        <h1>¡Resuelve el Reto del Inframundo! 🕯️</h1>
-        <p id="instruccion-texto">Paso 1: Por favor, verifica que no eres un bot.</p>
+    <div class="container">
+        <h1>Desafío de Día de Muertos 💀</h1>
+        <p>Responde la siguiente pregunta de cultura general mexicana para acceder:</p>
         
-        <div class="captcha-simple" id="fase-simple">
-            <input type="checkbox" id="check-robot" onclick="pasarAFasePregunta()">
-            <label for="check-robot">No soy un robot</label>
-        </div>
+        <div id="pregunta-texto" class="pregunta"></div>
+        <div id="opciones-container"></div>
         
-        <div class="fase-pregunta" id="fase-pregunta-content">
-            <p>Paso 2: Responde la pregunta temática para acceder.</p>
-            <div class="pregunta" id="pregunta-texto"></div>
-            
-            <div class="opciones-container" id="opciones-container">
-            </div>
-            <p class="mensaje" id="mensaje-resultado"></p>
-        </div>
-        
-        <a href="index.html" class="acceso-btn" id="acceso-btn">¡Acceder a la Plataforma!</a>
+        <div id="mensaje-resultado"></div>
     </div>
 
+    <script src="config.js"></script> 
+    
     <script>
-        // JAVASCRIPT INTEGRADO - LÓGICA DEL CAPTCHA (30 PREGUNTAS)
         const preguntas = [
-            // El listado de 30 preguntas que ya tienes (omito aquí por extensión, pero va completo)
-            // --- Preguntas 1 a 10 ---
+            // =========================================================================
+            // 🚨 LISTA COMPLETA DE PREGUNTAS DE DÍA DE MUERTOS 🚨
+            // =========================================================================
             { pregunta: "¿Cuál es la flor principal usada para decorar el altar y guiar a los difuntos?", opciones: ["Rosa", "Girasol", "Cempasúchil", "Orquídea"], respuesta: "Cempasúchil" },
-            { pregunta: "¿Qué dulce tradicionalmente tiene forma de calavera y lleva el nombre del difunto?", opciones: ["Ate de fruta", "Mazapán", "Calavera de azúcar", "Turrón"], respuesta: "Calavera de azúcar" },
-            { pregunta: "¿Cómo se llama el pan endulzado y cubierto de azúcar con 'huesitos'?", opciones: ["Concha", "Pan de Elote", "Pan de Muerto", "Birote"], respuesta: "Pan de Muerto" },
-            { pregunta: "¿Cuál es el nombre de la figura esquelética elegante creada por J.G. Posada?", opciones: ["La Huesuda", "La Catrina", "La Flaca", "El Patas"], respuesta: "La Catrina" },
-            { pregunta: "¿Qué elemento es fundamental en el altar para 'saciar la sed' del difunto?", opciones: ["Vino", "Agua", "Pulque", "Café"], respuesta: "Agua" },
-            { pregunta: "¿En qué estado mexicano es famosa la Noche de Muertos en la Isla de Janitzio?", opciones: ["Oaxaca", "Puebla", "Michoacán", "Chiapas"], respuesta: "Michoacán" },
-            { pregunta: "¿Qué objeto religioso suele colocarse en la parte más alta de un altar de 7 niveles?", opciones: ["La Biblia", "Un Crucifijo", "Una Calavera", "Una Foto"], respuesta: "Un Crucifijo" },
-            { pregunta: "¿Qué nivel de un altar de 7 pisos representa la Tierra?", opciones: ["Primero", "Tercero", "Quinto", "Séptimo"], respuesta: "Tercero" },
-            { pregunta: "¿Qué fruta de color amarillo/naranja se suele usar como candelabro natural?", opciones: ["Mango", "Tangerina", "Calabaza", "Papaya"], respuesta: "Calabaza" },
-            { pregunta: "¿Cuál es el nombre del dios mexica de la muerte y el inframundo?", opciones: ["Huitzilopochtli", "Quetzalcóatl", "Mictlantecuhtli", "Tláloc"], respuesta: "Mictlantecuhtli" },
-            // --- Preguntas 11 a 20 ---
-            { pregunta: "¿El papel picado, fundamental en la decoración, representa el...", opciones: ["Fuego", "Agua", "Viento", "Tierra"], respuesta: "Viento" },
-            { pregunta: "¿En qué días específicos se celebra el Día de Muertos en México?", opciones: ["31 de Octubre y 1 de Nov", "1 y 2 de Noviembre", "29 y 30 de Oct", "2 y 3 de Noviembre"], respuesta: "1 y 2 de Noviembre" },
-            { pregunta: "¿Qué se coloca en el primer nivel del altar?", opciones: ["Comida", "Fotografía", "Sal y agua", "La imagen del santo"], respuesta: "La imagen del santo" },
-            { pregunta: "¿Qué función tiene la luz de las veladoras en el altar?", opciones: ["Calentar la comida", "Iluminar el regreso del alma", "Alejar a los vivos", "Decorar la mesa"], respuesta: "Iluminar el regreso del alma" },
-            { pregunta: "¿Qué mascota prehispánica se cree que acompaña a los difuntos?", opciones: ["Xoloitzcuintle", "Chihuahua", "Quetzal", "Tlacuache"], respuesta: "Xoloitzcuintle" },
-            { pregunta: "¿Qué significa la 'sal' que se coloca en el altar?", opciones: ["Alegría", "Purificación", "Comida", "Amistad"], respuesta: "Purificación" },
-            { pregunta: "¿Qué bebida alcohólica, a base de agave, es común ofrendar?", opciones: ["Cerveza", "Vino Tinto", "Mezcal o Tequila", "Ron"], respuesta: "Mezcal o Tequila" },
-            { pregunta: "¿El 'Petate' se usa en el altar para...", opciones: ["Decoración", "Poner las flores", "Ofrecer un lugar de descanso", "Cubrir la mesa"], respuesta: "Ofrecer un lugar de descanso" },
-            { pregunta: "¿Qué días están dedicados a los niños difuntos (angelitos)?", opciones: ["31 de Octubre", "1 de Noviembre", "2 de Noviembre", "28 de Octubre"], respuesta: "1 de Noviembre" },
-            { pregunta: "¿Qué se dice que representa el color morado en la celebración?", opciones: ["Muerte", "Luto Católico", "Alegría", "Fiesta"], respuesta: "Luto Católico" },
-            // --- Preguntas 21 a 30 ---
-            { pregunta: "¿Qué son las 'calaveritas literarias'?", opciones: ["Dibujos de esqueletos", "Poemas humorísticos", "Recetas de postres", "Cuentos de terror"], respuesta: "Poemas humorísticos" },
-            { pregunta: "¿Qué se coloca para representar la dualidad vida-muerte?", opciones: ["Agua y sal", "Veladoras y flores", "Semillas y comida", "Tzompantli y calaveras"], respuesta: "Agua y sal" },
-            { pregunta: "¿Qué significa el incienso de copal?", opciones: ["Para cocinar", "Para atraer a los vivos", "Para guiar y purificar el ambiente", "Para ocultar el olor"], respuesta: "Para guiar y purificar el ambiente" },
-            { pregunta: "¿El pan de muerto se considera una representación de un...", opciones: ["Ataúd", "Craneo", "Cuerpo humano", "Cempasúchil"], respuesta: "Cuerpo humano" },
-            { pregunta: "¿Cómo se llama el destino final de las almas para los Mexicas?", opciones: ["Paraíso", "Tlalocan", "Mictlán", "Valhalla"], respuesta: "Mictlán" },
-            { pregunta: "¿Qué aves pequeñas simbolizan al mensajero entre vivos y muertos?", opciones: ["Colibríes", "Gorrión", "Búho", "Cuervo"], respuesta: "Colibríes" },
-            { pregunta: "¿Qué bebida ancestral de maíz se ofrenda comúnmente?", opciones: ["Horchata", "Atole", "Chai", "Agua de Jamaica"], respuesta: "Atole" },
-            { pregunta: "¿La Cruz de Cal que se pone en el altar representa...", opciones: ["Un mapa", "Los cuatro puntos cardinales", "El inframundo", "Un camino"], respuesta: "Los cuatro puntos cardinales" },
-            { pregunta: "¿La foto del difunto en el altar se coloca en el nivel...", opciones: ["Primero", "Segundo", "Tercero", "Séptimo"], respuesta: "Segundo" },
-            { pregunta: "¿Qué se ofrenda el 28 de octubre?", opciones: ["Almas que murieron ahogadas", "Almas que murieron de forma trágica", "Almas que murieron por causas naturales", "Almas de los niños"], respuesta: "Almas que murieron de forma trágica" }
+            { pregunta: "¿Qué dulce tradicionalmente tiene forma de calavera?", opciones: ["Ate de fruta", "Mazapán", "Calavera de azúcar", "Turrón"], respuesta: "Calavera de azúcar" },
+            { pregunta: "¿Cómo se llama el pan especial que se hornea para esta fiesta?", opciones: ["Pan de elote", "Pan de muerto", "Pan dulce", "Birote"], respuesta: "Pan de muerto" },
+            { pregunta: "¿Qué figura es común ver en el altar con forma de esqueleto elegante?", opciones: ["Llorona", "Catrina", "Nahual", "Tlaloc"], respuesta: "Catrina" },
+            { pregunta: "¿En qué día se conmemora a los niños difuntos (angelitos)?", opciones: ["31 de octubre", "1 de noviembre", "2 de noviembre", "24 de diciembre"], respuesta: "1 de noviembre" },
+            { pregunta: "¿Qué elemento del altar se usa para purificar el ambiente?", opciones: ["Agua", "Sal", "Incienso o copal", "Velas"], respuesta: "Incienso o copal" },
+            { pregunta: "¿Cuál es el propósito de poner un vaso de agua en el altar?", opciones: ["Para los vivos", "Para el café", "Para calmar la sed del alma", "Para lavar la fruta"], respuesta: "Para calmar la sed del alma" },
+            { pregunta: "¿Cuántos niveles puede tener un altar de muertos tradicional?", opciones: ["Uno o dos", "Siete", "Diez", "Cinco"], respuesta: "Siete" },
+            { pregunta: "¿Qué animal mítico o real se cree que guía a las almas?", opciones: ["Águila", "Xoloitzcuintle", "Serpiente", "Coyote"], respuesta: "Xoloitzcuintle" },
+            { pregunta: "¿Cómo se le llama a los versos humorísticos sobre la muerte y personas vivas?", opciones: ["Rondas", "Villancicos", "Calaveritas literarias", "Romances"], respuesta: "Calaveritas literarias" },
+            { pregunta: "¿Qué civilización prehispánica tenía una diosa de la muerte llamada Mictecacíhuatl?", opciones: ["Maya", "Olmeca", "Azteca (Mexica)", "Inca"], respuesta: "Azteca (Mexica)" },
+            { pregunta: "¿Qué objeto representa la conexión entre el cielo y la tierra en el altar?", opciones: ["El espejo", "El papel picado", "La foto", "El plato de mole"], respuesta: "El papel picado" },
+            { pregunta: "¿Qué se pone en el altar si la persona falleció ahogada?", opciones: ["Una toalla", "Un jabón", "Una figura de pez", "Un vaso de agua"], respuesta: "Una figura de pez" },
+            { pregunta: "¿En qué estado mexicano es famoso el festival de 'La Calaca'?", opciones: ["Oaxaca", "Puebla", "Guanajuato", "Yucatán"], respuesta: "Guanajuato" },
+            { pregunta: "¿Qué alimento se coloca para representar la ofrenda indígena?", opciones: ["Pan Bimbo", "Tortillas", "Tamales", "Sopa"], respuesta: "Tamales" },
+            { pregunta: "¿Qué fruta de temporada es común en los altares?", opciones: ["Manzana", "Naranja o Mandarina", "Plátano", "Mango"], respuesta: "Naranja o Mandarina" },
+            { pregunta: "¿Qué nombre reciben las flores de Cempasúchil en náhuatl?", opciones: ["Flor de Sol", "Flor de Veinte Pétalos", "Flor de Fuego", "Flor de Arena"], respuesta: "Flor de Veinte Pétalos" },
+            { pregunta: "¿Dónde se origina la tradición de 'La Catrina'?", opciones: ["Ciudad de México", "Aguascalientes", "Michoacán", "Veracruz"], respuesta: "Aguascalientes" },
+            { pregunta: "¿Quién popularizó la imagen de La Catrina en murales?", opciones: ["Frida Kahlo", "Diego Rivera", "José Guadalupe Posada", "David Alfaro Siqueiros"], respuesta: "Diego Rivera" },
+            { pregunta: "¿Qué significa el término 'Mictlán'?", opciones: ["El Cielo", "El Inframundo azteca", "El Altar", "El Panteón"], respuesta: "El Inframundo azteca" }
+            // Puedes añadir más preguntas aquí para llegar a 30 o más
+            // =========================================================================
         ];
 
         let preguntaActual = {};
-        const faseSimple = document.getElementById('fase-simple');
-        const fasePreguntaContent = document.getElementById('fase-pregunta-content');
         const preguntaTexto = document.getElementById('pregunta-texto');
         const opcionesContainer = document.getElementById('opciones-container');
         const mensajeResultado = document.getElementById('mensaje-resultado');
-        const accesoBtn = document.getElementById('acceso-btn');
-        const instruccionTexto = document.getElementById('instruccion-texto');
 
-
-        // --- FASE 1: CASILLA ---
-        function pasarAFasePregunta() {
-            const isChecked = document.getElementById('check-robot').checked;
-            
-            if (isChecked) {
-                // Oculta la fase simple y muestra la de preguntas
-                faseSimple.style.display = 'none';
-                fasePreguntaContent.style.display = 'block';
-                instruccionTexto.textContent = "¡Verificación exitosa! Ahora, la prueba final:";
-                seleccionarPregunta();
-            } else {
-                 // Si se desmarca (por si hacen trampa con el inspector)
-                fasePreguntaContent.style.display = 'none';
-                instruccionTexto.textContent = "Paso 1: Por favor, verifica que no eres un bot.";
-            }
-        }
-
-        // --- FASE 2: PREGUNTAS ---
         function seleccionarPregunta() {
-            // Selecciona una pregunta aleatoria
+            // Asegura que haya preguntas disponibles
+            if (preguntas.length === 0) {
+                preguntaTexto.textContent = "Error: No hay preguntas cargadas.";
+                return;
+            }
+
+            // Selecciona una pregunta al azar
             const indice = Math.floor(Math.random() * preguntas.length);
             preguntaActual = preguntas[indice];
             preguntaTexto.textContent = preguntaActual.pregunta;
             
-            // Renderiza las opciones
             opcionesContainer.innerHTML = '';
+            
+            // Crea los botones de opciones
             preguntaActual.opciones.forEach(opcion => {
                 const boton = document.createElement('button');
                 boton.textContent = opcion;
@@ -217,46 +134,36 @@
             });
             
             mensajeResultado.textContent = '';
-            accesoBtn.style.display = 'none';
         }
 
         function verificarRespuesta(seleccion) {
-            // Deshabilita todos los botones para evitar múltiples clics
             const botones = opcionesContainer.querySelectorAll('button');
-            botones.forEach(btn => btn.disabled = true);
+            botones.forEach(btn => btn.disabled = true); // Desactiva botones al responder
 
             if (seleccion === preguntaActual.respuesta) {
-                mensajeResultado.textContent = "¡Respuesta Correcta! Acceso Permitido. ✅";
+                mensajeResultado.textContent = "¡Correcto! Acceso concedido. ✅ Redirigiendo...";
                 mensajeResultado.style.color = '#2ecc71';
                 
-                // 🔑 ESTABLECER BANDERA: Permite que index.html cargue
-                sessionStorage.setItem('AccesoDiaDeMuertos', 'VERIFICADO'); 
+                // *** ACCIÓN CLAVE: Otorga el token de acceso ***
+                localStorage.setItem('content_access_token', 'granted');
                 
-                // Redirigir automáticamente a index.html
                 setTimeout(() => { 
-                    window.location.replace('index.html'); 
-                }, 1000); 
+                    // Redirige al destino final (index.html), obtenido de config.js
+                    window.location.href = FINAL_DESTINATION; 
+                }, 1500);
 
             } else {
-                mensajeResultado.textContent = "Respuesta Incorrecta. Intenta de nuevo. ❌";
+                mensajeResultado.textContent = "Incorrecto. Intenta de nuevo. ❌";
                 mensajeResultado.style.color = '#e74c3c';
                 
-                // Marcar la opción incorrecta
-                botones.forEach(btn => {
-                    if (btn.textContent === seleccion) {
-                        btn.style.backgroundColor = '#e74c3c';
-                    }
-                });
-                
-                // Permitir reintentar después de un momento
+                // Vuelve a cargar otra pregunta después de un breve tiempo
                 setTimeout(() => {
-                    seleccionarPregunta(); // Cargar una nueva pregunta
+                    seleccionarPregunta();
                 }, 1500); 
             }
         }
-        
-        // La fase de pregunta se inicia solo al marcar la casilla.
-        // Aquí no se llama a seleccionarPregunta();
+
+        window.onload = seleccionarPregunta;
     </script>
 </body>
 </html>
