@@ -5,7 +5,7 @@
 // --- 0. VARIABLES GLOBALES Y CONFIGURACIÓN ---
 
 const TIKTOK_URL = 'https://www.tiktok.com/@jlcojvjcl'; 
-const TEMA_FORZADO = 'auto'; 
+const TEMA_FORZADO = 'diademuertos'; 
 
 // Obtener elementos principales
 const contenedorPublicaciones = document.getElementById('contenedor-publicaciones');
