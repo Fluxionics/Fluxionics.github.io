@@ -36,7 +36,7 @@ window.posts = [
         descripcion: "Parece que 'Clarisa' y 'Francisco' estuvieron muy juntos en el recreo de hoy. ¿Confirmamos el siguiente noviazgo?",
         seccion: "Shippeos",
         fecha: "18/Oct",
-        autor: { nombre: "La Investigadora", color: "#33FF57" },
+        autor: { nombre: "Anonimo", color: "#33FF57" },
         media: {
             // Nota: He dejado la primera URL. JS no puede procesar múltiples urlMedia al mismo nivel.
             url: "https://i.imgur.com/8WJT8pk.jpeg",
@@ -82,7 +82,7 @@ window.posts = [
         descripcion: "Los viciosos ",
         seccion: "Humor",
         fecha: "14/Oct",
-        autor: { nombre: "Testigo", color: "#5733FF" },
+        autor: { nombre: "Anonimo", color: "#5733FF" },
         media: {
             url: "https://i.imgur.com/NncU0I9.jpeg",
             caption: "Grupo de viciosos."
@@ -95,7 +95,7 @@ window.posts = [
     {
         titulo: "Aqui No ay Rumores ",
         descripcion: "Por Favor Sube un chisme",
-        seccion: "Chismes", // Dejé "Chismes" aquí, aunque el título dice Rumores. Usa el que tienes en el nav.
+        seccion: "Rumor", // Dejé "Chismes" aquí, aunque el título dice Rumores. Usa el que tienes en el nav.
         fecha: "12/Oct",
         autor: { nombre: "Admin", color: "#33FFC7" },
         media: {
@@ -106,7 +106,7 @@ window.posts = [
     {
         titulo: "Nuevo Shippeo H y S ",
         descripcion: "Hellen y Se??????? El nombre se revelara cada lestra cada dia ",
-        seccion: "Chismes",
+        seccion: "Rumor",
         fecha: "11/Oct",
         autor: { nombre: "El Enigmático", color: "#33FFC7" },
         media: { url: "", caption: "" }
