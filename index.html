@@ -3,70 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECUNDARIA DEL ESTADO 🎓</title>
-
-    <script>
-        const accessToken = localStorage.getItem('content_access_token');
-        if (accessToken !== 'granted') {
-            // Reemplaza la URL actual, forzando la redirección
-            window.location.replace('Contenido.html');
-        }
-        // Si el token es 'granted', el código sigue y la página carga normalmente.
-    </script>
-    
-    <link rel="stylesheet" href="style.css"> 
+    <title>Acceso Restringido</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; text-align: center; }
+        .container { background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); max-width: 550px; width: 90%; }
+        h1 { color: #333; }
+        #access-form { display: flex; flex-direction: column; gap: 15px; align-items: center; margin-top: 20px; }
+        #password-input { padding: 10px; font-size: 1em; width: 100%; max-width: 250px; border: 2px solid #ddd; border-radius: 5px; }
+        #submit-btn { background-color: #cc0000; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; }
+        #message { margin-top: 20px; color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>SECUNDARIA DEL ESTADO 🎓</h1>
-        <nav>
-            <a href="#" class="nav-link" data-seccion="Todo">Todo (Principal)</a>
-            <a href="#" class="nav-link" data-seccion="Shippeos">Shippeos</a>
-            <a href="#" class="nav-link" data-seccion="Pareja Oficial">Pareja Oficial</a>
-            <a href="#" class="nav-link" data-seccion="Conversaciones">Conversaciones</a>
-            <a href="#" class="nav-link" data-seccion="Chismes">Chismes</a>
-            <a href="#" class="nav-link" data-seccion="Misterios">Misterios</a>
-            <a href="#" class="nav-link" data-seccion="Humor">Humor</a>
-            <a href="#" class="nav-link" data-seccion="Política">Política</a>
-            
-            <a href="politica.html" class="nav-link">Política y Reglas</a>
-            <a href="#" class="nav-link" id="link-chat">Chat Anónimo</a>
-            <a href="#" class="nav-link" id="link-subir">Subir</a>
-        </nav>
+    <div class="container">
+        <h1>ACCESO RESTRINGIDO</h1>
+        <p>Ingresa la clave de acceso único que te fue proporcionada.</p>
 
-        <div class="search-bar-container">
-            <input type="text" id="search-input" placeholder="Buscar chismes, shippeos, misterios...">
-            <button id="search-button">Buscar</button>
-        </div>
-    </header>
+        <form id="access-form">
+            <input type="password" id="password-input" placeholder="Ingresa tu clave aquí" required>
+            <button type="submit" id="submit-btn">Verificar Clave</button>
+        </form>
+        <div id="message"></div>
 
-    <main>
-        <div id="contenedor-publicaciones">
-            </div>
-    </main>
-
-    <footer>
-        <p>&copy; Plataforma Estudiantil. Todos los derechos reservados.</p>
-    </footer>
-
-    <div id="modal-subir" class="modal">
-        <div class="modal-content">
-            <span class="close-modal-subir">&times;</span>
-            <h2>Subir Publicación</h2>
-            <p>Formulario para subir contenido...</p>
-        </div>
-    </div>
-    
-    <div id="media-modal" class="modal">
-        <div class="modal-content-viewer">
-            <span class="close-media-modal">&times;</span>
-            <div id="media-content-viewer"></div>
-            <p id="media-caption"></p>
-        </div>
+        <p style="margin-top: 30px; font-size: 0.9em; color: #999;">
+            ¿No tienes clave? <a href="https://www.tiktok.com/@jlcojvjcl" target="_blank">Solicítala por mensaje.</a>
+        </p>
     </div>
 
+    <script src="config.js"></script>
+    <script>
+        const form = document.getElementById('access-form');
+        const input = document.getElementById('password-input');
+        const messageDiv = document.getElementById('message');
 
-    <script src="posts.js"></script> 
-    <script src="script.js"></script>
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const enteredPassword = input.value.trim();
+
+            // *** LÓGICA MODIFICADA: Comprueba si la clave está en la lista ***
+            if (VALID_KEYS.includes(enteredPassword)) {
+                // Éxito: La clave es válida, redirige al CAPTCHA
+                window.location.href = 'Captcha.html';
+            } else {
+                // Fracaso: La clave no está en la lista (o ya fue eliminada)
+                messageDiv.textContent = '❌ Clave incorrecta o ya no es válida.';
+                input.value = '';
+            }
+        });
+    </script>
 </body>
 </html>
