@@ -5,35 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificación de Seguridad - CAPTCHA</title>
     <style>
-        body { 
-            font-family: sans-serif; 
-            background-color: #f0f0f0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            text-align: center; 
-        }
-        .container { 
-            background-color: white; 
-            padding: 40px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-            max-width: 500px; 
-            width: 90%; 
-        }
-        h1 { 
-            color: #f39c12; 
-            margin-bottom: 25px; 
-            border-bottom: 2px solid #f39c12;
-            padding-bottom: 10px;
-        }
-        .pregunta { 
-            font-size: 1.2em; 
-            margin-bottom: 20px; 
-            font-weight: bold; 
-        }
+        body { font-family: sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; text-align: center; }
+        .container { background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); max-width: 500px; width: 90%; }
+        h1 { color: #f39c12; margin-bottom: 25px; border-bottom: 2px solid #f39c12; padding-bottom: 10px; }
+        .pregunta { font-size: 1.2em; margin-bottom: 20px; font-weight: bold; }
         #opciones-container button {
             background-color: #e67e22;
             color: white;
@@ -50,18 +25,9 @@
             margin-left: auto;
             margin-right: auto;
         }
-        #opciones-container button:hover:not(:disabled) { 
-            background-color: #d35400; 
-        }
-        #opciones-container button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        #mensaje-resultado { 
-            margin-top: 20px; 
-            font-size: 1.2em; 
-            min-height: 20px;
-        }
+        #opciones-container button:hover:not(:disabled) { background-color: #d35400; }
+        #opciones-container button:disabled { opacity: 0.6; cursor: not-allowed; }
+        #mensaje-resultado { margin-top: 20px; font-size: 1.2em; min-height: 20px; }
     </style>
 </head>
 <body>
@@ -80,52 +46,201 @@
     <script>
         const preguntas = [
             // =========================================================================
-            // 🚨 LISTA COMPLETA DE PREGUNTAS DE DÍA DE MUERTOS 🚨
+            // 🚨 TUS PREGUNTAS (Añade o modifica las que necesites) 🚨
             // =========================================================================
-            { pregunta: "¿Cuál es la flor principal usada para decorar el altar y guiar a los difuntos?", opciones: ["Rosa", "Girasol", "Cempasúchil", "Orquídea"], respuesta: "Cempasúchil" },
-            { pregunta: "¿Qué dulce tradicionalmente tiene forma de calavera?", opciones: ["Ate de fruta", "Mazapán", "Calavera de azúcar", "Turrón"], respuesta: "Calavera de azúcar" },
-            { pregunta: "¿Cómo se llama el pan especial que se hornea para esta fiesta?", opciones: ["Pan de elote", "Pan de muerto", "Pan dulce", "Birote"], respuesta: "Pan de muerto" },
-            { pregunta: "¿Qué figura es común ver en el altar con forma de esqueleto elegante?", opciones: ["Llorona", "Catrina", "Nahual", "Tlaloc"], respuesta: "Catrina" },
-            { pregunta: "¿En qué día se conmemora a los niños difuntos (angelitos)?", opciones: ["31 de octubre", "1 de noviembre", "2 de noviembre", "24 de diciembre"], respuesta: "1 de noviembre" },
-            { pregunta: "¿Qué elemento del altar se usa para purificar el ambiente?", opciones: ["Agua", "Sal", "Incienso o copal", "Velas"], respuesta: "Incienso o copal" },
-            { pregunta: "¿Cuál es el propósito de poner un vaso de agua en el altar?", opciones: ["Para los vivos", "Para el café", "Para calmar la sed del alma", "Para lavar la fruta"], respuesta: "Para calmar la sed del alma" },
-            { pregunta: "¿Cuántos niveles puede tener un altar de muertos tradicional?", opciones: ["Uno o dos", "Siete", "Diez", "Cinco"], respuesta: "Siete" },
-            { pregunta: "¿Qué animal mítico o real se cree que guía a las almas?", opciones: ["Águila", "Xoloitzcuintle", "Serpiente", "Coyote"], respuesta: "Xoloitzcuintle" },
-            { pregunta: "¿Cómo se le llama a los versos humorísticos sobre la muerte y personas vivas?", opciones: ["Rondas", "Villancicos", "Calaveritas literarias", "Romances"], respuesta: "Calaveritas literarias" },
-            { pregunta: "¿Qué civilización prehispánica tenía una diosa de la muerte llamada Mictecacíhuatl?", opciones: ["Maya", "Olmeca", "Azteca (Mexica)", "Inca"], respuesta: "Azteca (Mexica)" },
-            { pregunta: "¿Qué objeto representa la conexión entre el cielo y la tierra en el altar?", opciones: ["El espejo", "El papel picado", "La foto", "El plato de mole"], respuesta: "El papel picado" },
-            { pregunta: "¿Qué se pone en el altar si la persona falleció ahogada?", opciones: ["Una toalla", "Un jabón", "Una figura de pez", "Un vaso de agua"], respuesta: "Una figura de pez" },
-            { pregunta: "¿En qué estado mexicano es famoso el festival de 'La Calaca'?", opciones: ["Oaxaca", "Puebla", "Guanajuato", "Yucatán"], respuesta: "Guanajuato" },
-            { pregunta: "¿Qué alimento se coloca para representar la ofrenda indígena?", opciones: ["Pan Bimbo", "Tortillas", "Tamales", "Sopa"], respuesta: "Tamales" },
-            { pregunta: "¿Qué fruta de temporada es común en los altares?", opciones: ["Manzana", "Naranja o Mandarina", "Plátano", "Mango"], respuesta: "Naranja o Mandarina" },
-            { pregunta: "¿Qué nombre reciben las flores de Cempasúchil en náhuatl?", opciones: ["Flor de Sol", "Flor de Veinte Pétalos", "Flor de Fuego", "Flor de Arena"], respuesta: "Flor de Veinte Pétalos" },
-            { pregunta: "¿Dónde se origina la tradición de 'La Catrina'?", opciones: ["Ciudad de México", "Aguascalientes", "Michoacán", "Veracruz"], respuesta: "Aguascalientes" },
-            { pregunta: "¿Quién popularizó la imagen de La Catrina en murales?", opciones: ["Frida Kahlo", "Diego Rivera", "José Guadalupe Posada", "David Alfaro Siqueiros"], respuesta: "Diego Rivera" },
-            { pregunta: "¿Qué significa el término 'Mictlán'?", opciones: ["El Cielo", "El Inframundo azteca", "El Altar", "El Panteón"], respuesta: "El Inframundo azteca" }
-            // Puedes añadir más preguntas aquí para llegar a 30 o más
-            // =========================================================================
-        ];
+  { pregunta: "¿Cuál es la flor principal usada para decorar el altar y guiar a los difuntos?", opciones: ["Rosa", "Girasol", "Cempasúchil", "Orquídea"], respuesta: "Cempasúchil" },
+  { pregunta: "¿Qué dulce tradicionalmente tiene forma de calavera?", opciones: ["Ate de fruta", "Mazapán", "Calavera de azúcar", "Turrón"], respuesta: "Calavera de azúcar" },
+  { pregunta: "¿Cómo se llama el pan especial que se hornea para esta fiesta?", opciones: ["Pan de elote", "Pan de muerto", "Pan dulce", "Birote"], respuesta: "Pan de muerto" },
+  { pregunta: "¿Qué figura es común ver en el altar con forma de esqueleto elegante?", opciones: ["Llorona", "Catrina", "Nahual", "Tlaloc"], respuesta: "Catrina" },
+  { pregunta: "¿En qué día se conmemora a los niños difuntos (angelitos)?", opciones: ["31 de octubre", "1 de noviembre", "2 de noviembre", "24 de diciembre"], respuesta: "1 de noviembre" },
+  { pregunta: "¿Qué elemento del altar se usa para purificar el ambiente?", opciones: ["Agua", "Sal", "Incienso o copal", "Velas"], respuesta: "Incienso o copal" },
+  { pregunta: "¿Qué animal mítico o real se cree que guía a las almas?", opciones: ["Águila", "Xoloitzcuintle", "Serpiente", "Coyote"], respuesta: "Xoloitzcuintle" },
+  { pregunta: "¿En qué estado mexicano es famoso el festival de 'La Calaca'?", opciones: ["Oaxaca", "Puebla", "Guanajuato", "Yucatán"], respuesta: "Guanajuato" },
+
+  // Preguntas avanzadas - Raíces prehispánicas
+  { pregunta: "¿Cuál es la deidad azteca del Inframundo a la que se honra en esta festividad?", opciones: ["Quetzalcóatl", "Mictlantecuhtli", "Huitzilopochtli", "Tezcatlipoca"], respuesta: "Mictlantecuhtli" },
+  { pregunta: "¿Cómo se llama el lugar del Inframundo en la mitología mexica?", opciones: ["Xibalbá", "Mictlán", "Xibalba", "Omeyocan"], respuesta: "Mictlán" },
+  { pregunta: "¿Quién fue la esposa de Mictlantecuhtli en la mitología azteca?", opciones: ["Cihuacóatl", "Mictlancihuatl", "Coatlicue", "Chalchiuhtlicue"], respuesta: "Mictlancihuatl" },
+  { pregunta: "¿Cuál era el nombre del viaje que hacían las almas en el Mictlán según los aztecas?", opciones: ["Chiconauhpan", "Chiconacalli", "Nahui-Ollin", "Tonacatépetl"], respuesta: "Chiconauhpan" },
+  { pregunta: "¿Qué civilización mesoamericana consideraba el maíz como sustancia sagrada de vida?", opciones: ["Toltecas", "Mayas", "Aztecas", "Olmecas"], respuesta: "Mayas" },
+  { pregunta: "¿En cuál de estas regiones prehispánicas se originó la tradición de honrar a los muertos?", opciones: ["Zona maya", "Teotihuacán", "Mesoamérica", "Zona del Bajío"], respuesta: "Mesoamérica" },
+
+  // Preguntas sobre sincretismo
+  { pregunta: "¿Qué santo cristiano se asocia frecuentemente con el Día de Muertos?", opciones: ["San Pedro", "Todos Santos", "San Juan", "San Andrés"], respuesta: "Todos Santos" },
+  { pregunta: "¿Cómo influyó la conquista española en la celebración del Día de Muertos?", opciones: ["La eliminó completamente", "Se fusionó con tradiciones católicas", "La trasladó a otra fecha", "La prohibió legalmente"], respuesta: "Se fusionó con tradiciones católicas" },
+  { pregunta: "¿Qué festivity católica se mezcló con las tradiciones prehispánicas?", opciones: ["Pascua de Resurrección", "Festividad de Todos Santos", "Corpus Christi", "Día de la Candelaria"], respuesta: "Festividad de Todos Santos" },
+
+  // Preguntas geográficas regionales
+  { pregunta: "¿Cuál es la región de México donde el Día de Muertos es patrimonio cultural inmaterial de la UNESCO?", opciones: ["Oaxaca", "Michoacán", "Pueblo entero", "Guanajuato"], respuesta: "Pueblo entero" },
+  { pregunta: "¿En Michoacán, ¿qué pueblo es especialmente famoso por sus celebraciones en los panteones?", opciones: ["Janitzio", "Patzcuaro", "Tzintzuntzan", "Salinas"], respuesta: "Janitzio" },
+  { pregunta: "¿Qué pueblo de Oaxaca es famoso por las ofrendas comunitarias gigantes?", opciones: ["Tlacolula", "Ocotlán", "Huamelula", "Etla"], respuesta: "Tlacolula" },
+  { pregunta: "¿En qué estado se celebra el 'Festival del Muerto' con especial énfasis en calaveras literarias?", opciones: ["Guanajuato", "Jalisco", "Querétaro", "Aguascalientes"], respuesta: "Guanajuato" },
+  { pregunta: "¿Cuál es el lugar de Michoacán conocido como 'La Isla de los Espíritus'?", opciones: ["Isla de Janitzio", "Isla de Yunuén", "Isla de Pacanda", "Isla Tecuena"], respuesta: "Isla de Janitzio" },
+
+  // Preguntas sobre alimentos
+  { pregunta: "¿Cuál es la bebida prehispánica que aún se consume en las ofrendas?", opciones: ["Pulque", "Tepache", "Atole", "Champurrado"], respuesta: "Pulque" },
+  { pregunta: "¿Qué significado tiene el mole negro en las ofrendas del Día de Muertos?", opciones: ["Muerte y luto", "Fertilidad", "Protección", "Comunicación con difuntos"], respuesta: "Muerte y luto" },
+  { pregunta: "¿Cuál es la fruta asociada con la ofrenda de Día de Muertos que representa lo dulce de la vida?", opciones: ["Caña de azúcar", "Calaveritas de dulce", "Calabaza", "Tejate"], respuesta: "Calaveritas de dulce" },
+  { pregunta: "¿Qué es el 'fiambre' en Oaxaca?", opciones: ["Un pan dulce", "Un platillo especial de Día de Muertos", "Una bebida fermentada", "Un tipo de incienso"], respuesta: "Un platillo especial de Día de Muertos" },
+  { pregunta: "¿Cuál es el ingrediente secreto tradicional del mole para Día de Muertos?", opciones: ["Chocolate amargo", "Chiles secos", "Avellana", "Canela en exceso"], respuesta: "Chocolate amargo" },
+  { pregunta: "¿Qué representa simbólicamente el pan de muerto con forma de calavera?", opciones: ["La muerte", "La vida eterna", "La fertilidad", "El inframundo"], respuesta: "La vida eterna" },
+
+  // Preguntas sobre símbolos
+  { pregunta: "¿Qué representa la calavera de azúcar con el nombre del difunto?", opciones: ["Burla a la muerte", "Recordatorio del difunto", "Ofrenda ritual", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cuál es el significado del agua en el altar de muertos?", opciones: ["Purificación", "Sed del difunto", "Reflejo del espíritu", "Todas son correctas"], respuesta: "Todas son correctas" },
+  { pregunta: "¿Qué representan las velas en el altar?", opciones: ["Luz para guiar almas", "Protección", "Conexión con lo divino", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cuál es el significado de poner la ropa del difunto en el altar?", opciones: ["Comodidad en el más allá", "Identificación", "Ritual de bienvenida", "Recuerdo tangible"], respuesta: "Ritual de bienvenida" },
+
+  // Preguntas sobre calaveras literarias
+  { pregunta: "¿Cuándo se popularizaron las calaveras literarias en México?", opciones: ["Siglo XVI", "Siglo XVIII", "Siglo XIX", "Siglo XX"], respuesta: "Siglo XIX" },
+  { pregunta: "¿Cuál es la función principal de las calaveras literarias?", opciones: ["Criticar de forma satírica y burlona", "Honrar a los difuntos", "Entretener", "Educar sobre la muerte"], respuesta: "Criticar de forma satírica y burlona" },
+  { pregunta: "¿En qué periódico mexicano se publicaron las primeras calaveras literarias documentadas?", opciones: ["El Universal", "El Federalista", "La Voz de México", "El Monitor Republicano"], respuesta: "El Monitor Republicano" },
+  { pregunta: "¿Qué característica tiene la rima en las calaveras literarias?", opciones: ["Libre", "Consonante obligatoria", "Décimas", "Sonetos"], respuesta: "Libre" },
+
+  // Preguntas sobre costumbres
+  { pregunta: "¿Cuál es la tradición de 'rezandera' en algunas partes de México?", opciones: ["Una mujer que canta", "Una oración especial para los muertos", "Una danza ceremonial", "Un tipo de ofrenda"], respuesta: "Una oración especial para los muertos" },
+  { pregunta: "¿Qué es la 'velación' en el contexto del Día de Muertos?", opciones: ["Velar en vigilia al difunto", "Colocar velas en el altar", "Rezar toda la noche", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cuál es la tradición de 'cambiar las flores' en el altar?", opciones: ["Renovación espiritual diaria", "Símbolo de fugacidad", "Ofrenda completa", "Ritual obligatorio"], respuesta: "Renovación espiritual diaria" },
+
+  // Preguntas sobre música
+  { pregunta: "¿Cuál es el género musical tradicionalmente asociado con el Día de Muertos?", opciones: ["Son jarocho", "Corrido", "Réquiem", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Qué instrumento prehispánico se usaba en celebraciones mortuorias?", opciones: ["Caracola", "Tambor", "Flauta de caña", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+
+  // Preguntas sobre prácticas regionales
+  { pregunta: "¿Cuál es la costumbre en Oaxaca de colocar flores en forma de cruz?", opciones: ["Cristianismo", "Tradición prehispánica", "Sincretismo religioso", "Protección"], respuesta: "Sincretismo religioso" },
+  { pregunta: "¿Qué es el 'aguardiente' en las ofrendas de algunas regiones?", opciones: ["Una bebida alcohólica", "Bebida ritual", "Ofrenda para el difunto", "Todas son correctas"], respuesta: "Todas son correctas" },
+
+  // Preguntas sobre historia colonial
+  { pregunta: "¿En qué siglo la iglesia católica intentó eliminar la celebración del Día de Muertos?", opciones: ["XVI", "XVII", "XVIII", "XIX"], respuesta: "XVI" },
+  { pregunta: "¿Cuál fue la estrategia de la iglesia para incorporar esta celebración?", opciones: ["Prohibición total", "Sincretismo: mezclar con santos católicos", "Eliminación gradual", "Relocalización de fechas"], respuesta: "Sincretismo: mezclar con santos católicos" },
+
+  // Preguntas sobre literatura
+  { pregunta: "¿Quién escribió 'La muerte me debe una vida' relacionado con Día de Muertos?", opciones: ["Octavio Paz", "Carlos Fuentes", "Juan Rulfo", "Laura Esquivel"], respuesta: "Octavio Paz" },
+  { pregunta: "¿En qué obra maestra se describe profundamente la relación mexicana con la muerte?", opciones: ["Cien años de soledad", "El laberinto de la soledad", "Como agua para chocolate", "La región más transparente"], respuesta: "El laberinto de la soledad" },
+
+  // Preguntas sobre arte
+  { pregunta: "¿Quién fue la artista que plasmó el Día de Muertos en sus autorrotamos?", opciones: ["Remedios Varo", "Leonora Carrington", "Frida Kahlo", "María Izquierdo"], respuesta: "Frida Kahlo" },
+  { pregunta: "¿Cuál es el movimiento artístico que rescató la relevancia del Día de Muertos?", opciones: ["Cubismo", "Surrealismo", "Muralismo", "Expresionismo"], respuesta: "Muralismo" },
+
+  // Preguntas sobre números y fechas
+  { pregunta: "¿Cuántos días aproximadamente dura la celebración del Día de Muertos?", opciones: ["1 día", "3 días", "5 días", "Una semana"], respuesta: "3 días" },
+  { pregunta: "¿Cuántos escalones debe tener la ofrenda tradicional según algunas creencias?", opciones: ["3", "5", "7", "9"], respuesta: "7" },
+
+  // Preguntas sobre leyendas
+  { pregunta: "¿Quién es la 'Llorona' en la mitología mexicana relacionada con Día de Muertos?", opciones: ["Una princesa azteca", "Una mujer que llora por sus hijos muertos", "Una deidad prehispánica", "Un espíritu protector"], respuesta: "Una mujer que llora por sus hijos muertos" },
+  { pregunta: "¿Qué es la 'Parca' en la tradición mexicana?", opciones: ["Una flor", "La personificación de la muerte", "Un tipo de ofrenda", "Una danza"], respuesta: "La personificación de la muerte" },
+
+  // Preguntas sobre práctica actual
+  { pregunta: "¿Cuándo fue declarado el Día de Muertos patrimonio de la humanidad por la UNESCO?", opciones: ["2001", "2003", "2005", "2008"], respuesta: "2003" },
+  { pregunta: "¿Qué región fue la primera en ser reconocida como patrimonio inmaterial?", opciones: ["Michoacán", "Oaxaca", "Puebla y Tlaxcala", "Guanajuato"], respuesta: "Puebla y Tlaxcala" },
+
+  // Preguntas sobre elementos menores
+  { pregunta: "¿Cuál es el significado de la sal en el altar?", opciones: ["Preservación", "Purificación", "Protección del mal", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Qué representan las velas moradas en algunos altares?", opciones: ["Dolor", "Duelo", "Espiritualidad", "Todas son correctas"], respuesta: "Todas son correctas" },
+
+  // Preguntas sobre sincretismo profundo
+  { pregunta: "¿Cómo se llama la fusión de creencias prehispánicas y católicas?", opciones: ["Sincretismo", "Sincretización", "Hibridez cultural", "Aculturación"], respuesta: "Sincretismo" },
+  { pregunta: "¿Cuál fue el papel de los evangelizadores en la adopción del Día de Muertos?", opciones: ["Eliminarlo", "Tolerarlo e integrarlo", "Modificarlo completamente", "Crear uno nuevo"], respuesta: "Tolerarlo e integrarlo" },
+
+  // Preguntas sobre variaciones regionales
+  { pregunta: "¿Cómo se celebra el Día de Muertos en Yucatán de forma diferente?", opciones: ["Con coloridas celebraciones", "Con rituales más austeros", "Con procesiones acuáticas", "Sin celebración importante"], respuesta: "Con rituales más austeros" },
+  { pregunta: "¿Qué estado mexicano tiene la celebración más espectacular según estudios antropológicos?", opciones: ["Oaxaca", "Michoacán", "Guanajuato", "Puebla"], respuesta: "Oaxaca" },
+
+  // Preguntas sobre etimología
+  { pregunta: "¿Cuál es el origen del término 'Cempasúchil'?", opciones: ["Náhuatl", "Maya", "Español", "Afro-mexicano"], respuesta: "Náhuatl" },
+  { pregunta: "¿Qué significa 'Mictlantecuhtli' en náhuatl?", opciones: ["Señor de la casa de los muertos", "Guía de almas", "Rey del inframundo", "Las dos primeras"], respuesta: "Las dos primeras" },
+  { pregunta: "¿Cuál es el significado literal de 'Día de Muertos'?", opciones: ["Día dedicado a los difuntos", "Celebración de la muerte", "Fiesta de los espíritus", "Conmemoración anual"], respuesta: "Día dedicado a los difuntos" },
+
+  // Preguntas sobre rituales específicos
+  { pregunta: "¿Cuál es el ritual de 'limpiar el camino' en Día de Muertos?", opciones: ["Limpiar la casa", "Preparar el camino con flores para el alma", "Barrer el panteón", "Despejar obstáculos físicos"], respuesta: "Preparar el camino con flores para el alma" },
+  { pregunta: "¿Qué significa 'pedir permiso' en el altar de muertos?", opciones: ["Pedir al difunto bendiciones", "Rituales de respeto y comunicación", "Introducción formal a la ofrenda", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+
+  // Preguntas sobre comparativas
+  { pregunta: "¿Cuál es la principal diferencia entre el Día de Muertos mexicano y el Día de Difuntos español?", opciones: ["Fecha diferente", "Tono más festivo vs solemne", "Elementos prehispánicos", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cómo se diferencia el Día de Muertos del Halloween?", opciones: ["Propósito y significado", "Origen cultural", "Símbolos utilizados", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+
+  // Preguntas sobre economía
+  { pregunta: "¿Cuál es la importancia económica del Día de Muertos en México?", opciones: ["Generación de empleo", "Turismo cultural", "Venta de flores y alimentos", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Qué productos se comercializan más durante Día de Muertos?", opciones: ["Flores", "Alimentos especiales", "Artesanías", "Todas son correctas"], respuesta: "Todas son correctas" },
+
+  // Preguntas sobre UNESCO
+  { pregunta: "¿En qué categoría fue declarado patrimonio el Día de Muertos?", opciones: ["Patrimonio material", "Patrimonio inmaterial", "Patrimonio natural", "Bien cultural"], respuesta: "Patrimonio inmaterial" },
+  { pregunta: "¿Cuántos años lleva el Día de Muertos como patrimonio de la humanidad?", opciones: ["20 años", "15 años", "10 años", "5 años"], respuesta: "20 años" },
+
+  // Preguntas sobre psicología y filosofía
+  { pregunta: "¿Cómo influye el Día de Muertos en la relación de los mexicanos con la muerte?", opciones: ["Reduce el miedo", "La familiariza", "La ve como parte de la vida", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cuál es el concepto filosófico detrás de la celebración?", opciones: ["Ciclo de vida-muerte", "Continuidad del ser", "Comunión con antepasados", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+
+  // Preguntas sobre educación
+  { pregunta: "¿En qué grado escolar se enseña principalmente la tradición del Día de Muertos?", opciones: ["Primaria", "Secundaria", "Bachillerato", "Primaria y secundaria"], respuesta: "Primaria y secundaria" },
+  { pregunta: "¿Cuál es el objetivo pedagógico al enseñar sobre Día de Muertos?", opciones: ["Conocer la cultura", "Comprender la muerte", "Valorar tradiciones", "Todas son correctas"], respuesta: "Todas son correctas" },
+
+  // Preguntas sobre películas y cultura pop
+  { pregunta: "¿Cuál fue la película de Pixar que popularizó mundialmente el Día de Muertos?", opciones: ["Coco", "Rememorando", "La tierra de los muertos", "Espíritus"], respuesta: "Coco" },
+  { pregunta: "¿Qué elemento de la película 'Coco' se basa en tradición real?", opciones: ["La flor de cempasúchil", "La familia reunida", "La música", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+
+  // Preguntas sobre ciencias sociales
+  { pregunta: "¿Cuál es el aporte del Día de Muertos a la antropología mexicana?", opciones: ["Estudio de sincretismo", "Comprensión de cosmovisión", "Análisis de rituales", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cómo se estudia el Día de Muertos en la sociología?", opciones: ["Como fenómeno social", "Como identidad cultural", "Como expresión comunitaria", "Todas son correctas"], respuesta: "Todas son correctas" },
+
+  // Preguntas muy específicas
+  { pregunta: "¿Cuáles eran los sacrificios ofrendados en el Mictlán según los aztecas?", opciones: ["Flores", "Animales", "Comida", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿En qué festividad prehispánica se originó parcialmente el Día de Muertos?", opciones: ["Miccaílhuitl", "Toxcatl", "Xocotlhuetzi", "Ochpaniztli"], respuesta: "Miccaílhuitl" },
+  { pregunta: "¿Cuántos meses duraba la fiesta de Miccaílhuitl?", opciones: ["1", "2", "3", "Varies por región"], respuesta: "2" },
+
+  // Preguntas sobre velas de colores
+  { pregunta: "¿Qué representa la vela blanca en el altar de muertos?", opciones: ["Pureza", "Paz", "Espiritualidad", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cuál es el significado de la vela amarilla?", opciones: ["Alegría", "Iluminación", "Guía espiritual", "Recuerdo del difunto"], respuesta: "Guía espiritual" },
+
+  // Más preguntas regionales
+  { pregunta: "¿En Guerrero, cómo se llama la vigilia de Día de Muertos?", opciones: ["Velada", "Velorio", "Vigilancia", "Rezo nocturno"], respuesta: "Velada" },
+  { pregunta: "¿Qué particularidad tiene la celebración en las comunidades indígenas?", opciones: ["Más ritualista", "Menos litúrgica", "Más sincretista", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+
+  // Preguntas sobre documentación
+  { pregunta: "¿Cuál es el primer documento que menciona la celebración de Día de Muertos?", opciones: ["Códice Mendocino", "Códice Borbónico", "Códice Florentino", "Crónicas de Sahagún"], respuesta: "Códice Florentino" },
+  { pregunta: "¿Qué sacerdote documentó ampliamente las celebraciones del Día de Muertos?", opciones: ["Fray Diego Durán", "Fray Bernardino de Sahagún", "Fray Juan de Torquemada", "Fray Antonio de Remesal"], respuesta: "Fray Bernardino de Sahagún" },
+
+  // Preguntas sobre adaptaciones modernas
+  { pregunta: "¿Cómo ha evolucionado la celebración en el siglo XXI?", opciones: ["Mayor comercialización", "Fusión con Halloween", "Globalización", "Todas las anteriores"], respuesta: "Todas las anteriores" },
+  { pregunta: "¿Cuál es el impacto del Día de Muertos en las redes sociales?", opciones: ["Mayor difusión", "Trivialización", "Educación cultural", "Todas son correctas"], respuesta: "Todas son correctas" },
+
+  // Preguntas sobre idioma
+  { pregunta: "¿Cuántos idiomas indígenas en México tienen una palabra específica para esta celebración?", opciones: ["5", "10", "15", "Más de 20"], respuesta: "Más de 20" },
+  { pregunta: "¿Cómo se dice Día de Muertos en lengua maya?", opciones: ["Hanal Pixan", "Xibalbá", "Kimi-Ób", "Hoil kú"], respuesta: "Hanal Pixan" },
+
+  // Preguntas finales desafiantes
+  { pregunta: "¿Cuál es la profundidad filosófica de la aceptación de la muerte en el Día de Muertos?", opciones: ["Resignación fatiga", "Comprensión del ciclo vital", "Desafío a la muerte", "Comunión espiritual"], respuesta: "Comprensión del ciclo vital" },
+  { pregunta: "¿Cómo contribuye el Día de Muertos a la identidad nacional mexicana?", opciones: ["Símbolo de mestizaje", "Resistencia cultural", "Identidad colectiva", "Todas las anteriores"], respuesta: "Todas las anteriores" }
+];
 
         let preguntaActual = {};
         const preguntaTexto = document.getElementById('pregunta-texto');
         const opcionesContainer = document.getElementById('opciones-container');
         const mensajeResultado = document.getElementById('mensaje-resultado');
+        
+        // ** NUEVA FUNCIÓN CLAVE: Guardar token con Expiración **
+        function setAccessTokenWithExpiration() {
+            // Calcula la hora de expiración (Hora actual + 1 hora en milisegundos)
+            const now = new Date();
+            const expiryTime = now.getTime() + (60 * 60 * 1000); // 1 hora en milisegundos
+
+            const tokenData = {
+                value: 'granted',
+                expiry: expiryTime
+            };
+
+            // Guarda el objeto JSON con el token y el tiempo de expiración
+            localStorage.setItem('content_access_token', JSON.stringify(tokenData));
+        }
+
 
         function seleccionarPregunta() {
-            // Asegura que haya preguntas disponibles
-            if (preguntas.length === 0) {
-                preguntaTexto.textContent = "Error: No hay preguntas cargadas.";
-                return;
-            }
-
-            // Selecciona una pregunta al azar
+            if (preguntas.length === 0) { preguntaTexto.textContent = "Error: No hay preguntas cargadas."; return; }
             const indice = Math.floor(Math.random() * preguntas.length);
             preguntaActual = preguntas[indice];
             preguntaTexto.textContent = preguntaActual.pregunta;
             
             opcionesContainer.innerHTML = '';
-            
-            // Crea los botones de opciones
             preguntaActual.opciones.forEach(opcion => {
                 const boton = document.createElement('button');
                 boton.textContent = opcion;
@@ -138,17 +253,18 @@
 
         function verificarRespuesta(seleccion) {
             const botones = opcionesContainer.querySelectorAll('button');
-            botones.forEach(btn => btn.disabled = true); // Desactiva botones al responder
+            botones.forEach(btn => btn.disabled = true); 
 
             if (seleccion === preguntaActual.respuesta) {
-                mensajeResultado.textContent = "¡Correcto! Acceso concedido. ✅ Redirigiendo...";
+                mensajeResultado.textContent = "¡Correcto! Acceso concedido por 1 hora. ✅ Redirigiendo...";
                 mensajeResultado.style.color = '#2ecc71';
                 
-                // *** ACCIÓN CLAVE: Otorga el token de acceso ***
-                localStorage.setItem('content_access_token', 'granted');
+                // *** ACCIÓN CLAVE: Otorga el token con EXPIRACIÓN de 1 hora ***
+                setAccessTokenWithExpiration();
                 
                 setTimeout(() => { 
                     // Redirige al destino final (index.html), obtenido de config.js
+                    // Asegúrate de que FINAL_DESTINATION esté definido en config.js
                     window.location.href = FINAL_DESTINATION; 
                 }, 1500);
 
@@ -156,9 +272,8 @@
                 mensajeResultado.textContent = "Incorrecto. Intenta de nuevo. ❌";
                 mensajeResultado.style.color = '#e74c3c';
                 
-                // Vuelve a cargar otra pregunta después de un breve tiempo
                 setTimeout(() => {
-                    seleccionarPregunta();
+                    seleccionarPregunta(); // Carga una nueva pregunta
                 }, 1500); 
             }
         }
