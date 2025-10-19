@@ -1,5 +1,5 @@
 // ====================================================================
-// script.js - VERSIÓN CON REDIRECCIÓN DIRECTA A TIKTOK (SIN MODAL NI HORARIO)
+// script.js - VERSIÓN FINAL CON REDIRECCIÓN A TIKTOK Y ALERTAS
 // ====================================================================
 
 // --- 0. VARIABLES GLOBALES Y CONFIGURACIÓN ---
@@ -7,6 +7,7 @@
 // URL de tu perfil de TikTok
 const TIKTOK_URL = 'https://www.tiktok.com/@jlcojvjcl'; 
 
+// Control de temas (debe ser 'auto' en producción)
 const TEMA_FORZADO = 'diademuertos'; 
 
 // Obtener elementos principales
@@ -25,11 +26,12 @@ const closeMediaModal = document.querySelector('.close-media-modal');
 const mediaContentViewer = document.getElementById('media-content-viewer');
 const mediaCaption = document.getElementById('media-caption');
 
+// Asume que postsData se carga desde posts.js
 let postsData = window.posts || []; 
 
 
 // ----------------------------------------------------
-// 1. LÓGICA DE TEMAS Y FECHAS (Se mantiene tu lógica)
+// 1. LÓGICA DE TEMAS Y FECHAS
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
@@ -129,7 +131,6 @@ function renderPosts(postsToDisplay) {
         if (post.media && post.media.url) { // Verifica si hay una URL de media
             const url = post.media.url;
             const mediaType = url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image';
-            // Usa la misma URL para la miniatura si no se especifica una
             const thumbnailURL = post.media.thumbnail || url; 
             
             mediaHTML = `
@@ -188,7 +189,7 @@ function buscarPosts(query) {
     renderPosts(postsEncontrados);
 }
 
-// --- 3. MANEJO DE MODALES (Solo Media Viewer) ---
+// --- 3. MANEJO DE MODAL MEDIA VIEWER ---
 
 function openMediaModal(e) {
     const mediaDiv = e.currentTarget; 
@@ -218,7 +219,7 @@ function closeMediaViewer() {
 }
 
 
-// --- 4. EVENT LISTENERS (Corregidos para TikTok) ---
+// --- 4. EVENT LISTENERS (Redirecciones con Alerta) ---
 
 enlacesNav.forEach(enlace => {
     enlace.addEventListener('click', (e) => {
@@ -250,18 +251,29 @@ searchInput.addEventListener('keypress', (e) => {
 });
 
 
-// 🚨 LÓGICA CORREGIDA: ENLACE SUBIR VA DIRECTO A TIKTOK 🚨
+// 🚨 MEJORA: Botón SUBIR con alerta de redirección 🚨
 if (linkSubir) {
     linkSubir.addEventListener('click', (e) => {
         e.preventDefault();
-        window.open(TIKTOK_URL, '_blank'); 
+        
+        const confirmacion = confirm("⚠️ Vas a ser redirigido a nuestro TikTok. Ahí podrás enviar tus publicaciones por mensaje directo de forma anónima.");
+        
+        if (confirmacion) {
+            window.open(TIKTOK_URL, '_blank'); 
+        }
     });
 }
-// 🚨 LÓGICA CORREGIDA: ENLACE CHAT ANÓNIMO VA DIRECTO A TIKTOK 🚨
+
+// 🚨 MEJORA: Botón CHAT ANÓNIMO con alerta de redirección 🚨
 if (linkChatAnonimo) {
     linkChatAnonimo.addEventListener('click', (e) => {
         e.preventDefault();
-        window.open(TIKTOK_URL, '_blank'); 
+        
+        const confirmacion = confirm("💬 Vas a ser redirigido a nuestro TikTok. Por favor, inicia un chat para enviar tus mensajes.");
+        
+        if (confirmacion) {
+            window.open(TIKTOK_URL, '_blank'); 
+        }
     });
 }
 
