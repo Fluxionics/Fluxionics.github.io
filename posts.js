@@ -143,12 +143,12 @@ window.posts = [
     // SECCIÓN: CONVERSACIONES
     // ----------------------------------------------------
     {
-        titulo: "Transcripción: 'Las Planillas'",
-        descripcion: "Por Cual Planilla Botaran?.",
+        titulo: "Que opinan de esto'",
+        descripcion: "Que opinan de esto Jajaja.",
         seccion: "Conversaciones",
-        fecha: "09/Oct",
-        autor: { nombre: "El Político", color: "#3383FF" },
-        media: { url: "", caption: "" }
+        fecha: "20/Oct",
+        autor: { nombre: "Admin", color: "#3383FF" },
+        media: { url: "https://imgur.com/YEXHyxQ", caption: "Xdddd" }
     }, 
     
     // ----------------------------------------------------
