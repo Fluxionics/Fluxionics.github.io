@@ -6,146 +6,251 @@
     <title>Política y Reglas de Uso - Plataforma Estudiantil</title>
     
     <style>
-        /* CSS Integrado para un diseño limpio y diferente */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
         }
+
         header {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
             color: white;
-            padding: 20px;
+            padding: 40px 20px;
             text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
+
         header h1 {
-            margin: 0;
-            font-size: 2em;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
+
         .nav-link {
-            color: #ffcc00;
+            display: inline-block;
+            color: white;
+            background-color: #ffcc00;
             text-decoration: none;
-            font-weight: bold;
-            padding: 5px 15px;
-            border: 1px solid #ffcc00;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
         }
+
         .nav-link:hover {
-            background-color: #004080;
+            background-color: #ffd700;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
         }
+
         main {
             flex-grow: 1;
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 25px;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            width: 95%;
         }
+
         h2 {
             color: #0056b3;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
             margin-top: 0;
-            font-size: 1.8em;
+            margin-bottom: 25px;
+            font-size: 2em;
+            font-weight: 700;
         }
+
         h3 {
-            color: #333;
-            margin-top: 25px;
-            border-bottom: 1px dashed #eee;
-            padding-bottom: 5px;
-            font-size: 1.4em;
-        }
-        p {
-            line-height: 1.6;
+            color: #0056b3;
+            margin-top: 30px;
             margin-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+            font-size: 1.4em;
+            font-weight: 600;
         }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.05em;
+        }
+
         ul {
-            text-align: left;
-            list-style-type: disc;
-            margin-left: 20px;
+            list-style-type: none;
+            margin: 20px 0;
             padding-left: 0;
-            margin-bottom: 20px;
         }
+
         li {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.7;
+            color: #555;
         }
+
+        li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
         .aviso-legal {
             border-left: 5px solid #e74c3c;
-            padding: 15px;
-            background-color: #f9e3e3;
-            margin: 20px 0;
-            border-radius: 5px;
+            padding: 20px;
+            background: linear-gradient(to right, #f9e3e3, #fff5f5);
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1);
         }
+
         .aviso-legal h3 {
             color: #c0392b;
-            border-bottom: none;
+            border-bottom: 2px solid #e74c3c;
             margin-top: 0;
         }
+
+        .aviso-admin {
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            background: linear-gradient(to right, #d6eaf8, #f5f9fc);
+            margin: 25px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.1);
+        }
+
+        .aviso-admin h3 {
+            color: #1f618d;
+            border-bottom: 2px solid #3498db;
+            margin-top: 0;
+        }
+
         .intro-italic {
             font-style: italic;
-            color: #555;
-            margin-top: 15px;
+            color: #667eea;
+            margin: 20px 0;
+            font-size: 1.1em;
+            font-weight: 500;
         }
+
+        .url-info {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            color: #333;
+            word-break: break-all;
+        }
+
+        .code-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+        }
+
         footer {
             text-align: center;
-            padding: 15px;
-            background-color: #ddd;
-            color: #555;
-            margin-top: 20px;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #999;
+            margin-top: 30px;
+            font-size: 0.95em;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .highlight-blue {
+            color: #0056b3;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Política y Reglas de Uso 📜</h1>
+        <h1>🛡️ Política y Reglas de Uso</h1>
+        <p style="margin-top: 10px; font-size: 1.1em;">Plataforma Estudiantil</p>
         <a href="index.html" class="nav-link">⬅️ Volver al Inicio</a>
     </header>
     
     <main>
         
-        <h2 style="color:#0056b3; border-bottom: 2px solid #ccc; padding-bottom: 10px;">🛡️ Política de Contenido y Reglas de la Plataforma</h2>
-        <p class="intro-italic">Esta plataforma es un espacio estudiantil. La convivencia se basa en el respeto.</p>
+        <h2>📋 Política de Contenido y Reglas de la Plataforma</h2>
+        <p class="intro-italic">"Esta plataforma es un espacio estudiantil. La convivencia se basa en el respeto mutuo y la responsabilidad."</p>
 
-        <h3 style="color:#333; margin-top: 20px; border-bottom: 1px dashed #eee;">1. Reglas de Contenido</h3>
+        <h3>1. Reglas de Contenido</h3>
         <ul>
-            <li>**Respeto Mutuo:** No se tolerarán publicaciones con acoso, difamación, o discursos de odio.</li>
-            <li>**Veracidad:** La difusión de información *seria y falsa* que dañe la reputación está prohibida.</li>
-            <li>**Contenido Explícito:** Está estrictamente prohibido compartir material explícito, violento o ilegal.</li>
-            <li>**Moderación:** Todo contenido será revisado y aprobado antes de ser publicado.</li>
-            <li>**Límites:** **No Subir Cosas De Docentes O Instituto.** El enfoque es el entretenimiento estudiantil.</li>
+            <li><span class="highlight-blue">Respeto Mutuo:</span> No se tolerarán publicaciones con acoso, difamación, o discursos de odio.</li>
+            <li><span class="highlight-blue">Veracidad:</span> La difusión de información seria y falsa que dañe la reputación está prohibida.</li>
+            <li><span class="highlight-blue">Contenido Explícito:</span> Está estrictamente prohibido compartir material explícito, violento o ilegal.</li>
+            <li><span class="highlight-blue">Moderación:</span> Todo contenido será revisado y aprobado antes de ser publicado.</li>
+            <li><span class="highlight-blue">Límites:</span> No subir contenido de docentes o del instituto. El enfoque es el entretenimiento estudiantil.</li>
         </ul>
 
-        <h3 style="color:#333; margin-top: 20px; border-bottom: 1px dashed #eee;">2. Privacidad y Anonimato</h3>
+        <h3>2. Privacidad y Anonimato</h3>
         <ul>
-            <li>**Anonimato Total:** La plataforma no recopila nombres reales, correos ni números de teléfono de los usuarios que solo navegan.</li>
-            <li>**Moderadores:** El usuario de TikTok se pide **únicamente para contactarte sobre tu publicación** y no se almacena permanentemente.</li>
-            <li>**Chat:** El usuario de TikTok es para verificación de acceso al Discord, no para rastreo.</li>
+            <li><span class="highlight-blue">Anonimato Total:</span> La plataforma no recopila nombres reales, correos ni números de teléfono de los usuarios que solo navegan.</li>
+            <li><span class="highlight-blue">Proceso de Publicación:</span> El dueño/admin <span class="highlight">sube el contenido mandado por los usuarios</span> manteniendo el anonimato de quien lo envía.</li>
+            <li><span class="highlight-blue">Contacto:</span> El usuario de TikTok se pide únicamente para contactarte sobre tu publicación en caso de dudas o aclaraciones, y no se almacena permanentemente.</li>
+            <li><span class="highlight-blue">Discord:</span> El usuario de TikTok es para verificación de acceso al Discord, no para rastreo.</li>
         </ul>
 
-        <p>Esta plataforma es un espacio **NO OFICIAL** creado y gestionado **EXCLUSIVAMENTE** por estudiantes para entretenimiento de la comunidad.</p>
+        <p><strong>ℹ️ Información Importante:</strong> Esta plataforma es un espacio <span class="highlight">NO OFICIAL</span> creado y gestionado <span class="highlight">EXCLUSIVAMENTE por estudiantes</span> para entretenimiento de la comunidad.</p>
         
+        <div class="aviso-admin">
+            <h3>📌 Responsabilidad del Administrador/Dueño</h3>
+            <p><strong>Aclaración Legal:</strong> El administrador y/o dueño de esta plataforma <span class="highlight">NO es responsable</span> por el contenido que recibe y sube de parte de terceros (estudiantes/usuarios).</p>
+            <p><strong>Proceso de Publicación:</strong> El dueño/admin actúa como intermediario: recibe el contenido de los usuarios y lo publica en la plataforma. <span class="highlight">Los usuarios originales son los responsables</span> del contenido enviado (veracidad, consentimiento, legalidad).</p>
+            <p><strong>Responsabilidad de Usuarios:</strong> Cada usuario que envía contenido asume <span class="highlight">toda la responsabilidad</span> sobre el origen, veracidad y consentimiento del material. El administrador actúa únicamente como gestor técnico de publicación.</p>
+            <p><strong>Acción ante Contenido Inapropiado:</strong> Si tu imagen, video o contenido personal aparece sin tu consentimiento, debes contactar directamente al equipo de moderación/administrador para solicitar la eliminación inmediata. El administrador cooperará de inmediato para removerlo.</p>
+        </div>
+
         <div class="aviso-legal">
-            <h3>🔴 Aviso Legal de Cierre</h3>
-            <p><strong>Cláusula de Eliminación:</strong> Si el Instituto, Dirección o cualquier miembro del Personal Docente o Administrativo exige la eliminación de esta web, esta **será eliminada de forma inmediata y sin previo aviso.**</p>
+            <h3>🔴 Aviso Legal de Eliminación</h3>
+            <p><strong>Cláusula de Cierre:</strong> Si el Instituto, Dirección o cualquier miembro del Personal Docente o Administrativo exige la eliminación de esta web, esta <span class="highlight">será eliminada de forma inmediata y sin previo aviso</span> por parte del administrador.</p>
         </div>
 
         <div class="aviso-legal">
             <h3>⚠️ Exención de Responsabilidad sobre Contenido</h3>
-            <p><strong>Contenido de Terceros:</strong> El contenido es subido por usuarios externos (alumnos/estudiantes). La plataforma **no se hace responsable por la subida de contenido de alumnos o estudiantes sin su consentimiento explícito.**</p>
-            <p>Si un usuario se siente afectado, debe contactar directamente al equipo de moderación estudiantil para solicitar la eliminación del contenido. Al subir material, el remitente asume toda responsabilidad sobre su origen y consentimiento.</p>
+            <p><strong>Contenido Enviado por Usuarios:</strong> El contenido es enviado por usuarios externos (alumnos/estudiantes) y publicado por el administrador. La plataforma <span class="highlight">no se hace responsable por el contenido recibido y publicado sin consentimiento explícito</span> del propietario del contenido original.</p>
+            <p><strong>Responsabilidad del Remitente:</strong> Al enviar material al administrador para su publicación, el remitente asume <span class="highlight">toda responsabilidad</span> sobre el origen, veracidad, consentimiento y legalidad del contenido.</p>
+            <p><strong>Proceso de Eliminación:</strong> Si un usuario se siente afectado por contenido publicado (imagen, video, información personal), debe contactar directamente al administrador/equipo de moderación para solicitar la eliminación inmediata. El administrador removerá el contenido sin demora.</p>
         </div>
         
     </main>
     
     <footer>
-        <p>&copy; Plataforma Estudiantil. Todos los derechos reservados.</p>
+        <p>&copy; Plataforma Estudiantil | Espacio gestionado por estudiantes | Todos los derechos reservados.</p>
+        <p style="margin-top: 10px; font-size: 0.9em;">El administrador no es responsable del contenido subido por usuarios terceros.</p>
     </footer>
 </body>
 </html>
