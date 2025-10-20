@@ -105,7 +105,7 @@ window.posts = [
     },
     {
         titulo: "Nuevo Shippeo H y S ",
-        descripcion: "Hellen y Se??????? El nombre se revelara cada lestra cada dia ",
+        descripcion: "Hellen y Sebast?????? El nombre se revelara cada lestra cada dia ",
         seccion: "Rumor",
         fecha: "11/Oct",
         autor: { nombre: "El Enigmático", color: "#33FFC7" },
