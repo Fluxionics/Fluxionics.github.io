@@ -1,13 +1,11 @@
 // ====================================================================
-// script.js - VERSIÓN FINAL CON REDIRECCIÓN A TIKTOK Y ALERTAS
+// script.js - VERSIÓN FINAL CON TOKEN TEMPORAL, ALERTAS Y POLÍTICAS
 // ====================================================================
 
 // --- 0. VARIABLES GLOBALES Y CONFIGURACIÓN ---
 
 // URL de tu perfil de TikTok
 const TIKTOK_URL = 'https://www.tiktok.com/@jlcojvjcl'; 
-
-// Control de temas (debe ser 'auto' en producción)
 const TEMA_FORZADO = 'diademuertos'; 
 
 // Obtener elementos principales
@@ -15,6 +13,13 @@ const contenedorPublicaciones = document.getElementById('contenedor-publicacione
 const enlacesNav = document.querySelectorAll('.nav-link'); 
 const searchInput = document.getElementById('search-input');
 const searchButton = document.getElementById('search-button');
+
+// Elementos del Nuevo Modal de Políticas
+const policyModal = document.getElementById('policy-modal');
+const acceptPoliciesBtn = document.getElementById('accept-policies-btn');
+const rejectPoliciesBtn = document.getElementById('reject-policies-btn');
+const dontShowAgainCheckbox = document.getElementById('dont-show-again');
+const mainContent = document.getElementById('main-content');
 
 // Modales y Enlaces de Acción
 const linkSubir = document.getElementById('link-subir');
@@ -26,12 +31,11 @@ const closeMediaModal = document.querySelector('.close-media-modal');
 const mediaContentViewer = document.getElementById('media-content-viewer');
 const mediaCaption = document.getElementById('media-caption');
 
-// Asume que postsData se carga desde posts.js
 let postsData = window.posts || []; 
 
 
 // ----------------------------------------------------
-// 1. LÓGICA DE TEMAS Y FECHAS
+// 1. LÓGICA DE TEMAS Y FECHAS (Se mantiene tu lógica)
 // ----------------------------------------------------
 
 function aplicarTemaPorFecha() {
@@ -112,7 +116,9 @@ function aplicarTemaPorFecha() {
 }
 
 
-// --- 2. FUNCIONES PRINCIPALES (RENDERIZADO Y BÚSQUEDA) ---
+// ----------------------------------------------------
+// 2. FUNCIONES PRINCIPALES (RENDERIZADO Y BÚSQUEDA)
+// ----------------------------------------------------
 
 function renderPosts(postsToDisplay) {
     contenedorPublicaciones.innerHTML = '';
@@ -128,7 +134,7 @@ function renderPosts(postsToDisplay) {
         postElement.setAttribute('data-seccion', post.seccion);
         
         let mediaHTML = '';
-        if (post.media && post.media.url) { // Verifica si hay una URL de media
+        if (post.media && post.media.url) { 
             const url = post.media.url;
             const mediaType = url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image';
             const thumbnailURL = post.media.thumbnail || url; 
@@ -189,7 +195,9 @@ function buscarPosts(query) {
     renderPosts(postsEncontrados);
 }
 
-// --- 3. MANEJO DE MODAL MEDIA VIEWER ---
+// ----------------------------------------------------
+// 3. MANEJO DE MODALES (Media Viewer)
+// ----------------------------------------------------
 
 function openMediaModal(e) {
     const mediaDiv = e.currentTarget; 
@@ -219,7 +227,9 @@ function closeMediaViewer() {
 }
 
 
-// --- 4. EVENT LISTENERS (Redirecciones con Alerta) ---
+// ----------------------------------------------------
+// 4. EVENT LISTENERS (Redirecciones y Políticas)
+// ----------------------------------------------------
 
 enlacesNav.forEach(enlace => {
     enlace.addEventListener('click', (e) => {
@@ -251,7 +261,7 @@ searchInput.addEventListener('keypress', (e) => {
 });
 
 
-// 🚨 MEJORA: Botón SUBIR con alerta de redirección 🚨
+// Botón SUBIR con alerta de redirección 
 if (linkSubir) {
     linkSubir.addEventListener('click', (e) => {
         e.preventDefault();
@@ -264,7 +274,7 @@ if (linkSubir) {
     });
 }
 
-// 🚨 MEJORA: Botón CHAT ANÓNIMO con alerta de redirección 🚨
+// Botón CHAT ANÓNIMO con alerta de redirección 
 if (linkChatAnonimo) {
     linkChatAnonimo.addEventListener('click', (e) => {
         e.preventDefault();
@@ -277,7 +287,7 @@ if (linkChatAnonimo) {
     });
 }
 
-
+// Cierre del Modal Media
 if (closeMediaModal) {
     closeMediaModal.addEventListener('click', closeMediaViewer);
 }
@@ -289,14 +299,59 @@ if (mediaModal) {
     });
 }
 
-// --- 5. INICIALIZACIÓN ---
+// 🚨 LÓGICA CLAVE: ACEPTAR POLÍTICAS 🚨
+if (acceptPoliciesBtn) {
+    acceptPoliciesBtn.addEventListener('click', () => {
+        const acceptedPermanently = dontShowAgainCheckbox.checked;
+
+        if (acceptedPermanently) {
+            // Guarda la aceptación permanente
+            localStorage.setItem('policies_accepted', 'true');
+        } else {
+            // Guarda la aceptación temporal (se debe volver a mostrar la próxima vez)
+            localStorage.setItem('policies_accepted', 'session'); 
+        }
+        
+        // Oculta el modal y muestra el contenido
+        policyModal.style.display = 'none';
+        mainContent.style.display = 'block';
+        document.body.style.overflow = 'auto'; 
+        filtrarPostsPorSeccion('Todo');
+    });
+}
+
+// 🚨 LÓGICA CLAVE: NO ACEPTO POLÍTICAS 🚨
+if (rejectPoliciesBtn) {
+    rejectPoliciesBtn.addEventListener('click', () => {
+        // No acepta, no guardamos nada en local storage para que el modal se siga mostrando.
+        // El contenido principal permanece oculto.
+        alert('Para acceder al contenido debes aceptar las políticas. El modal permanecerá abierto.');
+    });
+}
+
+
+// ----------------------------------------------------
+// 5. INICIALIZACIÓN (Añadir el chequeo de políticas)
+// ----------------------------------------------------
 
 window.onload = () => {
     aplicarTemaPorFecha();
-    filtrarPostsPorSeccion('Todo'); 
     
     const todoLink = document.querySelector('[data-seccion="Todo"]');
     if (todoLink) {
         todoLink.classList.add('active');
+    }
+    
+    // 🚨 NUEVA LÓGICA: CHEQUEO DE POLÍTICAS AL CARGAR 🚨
+    const policiesAccepted = localStorage.getItem('policies_accepted');
+
+    if (policiesAccepted === 'true' || policiesAccepted === 'session') {
+        // Si ya aceptó (permanente o por sesión), mostramos el contenido inmediatamente
+        mainContent.style.display = 'block';
+        filtrarPostsPorSeccion('Todo'); 
+    } else {
+        // Si no ha aceptado o el token 'session' ha expirado/borrado, mostramos el modal
+        policyModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; 
     }
 };
