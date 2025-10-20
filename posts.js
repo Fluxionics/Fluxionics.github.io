@@ -88,6 +88,17 @@ window.posts = [
             caption: "Grupo de viciosos."
         }
     },
+        {
+        titulo: "La Pelea del Año ",
+        descripcion: "La Pelea del año ",
+        seccion: "Humor",
+        fecha: "20/Oct",
+        autor: { nombre: "Moderador", color: "#5733FF" },
+        media: {
+            url: "https://imgur.com/jDjnSsj.mp4",
+            caption: "Grupo de viciosos."
+        }
+    },
     
     // ----------------------------------------------------
     // SECCIÓN: Rumores (Cambiado de "Chismes" a "Rumores")
@@ -119,7 +130,7 @@ window.posts = [
         titulo: "La llorona Se Aparecio ",
         descripcion: "La llorona Aparecio en el Salon 2 B",
         seccion: "Misterios",
-        fecha: "10/Oct",
+        fecha: "20/Oct",
         autor: { nombre: "Anonimo", color: "#FF33F5" },
         media: {
             url: "https://imgur.com/BdUQetA.png",
