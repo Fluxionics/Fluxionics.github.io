@@ -59,6 +59,8 @@
             box-shadow: 0 5px 25px rgba(204,0,0,0.5);
             text-align: left;
             animation: fadeIn 0.5s;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         @keyframes fadeIn {
             from {opacity: 0;}
@@ -66,13 +68,17 @@
         }
         .policy-modal-content h2 { color: #cc0000; text-align: center; }
         .policy-modal-content p { font-size: 0.95em; line-height: 1.4; }
+        .policy-modal-content ul { font-size: 0.95em; line-height: 1.6; }
+        .policy-modal-content li { margin-bottom: 12px; }
         .policy-actions { 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
+            flex-wrap: wrap;
             margin-top: 25px; 
             padding-top: 15px;
             border-top: 1px solid #eee;
+            gap: 10px;
         }
         .policy-actions button {
             padding: 10px 20px;
@@ -92,6 +98,11 @@
             color: white;
         }
         #reject-policies-btn:hover { background-color: #d32f2f; }
+        #contact-admin-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        #contact-admin-btn:hover { background-color: #0b7dda; }
         #not-show-again-container {
             font-size: 0.9em;
             display: flex;
@@ -146,6 +157,7 @@
             
             <ul>
                 <li><strong>Descargo Legal:</strong> El contenido (chismes, shippeos, etc.) es generado **anónimamente** por alumnos y **NO** es oficial. Los administradores **NO se hacen responsables** de la veracidad ni del uso que se le dé.</li>
+                <li><strong>Responsabilidad del Contenido:</strong> Los usuarios son los únicos responsables del contenido que suben a la plataforma. Los administradores y moderadores únicamente reciben el contenido que envían los usuarios y no verifican ni validan cada publicación antes de aparecer.</li>
                 <li><strong>Uso Responsable:</strong> Está prohibido el acoso, la difamación, la suplantación y la subida de contenido ilegal. El incumplimiento resultará en la anulación del acceso.</li>
                 <li><strong>Moderación:</strong> Nos reservamos el derecho de eliminar cualquier publicación que viole las normas sin previo aviso.</li>
                 <li><strong>Privacidad de Datos:</strong> Solo se guardan tokens de acceso temporales (1 hora) y la marca de aceptación de estas políticas en tu navegador (LocalStorage). **No recopilamos información personal.**</li>
@@ -157,6 +169,7 @@
 
             <div class="policy-actions">
                 <button id="reject-policies-btn">No Acepto</button>
+                <button id="contact-admin-btn">📞 Contactar Admin</button>
                 <div id="not-show-again-container">
                     <input type="checkbox" id="dont-show-again">
                     <label for="dont-show-again">No volver a mostrar</label>
@@ -174,6 +187,17 @@
         </div>
     </div>
 
+    <script>
+        // Script para el botón de contactar admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactAdminBtn = document.getElementById('contact-admin-btn');
+            if (contactAdminBtn) {
+                contactAdminBtn.addEventListener('click', function() {
+                    window.open('https://www.tiktok.com/@jlcojvjcl', '_blank');
+                });
+            }
+        });
+    </script>
 
     <script src="posts.js"></script> 
     <script src="script.js"></script>
