@@ -89,33 +89,34 @@ window.posts = [
         }
     },
         {
-        titulo: "La Pelea del Año ",
-        descripcion: "La Pelea del año ",
+        titulo: "La Pelea del Mes ",
+        descripcion: "La Pelea del Mes ",
         seccion: "Humor",
         fecha: "20/Oct",
         autor: { nombre: "Moderador", color: "#5733FF" },
         media: {
             url: "https://imgur.com/jDjnSsj.mp4",
-            caption: "Grupo de viciosos."
+            caption: "Pelas."
+        }
+    },
+        {
+        titulo: "La Pelea del Año termina mal ",
+        descripcion: "Termino mal  ",
+        seccion: "Humor",
+        fecha: "20/Oct",
+        autor: { nombre: "Moderador", color: "#5733FF" },
+        media: {
+            url: "https://imgur.com/3HqFSTK.mp4",
+            caption: "Pelas."
         }
     },
     
     // ----------------------------------------------------
     // SECCIÓN: Rumores (Cambiado de "Chismes" a "Rumores")
     // ----------------------------------------------------
+
     {
-        titulo: "Aqui No ay Rumores ",
-        descripcion: "Por Favor Sube un chisme",
-        seccion: "Rumor", // Dejé "Chismes" aquí, aunque el título dice Rumores. Usa el que tienes en el nav.
-        fecha: "12/Oct",
-        autor: { nombre: "Admin", color: "#33FFC7" },
-        media: {
-            url: "https://placehold.co/600x400/000000/FFFFFF/png?text=Chisme+No+Ay",
-            caption: "Sube un chisme, ¡por favor!"
-        }
-    },
-    {
-        titulo: "Nuevo Shippeo H y S ",
+        titulo: "Parece que  H y S  ",
         descripcion: "Hellen y Sebast?????? ",
         seccion: "Rumor",
         fecha: "11/Oct",
@@ -158,6 +159,14 @@ window.posts = [
         descripcion: "Recuerda, este contenido es gestionado por alumnos. Revisa el enlace de 'Política y Reglas' para más detalles.",
         seccion: "Política",
         fecha: "01/Oct",
+        autor: { nombre: "El Administrador", color: "#838383" },
+        media: { url: "", caption: "" }
+    },
+        {
+        titulo: "Aviso de contenido ",
+        descripcion: "Recuerda que solo subimos contenido mandado no somos responsables de las publicaciones",
+        seccion: "Política",
+        fecha: "20/Oct",
         autor: { nombre: "El Administrador", color: "#838383" },
         media: { url: "", caption: "" }
     }
