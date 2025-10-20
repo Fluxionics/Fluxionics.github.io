@@ -6,6 +6,7 @@
     <title>SECUNDARIA DEL ESTADO 🎓</title>
 
     <script>
+        // 1. VERIFICACIÓN DE TOKEN DE ACCESO (CAPCHA)
         const tokenString = localStorage.getItem('content_access_token');
         let accessGranted = false;
 
@@ -13,28 +14,95 @@
             try {
                 const tokenData = JSON.parse(tokenString);
                 const currentTime = new Date().getTime();
-
-                // 1. Verifica que el valor sea correcto.
-                // 2. Verifica que NO haya expirado (expiry > currentTime).
                 if (tokenData.value === 'granted' && tokenData.expiry > currentTime) {
                     accessGranted = true;
                 } else {
-                    // Si expiró o es inválido, lo borramos.
                     localStorage.removeItem('content_access_token');
                 }
             } catch (e) {
-                // Error al parsear (token corrupto), lo borramos
                 localStorage.removeItem('content_access_token');
             }
         }
 
         if (!accessGranted) {
-            // Si no tiene acceso válido, redirige a la clave
+            // Si el token expiró o no existe, redirige al flujo de clave/captcha
             window.location.replace('Contenido.html');
         }
+        
+        // La lógica de verificación de políticas se maneja en script.js al cargar
     </script>
     
     <link rel="stylesheet" href="style.css"> 
+    
+    <style>
+        .modal {
+            display: none; /* Oculto por defecto, se muestra con flex en script.js */
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.9); 
+            justify-content: center;
+            align-items: center;
+        }
+        .policy-modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; 
+            padding: 30px;
+            border: 1px solid #cc0000;
+            width: 90%; 
+            max-width: 650px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(204,0,0,0.5);
+            text-align: left;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        .policy-modal-content h2 { color: #cc0000; text-align: center; }
+        .policy-modal-content p { font-size: 0.95em; line-height: 1.4; }
+        .policy-actions { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-top: 25px; 
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .policy-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        #accept-policies-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #accept-policies-btn:hover { background-color: #45a049; }
+        #reject-policies-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        #reject-policies-btn:hover { background-color: #d32f2f; }
+        #not-show-again-container {
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            color: #555;
+        }
+        #not-show-again-container input {
+            margin-right: 8px;
+        }
+    </style>
+
 </head>
 <body>
     <header>
@@ -60,7 +128,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content" style="display: none;">
         <div id="contenedor-publicaciones">
             </div>
     </main>
@@ -68,6 +136,35 @@
     <footer>
         <p>&copy; Plataforma Estudiantil. Todos los derechos reservados.</p>
     </footer>
+
+    <div id="policy-modal" class="modal">
+        <div class="policy-modal-content">
+            <h2>🚨 Aviso: Aceptación de Políticas y Reglas de Uso 🚨</h2>
+            <p><strong>IMPORTANTE:</strong> Para acceder al contenido de la plataforma, debes aceptar las siguientes reglas. Esta aceptación te notifica y nos protege a los administradores y moderadores.</p>
+            
+            <hr>
+            
+            <ul>
+                <li><strong>Descargo Legal:</strong> El contenido (chismes, shippeos, etc.) es generado **anónimamente** por alumnos y **NO** es oficial. Los administradores **NO se hacen responsables** de la veracidad ni del uso que se le dé.</li>
+                <li><strong>Uso Responsable:</strong> Está prohibido el acoso, la difamación, la suplantación y la subida de contenido ilegal. El incumplimiento resultará en la anulación del acceso.</li>
+                <li><strong>Moderación:</strong> Nos reservamos el derecho de eliminar cualquier publicación que viole las normas sin previo aviso.</li>
+                <li><strong>Privacidad de Datos:</strong> Solo se guardan tokens de acceso temporales (1 hora) y la marca de aceptación de estas políticas en tu navegador (LocalStorage). **No recopilamos información personal.**</li>
+            </ul>
+            
+            <p>Puedes leer el documento completo en: <a href="politica.html" target="_blank">fluxionics.github.io/politica.html</a></p>
+
+            <hr>
+
+            <div class="policy-actions">
+                <button id="reject-policies-btn">No Acepto</button>
+                <div id="not-show-again-container">
+                    <input type="checkbox" id="dont-show-again">
+                    <label for="dont-show-again">No volver a mostrar</label>
+                </div>
+                <button id="accept-policies-btn">Acepto</button>
+            </div>
+        </div>
+    </div>
 
     <div id="media-modal" class="modal">
         <div class="modal-content-viewer">
