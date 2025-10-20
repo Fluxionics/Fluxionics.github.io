@@ -105,7 +105,7 @@ window.posts = [
     },
     {
         titulo: "Nuevo Shippeo H y S ",
-        descripcion: "Hellen y Sebast?????? El nombre se revelara cada lestra cada dia ",
+        descripcion: "Hellen y Sebast?????? ",
         seccion: "Rumor",
         fecha: "11/Oct",
         autor: { nombre: "El Enigmático", color: "#33FFC7" },
@@ -116,14 +116,14 @@ window.posts = [
     // SECCIÓN: MISTERIOS
     // ----------------------------------------------------
     {
-        titulo: "No ay ningun misterio",
-        descripcion: ". ¿Fue un olvido o un mensaje?",
+        titulo: "La llorona Se Aparecio ",
+        descripcion: "La llorona Aparecio en el Salon 2 B",
         seccion: "Misterios",
         fecha: "10/Oct",
-        autor: { nombre: "El Detective", color: "#FF33F5" },
+        autor: { nombre: "Anonimo", color: "#FF33F5" },
         media: {
-            url: "https://placehold.co/600x400/000000/FFFFFF/png?text=Misterio+Locker",
-            caption: "El locker olvidado."
+            url: "https://imgur.com/BdUQetA.png",
+            caption: "La llorona."
         }
     },
     
