@@ -3,203 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECUNDARIA DEL ESTADO 🎓</title>
-
-    <script>
-        // 1. VERIFICACIÓN DE TOKEN DE ACCESO (CAPCHA)
-        const tokenString = localStorage.getItem('content_access_token');
-        let accessGranted = false;
-
-        if (tokenString) {
-            try {
-                const tokenData = JSON.parse(tokenString);
-                const currentTime = new Date().getTime();
-                if (tokenData.value === 'granted' && tokenData.expiry > currentTime) {
-                    accessGranted = true;
-                } else {
-                    localStorage.removeItem('content_access_token');
-                }
-            } catch (e) {
-                localStorage.removeItem('content_access_token');
-            }
-        }
-
-        if (!accessGranted) {
-            // Si el token expiró o no existe, redirige al flujo de clave/captcha
-            window.location.replace('Contenido.html');
-        }
-        
-        // La lógica de verificación de políticas se maneja en script.js al cargar
-    </script>
-    
-    <link rel="stylesheet" href="style.css"> 
-    
+    <title>Error de Disponibilidad</title>
     <style>
-        .modal {
-            display: none; /* Oculto por defecto, se muestra con flex en script.js */
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0,0,0,0.9); 
-            justify-content: center;
-            align-items: center;
+        /* Estilos CSS */
+        
+        /* 1. Definición de la Animación de Fondo */
+        @keyframes fondoAnimado {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .policy-modal-content {
-            background-color: #fefefe;
-            margin: 10% auto; 
-            padding: 30px;
-            border: 1px solid #cc0000;
-            width: 90%; 
-            max-width: 650px;
-            border-radius: 10px;
-            box-shadow: 0 5px 25px rgba(204,0,0,0.5);
-            text-align: left;
-            animation: fadeIn 0.5s;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        @keyframes fadeIn {
-            from {opacity: 0;}
-            to {opacity: 1;}
-        }
-        .policy-modal-content h2 { color: #cc0000; text-align: center; }
-        .policy-modal-content p { font-size: 0.95em; line-height: 1.4; }
-        .policy-modal-content ul { font-size: 0.95em; line-height: 1.6; }
-        .policy-modal-content li { margin-bottom: 12px; }
-        .policy-actions { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 25px; 
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            gap: 10px;
-        }
-        .policy-actions button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        #accept-policies-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        #accept-policies-btn:hover { background-color: #45a049; }
-        #reject-policies-btn {
-            background-color: #f44336;
-            color: white;
-        }
-        #reject-policies-btn:hover { background-color: #d32f2f; }
-        #contact-admin-btn {
-            background-color: #2196F3;
-            color: white;
-        }
-        #contact-admin-btn:hover { background-color: #0b7dda; }
-        #not-show-again-container {
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            color: #555;
-        }
-        #not-show-again-container input {
-            margin-right: 8px;
-        }
-    </style>
 
+        /* 2. Estilos Globales (Body) */
+        body {
+            /* Colores de gradiente (Azul marino y oscuro) */
+            background: linear-gradient(-45deg, #001f3f, #003366, #001228, #000a1a);
+            background-size: 400% 400%; /* Permite que el gradiente sea más grande que el viewport */
+            animation: fondoAnimado 15s ease infinite; /* Aplica la animación */
+            color: #f0f0f0; /* Color de texto blanco/gris claro */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center; /* Centrar horizontalmente */
+            align-items: center; /* Centrar verticalmente */
+            min-height: 100vh; /* Ocupar el 100% de la altura del viewport */
+            text-align: center;
+            overflow: hidden; /* Oculta barras de desplazamiento si aparecen */
+        }
+
+        /* 3. Estilos del Contenedor del Mensaje */
+        .contenedor-error {
+            background-color: rgba(0, 0, 0, 0.4); /* Fondo semi-transparente para el texto */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            width: 500px;
+        }
+
+        /* 4. Estilos para el Logo/Imagen */
+        .logo {
+            width: 120px; /* Tamaño del logo */
+            height: 120px;
+            margin-bottom: 20px;
+            background-color: #0056b3; /* Color de relleno temporal (puedes borrarlo) */
+            border-radius: 50%; /* Si el logo es circular */
+            /* **IMPORTANTE: Aquí debes poner la URL de tu logo** */
+            /* Por ejemplo: background-image: url('URL_DE_TU_LOGO.png'); */
+            background-size: cover;
+            display: block; /* Asegura que 'margin: 0 auto' funcione */
+            margin: 0 auto 20px auto;
+        }
+
+        /* 5. Estilos del Texto */
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #ff4d4d; /* Un color de advertencia/rojo */
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+
+    </style>
 </head>
 <body>
-    <header>
-        <h1>SECUNDARIA DEL ESTADO 🎓</h1>
-        <nav>
-            <a href="#" class="nav-link" data-seccion="Todo">Todo (Principal)</a>
-            <a href="#" class="nav-link" data-seccion="Shippeos">Shippeos</a>
-            <a href="#" class="nav-link" data-seccion="Pareja Oficial">Pareja Oficial</a>
-            <a href="#" class="nav-link" data-seccion="Conversaciones">Conversaciones</a>
-            <a href="#" class="nav-link" data-seccion="Rumor">Rumores</a>
-            <a href="#" class="nav-link" data-seccion="Misterios">Misterios</a>
-            <a href="#" class="nav-link" data-seccion="Humor">Humor</a>
-            <a href="#" class="nav-link" data-seccion="Política">Política</a>
-            
-            <a href="politica.html" class="nav-link">Política y Reglas</a>
-            <a href="#" class="nav-link" id="link-chat">Chat Anónimo</a>
-            <a href="#" class="nav-link" id="link-subir">Subir</a> 
-        </nav>
-
-        <div class="search-bar-container">
-            <input type="text" id="search-input" placeholder="Buscar chismes, shippeos, misterios...">
-            <button id="search-button">Buscar</button>
+    <div class="contenedor-error">
+        <div class="logo">
+            <p style="font-size: 0.8em; margin: 0; padding-top: 40px;">[Aquí va el Logo]</p>
         </div>
-    </header>
 
-    <main id="main-content" style="display: none;">
-        <div id="contenedor-publicaciones">
-            </div>
-    </main>
-
-    <footer>
-        <p>&copy; Plataforma Estudiantil. Todos los derechos reservados.</p>
-    </footer>
-
-    <div id="policy-modal" class="modal">
-        <div class="policy-modal-content">
-            <h2>🚨 Aviso: Aceptación de Políticas y Reglas de Uso 🚨</h2>
-            <p><strong>IMPORTANTE:</strong> Para acceder al contenido de la plataforma, debes aceptar las siguientes reglas. Esta aceptación te notifica y nos protege a los administradores y moderadores.</p>
-            
-            <hr>
-            
-            <ul>
-                <li><strong>Descargo Legal:</strong> El contenido (chismes, shippeos, etc.) es generado **anónimamente** por alumnos y **NO** es oficial. Los administradores **NO se hacen responsables** de la veracidad ni del uso que se le dé.</li>
-                <li><strong>Responsabilidad del Contenido:</strong> Los usuarios son los únicos responsables del contenido que suben a la plataforma. Los administradores y moderadores únicamente reciben el contenido que envían los usuarios y no verifican ni validan cada publicación antes de aparecer.</li>
-                <li><strong>Uso Responsable:</strong> Está prohibido el acoso, la difamación, la suplantación y la subida de contenido ilegal. El incumplimiento resultará en la anulación del acceso.</li>
-                <li><strong>Moderación:</strong> Nos reservamos el derecho de eliminar cualquier publicación que viole las normas sin previo aviso.</li>
-                <li><strong>Privacidad de Datos:</strong> Solo se guardan tokens de acceso temporales (1 hora) y la marca de aceptación de estas políticas en tu navegador (LocalStorage). **No recopilamos información personal.**</li>
-            </ul>
-            
-            <p>Puedes leer el documento completo en: <a href="politica.html" target="_blank">fluxionics.github.io/politica.html</a></p>
-
-            <hr>
-
-            <div class="policy-actions">
-                <button id="reject-policies-btn">No Acepto</button>
-                <button id="contact-admin-btn">📞 Contactar Admin</button>
-                <div id="not-show-again-container">
-                    <input type="checkbox" id="dont-show-again">
-                    <label for="dont-show-again">No volver a mostrar</label>
-                </div>
-                <button id="accept-policies-btn">Acepto</button>
-            </div>
-        </div>
+        <h1>Error de Acceso</h1>
+        <p>
+            **Hola**, lastimosamente esta web **no está disponible o ha sido eliminada**.
+        </p>
     </div>
-
-    <div id="media-modal" class="modal">
-        <div class="modal-content-viewer">
-            <span class="close-media-modal">&times;</span>
-            <div id="media-content-viewer"></div>
-            <p id="media-caption"></p>
-        </div>
-    </div>
-
-    <script>
-        // Script para el botón de contactar admin
-        document.addEventListener('DOMContentLoaded', function() {
-            const contactAdminBtn = document.getElementById('contact-admin-btn');
-            if (contactAdminBtn) {
-                contactAdminBtn.addEventListener('click', function() {
-                    window.open('https://www.tiktok.com/@jlcojvjcl', '_blank');
-                });
-            }
-        });
-    </script>
-
-    <script src="posts.js"></script> 
-    <script src="script.js"></script>
 </body>
 </html>
