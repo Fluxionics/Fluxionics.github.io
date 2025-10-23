@@ -29,16 +29,20 @@
             min-height: 100vh; /* Ocupar el 100% de la altura del viewport */
             text-align: center;
             overflow: hidden; /* Oculta barras de desplazamiento si aparecen */
+            position: relative; /* Necesario para posicionar la pelota */
+            cursor: none; /* Oculta el cursor del mouse */
         }
 
         /* 3. Estilos del Contenedor del Mensaje */
         .contenedor-error {
-            background-color: rgba(0, 0, 0, 0.4); /* Fondo semi-transparente para el texto */
+            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para el texto */
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
             max-width: 90%;
             width: 500px;
+            z-index: 10; /* Asegura que el contenido esté por encima de la pelota */
+            position: relative; /* Asegura que z-index funcione */
         }
 
         /* 4. Estilos para el Logo/Imagen */
@@ -46,39 +50,136 @@
             width: 120px; /* Tamaño del logo */
             height: 120px;
             margin-bottom: 20px;
-            background-color: #0056b3; /* Color de relleno temporal (puedes borrarlo) */
-            border-radius: 50%; /* Si el logo es circular */
-            /* **IMPORTANTE: Aquí debes poner la URL de tu logo** */
-            /* Por ejemplo: background-image: url('URL_DE_TU_LOGO.png'); */
+            border-radius: 50%;
+            /* ** LOGO INSERTADO: Usando la URL que proporcionaste ** */
+            background-image: url('https://imgur.com/pxjxVqC.png'); 
             background-size: cover;
-            display: block; /* Asegura que 'margin: 0 auto' funcione */
+            background-position: center;
+            display: block;
             margin: 0 auto 20px auto;
+            /* Estilo para que se vea bien sobre el fondo oscuro: */
+            background-color: #f0f0f0; 
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.7); 
         }
 
         /* 5. Estilos del Texto */
         h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-            color: #ff4d4d; /* Un color de advertencia/rojo */
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            color: #ff6666; 
+            text-shadow: 0 0 8px rgba(255, 102, 102, 0.7);
         }
 
         p {
-            font-size: 1.2em;
-            line-height: 1.5;
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        /* 6. Estilos de la Pelota */
+        .pelota {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #00ffff, #00bfff); /* Gradiente azul brillante */
+            border-radius: 50%;
+            box-shadow: 0 0 25px 10px rgba(0, 255, 255, 0.8),
+                        0 0 50px 20px rgba(0, 200, 200, 0.5); /* Resplandor */
+            transform: translate(-50%, -50%); /* Centra la pelota respecto a su posición top/left */
+            pointer-events: none; /* Permite hacer clic a través de la pelota */
+            z-index: 5; /* Por debajo del contenido */
+            transition: transform 0.1s ease-out; /* Suaviza el movimiento */
         }
 
     </style>
 </head>
 <body>
     <div class="contenedor-error">
-        <div class="logo">
-            <p style="font-size: 0.8em; margin: 0; padding-top: 40px;">[Aquí va el Logo]</p>
-        </div>
+        <div class="logo"></div>
 
         <h1>Error de Acceso</h1>
         <p>
             **Hola**, lastimosamente esta web **no está disponible o ha sido eliminada**.
         </p>
     </div>
+
+    <div class="pelota"></div>
+
+    <script>
+        // JavaScript para la interacción de la pelota
+
+        const pelota = document.querySelector('.pelota');
+        // Simple detección si es móvil
+        let isMobile = /Mobi|Android/i.test(navigator.userAgent); 
+
+        // Función para mover la pelota
+        function movePelota(x, y) {
+            pelota.style.left = `${x}px`;
+            pelota.style.top = `${y}px`;
+        }
+
+        if (isMobile && window.DeviceOrientationEvent) {
+            // ** Código para Dispositivos Móviles (Acelerómetro/Inclinación) **
+            
+            // Pedir permiso para el acelerómetro en iOS 13+
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('devicemotion', handleMotion);
+                        } else {
+                            fallbackToRandomMovement(); 
+                        }
+                    })
+                    .catch(fallbackToRandomMovement);
+            } else {
+                // Navegadores que no requieren permiso explícito
+                window.addEventListener('devicemotion', handleMotion);
+            }
+
+            // Fallback si no hay sensor o permiso denegado: movimiento aleatorio
+            let randomX = window.innerWidth / 2;
+            let randomY = window.innerHeight / 2;
+            let dx = (Math.random() - 0.5) * 4; 
+            let dy = (Math.random() - 0.5) * 4;
+
+            function fallbackToRandomMovement() {
+                setInterval(() => {
+                    randomX += dx;
+                    randomY += dy;
+
+                    if (randomX < 0 || randomX > window.innerWidth) dx *= -1;
+                    if (randomY < 0 || randomY > window.innerHeight) dy *= -1;
+
+                    movePelota(randomX, randomY);
+                }, 50);
+            }
+
+            function handleMotion(event) {
+                // Usamos la aceleración, que refleja la inclinación
+                const x = event.accelerationIncludingGravity.x;
+                const y = event.accelerationIncludingGravity.y;
+
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+
+                // Mapeo de los valores del sensor a la posición de la pantalla
+                let targetX = (screenWidth / 2) - (x * screenWidth / 20); 
+                let targetY = (screenHeight / 2) + (y * screenHeight / 20);
+
+                // Limitar la pelota dentro de la pantalla
+                targetX = Math.max(0, Math.min(screenWidth, targetX));
+                targetY = Math.max(0, Math.min(screenHeight, targetY));
+
+                movePelota(targetX, targetY);
+            }
+
+        } else {
+            // ** Código para PC (Seguir el Mouse) **
+            document.addEventListener('mousemove', (e) => {
+                movePelota(e.clientX, e.clientY);
+            });
+        }
+    </script>
 </body>
 </html>
