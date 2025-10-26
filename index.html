@@ -1,185 +1,310 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error de Disponibilidad</title>
-    <style>
-        /* Estilos CSS */
-        
-        /* 1. Definición de la Animación de Fondo */
-        @keyframes fondoAnimado {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* 2. Estilos Globales (Body) */
-        body {
-            /* Colores de gradiente (Azul marino y oscuro) */
-            background: linear-gradient(-45deg, #001f3f, #003366, #001228, #000a1a);
-            background-size: 400% 400%; /* Permite que el gradiente sea más grande que el viewport */
-            animation: fondoAnimado 15s ease infinite; /* Aplica la animación */
-            color: #f0f0f0; /* Color de texto blanco/gris claro */
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center; /* Centrar horizontalmente */
-            align-items: center; /* Centrar verticalmente */
-            min-height: 100vh; /* Ocupar el 100% de la altura del viewport */
-            text-align: center;
-            overflow: hidden; /* Oculta barras de desplazamiento si aparecen */
-            position: relative; /* Necesario para posicionar la pelota */
-            cursor: none; /* Oculta el cursor del mouse */
-        }
-
-        /* 3. Estilos del Contenedor del Mensaje */
-        .contenedor-error {
-            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para el texto */
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-            max-width: 90%;
-            width: 500px;
-            z-index: 10; /* Asegura que el contenido esté por encima de la pelota */
-            position: relative; /* Asegura que z-index funcione */
-        }
-
-        /* 4. Estilos para el Logo/Imagen */
-        .logo {
-            width: 120px; /* Tamaño del logo */
-            height: 120px;
-            margin-bottom: 20px;
-            border-radius: 50%;
-            /* ** LOGO INSERTADO: Usando la URL que proporcionaste ** */
-            background-image: url('https://imgur.com/pxjxVqC.png'); 
-            background-size: cover;
-            background-position: center;
-            display: block;
-            margin: 0 auto 20px auto;
-            /* Estilo para que se vea bien sobre el fondo oscuro: */
-            background-color: #f0f0f0; 
-            box-shadow: 0 0 15px rgba(0, 150, 255, 0.7); 
-        }
-
-        /* 5. Estilos del Texto */
-        h1 {
-            font-size: 2.2em;
-            margin-bottom: 15px;
-            color: #ff6666; 
-            text-shadow: 0 0 8px rgba(255, 102, 102, 0.7);
-        }
-
-        p {
-            font-size: 1.3em;
-            line-height: 1.6;
-            color: #e0e0e0;
-        }
-
-        /* 6. Estilos de la Pelota */
-        .pelota {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: radial-gradient(circle at 30% 30%, #ffffff, #00ffff, #00bfff); /* Gradiente azul brillante */
-            border-radius: 50%;
-            box-shadow: 0 0 25px 10px rgba(0, 255, 255, 0.8),
-                        0 0 50px 20px rgba(0, 200, 200, 0.5); /* Resplandor */
-            transform: translate(-50%, -50%); /* Centra la pelota respecto a su posición top/left */
-            pointer-events: none; /* Permite hacer clic a través de la pelota */
-            z-index: 5; /* Por debajo del contenido */
-            transition: transform 0.1s ease-out; /* Suaviza el movimiento */
-        }
-
-    </style>
+    <title>Fluxionics Edu (Beta)</title>
+    <!-- Carga de Tailwind CSS para clases utilitarias -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- ENLACE AL ARCHIVO CSS DEDICADO -->
+    <link rel="stylesheet" href="diseño.css">
 </head>
-<body>
-    <div class="contenedor-error">
-        <div class="logo"></div>
+<body class="p-4 sm:p-6 flex flex-col items-center">
 
-        <h1>Error de Acceso</h1>
-        <p>
-            **Hola**, lastimosamente esta web **no está disponible o ha sido eliminada**.
-        </p>
+    <div id="app" class="w-full max-w-md container-card p-6 rounded-2xl">
+        
+        <!-- HEADER Y LOGO -->
+        <header class="flex items-center justify-between border-b pb-4 border-gray-700/50 mb-6">
+            <div class="flex items-center space-x-3">
+                <svg class="w-9 h-9 text-cyan-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.5" />
+                    <path d="M7 17L12 12L17 7M17 17L12 12L7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M12 2V22" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                <div class="flex flex-col">
+                    <h1 class="text-3xl font-extrabold tracking-tight">Fluxionics</h1>
+                    <span class="text-xs text-gray-500 -mt-1 font-medium">Versión Beta</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAVEGACIÓN PRINCIPAL (Botones) -->
+        <nav class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+            <button id="nav-explicacion" onclick="showSection('explicacion')" class="nav-btn py-3 rounded-xl text-sm">
+                EXPLICACIÓN
+            </button>
+            <button id="nav-herramientas" onclick="showSection('herramientas')" class="nav-btn py-3 rounded-xl text-sm">
+                HERRAMIENTAS
+            </button>
+            <button id="nav-ayuda" onclick="showSection('ayuda')" class="nav-btn py-3 rounded-xl text-sm">
+                AYUDA
+            </button>
+            <button id="nav-contacto" onclick="showSection('contacto')" class="nav-btn py-3 rounded-xl text-sm">
+                CONTACTO
+            </button>
+        </nav>
+
+        <!-- CONTENIDO DINÁMICO (Secciones) -->
+        <main id="content-container">
+
+            <!-- SECCIÓN DE BIENVENIDA (Placeholder Inicial) -->
+            <section id="section-welcome" class="content-placeholder text-center">
+                <div class="p-6 rounded-xl bg-gray-800/50 w-full">
+                    <h2 class="text-2xl font-bold mb-2 text-cyan-400">¡Bienvenido a Fluxionics!</h2>
+                    <p class="text-gray-400">
+                        Selecciona una opción de navegación para empezar a explorar.
+                    </p>
+                    <button onclick="showSection('explicacion')" class="mt-4 py-2 px-6 text-sm font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-500 transition shadow-lg">
+                        Ir a Explicaciones
+                    </button>
+                </div>
+            </section>
+            
+            <!-- SECCIÓN 1: EXPLORAR TEMAS (Contenido se inyecta por JS) -->
+            <section id="section-explicacion" class="space-y-4 hidden">
+                <h2 class="text-xl font-bold mb-3 border-b border-gray-700/50 pb-2">Explorar Temas Educativos</h2>
+                <p class="text-sm text-gray-400">Contenido curado manualmente por el equipo de administración.</p>
+                <!-- Contenedor para las tarjetas de Explicación -->
+                <div id="explanations-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Tarjetas generadas aquí -->
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: HERRAMIENTAS (Contenido se inyecta por JS) -->
+            <section id="section-herramientas" class="space-y-4 hidden">
+                <h2 class="text-xl font-bold mb-3 border-b border-gray-700/50 pb-2">Fluxionics Herramientas</h2>
+                <p class="text-sm text-gray-400 mb-4">Descarga de archivos y recursos útiles (Links Directos de Google Drive).</p>
+                
+                <!-- Contenedor para las herramientas -->
+                <div id="tools-list" class="space-y-4">
+                    <!-- Herramientas generadas aquí -->
+                </div>
+
+                <p class="text-xs text-gray-500 text-center pt-4">El enlace de descarga es un link directo a un recurso subido en Google Drive.</p>
+            </section>
+            
+            <!-- SECCIÓN 3: AYUDA (Contenido estático) -->
+            <section id="section-ayuda" class="space-y-4 hidden">
+                <h2 class="text-xl font-bold mb-3 border-b border-gray-700/50 pb-2">Propósito de Fluxionics (Beta)</h2>
+                <div class="p-4 bg-gray-700/50 rounded-xl space-y-3">
+                    <p class="font-bold text-cyan-400 mb-2">Ayuda a Estudiantes:</p>
+                    <p class="text-base leading-relaxed text-gray-300">
+                        Fluxionics está en fase Beta y tiene el objetivo de ser un apoyo conciso para los estudiantes. Nuestro contenido está diseñado para resolver dudas comunes, ofreciendo explicaciones claras y ejemplos prácticos.
+                    </p>
+                    <p class="text-xs text-gray-500 pt-2">
+                        Si tienes dudas sobre el contenido subido, usa la sección CONTACTO.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: CONTACTO (Contenido estático) -->
+            <section id="section-contacto" class="space-y-4 hidden">
+                <h2 class="text-xl font-bold mb-3 border-b border-gray-700/50 pb-2">Vías de Contacto y Redes</h2>
+                <div class="p-4 bg-gray-700/50 rounded-xl space-y-3">
+                    <p class="text-sm text-cyan-400 font-semibold mb-3">¡Hablemos!</p>
+                    
+                    <div class="flex items-center justify-between border-b border-gray-600/50 pb-2">
+                        <span class="font-bold w-24">Correo:</span>
+                        <span class="text-gray-300">contacto@fluxionics.com</span>
+                    </div>
+
+                    <div class="flex items-center justify-between border-b border-gray-600/50 pb-2">
+                        <span class="font-bold w-24">GMAIL:</span>
+                        <span class="text-gray-300">fluxionics.oficial@gmail.com</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold w-24">TikTok:</span>
+                        <span class="text-gray-300">@fluxionics_edu</span>
+                    </div>
+
+                    <p class="text-sm text-gray-400 pt-3">
+                        Encuentra más contenido y síguenos en nuestras Redes Sociales.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: DETALLE DE EXPLICACIÓN (Contenido se inyecta por JS) -->
+            <section id="section-detalle" class="space-y-4 hidden">
+                <button onclick="showSection('explicacion')" class="flex items-center text-cyan-400 hover:text-cyan-300 transition mb-4 text-sm">
+                    <!-- Icono de flecha izquierda -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Volver a Temas
+                </button>
+
+                <h2 id="detalle-titulo" class="text-2xl font-extrabold mb-4 text-cyan-400 border-b border-gray-700/50 pb-2"></h2>
+                
+                <!-- DESCRIPCIÓN -->
+                <div class="detail-card">
+                    <h3 class="font-bold text-lg mb-2 border-b border-gray-700/50 pb-1">Descripción</h3>
+                    <p id="detalle-descripcion" class="detail-content-text"></p>
+                </div>
+
+                <!-- CÓMO SE HIZO / PROCESO -->
+                <div class="detail-card">
+                    <h3 class="font-bold text-lg mb-2 border-b border-gray-700/50 pb-1">¿Cómo se hizo? (Solución/Proceso)</h3>
+                    <div id="detalle-proceso" class="detail-content-text"></div>
+                </div>
+
+                <!-- EJEMPLO -->
+                <div class="detail-card">
+                    <h3 class="font-bold text-lg mb-2 border-b border-gray-700/50 pb-1">Ejemplo Práctico</h3>
+                    <div id="detalle-ejemplo" class="example-box detail-content-text"></div>
+                </div>
+            </section>
+
+        </main>
+
     </div>
 
-    <div class="pelota"></div>
+    <script type="module">
+        // 1. IMPORTAR DATOS ESTRUCTURADOS desde los nuevos archivos
+        import { EXPLANATIONS_DATA, getExplanationById } from './explicaciones.js';
+        import { TOOLS_DATA } from './herramientas.js';
 
-    <script>
-        // JavaScript para la interacción de la pelota
+        // ----------------------------------------------------
+        // LÓGICA DE NAVEGACIÓN Y RENDERIZADO
+        // ----------------------------------------------------
 
-        const pelota = document.querySelector('.pelota');
-        // Simple detección si es móvil
-        let isMobile = /Mobi|Android/i.test(navigator.userAgent); 
-
-        // Función para mover la pelota
-        function movePelota(x, y) {
-            pelota.style.left = `${x}px`;
-            pelota.style.top = `${y}px`;
-        }
-
-        if (isMobile && window.DeviceOrientationEvent) {
-            // ** Código para Dispositivos Móviles (Acelerómetro/Inclinación) **
-            
-            // Pedir permiso para el acelerómetro en iOS 13+
-            if (typeof DeviceMotionEvent.requestPermission === 'function') {
-                DeviceMotionEvent.requestPermission()
-                    .then(permissionState => {
-                        if (permissionState === 'granted') {
-                            window.addEventListener('devicemotion', handleMotion);
-                        } else {
-                            fallbackToRandomMovement(); 
-                        }
-                    })
-                    .catch(fallbackToRandomMovement);
-            } else {
-                // Navegadores que no requieren permiso explícito
-                window.addEventListener('devicemotion', handleMotion);
-            }
-
-            // Fallback si no hay sensor o permiso denegado: movimiento aleatorio
-            let randomX = window.innerWidth / 2;
-            let randomY = window.innerHeight / 2;
-            let dx = (Math.random() - 0.5) * 4; 
-            let dy = (Math.random() - 0.5) * 4;
-
-            function fallbackToRandomMovement() {
-                setInterval(() => {
-                    randomX += dx;
-                    randomY += dy;
-
-                    if (randomX < 0 || randomX > window.innerWidth) dx *= -1;
-                    if (randomY < 0 || randomY > window.innerHeight) dy *= -1;
-
-                    movePelota(randomX, randomY);
-                }, 50);
-            }
-
-            function handleMotion(event) {
-                // Usamos la aceleración, que refleja la inclinación
-                const x = event.accelerationIncludingGravity.x;
-                const y = event.accelerationIncludingGravity.y;
-
-                const screenWidth = window.innerWidth;
-                const screenHeight = window.innerHeight;
-
-                // Mapeo de los valores del sensor a la posición de la pantalla
-                let targetX = (screenWidth / 2) - (x * screenWidth / 20); 
-                let targetY = (screenHeight / 2) + (y * screenHeight / 20);
-
-                // Limitar la pelota dentro de la pantalla
-                targetX = Math.max(0, Math.min(screenWidth, targetX));
-                targetY = Math.max(0, Math.min(screenHeight, targetY));
-
-                movePelota(targetX, targetY);
-            }
-
-        } else {
-            // ** Código para PC (Seguir el Mouse) **
-            document.addEventListener('mousemove', (e) => {
-                movePelota(e.clientX, e.clientY);
+        // Función para cambiar la sección visible de la aplicación
+        window.showSection = function(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('main section').forEach(section => {
+                section.classList.add('hidden');
             });
+
+            // Mostrar la sección solicitada
+            const targetSection = document.getElementById('section-' + sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            } else if (sectionId === 'welcome') {
+                document.getElementById('section-welcome').classList.remove('hidden');
+            }
+
+            // Actualizar el estado de los botones de navegación
+            document.querySelectorAll('nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            const mainSections = ['explicacion', 'herramientas', 'ayuda', 'contacto'];
+            if (mainSections.includes(sectionId)) {
+                const activeButton = document.getElementById('nav-' + sectionId);
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                }
+            }
+
+            // Si se va a Explicaciones o Herramientas, aseguramos que se renderice el contenido
+            if (sectionId === 'explicacion') {
+                renderExplanations();
+            } else if (sectionId === 'herramientas') {
+                renderTools();
+            }
         }
+        
+        // Función para generar las tarjetas de Explicaciones (usa el nuevo EXPLANATIONS_DATA)
+        function renderExplanations() {
+            const grid = document.getElementById('explanations-grid');
+            let html = '';
+
+            EXPLANATIONS_DATA.forEach(exp => {
+                // Clases Tailwind usadas para el diseño base y el color de acento
+                const baseClasses = 'p-4 rounded-xl text-left category-card';
+                const accentClasses = exp.subject.includes('Finanzas') 
+                    ? 'bg-cyan-700/30 hover:bg-cyan-700/50 border border-cyan-400/50' 
+                    : 'bg-gray-700/50 hover:bg-gray-700';
+                const titleColor = exp.subject.includes('Finanzas') ? 'text-cyan-300' : 'text-lg';
+
+                html += `
+                    <button onclick="loadExplanationDetail('${exp.id}')" class="${baseClasses} ${accentClasses}">
+                        <span class="text-3xl block mb-1">${exp.icon}</span>
+                        <h3 class="font-bold ${titleColor}">${exp.title}</h3>
+                        <p class="text-xs text-gray-400">${exp.subject} - ${exp.subtitle}</p>
+                    </button>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // Función para generar la lista de Herramientas (usa el nuevo TOOLS_DATA)
+        function renderTools() {
+            const list = document.getElementById('tools-list');
+            let html = '';
+
+            TOOLS_DATA.forEach(tool => {
+                // Se usan las clases del CSS (detail-card) y Tailwind para el layout (flex)
+                html += `
+                    <div class="detail-card flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-bold text-cyan-400">${tool.icon} ${tool.title}</h3>
+                            <p class="text-sm text-gray-400">${tool.subject} - Recurso de Descarga</p>
+                        </div>
+                        <a href="${tool.link}" target="_blank" class="download-btn py-2 px-4 rounded-lg text-sm shadow-md flex items-center" 
+                           onclick="console.log('Descargando ${tool.title}: ${tool.link}');">
+                            Descargar
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+        }
+        
+        /**
+         * Función para formatear el contenido puro (process, example) de los .js
+         * Añade etiquetas <p> y aplica resaltado si contiene palabras clave como "Paso" o "Problema".
+         */
+        const formatContent = (content) => {
+            if (!content) return '';
+            
+            // Dividir por líneas y mapear a etiquetas <p> con clases condicionales
+            return content.trim().split('\n').map(line => {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) return ''; // Ignorar líneas vacías
+                
+                // Usamos la clase CSS para el resaltado
+                const highlightClass = (trimmedLine.includes('Paso') || trimmedLine.includes('Problema')) 
+                    ? 'highlight-line' : '';
+                
+                return `<p class="${highlightClass}">${trimmedLine}</p>`;
+            }).join('');
+        };
+
+        // Función para cargar y mostrar el detalle de una explicación
+        window.loadExplanationDetail = function(explanationId) {
+            const exp = getExplanationById(explanationId);
+
+            if (!exp) {
+                console.error('Explicación no encontrada:', explanationId);
+                return;
+            }
+
+            // Actualizar el contenido de la sección de detalle
+            document.getElementById('detalle-titulo').textContent = `${exp.title} (${exp.subject})`;
+            
+            // La descripción se inserta como texto simple
+            document.getElementById('detalle-descripcion').textContent = exp.description;
+            
+            // El proceso y el ejemplo se inyectan como HTML con formato
+            document.getElementById('detalle-proceso').innerHTML = formatContent(exp.process);
+            document.getElementById('detalle-ejemplo').innerHTML = formatContent(exp.example);
+            
+            // Mostrar la sección de detalle
+            showSection('detalle');
+        }
+
+        // Inicializar la aplicación para mostrar la sección de 'welcome' al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('welcome'); 
+        });
     </script>
 </body>
 </html>
