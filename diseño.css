@@ -1,0 +1,117 @@
+/* * ============================================
+ * DISEÑO FLUXIONICS (CSS PURO)
+ * Archivo de estilos principal.
+ * ============================================
+ */
+
+/* Variables de Color */
+:root {
+    --color-dark-primary: #17202A; /* Fondo casi negro/azul oscuro */
+    --color-dark-secondary: #212F3C; /* Contenedores principales */
+    --color-accent: #17A2B8; /* Turquesa vibrante */
+    --color-text: #F8F9FA; /* Blanco/Gris muy claro */
+    --color-text-secondary: #D5D8DC; /* Gris claro */
+}
+
+/* Estilos Globales */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-dark-primary);
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+/* Estilos de Contenedor Principal */
+.container-card {
+    background-color: var(--color-dark-secondary);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+}
+
+/* Estilos de Navegación */
+.nav-btn {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.nav-btn.active {
+    background-color: var(--color-accent);
+    color: var(--color-dark-primary); 
+    font-weight: 700;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 15px var(--color-accent);
+}
+
+/* Estilos de Tarjetas de Contenido */
+.content-placeholder {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-card {
+    transition: transform 0.1s ease-out, background-color 0.2s;
+    cursor: pointer;
+}
+
+.category-card:active {
+    transform: scale(0.98);
+}
+
+/* Estilos de Tarjetas de Detalle */
+.detail-card {
+    background-color: #17202A;
+    border: 1px solid #334155;
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+
+/* Estilo para el botón de Descarga */
+.download-btn {
+    background-color: var(--color-accent);
+    color: var(--color-dark-primary);
+    font-weight: 700;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.download-btn:hover {
+    background-color: #1aadc5;
+}
+
+/* Estilos para el Contenido de Detalle (Generado a partir de datos puros) */
+.detail-content-text {
+    color: #d1d5db; /* gray-300 */
+    line-height: 1.6;
+    white-space: pre-wrap; /* Permite saltos de línea */
+    font-size: 0.875rem; /* text-sm */
+    padding-top: 0.5rem;
+}
+
+.detail-content-text p {
+    margin-bottom: 0.5rem; /* Espacio entre líneas */
+}
+
+/* Estilos específicos para los encabezados de proceso/ejemplo */
+.highlight-line {
+    font-weight: 600; /* font-semibold */
+    color: #38bdf8; /* sky-400 */
+    margin-top: 0.75rem; /* mt-3 */
+}
+
+.example-box {
+    background-color: #1f2937; /* gray-800/50 */
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    color: #67e8f9; /* cyan-300 */
+    font-weight: 500;
+}
