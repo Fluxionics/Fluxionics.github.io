@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Código Pro</title>
+    <title>Editor Visual de Código (Canva-like)</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -12,93 +12,204 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #282c34;
             color: #f0f0f0;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
             min-height: 100vh;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        #root {
+            display: flex;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #3a3f4a;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            display: flex;
             flex-direction: column;
         }
 
-        .container {
-            background-color: #3a3f4a;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            max-width: 800px;
-            width: 100%;
+        .sidebar h2 {
+            color: #61dafb;
+            margin-top: 0;
+            margin-bottom: 20px;
             text-align: center;
         }
 
-        h1 {
-            color: #61dafb;
+        .element-palette {
             margin-bottom: 30px;
         }
 
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
+        .element-palette h3 {
+            color: #f0f0f0;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            border-bottom: 1px solid #555;
+            padding-bottom: 5px;
         }
 
-        button {
-            background-color: #61dafb;
-            color: #282c34;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #4ac1e3;
-            transform: translateY(-2px);
-        }
-
-        button.secondary {
+        .draggable-item {
             background-color: #555;
             color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: grab;
+            transition: background-color 0.2s ease;
+            text-align: center;
         }
 
-        button.secondary:hover {
+        .draggable-item:hover {
             background-color: #777;
         }
 
-        .editor-container {
-            margin-top: 30px;
-            text-align: left;
+        .draggable-item:active {
+            cursor: grabbing;
         }
 
-        .editor-container label {
+        .editor-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toolbar {
+            background-color: #3a3f4a;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toolbar h1 {
+            color: #f0f0f0;
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .toolbar button {
+            background-color: #61dafb;
+            color: #282c34;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .toolbar button:hover {
+            background-color: #4ac1e3;
+        }
+
+        .canvas-container {
+            flex-grow: 1;
+            background-color: #31353c; /* Canvas background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto; /* Allow scrolling if content overflows */
+            position: relative;
+        }
+
+        .canvas {
+            min-width: 800px; /* Base size for design */
+            min-height: 600px;
+            background-color: #fff; /* White canvas background */
+            border: 1px dashed #555;
+            position: relative; /* Essential for positioning draggable elements */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            overflow: hidden; /* Keep content within canvas bounds */
+        }
+
+        .resizable-draggable {
+            position: absolute;
+            border: 1px solid #61dafb;
+            resize: both; /* Allow resizing */
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.9); /* Default for elements */
+            padding: 5px;
+            box-sizing: border-box; /* Padding doesn't affect total size */
+            cursor: grab;
+        }
+
+        .resizable-draggable.selected {
+            border: 2px solid #ff0077; /* Highlight selected element */
+            outline: 2px dashed rgba(255, 0, 119, 0.5);
+        }
+
+        .resizable-draggable h1, .resizable-draggable p, .resizable-draggable img {
+            margin: 0;
+            padding: 0;
+            pointer-events: none; /* Allow drag to pass through content */
+            color: #333; /* Default text color */
+        }
+
+        .resizable-draggable img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .properties-panel {
+            width: 250px;
+            background-color: #3a3f4a;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .properties-panel h3 {
+            color: #f0f0f0;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            border-bottom: 1px solid #555;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .properties-panel label {
             display: block;
             margin-bottom: 8px;
             color: #f0f0f0;
-            font-weight: bold;
+            font-size: 0.9em;
         }
 
-        .editor-container input[type="text"],
-        .editor-container textarea {
+        .properties-panel input[type="text"],
+        .properties-panel input[type="color"],
+        .properties-panel textarea {
             width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 20px;
+            padding: 8px;
+            margin-bottom: 15px;
             border: 1px solid #555;
-            border-radius: 5px;
+            border-radius: 4px;
             background-color: #444;
             color: #f0f0f0;
-            font-size: 1em;
+            font-size: 0.9em;
         }
 
-        .editor-container textarea {
-            min-height: 200px;
-            font-family: 'Consolas', 'Monaco', monospace;
+        .properties-panel input[type="color"] {
+            width: 100%;
+            height: 35px;
+            padding: 0;
         }
 
-        .dialog-overlay {
+        .properties-panel button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .export-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -108,34 +219,43 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
         }
 
-        .dialog-box {
+        .export-modal-content {
             background-color: #3a3f4a;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
             text-align: center;
-            max-width: 400px;
+            max-width: 600px;
             width: 90%;
             color: #f0f0f0;
         }
 
-        .dialog-box h3 {
+        .export-modal-content h3 {
             margin-top: 0;
             color: #61dafb;
         }
 
-        .dialog-box .button-group {
-            margin-top: 20px;
-            margin-bottom: 0;
+        .export-modal-content textarea {
+            width: calc(100% - 20px);
+            height: 250px;
+            background-color: #222;
+            color: #eee;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            margin-bottom: 20px;
         }
 
-        .status-message {
+        .export-modal-content .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             margin-top: 20px;
-            color: #61dafb;
-            font-style: italic;
         }
     </style>
 </head>
@@ -143,12 +263,9 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef, useCallback } = React;
+        const { useState, useRef, useEffect } = React;
 
-        const LOCAL_STORAGE_KEY_PREFIX = 'code-generator-project-';
-        const AUTOSAVE_INTERVAL = 3000; // 3 segundos
-
-        // Utilidad para descargar archivos
+        // Utility to download files
         const downloadFile = (filename, content, type) => {
             const blob = new Blob([content], { type: type });
             const url = URL.createObjectURL(blob);
@@ -161,257 +278,362 @@
             URL.revokeObjectURL(url);
         };
 
-        // --- Componente principal de la aplicación ---
-        function App() {
-            const [currentView, setCurrentView] = useState('home'); // 'home', 'web-editor', 'python-editor'
-            const [projectType, setProjectType] = useState(null); // 'web-page', 'python-logic'
-            const [projectData, setProjectData] = useState({ projectName: '', content: '' });
-            const [showExitDialog, setShowExitDialog] = useState(false);
-            const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-            const projectDataRef = useRef(projectData); // Para acceder al estado actual en window.onbeforeunload
+        // Unique ID generator
+        const generateId = () => `el-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
-            // Actualiza la referencia cuando projectData cambia
+        // --- Draggable Element Component ---
+        function DraggableElement({ element, onSelect, onUpdate, children }) {
+            const elementRef = useRef(null);
+            const [isDragging, setIsDragging] = useState(false);
+            const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
+            const [initialMousePos, setInitialMousePos] = useState({ x: 0, y: 0 });
+
             useEffect(() => {
-                projectDataRef.current = projectData;
-            }, [projectData]);
-
-            // --- Efecto para el auto-guardado ---
-            useEffect(() => {
-                let intervalId;
-                if (currentView !== 'home' && projectType) {
-                    intervalId = setInterval(() => {
-                        if (hasUnsavedChanges) {
-                            console.log(`Auto-guardando proyecto ${projectData.projectName || 'sin nombre'} (${projectType})...`);
-                            localStorage.setItem(`${LOCAL_STORAGE_KEY_PREFIX}${projectType}`, JSON.stringify(projectData));
-                            setHasUnsavedChanges(false); // Resetear el flag después de guardar
-                        }
-                    }, AUTOSAVE_INTERVAL);
-                }
-
-                return () => clearInterval(intervalId);
-            }, [currentView, projectType, projectData, hasUnsavedChanges]);
-
-            // --- Manejador del evento beforeunload del navegador ---
-            useEffect(() => {
-                const handleBeforeUnload = (event) => {
-                    if (hasUnsavedChanges && currentView !== 'home') {
-                        event.preventDefault();
-                        event.returnValue = ''; // Necesario para mostrar el prompt en algunos navegadores
-                        return ''; // Mensaje genérico para el usuario
+                const handleMouseMove = (e) => {
+                    if (isDragging) {
+                        const dx = e.clientX - initialMousePos.x;
+                        const dy = e.clientY - initialMousePos.y;
+                        onUpdate(element.id, {
+                            style: {
+                                left: initialPos.x + dx,
+                                top: initialPos.y + dy,
+                            },
+                        });
                     }
                 };
-                window.addEventListener('beforeunload', handleBeforeUnload);
+
+                const handleMouseUp = () => {
+                    setIsDragging(false);
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                };
+
+                if (isDragging) {
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
+                }
+
                 return () => {
-                    window.removeEventListener('beforeunload', handleBeforeUnload);
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
                 };
-            }, [hasUnsavedChanges, currentView]);
+            }, [isDragging, initialPos, initialMousePos, onUpdate, element.id]);
 
-            // --- Funciones de manejo de proyectos ---
-            const createNewProject = (type) => {
-                setProjectType(type);
-                const defaultProjectName = type === 'web-page' ? 'Mi Página Web' : 'Mi Script Python';
-                setProjectData({ projectName: defaultProjectName, content: '' });
-                setCurrentView(`${type}-editor`);
-                setHasUnsavedChanges(false); // Nuevo proyecto, sin cambios aún
-                // Intentar cargar auto-guardado
-                const autoSaved = localStorage.getItem(`${LOCAL_STORAGE_KEY_PREFIX}${type}`);
-                if (autoSaved) {
-                    const loadedData = JSON.parse(autoSaved);
-                    if (window.confirm(`Se encontró un guardado automático de "${loadedData.projectName || 'proyecto sin nombre'}". ¿Deseas cargarlo?`)) {
-                        setProjectData(loadedData);
-                    } else {
-                        // Limpiar auto-guardado si no se carga
-                        localStorage.removeItem(`${LOCAL_STORAGE_KEY_PREFIX}${type}`);
-                    }
+            const handleMouseDown = (e) => {
+                if (elementRef.current && e.target === elementRef.current) { // Only drag if clicking the element itself, not its children
+                    setIsDragging(true);
+                    onSelect(element.id);
+                    setInitialPos({ x: element.style.left || 0, y: element.style.top || 0 });
+                    setInitialMousePos({ x: e.clientX, y: e.clientY });
                 }
             };
 
-            const handleProjectChange = (e) => {
-                const { name, value } = e.target;
-                setProjectData(prev => ({ ...prev, [name]: value }));
-                setHasUnsavedChanges(true); // Hay cambios no guardados
+            const handleResize = (e) => {
+                // Resize handling is done by CSS `resize: both` and native browser behavior
+                // We just need to capture the final dimensions on mouseup/blur or periodically
+                // For simplicity, we'll let CSS handle it visually. Real implementation would update element.style.width/height
             };
 
-            const exportProjectJSON = useCallback(() => {
-                if (!projectType || !projectData.projectName) return;
+            const handleClick = (e) => {
+                e.stopPropagation(); // Prevent canvas click from deselecting
+                onSelect(element.id);
+            };
 
-                const projectToExport = {
-                    projectType: projectType,
-                    projectName: projectData.projectName,
-                    version: '1.0',
-                    data: {
-                        content: projectData.content,
+            return (
+                <div
+                    ref={elementRef}
+                    className={`resizable-draggable ${element.isSelected ? 'selected' : ''}`}
+                    style={{
+                        left: element.style.left,
+                        top: element.style.top,
+                        width: element.style.width,
+                        height: element.style.height,
+                        backgroundColor: element.style.backgroundColor,
+                        zIndex: element.style.zIndex || 1,
+                        cursor: isDragging ? 'grabbing' : 'grab',
+                    }}
+                    onMouseDown={handleMouseDown}
+                    onClick={handleClick}
+                    onMouseUp={handleResize} // Simulate capture of resize
+                >
+                    {children}
+                </div>
+            );
+        }
+
+
+        // --- Main App Component ---
+        function App() {
+            const [elements, setElements] = useState([]); // Stores all elements on canvas
+            const [selectedElementId, setSelectedElementId] = useState(null);
+            const [showExportModal, setShowExportModal] = useState(false);
+            const canvasRef = useRef(null); // Reference to the canvas div
+
+            const selectedElement = elements.find(el => el.id === selectedElementId);
+
+            // --- Drag & Drop for new elements from palette ---
+            const handleDragStart = (e, type) => {
+                e.dataTransfer.setData('elementType', type);
+            };
+
+            const handleDrop = (e) => {
+                e.preventDefault();
+                const elementType = e.dataTransfer.getData('elementType');
+                const canvasRect = canvasRef.current.getBoundingClientRect();
+
+                const newElement = {
+                    id: generateId(),
+                    type: elementType,
+                    style: {
+                        left: e.clientX - canvasRect.left - 50, // Center new element roughly
+                        top: e.clientY - canvasRect.top - 25,
+                        width: elementType === 'image' ? 150 : 100,
+                        height: elementType === 'image' ? 100 : 50,
+                        backgroundColor: elementType === 'div' ? '#e0e0e0' : 'transparent',
+                        color: '#333', // Default text color
                     },
+                    content: elementType === 'text' ? 'Nuevo Texto' : '',
+                    src: elementType === 'image' ? 'https://picsum.photos/150/100' : '', // Default image
+                    isSelected: true,
                 };
-                downloadFile(`${projectData.projectName.replace(/\s+/g, '_')}.json`, JSON.stringify(projectToExport, null, 2), 'application/json');
-                setHasUnsavedChanges(false); // Después de exportar, ya no hay cambios sin guardar
-            }, [projectType, projectData]);
 
-            const importProjectJSON = (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedProject = JSON.parse(e.target.result);
-                        if (importedProject.projectType && importedProject.projectName && importedProject.data) {
-                            setProjectType(importedProject.projectType);
-                            setProjectData({
-                                projectName: importedProject.projectName,
-                                content: importedProject.data.content || '',
-                            });
-                            setCurrentView(`${importedProject.projectType}-editor`);
-                            setHasUnsavedChanges(false); // Proyecto recién importado, sin cambios aún
-                        } else {
-                            alert('El archivo JSON no parece ser un proyecto válido.');
-                        }
-                    } catch (error) {
-                        alert('Error al leer el archivo JSON: ' + error.message);
-                    }
-                };
-                reader.readAsText(file);
+                setElements(prev => {
+                    const newElements = prev.map(el => ({ ...el, isSelected: false })); // Deselect others
+                    return [...newElements, newElement];
+                });
+                setSelectedElementId(newElement.id);
             };
 
-            const handleGoHome = () => {
-                if (hasUnsavedChanges) {
-                    setShowExitDialog(true);
-                } else {
-                    setCurrentView('home');
-                    setProjectType(null);
-                    setProjectData({ projectName: '', content: '' });
-                    // Opcional: limpiar auto-guardado si el usuario sale sin guardar explícitamente
-                    if (projectType) {
-                        localStorage.removeItem(`${LOCAL_STORAGE_KEY_PREFIX}${projectType}`);
-                    }
-                }
+            const handleDragOver = (e) => {
+                e.preventDefault(); // Allows drop
             };
 
-            const handleExitDialogConfirm = (shouldExport) => {
-                if (shouldExport) {
-                    exportProjectJSON();
-                }
-                setShowExitDialog(false);
-                setCurrentView('home');
-                setProjectType(null);
-                setProjectData({ projectName: '', content: '' });
-                // Limpiar auto-guardado después de manejar el diálogo
-                if (projectType) {
-                    localStorage.removeItem(`${LOCAL_STORAGE_KEY_PREFIX}${projectType}`);
-                }
-            };
-
-            // --- Renderizado de vistas ---
-            if (currentView === 'home') {
-                return (
-                    <div className="container">
-                        <h1>Generador de Código Pro</h1>
-                        <div className="button-group">
-                            <button onClick={() => createNewProject('web-page')}>
-                                Nuevo Proyecto Web
-                            </button>
-                            <button onClick={() => createNewProject('python-logic')}>
-                                Nuevo Proyecto Python
-                            </button>
-                            <input
-                                type="file"
-                                accept=".json"
-                                onChange={importProjectJSON}
-                                style={{ display: 'none' }}
-                                id="importFileInput"
-                            />
-                            <button className="secondary" onClick={() => document.getElementById('importFileInput').click()}>
-                                Importar Proyecto
-                            </button>
-                        </div>
-                    </div>
+            // --- Element selection on canvas ---
+            const handleSelectElement = (id) => {
+                setElements(prev =>
+                    prev.map(el => ({
+                        ...el,
+                        isSelected: el.id === id,
+                    }))
                 );
-            }
+                setSelectedElementId(id);
+            };
+
+            const handleCanvasClick = () => {
+                setSelectedElementId(null);
+                setElements(prev => prev.map(el => ({ ...el, isSelected: false })));
+            };
+
+            // --- Update selected element's properties ---
+            const handleUpdateElement = (id, updates) => {
+                setElements(prev =>
+                    prev.map(el =>
+                        el.id === id
+                            ? {
+                                ...el,
+                                ...updates,
+                                style: { ...el.style, ...updates.style }, // Merge styles
+                            }
+                            : el
+                    )
+                );
+            };
+
+            // --- Properties Panel Change Handlers ---
+            const handleStyleChange = (prop, value) => {
+                if (selectedElement) {
+                    handleUpdateElement(selectedElement.id, {
+                        style: { [prop]: value },
+                    });
+                }
+            };
+
+            const handleContentChange = (value) => {
+                if (selectedElement && selectedElement.type === 'text') {
+                    handleUpdateElement(selectedElement.id, { content: value });
+                }
+            };
+
+            const handleImageSrcChange = (value) => {
+                if (selectedElement && selectedElement.type === 'image') {
+                    handleUpdateElement(selectedElement.id, { src: value });
+                }
+            };
+
+            // --- Export HTML/CSS ---
+            const generateHtmlCss = () => {
+                let html = '<!DOCTYPE html>\n<html lang="es">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Mi Diseño Exportado</title>\n';
+                html += '    <style>\n        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }\n        .canvas-exported { position: relative; width: 800px; min-height: 600px; background-color: #fff; overflow: hidden; }\n';
+
+                let cssRules = '';
+                const bodyContent = [];
+
+                elements.forEach(el => {
+                    const uniqueClass = `el-${el.id}`; // Generate unique class for each element
+                    cssRules += `\n        .${uniqueClass} {\n`;
+                    for (const prop in el.style) {
+                        // Convert camelCase to kebab-case for CSS properties
+                        const cssProp = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
+                        cssRules += `            ${cssProp}: ${typeof el.style[prop] === 'number' ? `${el.style[prop]}px` : el.style[prop]};\n`;
+                    }
+                    cssRules += '            position: absolute;\n'; // All elements are absolutely positioned
+                    cssRules += '            box-sizing: border-box;\n'; // Ensure padding calculation is consistent
+                    cssRules += `            z-index: ${el.style.zIndex || 1};\n`; // Ensure zIndex is applied
+                    cssRules += '        }\n';
+
+                    let innerContent = '';
+                    if (el.type === 'text') {
+                        innerContent = el.content;
+                    } else if (el.type === 'image') {
+                        innerContent = `<img src="${el.src}" alt="Diseño de Imagen" style="max-width: 100%; max-height: 100%; display: block; object-fit: contain;">`;
+                    }
+
+                    // Append inner content as direct children or wrapped in a paragraph/div for text
+                    const tag = el.type === 'text' ? 'p' : 'div';
+                    bodyContent.push(`<${tag} class="${uniqueClass}">${innerContent}</${tag}>`);
+                });
+
+                html += cssRules;
+                html += '    </style>\n</head>\n<body>\n    <div class="canvas-exported">\n';
+                html += bodyContent.join('\n');
+                html += '\n    </div>\n</body>\n</html>';
+
+                return html;
+            };
+
+            const handleExportCode = () => {
+                setShowExportModal(true);
+            };
+
+            const handleDownloadHtml = () => {
+                const htmlCode = generateHtmlCss();
+                downloadFile('index.html', htmlCode, 'text/html');
+                setShowExportModal(false);
+            };
 
             return (
-                <div className="container">
-                    <h1>Editor de {projectType === 'web-page' ? 'Página Web' : 'Lógica Python'}</h1>
-                    <div className="editor-container">
-                        <label htmlFor="projectName">Nombre del Proyecto:</label>
-                        <input
-                            type="text"
-                            id="projectName"
-                            name="projectName"
-                            value={projectData.projectName}
-                            onChange={handleProjectChange}
-                        />
-
-                        {projectType === 'web-page' && (
-                            <>
-                                <label htmlFor="webContent">Contenido HTML/CSS:</label>
-                                <textarea
-                                    id="webContent"
-                                    name="content"
-                                    value={projectData.content}
-                                    onChange={handleProjectChange}
-                                    placeholder=""
-                                ></textarea>
-                                <div className="button-group">
-                                    <button onClick={() => downloadFile(`${projectData.projectName.replace(/\s+/g, '_')}.html`, projectData.content, 'text/html')}>
-                                        Exportar HTML
-                                    </button>
-                                </div>
-                            </>
-                        )}
-
-                        {projectType === 'python-logic' && (
-                            <>
-                                <label htmlFor="pythonCode">Código Python:</label>
-                                <textarea
-                                    id="pythonCode"
-                                    name="content"
-                                    value={projectData.content}
-                                    onChange={handleProjectChange}
-                                    placeholder="# Escribe tu código Python aquí"
-                                ></textarea>
-                                <div className="button-group">
-                                    <button onClick={() => downloadFile(`${projectData.projectName.replace(/\s+/g, '_')}.py`, projectData.content, 'text/python')}>
-                                        Exportar Python
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                        <p className="status-message">
-                            {hasUnsavedChanges ? 'Cambios no guardados (auto-guardando pronto)...' : 'Todo guardado automáticamente.'}
-                        </p>
-                    </div>
-                    <div className="button-group" style={{ marginTop: '20px' }}>
-                        <button onClick={exportProjectJSON}>Guardar Proyecto (JSON)</button>
-                        <button className="secondary" onClick={handleGoHome}>Volver al Inicio</button>
-                    </div>
-
-                    {showExitDialog && (
-                        <ExitConfirmationDialog
-                            projectName={projectDataRef.current.projectName} // Usar la ref para el nombre actual
-                            onConfirm={handleExitDialogConfirm}
-                        />
-                    )}
-                </div>
-            );
-        }
-
-        // --- Diálogo de confirmación de salida ---
-        function ExitConfirmationDialog({ projectName, onConfirm }) {
-            return (
-                <div className="dialog-overlay">
-                    <div className="dialog-box">
-                        <h3>Tienes cambios no guardados en "{projectName || 'tu proyecto'}".</h3>
-                        <p>¿Deseas guardar el proyecto (JSON) antes de salir?</p>
-                        <div className="button-group">
-                            <button onClick={() => onConfirm(true)}>Sí, Exportar y Salir</button>
-                            <button className="secondary" onClick={() => onConfirm(false)}>No, Salir sin Guardar</button>
+                <>
+                    <div className="sidebar">
+                        <h2>Elementos</h2>
+                        <div className="element-palette">
+                            <h3>Arrastra y Suelta</h3>
+                            <div className="draggable-item" draggable="true" onDragStart={(e) => handleDragStart(e, 'div')}>
+                                Div (Contenedor)
+                            </div>
+                            <div className="draggable-item" draggable="true" onDragStart={(e) => handleDragStart(e, 'text')}>
+                                Texto
+                            </div>
+                            <div className="draggable-item" draggable="true" onDragStart={(e) => handleDragStart(e, 'image')}>
+                                Imagen
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <div className="editor-area">
+                        <div className="toolbar">
+                            <h1>Editor de Diseño Visual</h1>
+                            <button onClick={handleExportCode}>Exportar Código HTML</button>
+                        </div>
+                        <div
+                            className="canvas-container"
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
+                            onClick={handleCanvasClick}
+                        >
+                            <div ref={canvasRef} className="canvas">
+                                {elements.map(el => (
+                                    <DraggableElement
+                                        key={el.id}
+                                        element={el}
+                                        onSelect={handleSelectElement}
+                                        onUpdate={handleUpdateElement}
+                                    >
+                                        {el.type === 'text' && <p style={{ color: el.style.color }}>{el.content}</p>}
+                                        {el.type === 'image' && <img src={el.src} alt="Diseño de Imagen" />}
+                                    </DraggableElement>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="properties-panel">
+                        <h2>Propiedades</h2>
+                        {selectedElement ? (
+                            <div>
+                                <h3>Elemento: {selectedElement.type.charAt(0).toUpperCase() + selectedElement.type.slice(1)}</h3>
+                                {selectedElement.type === 'div' && (
+                                    <>
+                                        <label>Fondo:</label>
+                                        <input
+                                            type="color"
+                                            value={selectedElement.style.backgroundColor || '#ffffff'}
+                                            onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
+                                        />
+                                    </>
+                                )}
+                                {selectedElement.type === 'text' && (
+                                    <>
+                                        <label>Texto:</label>
+                                        <textarea
+                                            value={selectedElement.content}
+                                            onChange={(e) => handleContentChange(e.target.value)}
+                                        ></textarea>
+                                        <label>Color de Texto:</label>
+                                        <input
+                                            type="color"
+                                            value={selectedElement.style.color || '#333333'}
+                                            onChange={(e) => handleStyleChange('color', e.target.value)}
+                                        />
+                                    </>
+                                )}
+                                {selectedElement.type === 'image' && (
+                                    <>
+                                        <label>URL de Imagen:</label>
+                                        <input
+                                            type="text"
+                                            value={selectedElement.src}
+                                            onChange={(e) => handleImageSrcChange(e.target.value)}
+                                        />
+                                    </>
+                                )}
+                                <label>Ancho (px):</label>
+                                <input
+                                    type="text"
+                                    value={selectedElement.style.width || ''}
+                                    onChange={(e) => handleStyleChange('width', parseInt(e.target.value) || e.target.value)}
+                                />
+                                <label>Alto (px):</label>
+                                <input
+                                    type="text"
+                                    value={selectedElement.style.height || ''}
+                                    onChange={(e) => handleStyleChange('height', parseInt(e.target.value) || e.target.value)}
+                                />
+                                {/* Add more properties here (padding, margin, border, font-size, etc.) */}
+                            </div>
+                        ) : (
+                            <p>Selecciona un elemento para editar sus propiedades.</p>
+                        )}
+                    </div>
+
+                    {showExportModal && (
+                        <div className="export-modal-overlay">
+                            <div className="export-modal-content">
+                                <h3>Código HTML y CSS Generado</h3>
+                                <textarea
+                                    readOnly
+                                    value={generateHtmlCss()}
+                                ></textarea>
+                                <div className="button-group">
+                                    <button onClick={handleDownloadHtml}>Descargar HTML</button>
+                                    <button className="secondary" onClick={() => setShowExportModal(false)}>Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </>
             );
         }
 
-        // Renderizar la aplicación
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
