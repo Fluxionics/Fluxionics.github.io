@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTEE Broadcast & Tecnología | Enlaces Oficiales</title>
+    <!-- Carga de Tailwind CSS para un diseño rápido y responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de íconos de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* CONFIGURACIÓN TAILWIND */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-dark': '#111827', 
+                        'card-bg': '#1f2937',     
+                        'accent-red': '#dc2626',  
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+
+        /* -------------------------------------- */
+        /* EFECTO DE FONDO CON MOVIMIENTO (ANIMACIÓN) - MODIFICADO */
+        /* -------------------------------------- */
+        body {
+            background: #000000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 10px;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* Colores más intensos y oscuros para que resalte el logo */
+            background: linear-gradient(
+                45deg,
+                #0A0A0A, /* Negro muy oscuro */
+                #1A0000, /* Rojo casi negro */
+                #dc2626, /* Rojo vibrante */
+                #3D0000, /* Rojo oscuro */
+                #0A0A0A
+            );
+            background-size: 400% 400%;
+            animation: gradientMove 25s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* -------------------------------------- */
+        /* ESTILOS DE BOTONES Y CONTENIDO */
+        /* -------------------------------------- */
+
+        .link-button {
+            width: 100%;
+            padding: 1.1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(3px);
+        }
+
+        .link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+        }
+
+        .link-button i {
+            font-size: 1.6rem;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .link-in-bio-card {
+            max-width: 420px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .profile-title {
+            letter-spacing: 0.1em;
+        }
+        
+        /* Ajuste para el logo completo, más grande Y CIRCULAR */
+        .logo-full {
+             width: 160px; 
+             height: 160px; 
+             object-fit: contain; 
+             background-color: transparent;
+             border-radius: 9999px; /* Hace el borde completamente circular */
+             padding: 0;
+        }
+    </style>
+</head>
+<body class="font-sans">
+
+    <!-- Fondo Animado con Gradiente -->
+    <div class="animated-bg"></div>
+
+    <!-- Contenedor Principal (Vista Móvil) -->
+    <div class="link-in-bio-card">
+
+        <!-- Sección de Perfil y Cabecera -->
+        <div class="text-center p-4 mb-4">
+            <!-- Logo con ajustes para verse CIRCULAR y completo -->
+            <img src="https://i.imgur.com/Rp4afAX.jpg"
+                 alt="Logo de INTEE"
+                 class="logo-full mx-auto border-4 border-white shadow-xl shadow-black/70">
+            
+            <h1 class="text-3xl font-extrabold text-white mt-4 profile-title">INTEE Broadcast & Tecnología</h1>
+            
+            <!-- Handle @INTEESCLC -->
+            <p class="text-gray-300 text-base mt-1 font-light bg-black/50 inline-block px-4 py-1 rounded-full backdrop-blur-sm">
+                @INTEESCLC
+            </p>
+            
+            <!-- Descripción del servicio -->
+            <p class="text-gray-400 text-sm mt-3 px-4">
+                Servicio Especializado en Reparación de Transmisores FM en todas las Marcas. Contamos Con Venta de Equipos.
+            </p>
+        </div>
+
+        <!-- ---------------------------------------------------- -->
+        <!-- Sección de Enlaces Oficiales -->
+        <!-- ---------------------------------------------------- -->
+        <div class="px-4">
+            
+            <!-- Botón 1: Página Web -->
+            <a href="http://intee.com.mx" target="_blank" 
+               class="link-button bg-gray-800 hover:bg-gray-700">
+                <i class="fas fa-globe"></i>
+                Página Web Oficial
+            </a>
+
+            <!-- Botón 2: YouTube - Canal Principal -->
+            <a href="https://www.youtube.com/@INTEESCLC" target="_blank" 
+               class="link-button bg-red-700 hover:bg-red-800">
+                <i class="fab fa-youtube"></i>
+                Canal Oficial de YouTube
+            </a>
+
+            <!-- Botón 3: Facebook -->
+            <a href="https://facebook.com/InteeSCLC" target="_blank" 
+               class="link-button bg-blue-700 hover:bg-blue-800" style="background-color: #1877f2;">
+                <i class="fab fa-facebook"></i>
+                Síguenos en Facebook
+            </a>
+
+            <!-- Botón 4: Instagram -->
+            <a href="https://instagram.com/intee_sclc" target="_blank" 
+               class="link-button hover:opacity-90" 
+               style="background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);">
+                <i class="fab fa-instagram"></i>
+                Perfil de Instagram
+            </a>
+
+            <!-- Botón 5: TikTok -->
+            <a href="https://tiktok.com/@intee2024" target="_blank" 
+               class="link-button bg-black hover:bg-gray-800">
+                <i class="fab fa-tiktok"></i>
+                Videos en TikTok
+            </a>
+
+            <!-- Botón 6: WhatsApp -->
+            <a href="https://wa.me/529671710403" target="_blank" 
+               class="link-button bg-green-600 hover:bg-green-700">
+                <i class="fab fa-whatsapp"></i>
+                Contacto por WhatsApp
+            </a>
+            
+            <!-- Botón 7: Gmail - Correo de Luis Sánchez -->
+            <a href="mailto:Luis.sanchez@Intee.com.mx" class="link-button bg-gray-700 hover:bg-gray-600">
+                <i class="fas fa-envelope"></i>
+                Envíanos un Correo
+            </a>
+        </div>
+        
+        <!-- ---------------------------------------------------- -->
+        <!-- Pie de página (Derechos Reservados) - Ajustado -->
+        <!-- ---------------------------------------------------- -->
+        <div class="text-center mt-12 pb-4">
+             <p class="text-gray-500 text-xs font-medium">
+                © 2025 INTEE Broadcast & Tecnología.  
+                     Todos los derechos reservados.
+             </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
