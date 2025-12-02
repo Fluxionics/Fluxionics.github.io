@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extensiones Esenciales de VS Code (Animación con Sonido)</title>
+    
+    <style>
+        /* Variables y Reset Básico */
+        :root {
+            --vs-code-blue: #007acc;
+            --vs-code-dark: #1e1e1e;
+            --card-bg: rgba(37, 37, 38, 0.9);
+            --accent-color: #4CAF50; 
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--vs-code-dark);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Contenedor de Partículas */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Contenido Principal */
+        .content-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px 20px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--vs-code-blue);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-vs {
+            font-size: 3em;
+            color: var(--vs-code-blue);
+            margin-right: 15px;
+        }
+
+        .plugins-list {
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            padding-top: 10px;
+        }
+
+        /* ESTILO DEL BOTÓN DE PLAY */
+        #play-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        #play-button:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        #play-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Ocultar el botón después de la animación */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Estilos de la Tarjeta del Plugin (Ocultas inicialmente) */
+        .plugin-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+            border-left: 5px solid var(--accent-color);
+            text-align: left;
+            
+            /* Estado Inicial: Oculto para la animación */
+            opacity: 0; 
+            transform: translateY(30px);
+        }
+
+        .plugin-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .plugin-icon {
+            font-size: 30px;
+            margin-right: 15px;
+            color: var(--accent-color);
+        }
+
+        .plugin-card h2 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #ffffff;
+        }
+
+        .rating {
+            font-size: 1.2em;
+            color: gold;
+            margin-top: 10px;
+        }
+
+        /* CLASES QUE ACTIVAN LA ANIMACIÓN */
+        .start-animation .plugin-card {
+            animation: fadeInSlide 1.8s forwards ease-out;
+        }
+        
+        /* Retrasos Secuenciales */
+        .start-animation .plugin-card:nth-child(1) { animation-delay: 0.7s; }
+        .start-animation .plugin-card:nth-child(2) { animation-delay: 1.4s; }
+        .start-animation .plugin-card:nth-child(3) { animation-delay: 2.1s; }
+        .start-animation .plugin-card:nth-child(4) { animation-delay: 2.8s; }
+        .start-animation .plugin-card:nth-child(5) { animation-delay: 3.5s; }
+        .start-animation .plugin-card:nth-child(6) { animation-delay: 4.2s; }
+        .start-animation .plugin-card:nth-child(7) { animation-delay: 4.9s; }
+        .start-animation .plugin-card:nth-child(8) { animation-delay: 5.6s; }
+
+        /* Keyframes de la Animación */
+        @keyframes fadeInSlide {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <audio id="start-sound" preload="auto">
+        <source src="URL_DE_TU_SONIDO.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <div id="particles-js"></div>
+
+    <div class="content-container">
+        <h1>
+            <span class="logo-vs">&lt;/&gt;</span>
+            8 Extensiones Esenciales de Visual Studio Code
+        </h1>
+        <p>Presiona el botón para iniciar la animación y escuchar el sonido:</p>
+
+        <button id="play-button">▶️ Iniciar Animación</button>
+        
+        <div class="plugins-list" id="plugins-list">
+            
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">🎨</span><h2>Prettier</h2></div>
+                <p><strong>Función:</strong> Formateador de código automático. Garantiza estilos consistentes.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️⭐️ (5/5)</div>
+            </div>
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">📡</span><h2>Live Server</h2></div>
+                <p><strong>Función:</strong> Lanza un servidor de desarrollo local con recarga en vivo.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️ (4/5)</div>
+            </div>
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">⚙️</span><h2>GitLens</h2></div>
+                <p><strong>Función:</strong> Potente herramienta de visualización de Git. Muestra el historial por línea de código.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️⭐️ (5/5)</div>
+            </div>
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">⚡</span><h2>Thunder Client</h2></div>
+                <p><strong>Función:</strong> Cliente REST ligero dentro de VS Code para probar APIs.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️ (4/5)</div>
+            </div>
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">🐍</span><h2>Python (Microsoft)</h2></div>
+                <p><strong>Función:</strong> Soporte completo para Python, incluyendo IntelliSense y depuración.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️⭐️ (5/5)</div>
+            </div>
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">✅</span><h2>ESLint</h2></div>
+                <p><strong>Función:</strong> Analiza estáticamente el código JavaScript/TypeScript para encontrar errores.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️⭐️ (5/5)</div>
+            </div>
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">🐳</span><h2>Docker</h2></div>
+                <p><strong>Función:</strong> Simplifica la gestión de contenedores, imágenes y Dockerfiles en VS Code.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️ (4/5)</div>
+            </div>
+            <div class="plugin-card">
+                <div class="plugin-header"><span class="plugin-icon">🏷️</span><h2>Auto Rename Tag</h2></div>
+                <p><strong>Función:</strong> Renombra automáticamente la etiqueta de cierre cuando se cambia la de apertura.</p>
+                <div class="rating">Calificación: ⭐️⭐️⭐️⭐️ (4/5)</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        document.getElementById('play-button').addEventListener('click', function() {
+            const button = this;
+            const pluginsList = document.getElementById('plugins-list');
+            const sound = document.getElementById('start-sound');
+            
+            // 1. Ocultar el botón
+            button.classList.add('hidden');
+            
+            // 2. Iniciar la animación de las tarjetas
+            pluginsList.classList.add('start-animation');
+            
+            // 3. Reproducir el sonido
+            sound.currentTime = 0; // Reinicia el sonido si ya se reprodujo
+            sound.play().catch(error => {
+                // Mensaje si el navegador bloquea la reproducción automática (raro en un clic)
+                console.warn("Error al reproducir el sonido: ", error);
+            });
+            
+            // 4. Inicializar el fondo de partículas
+            particlesJS('particles-js',
+            {
+              "particles": {
+                "number": {
+                  "value": 100, 
+                  "density": {
+                    "enable": true,
+                    "value_area": 800
+                  }
+                },
+                "color": { "value": "#007acc" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": {
+                  "enable": true,
+                  "distance": 150,
+                  "color": "#007acc",
+                  "opacity": 0.4,
+                  "width": 1
+                },
+                "move": {
+                  "enable": true,
+                  "speed": 1.5, /* Velocidad lenta */
+                  "direction": "none",
+                  "random": false,
+                  "straight": false,
+                  "out_mode": "out",
+                  "bounce": false
+                }
+              },
+              "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                  "onhover": { "enable": true, "mode": "repulse" },
+                  "onclick": { "enable": true, "mode": "push" },
+                  "resize": true
+                },
+                "modes": {
+                  "repulse": { "distance": 100, "duration": 0.4 },
+                  "push": { "particles_number": 4 }
+                }
+              },
+              "retina_detect": true
+            }
+            );
+        });
+    </script>
+</body>
+</html>
+              
