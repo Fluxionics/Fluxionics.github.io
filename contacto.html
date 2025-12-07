@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guillermo Rafael - Contacto</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617; /* Color oscuro (Slate 950) */
+            color: #f8fafc;
+            overflow-x: hidden;
+            margin: 0;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        /* Estilo para el Canvas (fondo de partículas) */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        /* Contenido debe estar encima del canvas */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="content-wrapper min-h-screen flex flex-col">
+        
+        <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <span class="font-mono text-xl font-bold text-cyan-400 tracking-tighter hover:text-white transition-colors cursor-pointer">
+                        &lt;GRSM /&gt;
+                    </span>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="index.html" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Inicio</a>
+                            <a href="proyectos.html" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Proyectos</a>
+                            <a href="#" class="bg-cyan-500 text-black px-4 py-2 rounded-md text-sm font-medium transition-all">Contactar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <section id="contacto" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex-grow">
+            <div class="max-w-4xl mx-auto text-center">
+                
+                <h2 class="text-4xl font-extrabold tracking-tight text-white mb-4">
+                    Ponte en Contacto 👋
+                </h2>
+                <p class="text-xl text-slate-400 mb-12">
+                    Si tienes alguna oportunidad de aprendizaje o proyecto interesante, ¡escríbeme!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div class="bg-slate-900/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300">
+                        <h3 class="text-xl font-bold text-white mb-3 flex items-center justify-center">
+                            <svg class="w-6 h-6 mr-2 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.8 5.2a1 1 0 001.2 0L21 8m-4-2H7a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2V8a2 2 0 00-2-2z"/></svg>
+                            Correo Electrónico
+                        </h3>
+                        <p class="text-slate-400 text-sm mb-4 font-mono break-all">guille.g.r.s.m@gmail.com</p>
+                        <a href="mailto:guille.g.r.s.m@gmail.com" class="inline-block w-full px-4 py-2 rounded-md text-sm font-medium transition-all bg-cyan-600 text-white hover:bg-cyan-500">Enviar Correo</a>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300">
+                        <h3 class="text-xl font-bold text-white mb-3 flex items-center justify-center">
+                            <svg class="w-6 h-6 mr-2 text-cyan-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                            Facebook
+                        </h3>
+                        <p class="text-slate-400 text-sm mb-4">Guillermo Rafael</p>
+                        <a href="https://www.facebook.com/profile.php?id=61584062920442" target="_blank" class="inline-block w-full px-4 py-2 rounded-md text-sm font-medium transition-all bg-blue-600 text-white hover:bg-blue-500">Visitar Perfil</a>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300">
+                        <h3 class="text-xl font-bold text-white mb-3 flex items-center justify-center">
+                            <svg class="w-6 h-6 mr-2 text-cyan-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.9c-.83-.34-1.7-.54-2.6-.68v2c.7.13 1.34.33 1.9.61v2.3c-.6-.28-1.25-.48-1.9-.61V14h-2V9.61c-.65-.13-1.3-.33-1.9-.61v4.3c.6.28 1.25.48 1.9.61v2.3c-.53-.13-1.1-.33-1.7-.54v2.7c.6.21 1.27.42 1.9.61v2.3c-.6-.19-1.25-.4-1.9-.61v-2.7c-2.3.8-4.9-.1-6.2-2.1C5.6 15 5.8 13.5 7.1 12.2c1.3-1.3 3.1-1.6 4.6-1V7c-.4.07-.8.15-1.2.27-2.3.62-4.8 1.4-6.6 2.8C2.9 11.2 2.3 12 2 12.8v-.9c.4-.9 1-1.7 1.8-2.4 1.8-1.4 4.3-2.2 6.6-2.8.4-.12.8-.2 1.2-.27V4.7c.4-.07.8-.15 1.2-.27 1.9-.5 3.9-.7 5.9-.6v2.4c-.6.04-1.2.1-1.8.21z"/></svg>
+                            TikTok
+                        </h3>
+                        <p class="text-slate-400 text-sm mb-4 font-mono">@fluxionics</p>
+                        <a href="https://www.tiktok.com/@fluxionics" target="_blank" class="inline-block w-full px-4 py-2 rounded-md text-sm font-medium transition-all bg-black text-white border border-cyan-500 hover:bg-slate-800">Ver Perfil</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="mt-auto border-t border-slate-800 bg-black/80 backdrop-blur-md py-8">
+            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center opacity-60">
+                <div class="font-mono text-sm text-slate-500 mb-4 md:mb-0">
+                    © 2024 Guillermo Rafael S.M.
+                </div>
+                <div class="flex space-x-6 items-center">
+                    <span class="text-slate-600 text-sm">Powered by</span>
+                    <span class="font-bold tracking-widest text-cyan-900 hover:text-cyan-700 transition-colors">FLUXIONICS</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let animationFrameId;
+
+            const resizeCanvas = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const particleCount = 60;
+            const particles = [];
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.speedY = Math.random() * -1 - 0.2;
+                    this.opacity = Math.random() * 0.5 + 0.1;
+                    this.color = Math.random() > 0.5 ? '103, 232, 249' : '59, 130, 246';
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.y < 0) {
+                        this.y = canvas.height;
+                        this.x = Math.random() * canvas.width;
+                    }
+                    if (this.x > canvas.width || this.x < 0) {
+                        this.speedX = -this.speedX;
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            const connectParticles = () => {
+                const maxDistance = 100;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < maxDistance) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(103, 232, 249, ${0.1 - distance/maxDistance * 0.1})`;
+                            ctx.lineWidth = 1;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            };
+
+            const animate = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+
+                connectParticles();
+
+                animationFrameId = requestAnimationFrame(animate);
+            };
+
+            animate();
+        });
+    </script>
+</body>
+</html>
