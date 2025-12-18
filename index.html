@@ -3,167 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guillermo Rafael - Perfil</title>
+    <title>Guillermo Rafael - Perfil Navideño</title>
     
-    <!-- Tailwind CSS (Framework de estilos para que se vea bonito rápido) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fuentes de Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
 
     <style>
-        /* Estilos generales */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #020617; /* Color oscuro (Slate 950) */
+            background-color: #020617;
             color: #f8fafc;
-            overflow-x: hidden; /* Evita scroll horizontal */
+            overflow-x: hidden;
             margin: 0;
         }
 
-        /* Clase para fuente tipo código */
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Fuente especial para títulos navideños */
+        .font-christmas { font-family: 'Mountains of Christmas', cursive; }
 
-        /* Animación flotante para el logo */
         .floating {
             animation: float 6s ease-in-out infinite;
         }
 
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-15px); }
             100% { transform: translateY(0px); }
         }
 
-        /* Estilo para el Canvas (fondo de partículas) */
         #particle-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; /* Detrás de todo */
-            pointer-events: none; /* Que no interfiera con los clicks */
+            z-index: 0;
+            pointer-events: none;
         }
 
-        /* Contenido debe estar encima del canvas */
         .content-wrapper {
             position: relative;
             z-index: 10;
+        }
+
+        /* Luces de navidad animadas en el borde superior */
+        .christmas-lights {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #ff0000, #00ff00, #ff0000, #00ff00);
+            background-size: 300% 100%;
+            animation: lights 3s linear infinite;
+            z-index: 100;
+        }
+
+        @keyframes lights {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* Gorrito de navidad sobre el logo */
+        .santa-hat {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-80%) rotate(-15deg);
+            width: 80px;
+            filter: drop-shadow(0 0 5px rgba(255,0,0,0.5));
+            z-index: 20;
         }
     </style>
 </head>
 <body>
 
-    <!-- Fondo de Partículas -->
+    <div class="christmas-lights"></div>
+
     <canvas id="particle-canvas"></canvas>
 
-    <!-- Contenido Principal -->
     <div class="content-wrapper min-h-screen flex flex-col">
         
-        <!-- Navbar (Menú superior) -->
-        <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50">
+        <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-red-900/30">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
-                    <span class="font-mono text-xl font-bold text-cyan-400 tracking-tighter hover:text-white transition-colors cursor-pointer">
-                        &lt;GRSM /&gt;
+                    <span class="font-mono text-xl font-bold text-red-500 tracking-tighter hover:text-white transition-colors cursor-pointer">
+                        &lt;🎄 GRSM /&gt;
                     </span>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="#inicio" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Inicio</a>
-                            <a href="proyectos.html" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Proyectos</a>
-                            <a href="contacto.html" class="hover:bg-cyan-500 hover:text-black border border-cyan-500 text-cyan-400 px-4 py-2 rounded-md text-sm font-medium transition-all">Contactar</a>
+                            <a href="#inicio" class="hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Inicio</a>
+                            <a href="proyectos.html" class="hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Proyectos</a>
+                            <a href="contacto.html" class="hover:bg-red-600 hover:text-white border border-red-600 text-red-500 px-4 py-2 rounded-md text-sm font-medium transition-all">Contactar</a>
                         </div>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <!-- Sección Principal (Hero) -->
         <section id="inicio" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[90vh] text-center">
             
-            <!-- Logo con animación y protección anti-deformación -->
             <div class="relative mb-8 group">
-                <!-- Brillo detrás del logo -->
-                <div class="absolute -inset-4 bg-cyan-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                <div class="absolute -inset-4 bg-red-600/20 rounded-full blur-xl opacity-50 group-hover:opacity-100 transition duration-700"></div>
                 
                 <div class="relative">
+                    <img src="https://pngimg.com/uploads/santa_hat/santa_hat_PNG42.png" class="santa-hat" alt="Santa Hat">
+                    
                     <img 
                         src="https://imgur.com/pxjxVqC.png" 
                         alt="Logo Fluxionics" 
-                        class="h-48 md:h-64 w-auto object-contain mx-auto floating drop-shadow-2xl"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        class="h-48 md:h-64 w-auto object-contain mx-auto floating drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]"
                     />
-                    <!-- Mensaje por si la imagen falla -->
-                    <div class="hidden h-48 w-48 mx-auto items-center justify-center border border-cyan-500 rounded-lg text-cyan-500">
-                        Logo no cargado
-                    </div>
                 </div>
             </div>
 
-            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4 drop-shadow-lg">
-                Guillermo Rafael <br/>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                    S. M. 
+            <h1 class="text-5xl sm:text-7xl font-christmas tracking-wide text-white mb-4 drop-shadow-lg">
+                ¡Feliz Navidad! <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-green-500">
+                    Guillermo Rafael
                 </span>
             </h1>
             
             <p class="mt-4 max-w-2xl text-xl text-slate-300 mx-auto font-light">
-                Estudiante apasionado por la tecnología y el desarrollo de software.
+                Programando sueños bajo la nieve. Estudiante apasionado por la tecnología.
                 <br/> 
-                <span class="text-cyan-400 font-mono text-sm mt-2 block">Futuro Programador Full Stack</span>
+                <span class="text-green-400 font-mono text-sm mt-2 block">Cerrando el año con nuevos proyectos 🎁</span>
             </p>
 
             <div class="mt-8 flex justify-center gap-4">
-                <span class="inline-flex items-center px-4 py-2 rounded-full border border-cyan-900 bg-cyan-950/30 text-sm text-cyan-100 backdrop-blur-sm">
-                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                    Disponible para aprender
+                <span class="inline-flex items-center px-4 py-2 rounded-full border border-red-900 bg-red-950/30 text-sm text-red-100 backdrop-blur-sm">
+                    <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-ping"></span>
+                    Modo Navidad Activo
                 </span>
             </div>
         </section>
 
-        <!-- Tarjetas de Información -->
-        <section id="sobre-mi" class="py-20 bg-slate-900/40 backdrop-blur-sm border-t border-slate-800/50">
+        <section id="sobre-mi" class="py-20 bg-slate-900/40 backdrop-blur-sm border-t border-white/5">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     
-                    <!-- Tarjeta 1: Sobre Mí -->
-                    <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 group">
-                        <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                            <!-- Icono Usuario SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </div>
+                    <div class="bg-slate-950/80 p-6 rounded-xl border border-red-900/30 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.15)] transition-all duration-300 group">
+                        <div class="text-3xl mb-4 group-hover:scale-110 transition-transform">🎅</div>
                         <h3 class="text-xl font-bold text-white mb-2">Sobre Mí</h3>
                         <p class="text-slate-400 text-sm leading-relaxed">
-                            Me llamo Guillermo y tengo un gran interés en cómo funcionan las computadoras y el software. Mi meta es convertirme en programador profesional.
+                            Me llamo Guillermo. Este año mi mejor regalo ha sido todo lo aprendido en programación. Mi meta sigue firme: ser un profesional Tech.
                         </p>
                     </div>
 
-                    <!-- Tarjeta 2: Educación -->
-                    <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 group">
-                        <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                            <!-- Icono Escuela SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                        </div>
+                    <div class="bg-slate-950/80 p-6 rounded-xl border border-green-900/30 hover:border-green-500/50 hover:shadow-[0_0_20px_rgba(34,197,94,0.15)] transition-all duration-300 group">
+                        <div class="text-3xl mb-4 group-hover:scale-110 transition-transform">🎓</div>
                         <h3 class="text-xl font-bold text-white mb-2">Educación</h3>
                         <p class="text-slate-400 text-sm leading-relaxed">
-                            Actualmente cursando mis estudios con excelencia en la:
+                            Finalizando un gran año académico en la:
                             <br/>
-                            <span class="text-cyan-400 font-semibold mt-1 block">Secundaria del Estado Número 2</span>
+                            <span class="text-green-400 font-semibold mt-1 block">Secundaria del Estado Número 2</span>
                         </p>
                     </div>
 
-                    <!-- Tarjeta 3: Pasión Tech -->
-                    <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 group">
-                        <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                            <!-- Icono Código SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                        </div>
+                    <div class="bg-slate-950/80 p-6 rounded-xl border border-blue-900/30 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] transition-all duration-300 group">
+                        <div class="text-3xl mb-4 group-hover:scale-110 transition-transform">🎁</div>
                         <h3 class="text-xl font-bold text-white mb-2">Pasión Tech</h3>
                         <p class="text-slate-400 text-sm leading-relaxed">
-                            Me fascina la programación y el diseño lógico. Siempre estoy buscando aprender nuevas tecnologías.
+                            Mi pasión es el código. Mi lenguaje favorito es el de las oportunidades. ¡Listo para los retos del 2025!
                         </p>
                     </div>
 
@@ -171,29 +173,26 @@
             </div>
         </section>
 
-        <!-- Footer -->
         <div class="mt-auto border-t border-slate-800 bg-black/80 backdrop-blur-md py-8">
             <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center opacity-60">
                 <div class="font-mono text-sm text-slate-500 mb-4 md:mb-0">
-                    © 2024 Guillermo Rafael S.M.
+                    © 2024 Guillermo Rafael S.M. ❄️
                 </div>
                 <div class="flex space-x-6 items-center">
-                    <span class="text-slate-600 text-sm">Powered by</span>
-                    <span class="font-bold tracking-widest text-cyan-900 hover:text-cyan-700 transition-colors">FLUXIONICS</span>
+                    <span class="text-slate-600 text-sm">Merry Christmas from</span>
+                    <span class="font-bold tracking-widest text-red-600 hover:text-green-500 transition-colors">FLUXIONICS</span>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- Script JavaScript para las partículas (Sin React) -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('particle-canvas');
             const ctx = canvas.getContext('2d');
             let animationFrameId;
 
-            // Ajustar tamaño del canvas
             const resizeCanvas = () => {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
@@ -202,11 +201,11 @@
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
 
-            // Configuración de partículas
-            const particleCount = 60;
+            // Configuración de nieve
+            const particleCount = 100; // Más partículas para que parezca nieve
             const particles = [];
 
-            class Particle {
+            class Snowflake {
                 constructor() {
                     this.reset();
                 }
@@ -216,73 +215,47 @@
                     this.y = Math.random() * canvas.height;
                     this.size = Math.random() * 3 + 1;
                     this.speedX = Math.random() * 1 - 0.5;
-                    this.speedY = Math.random() * -1 - 0.2; // Suben como burbujas
-                    this.opacity = Math.random() * 0.5 + 0.1;
-                    this.color = Math.random() > 0.5 ? '103, 232, 249' : '59, 130, 246'; // Colores Cyan/Azul
+                    this.speedY = Math.random() * 1 + 0.5; // CAEN hacia abajo
+                    this.opacity = Math.random() * 0.8 + 0.2;
                 }
 
                 update() {
-                    this.x += this.speedX;
                     this.y += this.speedY;
+                    this.x += this.speedX;
 
-                    // Si sale por arriba, reaparece abajo
-                    if (this.y < 0) {
-                        this.y = canvas.height;
+                    // Si sale por abajo, reaparece arriba
+                    if (this.y > canvas.height) {
+                        this.y = -10;
                         this.x = Math.random() * canvas.width;
                     }
-                    if (this.x > canvas.width || this.x < 0) {
-                        this.speedX = -this.speedX;
-                    }
+                    // Si sale por los lados, vuelve al otro lado
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.x < 0) this.x = canvas.width;
                 }
 
                 draw() {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; // Color blanco nieve
                     ctx.fill();
-                    // Sombra/Brillo
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = `rgba(${this.color}, 0.5)`;
-                    ctx.shadowBlur = 0; // Resetear sombra para no afectar performance
+                    // Efecto de resplandor para la nieve
+                    ctx.shadowBlur = 5;
+                    ctx.shadowColor = "white";
                 }
             }
 
-            // Crear partículas
             for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
+                particles.push(new Snowflake());
             }
 
-            // Función para dibujar líneas entre puntos cercanos
-            const connectParticles = () => {
-                const maxDistance = 100;
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < maxDistance) {
-                            ctx.beginPath();
-                            ctx.strokeStyle = `rgba(103, 232, 249, ${0.1 - distance/maxDistance * 0.1})`;
-                            ctx.lineWidth = 1;
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            };
-
-            // Bucle de animación
             const animate = () => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                particles.forEach(particle => {
-                    particle.update();
-                    particle.draw();
+                // Fondo ligeramente azulado/oscuro para contrastar la nieve
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
                 });
-
-                connectParticles();
 
                 animationFrameId = requestAnimationFrame(animate);
             };
@@ -292,5 +265,3 @@
     </script>
 </body>
 </html>
-
-
