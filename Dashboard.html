@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxionics - Dashboard de Contacto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; margin: 0; overflow-x: hidden; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .content-wrapper { position: relative; z-index: 10; }
+        
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: #22d3ee;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(6, 182, 212, 0.15);
+        }
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="content-wrapper flex flex-col items-center py-16 px-4">
+        
+        <div class="text-center mb-12">
+            <img src="https://imgur.com/pxjxVqC.png" alt="Logo" class="h-24 w-auto mx-auto floating mb-4 drop-shadow-[0_0_10px_rgba(6,182,212,0.4)]">
+            <h1 class="text-4xl font-extrabold text-white mb-2">Ponte en Contacto 👋</h1>
+            <p class="text-slate-400 max-w-md mx-auto">Si tienes alguna oportunidad de aprendizaje o proyecto interesante, ¡escríbeme!</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl">
+            
+            <div class="glass-card p-6 rounded-3xl col-span-1 md:col-span-2">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center">
+                        <div class="w-14 h-14 bg-cyan-500/10 rounded-2xl flex items-center justify-center mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs text-cyan-500 font-mono tracking-widest">TELÉFONO / WHATSAPP</p>
+                            <p class="text-xl font-bold text-white tracking-tight">967 184 2617</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 w-full md:w-auto">
+                        <a href="tel:+529671842617" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold py-3 px-6 rounded-xl transition-all text-center border border-slate-700">Llamar</a>
+                        <a href="https://wa.me/529671842617" class="flex-1 bg-green-600 hover:bg-green-500 text-white text-sm font-bold py-3 px-6 rounded-xl transition-all text-center">WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </div>
+                <p class="text-xs text-slate-500 font-mono mb-1">CORREO</p>
+                <p class="text-sm font-semibold text-white mb-4">guille.g.r.s.m@gmail.com</p>
+                <a href="mailto:guille.g.r.s.m@gmail.com" class="w-full bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white py-2 rounded-lg text-xs font-bold transition-all border border-blue-500/30">Enviar Correo</a>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl flex flex-col items-center text-center">
+                <div class="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                </div>
+                <p class="text-xs text-slate-500 font-mono mb-1">TIKTOK</p>
+                <p class="text-sm font-semibold text-white mb-4">@fluxionics</p>
+                <a href="https://www.tiktok.com/@fluxionics" class="w-full bg-slate-800 hover:bg-white hover:text-black py-2 rounded-lg text-xs font-bold transition-all border border-slate-700">Ver Perfil</a>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl flex flex-col items-center text-center col-span-1 md:col-span-2">
+                <div class="w-12 h-12 bg-blue-600/10 rounded-xl flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </div>
+                <p class="text-xs text-slate-500 font-mono mb-1">FACEBOOK</p>
+                <p class="text-sm font-semibold text-white mb-4">Guillermo Rafael</p>
+                <a href="https://www.facebook.com/profile.php?id=61584062920442" target="_blank" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg text-xs font-bold transition-all shadow-lg shadow-blue-900/20">Visitar Perfil</a>
+            </div>
+
+        </div>
+
+        <footer class="mt-12 opacity-30 text-[10px] font-mono tracking-[0.3em]">FLUXIONICS COMMUNICATIONS SYSTEM</footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+            window.addEventListener('resize', resize); resize();
+            const particles = [];
+            for(let i=0; i<60; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4, size: Math.random()*1.5 });
+            function animate() {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                ctx.fillStyle = 'rgba(34, 211, 238, 0.2)';
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x<0 || p.x>canvas.width) p.vx *= -1;
+                    if(p.y<0 || p.y>canvas.height) p.vy *= -1;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+                });
+                for(let i=0; i<particles.length; i++) {
+                    for(let j=i; j<particles.length; j++) {
+                        let dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx + dy*dy);
+                        if(dist < 110) { ctx.beginPath(); ctx.strokeStyle = `rgba(34, 211, 238, ${0.1 - dist/1100})`; ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        });
+    </script>
+</body>
+</html>
