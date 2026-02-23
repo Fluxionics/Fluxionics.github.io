@@ -3,336 +3,612 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guillermo Rafael - Perfil</title>
+    <title>Guillermo Rafael S.M. — Developer & Creator</title>
+    <meta name="description" content="Portafolio de Guillermo Rafael S.M. — Futuro programador Full Stack, creador de Fluxionics.">
     
-    <!-- Tailwind CSS (Framework de estilos para que se vea bonito rápido) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Fuentes de Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
-        /* Estilos generales */
+        :root {
+            --bg: #050810;
+            --surface: #0a0f1e;
+            --border: #1a2340;
+            --cyan: #00e5ff;
+            --blue: #2979ff;
+            --purple: #7c4dff;
+            --text: #e8eaf6;
+            --muted: #546e9a;
+            --glow-cyan: rgba(0,229,255,0.15);
+            --glow-blue: rgba(41,121,255,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #020617; /* Color oscuro (Slate 950) */
-            color: #f8fafc;
-            overflow-x: hidden; /* Evita scroll horizontal */
-            margin: 0;
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            cursor: none;
         }
 
-        /* Clase para fuente tipo código */
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Animación flotante para el logo */
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* Estilo para el Canvas (fondo de partículas) */
-        #particle-canvas {
+        /* Custom cursor */
+        #cursor {
+            width: 12px; height: 12px;
+            background: var(--cyan);
+            border-radius: 50%;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; /* Detrás de todo */
-            pointer-events: none; /* Que no interfiera con los clicks */
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: screen;
+        }
+        #cursor-ring {
+            width: 36px; height: 36px;
+            border: 1px solid rgba(0,229,255,0.4);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease;
         }
 
-        /* Contenido debe estar encima del canvas */
-        .content-wrapper {
-            position: relative;
-            z-index: 10;
+        /* Canvas */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Layout */
+        .wrap { position: relative; z-index: 10; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5,8,16,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--cyan);
+            text-decoration: none;
+            letter-spacing: -1px;
+            transition: color 0.2s;
+        }
+        .nav-logo:hover { color: #fff; }
+
+        .nav-links { display: flex; align-items: center; gap: 2rem; }
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--cyan); }
+
+        .nav-cta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.5rem 1.2rem;
+            border: 1px solid var(--cyan);
+            color: var(--cyan) !important;
+            border-radius: 4px;
+            transition: all 0.2s !important;
+        }
+        .nav-cta:hover {
+            background: var(--cyan) !important;
+            color: #000 !important;
+        }
+
+        /* Mobile nav */
+        .nav-mobile-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: none;
+            padding: 4px;
+        }
+        .nav-mobile-btn span {
+            display: block;
+            width: 24px; height: 2px;
+            background: var(--text);
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-mobile-btn { display: flex; }
+        }
+
+        /* ── HERO ── */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(0,229,255,0.06);
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 100px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.05em;
+        }
+        .hero-badge .dot {
+            width: 7px; height: 7px;
+            background: #4cff91;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        .hero-logo {
+            width: 140px;
+            animation: float 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(0,229,255,0.4));
+            margin-bottom: 2.5rem;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+        }
+        .hero-title .line2 {
+            background: linear-gradient(90deg, var(--cyan), var(--blue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 480px;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+        }
+        .hero-sub strong { color: var(--text); font-weight: 600; }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            padding: 0.85rem 2rem;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: #000;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.25s;
+            letter-spacing: 0.02em;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,229,255,0.3); }
+
+        .btn-ghost {
+            padding: 0.85rem 2rem;
+            background: transparent;
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+        .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.4;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .scroll-hint svg { animation: bounce-y 1.5s ease infinite; }
+        @keyframes bounce-y {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+
+        /* ── SECTION BASE ── */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .section-header {
+            max-width: 900px;
+            margin: 0 auto 4rem;
+        }
+        .section-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        /* ── ABOUT ── */
+        #sobre-mi { background: var(--surface); border-top: 1px solid var(--border); }
+
+        .about-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+        }
+
+        .about-text p {
+            font-size: 1.05rem;
+            color: var(--muted);
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .about-text p strong { color: var(--text); }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1.5rem;
+        }
+        .skill-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            padding: 0.35rem 0.85rem;
+            background: rgba(0,229,255,0.06);
+            border: 1px solid rgba(0,229,255,0.15);
+            border-radius: 4px;
+            color: var(--cyan);
+            letter-spacing: 0.03em;
+        }
+
+        .about-cards { display: flex; flex-direction: column; gap: 1rem; }
+
+        .info-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.2rem;
+            align-items: flex-start;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        .info-card:hover {
+            border-color: rgba(0,229,255,0.3);
+            box-shadow: 0 4px 24px rgba(0,229,255,0.06);
+        }
+        .info-icon {
+            width: 44px; height: 44px;
+            background: rgba(0,229,255,0.08);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--cyan);
+        }
+        .info-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .info-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+        .info-card .highlight { color: var(--cyan); font-weight: 600; }
+
+        /* ── STATS ── */
+        .stats-row {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.25s;
+        }
+        .stat-card:hover {
+            border-color: rgba(41,121,255,0.4);
+            transform: translateY(-4px);
+        }
+        .stat-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label { font-size: 0.85rem; color: var(--muted); }
+
+        /* ── GITHUB SECTION ── */
+        #github { background: var(--bg); border-top: 1px solid var(--border); }
+        .github-inner { max-width: 900px; margin: 0 auto; }
+
+        .github-profile-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .gh-avatar {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--cyan);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .gh-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .gh-info h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.3rem; }
+        .gh-info p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+        .gh-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .gh-meta span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--cyan);
+        }
+
+        .gh-link {
+            margin-left: auto;
+            padding: 0.65rem 1.5rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .gh-link:hover { background: #21262d; border-color: var(--cyan); color: var(--cyan); }
+
+        .contrib-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .contrib-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .contrib-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+        .contrib-card .c-val {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.6rem;
+            color: var(--cyan);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        .contrib-card p { font-size: 0.75rem; color: var(--muted); }
+
+        /* ── DISCORD ── */
+        #comunidad { background: var(--surface); border-top: 1px solid var(--border); }
+
+        .discord-wrap {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .discord-wrap .section-header { margin-bottom: 2rem; }
+
+        .discord-embed {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 40px rgba(114,137,218,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .discord-embed iframe { display: block; width: 100%; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+        }
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-brand {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        .footer-brand strong { color: var(--cyan); }
+
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a {
+            font-size: 0.82rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--cyan); }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Line accent */
+        .line-accent {
+            display: inline-block;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--blue));
+            border-radius: 2px;
+            margin-bottom: 1.2rem;
         }
     </style>
 </head>
 <body>
 
-    <!-- Fondo de Partículas -->
-    <canvas id="particle-canvas"></canvas>
+    <!-- Custom cursor -->
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
 
-    <!-- Contenido Principal -->
-    <div class="content-wrapper min-h-screen flex flex-col">
-        
-        <!-- Navbar (Menú superior) -->
-        <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <span class="font-mono text-xl font-bold text-cyan-400 tracking-tighter hover:text-white transition-colors cursor-pointer">
-                        &lt;GRSM /&gt;
-                    </span>
-                    <div class="hidden md:block">
-                        <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="#inicio" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Inicio</a>
-                            <a href="proyectos.html" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Proyectos</a>
-                            <a href="contacto.html" class="hover:bg-cyan-500 hover:text-black border border-cyan-500 text-cyan-400 px-4 py-2 rounded-md text-sm font-medium transition-all">Contactar</a>
-                        </div>
-                    </div>
-                </div>
+    <!-- Background canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="wrap">
+
+        <!-- ── NAVBAR ── -->
+        <nav>
+            <a href="index.html" class="nav-logo">&lt;GRSM /&gt;</a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Inicio</a>
+                <a href="proyectos.html">Proyectos</a>
+                <a href="#github">GitHub</a>
+                <a href="contacto.html" class="nav-cta">Contactar</a>
             </div>
+            <button class="nav-mobile-btn" onclick="toggleMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
         </nav>
 
-        <!-- Sección Principal (Hero) -->
-        <section id="inicio" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[90vh] text-center">
-            
-            <!-- Logo con animación y protección anti-deformación -->
-            <div class="relative mb-8 group">
-                <!-- Brillo detrás del logo -->
-                <div class="absolute -inset-4 bg-cyan-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
-                
-                <div class="relative">
-                    <img 
-                        src="https://imgur.com/pxjxVqC.png" 
-                        alt="Logo Fluxionics" 
-                        class="h-48 md:h-64 w-auto object-contain mx-auto floating drop-shadow-2xl"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                    />
-                    <!-- Mensaje por si la imagen falla -->
-                    <div class="hidden h-48 w-48 mx-auto items-center justify-center border border-cyan-500 rounded-lg text-cyan-500">
-                        Logo no cargado
-                    </div>
-                </div>
+        <!-- ── HERO ── -->
+        <section id="hero">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Disponible para aprender &amp; colaborar
             </div>
 
-            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4 drop-shadow-lg">
-                Guillermo Rafael <br/>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                    S. M. 
-                </span>
+            <img src="https://imgur.com/pxjxVqC.png" alt="Fluxionics Logo" class="hero-logo"
+                 onerror="this.style.display='none'">
+
+            <h1 class="hero-title">
+                Guillermo Rafael<br>
+                <span class="line2">S.M.</span>
             </h1>
-            
-            <p class="mt-4 max-w-2xl text-xl text-slate-300 mx-auto font-light">
-                Estudiante apasionado por la tecnología y el desarrollo de software.
-                <br/> 
-                <span class="text-cyan-400 font-mono text-sm mt-2 block">Futuro Programador Full Stack</span>
+
+            <p class="hero-sub">
+                <strong>Futuro programador Full Stack</strong> apasionado por el desarrollo web, la tecnología y la creación de proyectos digitales que impacten al mundo.
             </p>
 
-            <div class="mt-8 flex justify-center gap-4">
-                <span class="inline-flex items-center px-4 py-2 rounded-full border border-cyan-900 bg-cyan-950/30 text-sm text-cyan-100 backdrop-blur-sm">
-                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                    Disponible para aprender
-                </span>
+            <div class="hero-btns">
+                <a href="proyectos.html" class="btn-primary">Ver Proyectos →</a>
+                <a href="https://github.com/Fluxionics" target="_blank" class="btn-ghost">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    GitHub
+                </a>
+            </div>
+
+            <div class="scroll-hint">
+                <span>Scroll</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
             </div>
         </section>
 
-        <!-- Tarjetas de Información -->
-        <section id="sobre-mi" class="py-20 bg-slate-900/40 backdrop-blur-sm border-t border-slate-800/50">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            
-            <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 group">
-                <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-2">Sobre Mí</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Me llamo Guillermo y tengo un gran interés en el software. Mi meta es ser programador profesional.</p>
-            </div>
-
-            <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 group">
-                <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-2">Educación</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Cursando con excelencia en la:<br/><span class="text-cyan-400 font-semibold mt-1 block">Secundaria del Estado Número 2</span></p>
-            </div>
-
-            <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 transition-all duration-300 group">
-                <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-2">Pasión Tech</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Me fascina la programación y el diseño lógico. Siempre buscando aprender nuevas tecnologías.</p>
-            </div>
-
-            <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800 hover:border-blue-500/50 transition-all duration-300 overflow-hidden flex flex-col items-center">
-                <iframe src="https://discord.com/widget?id=1425923830454681653&theme=dark" 
-                        width="100%" 
-                        height="300" 
-                        allowtransparency="true" 
-                        frameborder="0" 
-                        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
-                </iframe>
-                <p class="text-[10px] text-slate-500 mt-2 font-mono">ESTADO DEL SERVIDOR EN VIVO</p>
-            </div>
-
-        </div>
-    </div>
-</section>
-        <section id="sobre-mi" class="py-20 bg-slate-900/40 backdrop-blur-sm border-t border-slate-800/50">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    <!-- Tarjeta 1: Sobre Mí -->
-                    <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 group">
-                        <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                            <!-- Icono Usuario SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Sobre Mí</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Me llamo Guillermo y tengo un gran interés en cómo funcionan las computadoras y el software. Mi meta es convertirme en programador profesional.
-                        </p>
-                    </div>
-
-                    <!-- Tarjeta 2: Educación -->
-                    <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 group">
-                        <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                            <!-- Icono Escuela SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Educación</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Actualmente cursando mis estudios con excelencia en la:
-                            <br/>
-                            <span class="text-cyan-400 font-semibold mt-1 block">Secundaria del Estado Número 2</span>
-                        </p>
-                    </div>
-
-                    <!-- Tarjeta 3: Pasión Tech -->
-                    <div class="bg-slate-950/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 group">
-                        <div class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/10 transition-colors">
-                            <!-- Icono Código SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Pasión Tech</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Me fascina la programación y el diseño lógico. Siempre estoy buscando aprender nuevas tecnologías.
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <div class="mt-auto border-t border-slate-800 bg-black/80 backdrop-blur-md py-8">
-            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center opacity-60">
-                <div class="font-mono text-sm text-slate-500 mb-4 md:mb-0">
-                    © 2024 Guillermo Rafael S.M.
-                </div>
-                <div class="flex space-x-6 items-center">
-                    <span class="text-slate-600 text-sm">Powered by</span>
-                    <span class="font-bold tracking-widest text-cyan-900 hover:text-cyan-700 transition-colors">FLUXIONICS</span>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Script JavaScript para las partículas (Sin React) -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('particle-canvas');
-            const ctx = canvas.getContext('2d');
-            let animationFrameId;
-
-            // Ajustar tamaño del canvas
-            const resizeCanvas = () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            };
-
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            // Configuración de partículas
-            const particleCount = 60;
-            const particles = [];
-
-            class Particle {
-                constructor() {
-                    this.reset();
-                }
-
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 3 + 1;
-                    this.speedX = Math.random() * 1 - 0.5;
-                    this.speedY = Math.random() * -1 - 0.2; // Suben como burbujas
-                    this.opacity = Math.random() * 0.5 + 0.1;
-                    this.color = Math.random() > 0.5 ? '103, 232, 249' : '59, 130, 246'; // Colores Cyan/Azul
-                }
-
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-
-                    // Si sale por arriba, reaparece abajo
-                    if (this.y < 0) {
-                        this.y = canvas.height;
-                        this.x = Math.random() * canvas.width;
-                    }
-                    if (this.x > canvas.width || this.x < 0) {
-                        this.speedX = -this.speedX;
-                    }
-                }
-
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
-                    ctx.fill();
-                    // Sombra/Brillo
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = `rgba(${this.color}, 0.5)`;
-                    ctx.shadowBlur = 0; // Resetear sombra para no afectar performance
-                }
-            }
-
-            // Crear partículas
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-
-            // Función para dibujar líneas entre puntos cercanos
-            const connectParticles = () => {
-                const maxDistance = 100;
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < maxDistance) {
-                            ctx.beginPath();
-                            ctx.strokeStyle = `rgba(103, 232, 249, ${0.1 - distance/maxDistance * 0.1})`;
-                            ctx.lineWidth = 1;
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            };
-
-            // Bucle de animación
-            const animate = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                particles.forEach(particle => {
-                    particle.update();
-                    particle.draw();
-                });
-
-                connectParticles();
-
-                animationFrameId = requestAnimationFrame(animate);
-            };
-
-            animate();
-        });
-    </script>
-</body>
-</html>
-
-
+        <!-- ── STATS ── -->
+        <section style="padding: 3rem 2rem; border-top: 1px solid var(--border);">
+            <div class="stats-row reveal">
+                <div class="sta
