@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline & Logros — Fluxionics</title>
+  <meta name="description" content="Mi progreso como desarrollador — línea de tiempo, logros y certificados.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#050810;--bg2:#080d1a;--surface:rgba(255,255,255,.03);--border:rgba(255,255,255,.07);
+      --border-bright:rgba(0,230,200,.3);--accent:#00e6c8;--accent2:#4f8dff;--accent3:#ff5e8a;
+      --text:#e8eaf2;--muted:#6b7a99;
+      --fd:'Syne',sans-serif;--fm:'Space Mono',monospace;--fb:'Outfit',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:var(--fb);overflow-x:hidden;}
+    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,230,200,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,200,.025) 1px,transparent 1px);background-size:60px 60px;}
+    .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(79,141,255,.06) 0%,transparent 60%),
+                radial-gradient(ellipse 40% 40% at 90% 60%,rgba(0,230,200,.05) 0%,transparent 60%);}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,8,16,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:var(--fm);font-size:1rem;color:var(--accent);font-weight:700;text-decoration:none;}
+    .nav-links{display:flex;gap:1.6rem;align-items:center;}
+    .nav-links a{font-size:.82rem;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s;letter-spacing:.04em;}
+    .nav-links a:hover,.nav-links a.active{color:var(--text);}
+    .nav-cta{color:var(--accent)!important;border:1px solid rgba(0,230,200,.3);padding:.4rem 1rem;border-radius:6px;transition:background .2s,color .2s!important;}
+    .nav-cta:hover{background:var(--accent)!important;color:#000!important;}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+    .hamburger span{width:22px;height:2px;background:var(--text);display:block;}
+    .wrapper{position:relative;z-index:1;}
+    .max-w{max-width:960px;margin:0 auto;}
+
+    /* HEADER */
+    .page-header{padding:130px 5% 60px;text-align:center;}
+    .section-label{font-family:var(--fm);font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.7rem;}
+    .page-title{font-family:var(--fd);font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:.8rem;}
+    .page-title span{background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-desc{font-size:.95rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7;font-weight:300;}
+
+    /* ── TIMELINE ── */
+    .tl-section{padding:0 5% 80px;}
+    .tl-header{display:flex;align-items:center;gap:.7rem;margin-bottom:2.5rem;}
+    .tl-header-title{font-family:var(--fd);font-weight:800;font-size:1.3rem;}
+
+    .timeline{position:relative;padding-left:2.5rem;}
+    .timeline::before{content:'';position:absolute;left:.65rem;top:0;bottom:0;width:2px;
+      background:linear-gradient(to bottom,var(--accent),rgba(79,141,255,.5),rgba(255,255,255,.05));}
+
+    .tl-year{font-family:var(--fm);font-size:.68rem;color:var(--accent);letter-spacing:.15em;
+      text-transform:uppercase;margin-bottom:.75rem;padding-left:.5rem;}
+
+    .tl-item{position:relative;margin-bottom:1.5rem;}
+    .tl-item::before{content:'';position:absolute;left:-2.1rem;top:.75rem;width:10px;height:10px;
+      border-radius:50%;border:2px solid var(--accent);background:var(--bg);transition:background .3s;}
+    .tl-item:hover::before{background:var(--accent);}
+    .tl-item.milestone::before{width:14px;height:14px;left:-2.3rem;background:var(--accent);box-shadow:0 0 12px rgba(0,230,200,.5);}
+
+    .tl-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;
+      transition:border-color .3s,transform .3s;}
+    .tl-card:hover{border-color:var(--border-bright);transform:translateX(4px);}
+    .tl-card-top{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem;flex-wrap:wrap;}
+    .tl-date{font-family:var(--fm);font-size:.65rem;color:var(--muted);letter-spacing:.08em;}
+    .tl-badge{font-family:var(--fm);font-size:.6rem;letter-spacing:.08em;padding:.2rem .55rem;border-radius:3px;}
+    .tb-proyecto{color:var(--accent);background:rgba(0,230,200,.1);border:1px solid rgba(0,230,200,.2);}
+    .tb-aprendizaje{color:var(--accent2);background:rgba(79,141,255,.1);border:1px solid rgba(79,141,255,.2);}
+    .tb-logro{color:#f59e0b;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);}
+    .tb-inicio{color:var(--accent3);background:rgba(255,94,138,.1);border:1px solid rgba(255,94,138,.2);}
+    .tb-comunidad{color:#a78bfa;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);}
+    .tl-title{font-family:var(--fd);font-weight:700;font-size:1rem;margin-bottom:.35rem;}
+    .tl-text{font-size:.83rem;color:var(--muted);line-height:1.6;font-weight:300;}
+    .tl-link{font-family:var(--fm);font-size:.68rem;color:var(--accent);text-decoration:none;margin-top:.5rem;display:inline-block;border-bottom:1px solid rgba(0,230,200,.3);padding-bottom:1px;transition:opacity .2s;}
+    .tl-link:hover{opacity:.7;}
+
+    /* CURRENT / FUTURE */
+    .tl-item.current .tl-card{border-color:rgba(0,230,200,.25);background:rgba(0,230,200,.03);}
+    .tl-item.current::before{background:var(--accent);animation:tl-pulse 2s infinite;}
+    @keyframes tl-pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,230,200,.5)}50%{box-shadow:0 0 0 6px rgba(0,230,200,0)}}
+    .tl-item.future .tl-card{opacity:.5;}
+    .tl-item.future::before{border-color:var(--muted);background:var(--bg);}
+
+    /* ── LOGROS / ACHIEVEMENTS ── */
+    .ach-section{padding:0 5% 80px;background:var(--bg2);border-top:1px solid var(--border);}
+    .ach-header{display:flex;align-items:center;gap:.7rem;margin-bottom:2.5rem;padding-top:80px;}
+    .ach-header-title{font-family:var(--fd);font-weight:800;font-size:1.3rem;}
+    .achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+
+    .ach-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.4rem;
+      display:flex;flex-direction:column;gap:.75rem;transition:border-color .3s,transform .3s;position:relative;overflow:hidden;}
+    .ach-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ach-color,var(--accent)),transparent);opacity:0;transition:opacity .3s;}
+    .ach-card:hover{transform:translateY(-4px);}
+    .ach-card:hover::before{opacity:1;}
+    .ach-card.unlocked{border-color:rgba(255,255,255,.12);}
+    .ach-card.locked{opacity:.45;filter:grayscale(.7);}
+
+    .ach-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+    .ach-name{font-family:var(--fd);font-weight:700;font-size:.95rem;line-height:1.2;}
+    .ach-desc{font-size:.78rem;color:var(--muted);line-height:1.5;font-weight:300;flex-grow:1;}
+    .ach-footer{display:flex;align-items:center;justify-content:space-between;}
+    .ach-date{font-family:var(--fm);font-size:.62rem;color:var(--muted);}
+    .ach-status-unlocked{font-family:var(--fm);font-size:.6rem;color:#22c55e;display:flex;align-items:center;gap:.3rem;}
+    .ach-status-locked{font-family:var(--fm);font-size:.6rem;color:var(--muted);}
+    .ach-rarity{font-family:var(--fm);font-size:.58rem;letter-spacing:.08em;padding:.15rem .5rem;border-radius:3px;}
+    .rarity-common{color:var(--muted);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);}
+    .rarity-rare{color:var(--accent2);background:rgba(79,141,255,.08);border:1px solid rgba(79,141,255,.2);}
+    .rarity-epic{color:#a78bfa;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);}
+    .rarity-legendary{color:#f59e0b;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);}
+
+    /* PROGRESS BAR */
+    .progress-strip{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:2rem;}
+    .progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;}
+    .progress-label-text{font-family:var(--fd);font-weight:700;font-size:.9rem;}
+    .progress-label-pct{font-family:var(--fm);font-size:.8rem;color:var(--accent);}
+    .progress-bar-bg{background:rgba(255,255,255,.06);border-radius:100px;height:8px;overflow:hidden;}
+    .progress-bar-fill{background:linear-gradient(90deg,var(--accent),var(--accent2));height:100%;border-radius:100px;transition:width 1.5s cubic-bezier(.4,0,.2,1);}
+
+    footer{padding:2.5rem 5%;border-top:1px solid var(--border);background:rgba(0,0,0,.5);}
+    .footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+    .footer-logo{font-family:var(--fm);font-size:.85rem;color:var(--muted);}
+    .footer-logo span{color:var(--accent);}
+    .footer-links{display:flex;gap:1.5rem;}
+    .footer-links a{font-size:.78rem;color:var(--muted);text-decoration:none;font-family:var(--fm);transition:color .2s;}
+    .footer-links a:hover{color:var(--text);}
+    .footer-copy{font-size:.75rem;color:var(--muted);font-family:var(--fm);}
+
+    @media(max-width:768px){
+      .hamburger{display:flex;}
+      .nav-links{display:none;}
+      .nav-links.open{display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:rgba(5,8,16,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:1.5rem 5%;gap:1rem;}
+      .timeline{padding-left:2rem;}
+      .page-header{padding:110px 5% 40px;}
+    }
+  </style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">&lt;GRSM /&gt;</a>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Inicio</a>
+    <a href="repos.html">Repositorios</a>
+    <a href="proyectos.html">Proyectos</a>
+    <a href="blog.html">Blog</a>
+    <a href="timeline.html" class="active">Timeline</a>
+    <a href="contacto.html" class="nav-cta">Contactar</a>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="wrapper">
+  <div class="page-header">
+    <div class="max-w">
+      <div class="section-label">// mi progreso</div>
+      <h1 class="page-title">Timeline & <span>Logros</span></h1>
+      <p class="page-desc">Mi viaje como desarrollador desde el principio, los hitos que he alcanzado y los que me quedan por conquistar.</p>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="tl-section">
+    <div class="max-w">
+      <div class="tl-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="tl-header-title">Línea de Tiempo</div>
+      </div>
+
+      <div class="timeline">
+
+        <!-- 2025 -->
+        <div class="tl-year">2025</div>
+
+        <div class="tl-item current milestone">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">ENE 2025</span>
+              <span class="tl-badge tb-proyecto">PROYECTO</span>
+              <span style="font-family:var(--fm);font-size:.6rem;color:var(--accent);background:rgba(0,230,200,.1);border:1px solid rgba(0,230,200,.3);padding:.2rem .5rem;border-radius:3px;">EN CURSO</span>
+            </div>
+            <div class="tl-title">🌐 Portafolio Profesional v2</div>
+            <div class="tl-text">Rediseño completo del portafolio con nuevo sistema de diseño, integración de la API de GitHub, blog, timeline de logros y sección de repositorios con modal de detalles.</div>
+            <a href="index.html" class="tl-link">Ver portafolio →</a>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">ENE 2025</span>
+              <span class="tl-badge tb-comunidad">COMUNIDAD</span>
+            </div>
+            <div class="tl-title">💬 Servidor de Discord Fluxionics</div>
+            <div class="tl-text">Creé el servidor oficial de Fluxionics para centralizar la comunidad, anuncios de proyectos y colaboración.</div>
+          </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="tl-year" style="margin-top:1rem;">2024</div>
+
+        <div class="tl-item milestone">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">DIC 2024</span>
+              <span class="tl-badge tb-proyecto">PROYECTO</span>
+            </div>
+            <div class="tl-title">🕊️ Paloma Migajera — Videojuego</div>
+            <div class="tl-text">Mi primer videojuego serio. Desarrollado con Canvas 2D y JavaScript puro. Una paloma que reconstruye un pan recolectando migajas.</div>
+            <a href="https://paloma-migajera.vercel.app/" target="_blank" class="tl-link">Ver proyecto →</a>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">NOV 2024</span>
+              <span class="tl-badge tb-proyecto">PROYECTO</span>
+            </div>
+            <div class="tl-title">🤖 Fluxi — Asistente Virtual v1.0.3</div>
+            <div class="tl-text">Asistente virtual integrado con IA. Diseñado para respuestas sin filtros de control parental. Publicado y en mantenimiento activo.</div>
+            <a href="https://fluxionics.github.io/Asistente-Virtual/" target="_blank" class="tl-link">Ver asistente →</a>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">OCT 2024</span>
+              <span class="tl-badge tb-aprendizaje">APRENDIZAJE</span>
+            </div>
+            <div class="tl-title">📡 Primeros pasos con APIs</div>
+            <div class="tl-text">Aprendí a hacer peticiones HTTP con fetch(), trabajar con JSON y conectar mis proyectos a APIs externas. Primer proyecto: clima en tiempo real.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">SEP 2024</span>
+              <span class="tl-badge tb-proyecto">PROYECTO</span>
+            </div>
+            <div class="tl-title">🔐 FluxiVault — Gestor de Contraseñas</div>
+            <div class="tl-text">App web para gestión local de contraseñas con encriptación. Mi primer proyecto enfocado en seguridad y privacidad del usuario.</div>
+            <a href="https://Fluxionics.github.io/FluxiVault/" target="_blank" class="tl-link">Ver proyecto →</a>
+          </div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">AGO 2024</span>
+              <span class="tl-badge tb-logro">LOGRO</span>
+            </div>
+            <div class="tl-title">🚀 Primer proyecto publicado en GitHub Pages</div>
+            <div class="tl-text">Publiqué mi primer portafolio web en fluxionics.github.io. Un hito importante: por primera vez mi trabajo estaba accesible para cualquiera en el mundo.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">JUL 2024</span>
+              <span class="tl-badge tb-aprendizaje">APRENDIZAJE</span>
+            </div>
+            <div class="tl-title">🎨 CSS avanzado: Grid, Flexbox y animaciones</div>
+            <div class="tl-text">Dominar Grid y Flexbox cambió cómo veo el diseño. De ahí en adelante mis interfaces mejoraron drásticamente.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">MAY 2024</span>
+              <span class="tl-badge tb-aprendizaje">APRENDIZAJE</span>
+            </div>
+            <div class="tl-title">⚡ JavaScript: DOM, eventos y lógica</div>
+            <div class="tl-text">Primer contacto serio con JS. Funciones, arrays, objetos, el DOM. Cuando hice que un botón cambiara el color de la página, sentí que todo tenía sentido.</div>
+          </div>
+        </div>
+
+        <div class="tl-item milestone">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">MAR 2024</span>
+              <span class="tl-badge tb-inicio">INICIO</span>
+            </div>
+            <div class="tl-title">🌱 Primer HTML — El comienzo</div>
+            <div class="tl-text">Escribí mi primera etiqueta &lt;html&gt;. Fue una página horrible, pero fue mía. Ese día empezó todo.</div>
+          </div>
+        </div>
+
+        <!-- FUTURO -->
+        <div class="tl-year" style="margin-top:1rem;">Próximamente</div>
+
+        <div class="tl-item future">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">2025</span>
+              <span class="tl-badge tb-aprendizaje">META</span>
+            </div>
+            <div class="tl-title">⚛️ Aprender React y componentes modernos</div>
+            <div class="tl-text">Dominar React, hooks, estado y componentes reutilizables para construir apps más complejas.</div>
+          </div>
+        </div>
+
+        <div class="tl-item future">
+          <div class="tl-card">
+            <div class="tl-card-top">
+              <span class="tl-date">2025</span>
+              <span class="tl-badge tb-aprendizaje">META</span>
+            </div>
+            <div class="tl-title">🖥️ Backend: Node.js y bases de datos</div>
+            <div class="tl-text">Construir mi primer servidor, API REST propia y conectar una base de datos SQL.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="ach-section">
+    <div class="max-w">
+      <div class="ach-header">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <div class="ach-header-title">Logros Desbloqueados</div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-strip">
+        <div class="progress-label">
+          <span class="progress-label-text">Progreso total de logros</span>
+          <span class="progress-label-pct" id="achPct">—</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="achBar" style="width:0%"></div></div>
+      </div>
+
+      <div class="achievements-grid" id="achievementsGrid">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">&lt;GRSM /&gt; — <span>Fluxionics</span></div>
+    <div class="footer-links">
+      <a href="index.html">Inicio</a><a href="repos.html">Repos</a>
+      <a href="proyectos.html">Proyectos</a><a href="blog.html">Blog</a>
+      <a href="timeline.html">Timeline</a><a href="contacto.html">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2025 Guillermo Rafael S.M.</div>
+  </div>
+</footer>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+const achievements = [
+  { icon:'🌱', name:'Primer Commit', desc:'Hiciste tu primer commit en GitHub. El viaje comenzó.', date:'Mar 2024', unlocked:true, rarity:'common', color:'#22c55e' },
+  { icon:'🌐', name:'Online', desc:'Publicaste tu primer proyecto en internet. Ya existe para el mundo.', date:'Ago 2024', unlocked:true, rarity:'common', color:'#00e6c8' },
+  { icon:'🔐', name:'Guardián', desc:'Construiste FluxiVault, una app de seguridad real.', date:'Sep 2024', unlocked:true, rarity:'rare', color:'#4f8dff' },
+  { icon:'🤖', name:'Creador de IA', desc:'Lanzaste un asistente virtual integrado con inteligencia artificial.', date:'Nov 2024', unlocked:true, rarity:'rare', color:'#a78bfa' },
+  { icon:'🕊️', name:'Game Dev', desc:'Desarrollaste tu primer videojuego jugable con Canvas 2D.', date:'Dic 2024', unlocked:true, rarity:'epic', color:'#f59e0b' },
+  { icon:'⚡', name:'Full Stack Apprentice', desc:'Construiste proyectos con frontend, lógica y APIs externas.', date:'Ene 2025', unlocked:true, rarity:'epic', color:'#00e6c8' },
+  { icon:'📡', name:'API Master', desc:'Conectaste múltiples APIs externas en tus proyectos.', date:'Ene 2025', unlocked:true, rarity:'rare', color:'#4f8dff' },
+  { icon:'🎨', name:'Diseñador', desc:'Tu portafolio tiene un diseño que destaca entre miles.', date:'Ene 2025', unlocked:true, rarity:'rare', color:'#ff5e8a' },
+  { icon:'⚛️', name:'React Developer', desc:'Aprende y construye un proyecto completo con React.', date:null, unlocked:false, rarity:'epic', color:'#61dafb' },
+  { icon:'🖥️', name:'Backend Builder', desc:'Crea tu primer servidor Node.js con API REST propia.', date:null, unlocked:false, rarity:'epic', color:'#68a063' },
+  { icon:'🏆', name:'Full Stack', desc:'Construye una app completa: frontend + backend + base de datos.', date:null, unlocked:false, rarity:'legendary', color:'#f59e0b' },
+  { icon:'🌟', name:'Open Source Hero', desc:'Un proyecto tuyo recibe 10+ estrellas en GitHub.', date:null, unlocked:false, rarity:'legendary', color:'#fbbf24' },
+];
+
+const rarityLabel = { common:'COMÚN', rare:'RARO', epic:'ÉPICO', legendary:'LEGENDARIO' };
+const rarityClass = { common:'rarity-common', rare:'rarity-rare', epic:'rarity-epic', legendary:'rarity-legendary' };
+
+const grid = document.getElementById('achievementsGrid');
+grid.innerHTML = achievements.map(a => `
+  <div class="ach-card ${a.unlocked?'unlocked':'locked'}" style="--ach-color:${a.color}">
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <div class="ach-icon" style="background:${a.color}1a;">${a.icon}</div>
+      <div>
+        <div class="ach-name">${a.name}</div>
+        <span class="ach-rarity ${rarityClass[a.rarity]}">${rarityLabel[a.rarity]}</span>
+      </div>
+    </div>
+    <div class="ach-desc">${a.desc}</div>
+    <div class="ach-footer">
+      <span class="ach-date">${a.date || 'Por desbloquear'}</span>
+      ${a.unlocked
+        ? `<span class="ach-status-unlocked"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;"></span>Desbloqueado</span>`
+        : `<span class="ach-status-locked">🔒 Bloqueado</span>`
+      }
+    </div>
+  </div>`).join('');
+
+// Animate progress bar
+const unlocked = achievements.filter(a=>a.unlocked).length;
+const pct = Math.round((unlocked/achievements.length)*100);
+document.getElementById('achPct').textContent = `${unlocked}/${achievements.length} — ${pct}%`;
+setTimeout(() => { document.getElementById('achBar').style.width = pct + '%'; }, 300);
+</script>
+</body>
+</html>

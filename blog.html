@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Fluxionics</title>
+  <meta name="description" content="Notas, artículos y reflexiones de Guillermo Rafael S.M. sobre programación y tecnología.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#050810;--bg2:#080d1a;--surface:rgba(255,255,255,.03);--border:rgba(255,255,255,.07);
+      --border-bright:rgba(0,230,200,.3);--accent:#00e6c8;--accent2:#4f8dff;--accent3:#ff5e8a;
+      --text:#e8eaf2;--muted:#6b7a99;
+      --fd:'Syne',sans-serif;--fm:'Space Mono',monospace;--fb:'Outfit',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:var(--fb);overflow-x:hidden;}
+    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,230,200,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,200,.025) 1px,transparent 1px);background-size:60px 60px;}
+    .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 85% 15%,rgba(255,94,138,.05) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 15% 80%,rgba(0,230,200,.05) 0%,transparent 60%);}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,8,16,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:var(--fm);font-size:1rem;color:var(--accent);font-weight:700;text-decoration:none;}
+    .nav-links{display:flex;gap:1.6rem;align-items:center;}
+    .nav-links a{font-size:.82rem;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s;letter-spacing:.04em;}
+    .nav-links a:hover,.nav-links a.active{color:var(--text);}
+    .nav-cta{color:var(--accent)!important;border:1px solid rgba(0,230,200,.3);padding:.4rem 1rem;border-radius:6px;transition:background .2s,color .2s!important;}
+    .nav-cta:hover{background:var(--accent)!important;color:#000!important;}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+    .hamburger span{width:22px;height:2px;background:var(--text);display:block;}
+    .wrapper{position:relative;z-index:1;}
+    .max-w{max-width:900px;margin:0 auto;}
+
+    /* HEADER */
+    .page-header{padding:130px 5% 60px;text-align:center;}
+    .section-label{font-family:var(--fm);font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.7rem;}
+    .page-title{font-family:var(--fd);font-size:clamp(2rem,5vw,3.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:.8rem;}
+    .page-title span{background:linear-gradient(135deg,var(--accent3),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-desc{font-size:.95rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7;font-weight:300;}
+
+    /* CATEGORIES */
+    .cat-bar{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;padding:0 5%;}
+    .cat-btn{font-family:var(--fm);font-size:.7rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:.35rem .9rem;border-radius:100px;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+    .cat-btn:hover,.cat-btn.active{color:var(--accent);border-color:var(--border-bright);background:rgba(0,230,200,.07);}
+
+    /* FEATURED POST — Hero style */
+    .blog-section{padding:0 5% 80px;}
+    .post-featured{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2.5rem;
+      display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:start;margin-bottom:2rem;
+      cursor:pointer;transition:border-color .3s,transform .3s,box-shadow .3s;position:relative;overflow:hidden;}
+    .post-featured::after{content:'';position:absolute;top:0;right:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s;}
+    .post-featured:hover{border-color:var(--border-bright);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,230,200,.08);}
+    .post-featured:hover::after{opacity:1;}
+    .post-f-tag{font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;padding:.25rem .65rem;border-radius:4px;display:inline-block;margin-bottom:1rem;}
+    .post-f-title{font-family:var(--fd);font-weight:800;font-size:clamp(1.4rem,3vw,2rem);line-height:1.2;margin-bottom:.75rem;letter-spacing:-.02em;}
+    .post-f-excerpt{font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;font-weight:300;}
+    .post-f-meta{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;}
+    .post-date{font-family:var(--fm);font-size:.68rem;color:var(--muted);letter-spacing:.05em;}
+    .post-read-time{font-family:var(--fm);font-size:.68rem;color:var(--muted);}
+    .post-new-badge{font-family:var(--fm);font-size:.6rem;color:#000;background:var(--accent);padding:.15rem .5rem;border-radius:3px;letter-spacing:.08em;font-weight:700;}
+    .post-f-num{font-family:var(--fd);font-weight:800;font-size:5rem;color:rgba(255,255,255,.03);line-height:1;align-self:center;}
+
+    /* POST GRID */
+    .posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;}
+    .post-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;
+      display:flex;flex-direction:column;gap:.75rem;cursor:pointer;transition:border-color .3s,transform .3s;}
+    .post-card:hover{border-color:var(--border-bright);transform:translateY(-4px);}
+    .post-c-tag{font-family:var(--fm);font-size:.6rem;letter-spacing:.08em;padding:.2rem .55rem;border-radius:3px;display:inline-block;width:fit-content;}
+    .post-c-title{font-family:var(--fd);font-weight:700;font-size:1rem;line-height:1.3;}
+    .post-c-excerpt{font-size:.8rem;color:var(--muted);line-height:1.6;flex-grow:1;font-weight:300;}
+    .post-c-meta{display:flex;align-items:center;justify-content:space-between;}
+
+    /* TAGS */
+    .tag-dev{color:var(--accent);background:rgba(0,230,200,.1);border:1px solid rgba(0,230,200,.2);}
+    .tag-opinion{color:var(--accent3);background:rgba(255,94,138,.1);border:1px solid rgba(255,94,138,.2);}
+    .tag-tutorial{color:var(--accent2);background:rgba(79,141,255,.1);border:1px solid rgba(79,141,255,.2);}
+    .tag-log{color:#f59e0b;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);}
+    .tag-nota{color:#a78bfa;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);}
+
+    /* EMPTY / COMING SOON */
+    .coming-soon{text-align:center;padding:4rem 2rem;}
+    .cs-icon{font-size:4rem;margin-bottom:1.5rem;display:block;}
+    .cs-title{font-family:var(--fd);font-weight:800;font-size:1.5rem;margin-bottom:.75rem;}
+    .cs-text{color:var(--muted);font-size:.9rem;line-height:1.7;max-width:380px;margin:0 auto;font-weight:300;}
+
+    /* NEWSLETTER STRIP */
+    .newsletter{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem 2.5rem;
+      display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin:3rem 0;}
+    .nl-info{flex:1;min-width:200px;}
+    .nl-title{font-family:var(--fd);font-weight:700;font-size:1.1rem;margin-bottom:.35rem;}
+    .nl-text{font-size:.85rem;color:var(--muted);font-weight:300;}
+    .nl-form{display:flex;gap:.5rem;flex-wrap:wrap;}
+    .nl-input{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:.6rem 1rem;
+      font-family:var(--fb);font-size:.82rem;color:var(--text);outline:none;min-width:200px;transition:border-color .2s;}
+    .nl-input::placeholder{color:var(--muted);}
+    .nl-input:focus{border-color:var(--border-bright);}
+    .nl-btn{background:var(--accent);color:#000;font-family:var(--fb);font-weight:700;font-size:.82rem;
+      padding:.6rem 1.3rem;border-radius:8px;border:none;cursor:pointer;transition:filter .2s;white-space:nowrap;}
+    .nl-btn:hover{filter:brightness(1.1);}
+
+    footer{padding:2.5rem 5%;border-top:1px solid var(--border);background:rgba(0,0,0,.5);}
+    .footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+    .footer-logo{font-family:var(--fm);font-size:.85rem;color:var(--muted);}
+    .footer-logo span{color:var(--accent);}
+    .footer-links{display:flex;gap:1.5rem;}
+    .footer-links a{font-size:.78rem;color:var(--muted);text-decoration:none;font-family:var(--fm);transition:color .2s;}
+    .footer-links a:hover{color:var(--text);}
+    .footer-copy{font-size:.75rem;color:var(--muted);font-family:var(--fm);}
+
+    @media(max-width:768px){
+      .hamburger{display:flex;}
+      .nav-links{display:none;}
+      .nav-links.open{display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:rgba(5,8,16,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:1.5rem 5%;gap:1rem;}
+      .post-featured{grid-template-columns:1fr;}
+      .post-f-num{display:none;}
+      .page-header{padding:110px 5% 40px;}
+    }
+  </style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">&lt;GRSM /&gt;</a>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Inicio</a>
+    <a href="repos.html">Repositorios</a>
+    <a href="proyectos.html">Proyectos</a>
+    <a href="blog.html" class="active">Blog</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="contacto.html" class="nav-cta">Contactar</a>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="wrapper">
+  <div class="page-header">
+    <div class="max-w">
+      <div class="section-label">// notas & artículos</div>
+      <h1 class="page-title">El <span>Blog</span></h1>
+      <p class="page-desc">Reflexiones sobre programación, lo que aprendo, errores que cometo y cosas que encuentro interesantes.</p>
+    </div>
+  </div>
+
+  <div class="cat-bar">
+    <button class="cat-btn active" data-cat="all">Todos</button>
+    <button class="cat-btn" data-cat="dev">Desarrollo</button>
+    <button class="cat-btn" data-cat="tutorial">Tutoriales</button>
+    <button class="cat-btn" data-cat="log">Dev Log</button>
+    <button class="cat-btn" data-cat="opinion">Opinión</button>
+    <button class="cat-btn" data-cat="nota">Notas</button>
+  </div>
+
+  <div class="blog-section">
+    <div class="max-w">
+
+      <!-- FEATURED POST -->
+      <div class="post-featured" data-cat="dev" onclick="openPost(0)">
+        <div>
+          <span class="post-f-tag tag-dev">DESARROLLO</span>
+          <div class="post-f-title">Cómo construí mi portafolio sin frameworks: solo HTML, CSS y JS vanilla</div>
+          <div class="post-f-excerpt">La mayoría de los tutoriales te dicen que necesitas React, Next.js o algún framework enorme para hacer un portafolio profesional. Yo no lo creo. Te cuento cómo armé todo desde cero y qué aprendí en el proceso.</div>
+          <div class="post-f-meta">
+            <span class="post-date">15 ENE 2025</span>
+            <span class="post-read-time">5 min de lectura</span>
+            <span class="post-new-badge">NUEVO</span>
+          </div>
+        </div>
+        <div class="post-f-num">01</div>
+      </div>
+
+      <!-- POST GRID -->
+      <div class="posts-grid" id="postsGrid">
+
+        <div class="post-card" data-cat="log" onclick="openPost(1)">
+          <span class="post-c-tag tag-log">DEV LOG</span>
+          <div class="post-c-title">Paloma Migajera: semana 3 de desarrollo</div>
+          <div class="post-c-excerpt">Cómo funciona el sistema de colisiones, el reto de hacer que las migajas reboten diferente según el ángulo.</div>
+          <div class="post-c-meta">
+            <span class="post-date" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">10 ENE 2025</span>
+            <span class="post-read-time" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">3 min</span>
+          </div>
+        </div>
+
+        <div class="post-card" data-cat="tutorial" onclick="openPost(2)">
+          <span class="post-c-tag tag-tutorial">TUTORIAL</span>
+          <div class="post-c-title">API de GitHub: cómo mostrar tus repos en tu web</div>
+          <div class="post-c-excerpt">Paso a paso para conectar la API pública de GitHub y mostrar tus repositorios dinámicamente sin backend.</div>
+          <div class="post-c-meta">
+            <span class="post-date" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">02 ENE 2025</span>
+            <span class="post-read-time" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">7 min</span>
+          </div>
+        </div>
+
+        <div class="post-card" data-cat="opinion" onclick="openPost(3)">
+          <span class="post-c-tag tag-opinion">OPINIÓN</span>
+          <div class="post-c-title">¿Debo aprender React o seguir con vanilla JS?</div>
+          <div class="post-c-excerpt">Mi reflexión honesta sobre cuándo tiene sentido usar un framework y cuándo solo añade complejidad innecesaria.</div>
+          <div class="post-c-meta">
+            <span class="post-date" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">28 DIC 2024</span>
+            <span class="post-read-time" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">4 min</span>
+          </div>
+        </div>
+
+        <div class="post-card" data-cat="nota" onclick="openPost(4)">
+          <span class="post-c-tag tag-nota">NOTA</span>
+          <div class="post-c-title">Cosas que desearía saber cuando empecé a programar</div>
+          <div class="post-c-excerpt">Una lista honesta de conceptos y mentalidades que me habrían ahorrado mucho tiempo y frustración.</div>
+          <div class="post-c-meta">
+            <span class="post-date" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">20 DIC 2024</span>
+            <span class="post-read-time" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">6 min</span>
+          </div>
+        </div>
+
+        <div class="post-card" data-cat="dev" onclick="openPost(5)">
+          <span class="post-c-tag tag-dev">DESARROLLO</span>
+          <div class="post-c-title">FluxiVault: por qué construí mi propio gestor de contraseñas</div>
+          <div class="post-c-excerpt">Las apps comerciales no me convencían. Así que hice la mía. Te cuento el proceso de diseño y los retos.</div>
+          <div class="post-c-meta">
+            <span class="post-date" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">12 DIC 2024</span>
+            <span class="post-read-time" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">8 min</span>
+          </div>
+        </div>
+
+        <!-- ADD MORE CTA -->
+        <div class="post-card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:160px;cursor:default;">
+          <div style="text-align:center;">
+            <div style="font-size:2rem;margin-bottom:.5rem;">✍️</div>
+            <div style="font-family:var(--fm);font-size:.7rem;color:var(--muted);">Más artículos próximamente</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- NEWSLETTER -->
+      <div class="newsletter">
+        <div class="nl-info">
+          <div class="nl-title">¿Te gustó algún artículo?</div>
+          <div class="nl-text">Suscríbete para recibir nuevas notas directamente en tu correo.</div>
+        </div>
+        <div class="nl-form">
+          <input type="email" class="nl-input" placeholder="tu@email.com" id="nlEmail">
+          <button class="nl-btn" onclick="subscribeNewsletter()">Suscribirse</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="postModal" style="position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s;">
+  <div style="background:#0b1122;border:1px solid rgba(0,230,200,.2);border-radius:20px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;padding:2.5rem;position:relative;transform:translateY(20px);transition:transform .3s;" id="postModalContent">
+    <button onclick="closePostModal()" style="position:absolute;top:1.2rem;right:1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:1.1rem;">✕</button>
+    <div id="postModalBody"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">&lt;GRSM /&gt; — <span>Fluxionics</span></div>
+    <div class="footer-links">
+      <a href="index.html">Inicio</a><a href="repos.html">Repos</a>
+      <a href="proyectos.html">Proyectos</a><a href="blog.html">Blog</a>
+      <a href="timeline.html">Timeline</a><a href="contacto.html">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2025 Guillermo Rafael S.M.</div>
+  </div>
+</footer>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+// Category filter
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.post-card,.post-featured').forEach(card => {
+      if (cat === 'all' || card.dataset.cat === cat) card.style.display = '';
+      else card.style.display = 'none';
+    });
+  });
+});
+
+// Post content
+const posts = [
+  {
+    tag:'DESARROLLO', tagClass:'tag-dev', date:'15 ENE 2025',
+    title:'Cómo construí mi portafolio sin frameworks',
+    content:`<p>La mayoría de los tutoriales online te empujan inmediatamente a usar React, Next.js o algún framework enorme. Pero yo creo que antes de eso, debes entender <strong>qué problema resuelven esas herramientas</strong>.</p>
+    <br><h3 style="font-family:var(--fd);margin-bottom:.5rem;">El proceso</h3>
+    <p>Empecé con un archivo <code>index.html</code> en blanco. Sin Tailwind, sin NPM, sin nada. Solo el editor y el navegador.</p>
+    <br><p>La clave fue trabajar en capas: primero la estructura HTML semántica, luego los estilos base, luego las animaciones, y al final el JavaScript para interactividad.</p>
+    <br><h3 style="font-family:var(--fd);margin-bottom:.5rem;">Lo que aprendí</h3>
+    <p>CSS es mucho más poderoso de lo que crees. Variables CSS, Grid, Flexbox y las pseudo-clases hacen el 90% de lo que necesitas sin una sola línea de JS.</p>
+    <br><p>La API fetch es suficiente para conectar datos externos. La API de GitHub que uso en este portafolio es vanilla JS puro.</p>`,
+  },
+  {
+    tag:'DEV LOG', tagClass:'tag-log', date:'10 ENE 2025',
+    title:'Paloma Migajera: semana 3 de desarrollo',
+    content:`<p>Esta semana fue intensa. El sistema de física básico ya funciona: la paloma cae con gravedad, puede saltar y colisionar con las plataformas.</p>
+    <br><h3 style="font-family:var(--fd);margin-bottom:.5rem;">El reto del Canvas</h3>
+    <p>Trabajar con <code>Canvas 2D</code> es diferente a manipular el DOM. No hay elementos, solo pixeles y coordenadas. Al principio fue confuso, pero una vez que entiendes el loop de animación, todo tiene sentido.</p>
+    <br><p>El sistema de colisiones fue lo más difícil. Tuve que implementar detección AABB (Axis-Aligned Bounding Box) y asegurarme de que la paloma no atravesara las plataformas a alta velocidad.</p>
+    <br><p><strong>Próxima semana:</strong> Sistema de migajas y contador de puntos.</p>`,
+  },
+  {
+    tag:'TUTORIAL', tagClass:'tag-tutorial', date:'02 ENE 2025',
+    title:'API de GitHub: mostrar repos en tu web',
+    content:`<p>La API pública de GitHub no requiere autenticación para leer repos públicos. Esto la hace perfecta para portafolios.</p>
+    <br><h3 style="font-family:var(--fd);margin-bottom:.5rem;">El endpoint básico</h3>
+    <p>Para obtener los repositorios de un usuario, haz un <code>fetch</code> a:</p>
+    <br><p style="background:rgba(0,230,200,.07);border:1px solid rgba(0,230,200,.2);border-radius:8px;padding:1rem;font-family:var(--fm);font-size:.78rem;color:var(--accent);">https://api.github.com/users/TU_USUARIO/repos?per_page=100&sort=updated</p>
+    <br><p>Esto te devuelve un array de objetos con toda la info: nombre, descripción, lenguaje, estrellas, forks, URL, etc.</p>
+    <br><p>El límite de la API sin token es 60 peticiones por hora por IP. Para un portafolio es más que suficiente. Si necesitas más, puedes agregar un token de acceso personal.</p>`,
+  },
+  {
+    tag:'OPINIÓN', tagClass:'tag-opinion', date:'28 DIC 2024',
+    title:'¿Debo aprender React o vanilla JS?',
+    content:`<p>Esta es la pregunta que más me hacen en Discord. Mi respuesta siempre es la misma: <strong>depende de en qué punto estás</strong>.</p>
+    <br><p>Si apenas estás aprendiendo a programar, React te va a confundir más de lo que te va a ayudar. Necesitas entender primero cómo funciona el DOM, los eventos, el asincronismo.</p>
+    <br><h3 style="font-family:var(--fd);margin-bottom:.5rem;">Cuándo sí tiene sentido</h3>
+    <p>React brilla cuando tienes mucho estado que manejar, componentes que se reusan en muchos lugares, o una UI muy interactiva. Para un portafolio o una landing page simple, es overkill.</p>
+    <br><p>Mi recomendación: aprende vanilla JS hasta que te duela el DOM. Ahí ya sabrás exactamente qué problema resuelve React.</p>`,
+  },
+  {
+    tag:'NOTA', tagClass:'tag-nota', date:'20 DIC 2024',
+    title:'Cosas que desearía saber al empezar',
+    content:`<p>Esta lista es honesta. No es motivacional. Son cosas que genuinamente me habrían ahorrado tiempo.</p>
+    <br><p><strong>1. Lee los errores completos.</strong> El 80% de las veces la respuesta está en el error. No copies el primer error en Google, léelo.</p>
+    <br><p><strong>2. Los tutoriales no son proyectos.</strong> Seguir un tutorial es diferente a construir algo desde cero. Siempre termina el tutorial y luego modifícalo.</p>
+    <br><p><strong>3. Documenta lo que haces.</strong> Aunque sea para ti. Un README, comentarios en el código. Tu yo del futuro te lo agradecerá.</p>
+    <br><p><strong>4. Commit frecuentemente.</strong> No esperes a tener "todo listo" para hacer git commit. Un commit pequeño y descriptivo es mejor que uno enorme e indescifrable.</p>`,
+  },
+  {
+    tag:'DESARROLLO', tagClass:'tag-dev', date:'12 DIC 2024',
+    title:'Por qué construí FluxiVault',
+    content:`<p>Probé Bitwarden, 1Password y LastPass. Todas tienen cosas que no me gustan: interfaces confusas, suscripciones caras, o dependencia de sus servidores.</p>
+    <br><p>FluxiVault nació de querer algo simple, local y bajo mi control. No necesito que mis contraseñas estén en la nube de alguien más.</p>
+    <br><h3 style="font-family:var(--fd);margin-bottom:.5rem;">El diseño técnico</h3>
+    <p>Todo se guarda localmente con encriptación AES. No hay backend, no hay base de datos remota. El archivo cifrado vive en tu máquina.</p>
+    <br><p>El reto más grande fue la interfaz: quería que fuera rápida de usar. Menos de 3 clics para llegar a cualquier contraseña.</p>`,
+  },
+];
+
+function openPost(idx) {
+  const p = posts[idx];
+  const modal = document.getElementById('postModal');
+  const content = document.getElementById('postModalContent');
+  document.getElementById('postModalBody').innerHTML = `
+    <span class="post-f-tag ${p.tagClass}" style="margin-bottom:1rem;display:inline-block;">${p.tag}</span>
+    <h2 style="font-family:var(--fd);font-weight:800;font-size:1.5rem;line-height:1.2;margin-bottom:.5rem;letter-spacing:-.02em;">${p.title}</h2>
+    <div style="font-family:var(--fm);font-size:.68rem;color:var(--muted);margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);">${p.date} · Guillermo Rafael S.M.</div>
+    <div style="font-size:.9rem;color:var(--muted);line-height:1.8;font-weight:300;">${p.content}</div>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--fm);font-size:.72rem;color:var(--muted);">¿Quieres discutir esto? <a href="contacto.html" style="color:var(--accent);text-decoration:none;">Escríbeme →</a></div>`;
+  modal.style.opacity = '1';
+  modal.style.pointerEvents = 'all';
+  content.style.transform = 'translateY(0)';
+  document.body.style.overflow = 'hidden';
+}
+function closePostModal() {
+  const modal = document.getElementById('postModal');
+  modal.style.opacity = '0';
+  modal.style.pointerEvents = 'none';
+  document.body.style.overflow = '';
+}
+document.getElementById('postModal').addEventListener('click', e => { if(e.target === e.currentTarget) closePostModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closePostModal(); });
+
+function subscribeNewsletter() {
+  const email = document.getElementById('nlEmail').value;
+  if (!email || !email.includes('@')) { alert('Por favor ingresa un email válido.'); return; }
+  alert(`✅ ¡Gracias! Te avisaremos en ${email} cuando haya nuevos artículos.`);
+  document.getElementById('nlEmail').value = '';
+}
+</script>
+</body>
+</html>
