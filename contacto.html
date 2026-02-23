@@ -3,222 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guillermo Rafael - Contacto</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+    <title>Contacto — Fluxionics</title>
+    <meta name="description" content="Contáctame — Guillermo Rafael S.M. Disponible para aprender, colaborar y conectar.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* Estilos generales */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #020617; /* Color oscuro (Slate 950) */
-            color: #f8fafc;
-            overflow-x: hidden;
-            margin: 0;
+        :root{
+            --bg:#050810;--bg2:#080d1a;--surface:rgba(255,255,255,.03);--border:rgba(255,255,255,.07);
+            --border-bright:rgba(0,230,200,.3);--accent:#00e6c8;--accent2:#4f8dff;--text:#e8eaf2;--muted:#6b7a99;
+            --font-display:'Syne',sans-serif;--font-mono:'Space Mono',monospace;--font-body:'Outfit',sans-serif;
         }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        /* Estilo para el Canvas (fondo de partículas) */
-        #particle-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        /* Contenido debe estar encima del canvas */
-        .content-wrapper {
-            position: relative;
-            z-index: 10;
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        html{scroll-behavior:smooth;}
+        body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;min-height:100vh;}
+        .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,230,200,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,200,.03) 1px,transparent 1px);background-size:60px 60px;}
+        .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 20%,rgba(79,141,255,.07) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(0,230,200,.06) 0%,transparent 60%);}
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,8,16,.75);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+        .nav-logo{font-family:var(--font-mono);font-size:1rem;color:var(--accent);font-weight:700;text-decoration:none;}
+        .nav-links{display:flex;gap:2rem;align-items:center;}
+        .nav-links a{font-size:.875rem;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s;letter-spacing:.04em;}
+        .nav-links a:hover,.nav-links a.active{color:var(--text);}
+        .nav-active-btn{color:var(--accent)!important;border:1px solid rgba(0,230,200,.3);padding:.45rem 1.1rem;border-radius:6px;font-size:.8rem!important;}
+        .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+        .hamburger span{width:22px;height:2px;background:var(--text);display:block;}
+        .wrapper{position:relative;z-index:1;}
+        .max-w{max-width:900px;margin:0 auto;}
+
+        .page-header{padding:140px 5% 60px;text-align:center;}
+        .section-label{font-family:var(--font-mono);font-size:.7rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem;}
+        .page-title{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,4rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:1rem;}
+        .page-title span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .page-desc{font-size:1rem;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.7;font-weight:300;}
+
+        .contact-section{padding:0 5% 100px;}
+
+        /* Contact Grid */
+        .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;}
+        .contact-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;display:flex;flex-direction:column;gap:1.2rem;transition:border-color .3s,transform .3s,box-shadow .3s;}
+        .contact-card:hover{transform:translateY(-5px);box-shadow:0 16px 50px rgba(0,0,0,.3);}
+        .contact-card.email:hover{border-color:rgba(0,230,200,.4);}
+        .contact-card.discord:hover{border-color:rgba(88,101,242,.5);}
+        .contact-card.github:hover{border-color:rgba(255,255,255,.2);}
+        .contact-card.facebook:hover{border-color:rgba(24,119,242,.5);}
+        .contact-card.tiktok:hover{border-color:rgba(255,0,80,.5);}
+
+        .contact-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;}
+        .contact-card-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;}
+        .contact-handle{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);letter-spacing:.03em;word-break:break-all;}
+        .contact-note{font-size:.82rem;color:var(--muted);font-weight:300;line-height:1.5;}
+        
+        .contact-btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:.6rem 1.3rem;border-radius:8px;text-decoration:none;transition:filter .2s,transform .2s;margin-top:auto;}
+        .contact-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+        .btn-cyan{background:var(--accent);color:#000;}
+        .btn-discord-c{background:#5865f2;color:#fff;}
+        .btn-dark{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border);}
+        .btn-fb{background:#1877f2;color:#fff;}
+        .btn-tt{background:linear-gradient(135deg,#ff0050,#00f2ea);color:#fff;}
+
+        /* Full-width card */
+        .contact-card-wide{grid-column:1 / -1;}
+
+        /* Availability block */
+        .availability{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:2rem;}
+        .avail-left{}
+        .avail-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem;}
+        .avail-title::before{content:'';width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;flex-shrink:0;animation:pulse 2s infinite;}
+        @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+        .avail-text{font-size:.875rem;color:var(--muted);font-weight:300;}
+        .avail-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;}
+        .avail-tag{font-family:var(--font-mono);font-size:.68rem;color:var(--accent);background:rgba(0,230,200,.08);border:1px solid rgba(0,230,200,.2);padding:.25rem .65rem;border-radius:4px;letter-spacing:.04em;}
+
+        footer{padding:2.5rem 5%;border-top:1px solid var(--border);background:rgba(0,0,0,.5);}
+        .footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+        .footer-logo{font-family:var(--font-mono);font-size:.85rem;color:var(--muted);}
+        .footer-logo span{color:var(--accent);}
+        .footer-links{display:flex;gap:1.5rem;}
+        .footer-links a{font-size:.78rem;color:var(--muted);text-decoration:none;font-family:var(--font-mono);transition:color .2s;}
+        .footer-links a:hover{color:var(--text);}
+        .footer-copy{font-size:.75rem;color:var(--muted);font-family:var(--font-mono);}
+
+        @media(max-width:768px){
+            .hamburger{display:flex;}
+            .nav-links{display:none;}
+            .nav-links.open{display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:rgba(5,8,16,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:1.5rem 5%;gap:1rem;}
+            .contact-grid{grid-template-columns:1fr;}
+            .contact-card-wide{grid-column:unset;}
+            .page-header{padding:110px 5% 40px;}
+            .availability{flex-direction:column;align-items:flex-start;gap:1.5rem;}
         }
     </style>
 </head>
 <body>
 
-    <canvas id="particle-canvas"></canvas>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
 
-    <div class="content-wrapper min-h-screen flex flex-col">
-        
-        <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <span class="font-mono text-xl font-bold text-cyan-400 tracking-tighter hover:text-white transition-colors cursor-pointer">
-                        &lt;GRSM /&gt;
-                    </span>
-                    <div class="hidden md:block">
-                        <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="index.html" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Inicio</a>
-                            <a href="proyectos.html" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors text-white">Proyectos</a>
-                            <a href="#" class="bg-cyan-500 text-black px-4 py-2 rounded-md text-sm font-medium transition-all">Contactar</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
+<nav>
+    <a href="index.html" class="nav-logo">&lt;GRSM /&gt;</a>
+    <div class="nav-links" id="navLinks">
+        <a href="index.html">Inicio</a>
+        <a href="proyectos.html">Proyectos</a>
+        <a href="#" class="active nav-active-btn">Contactar</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+</nav>
 
-        <section id="contacto" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex-grow">
-            <div class="max-w-4xl mx-auto text-center">
-                
-                <h2 class="text-4xl font-extrabold tracking-tight text-white mb-4">
-                    Ponte en Contacto 👋
-                </h2>
-                <p class="text-xl text-slate-400 mb-12">
-                    Si tienes alguna oportunidad de aprendizaje o proyecto interesante, ¡escríbeme!
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    <div class="bg-slate-900/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300">
-                        <h3 class="text-xl font-bold text-white mb-3 flex items-center justify-center">
-                            <svg class="w-6 h-6 mr-2 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.8 5.2a1 1 0 001.2 0L21 8m-4-2H7a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2V8a2 2 0 00-2-2z"/></svg>
-                            Correo Electrónico
-                        </h3>
-                        <p class="text-slate-400 text-sm mb-4 font-mono break-all">guille.g.r.s.m@gmail.com</p>
-                        <a href="mailto:guille.g.r.s.m@gmail.com" class="inline-block w-full px-4 py-2 rounded-md text-sm font-medium transition-all bg-cyan-600 text-white hover:bg-cyan-500">Enviar Correo</a>
-                    </div>
-
-                    <div class="bg-slate-900/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300">
-                        <h3 class="text-xl font-bold text-white mb-3 flex items-center justify-center">
-                            <svg class="w-6 h-6 mr-2 text-cyan-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                            Facebook
-                        </h3>
-                        <p class="text-slate-400 text-sm mb-4">Guillermo Rafael</p>
-                        <a href="https://www.facebook.com/profile.php?id=61584062920442" target="_blank" class="inline-block w-full px-4 py-2 rounded-md text-sm font-medium transition-all bg-blue-600 text-white hover:bg-blue-500">Visitar Perfil</a>
-                    </div>
-
-                    <div class="bg-slate-900/80 p-6 rounded-xl border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300">
-                        <h3 class="text-xl font-bold text-white mb-3 flex items-center justify-center">
-                            <svg class="w-6 h-6 mr-2 text-cyan-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.9c-.83-.34-1.7-.54-2.6-.68v2c.7.13 1.34.33 1.9.61v2.3c-.6-.28-1.25-.48-1.9-.61V14h-2V9.61c-.65-.13-1.3-.33-1.9-.61v4.3c.6.28 1.25.48 1.9.61v2.3c-.53-.13-1.1-.33-1.7-.54v2.7c.6.21 1.27.42 1.9.61v2.3c-.6-.19-1.25-.4-1.9-.61v-2.7c-2.3.8-4.9-.1-6.2-2.1C5.6 15 5.8 13.5 7.1 12.2c1.3-1.3 3.1-1.6 4.6-1V7c-.4.07-.8.15-1.2.27-2.3.62-4.8 1.4-6.6 2.8C2.9 11.2 2.3 12 2 12.8v-.9c.4-.9 1-1.7 1.8-2.4 1.8-1.4 4.3-2.2 6.6-2.8.4-.12.8-.2 1.2-.27V4.7c.4-.07.8-.15 1.2-.27 1.9-.5 3.9-.7 5.9-.6v2.4c-.6.04-1.2.1-1.8.21z"/></svg>
-                            TikTok
-                        </h3>
-                        <p class="text-slate-400 text-sm mb-4 font-mono">@fluxionics</p>
-                        <a href="https://www.tiktok.com/@fluxionics" target="_blank" class="inline-block w-full px-4 py-2 rounded-md text-sm font-medium transition-all bg-black text-white border border-cyan-500 hover:bg-slate-800">Ver Perfil</a>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <div class="mt-auto border-t border-slate-800 bg-black/80 backdrop-blur-md py-8">
-            <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center opacity-60">
-                <div class="font-mono text-sm text-slate-500 mb-4 md:mb-0">
-                    © 2024 Guillermo Rafael S.M.
-                </div>
-                <div class="flex space-x-6 items-center">
-                    <span class="text-slate-600 text-sm">Powered by</span>
-                    <span class="font-bold tracking-widest text-cyan-900 hover:text-cyan-700 transition-colors">FLUXIONICS</span>
-                </div>
-            </div>
+<div class="wrapper">
+    <div class="page-header">
+        <div class="max-w">
+            <div class="section-label">// contacto</div>
+            <h1 class="page-title">Ponte en <span>contacto</span></h1>
+            <p class="page-desc">¿Tienes una idea, proyecto o simplemente quieres saludar? Escríbeme por cualquiera de estos canales.</p>
         </div>
-
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('particle-canvas');
-            const ctx = canvas.getContext('2d');
-            let animationFrameId;
+    <div class="contact-section">
+        <div class="max-w">
 
-            const resizeCanvas = () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            };
+            <!-- Disponibilidad -->
+            <div class="availability">
+                <div class="avail-left">
+                    <div class="avail-title">Disponible ahora</div>
+                    <div class="avail-text">Abierto a colaborar en proyectos, aprender nuevas tecnologías y hacer networking.</div>
+                    <div class="avail-tags">
+                        <span class="avail-tag">COLABORACIÓN</span>
+                        <span class="avail-tag">APRENDIZAJE</span>
+                        <span class="avail-tag">PROYECTOS ABIERTOS</span>
+                        <span class="avail-tag">NETWORKING</span>
+                    </div>
+                </div>
+                <a href="mailto:guille.g.r.s.m@gmail.com" class="contact-btn btn-cyan">Enviar email →</a>
+            </div>
 
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
+            <!-- Contact cards -->
+            <div class="contact-grid">
 
-            const particleCount = 60;
-            const particles = [];
+                <!-- Email -->
+                <div class="contact-card email">
+                    <div class="contact-icon" style="background:rgba(0,230,200,.1);">📧</div>
+                    <div class="contact-card-title">Correo Electrónico</div>
+                    <div class="contact-handle">guille.g.r.s.m@gmail.com</div>
+                    <div class="contact-note">La forma más directa de contactarme. Respondo en menos de 24 horas.</div>
+                    <a href="mailto:guille.g.r.s.m@gmail.com" class="contact-btn btn-cyan">Enviar correo →</a>
+                </div>
 
-            class Particle {
-                constructor() {
-                    this.reset();
-                }
+                <!-- GitHub -->
+                <div class="contact-card github">
+                    <div class="contact-icon" style="background:rgba(255,255,255,.06);">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                    </div>
+                    <div class="contact-card-title">GitHub</div>
+                    <div class="contact-handle">github.com/Fluxionics</div>
+                    <div class="contact-note">Ve todos mis repositorios y proyectos open source.</div>
+                    <a href="https://github.com/Fluxionics" target="_blank" class="contact-btn btn-dark">Ver perfil →</a>
+                </div>
 
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 3 + 1;
-                    this.speedX = Math.random() * 1 - 0.5;
-                    this.speedY = Math.random() * -1 - 0.2;
-                    this.opacity = Math.random() * 0.5 + 0.1;
-                    this.color = Math.random() > 0.5 ? '103, 232, 249' : '59, 130, 246';
-                }
+                <!-- Discord -->
+                <div class="contact-card discord contact-card-wide">
+                    <div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;">
+                        <div>
+                            <div class="contact-icon" style="background:rgba(88,101,242,.15);">
+                                <svg viewBox="0 0 24 24" fill="#5865f2" width="28" height="28"><path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 00-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 00-5.487 0 12.36 12.36 0 00-.617-1.23A.077.077 0 008.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 00-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 00.031.055 20.03 20.03 0 005.993 2.98.078.078 0 00.084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 01-1.872-.878.075.075 0 01-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 01.078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 01.079.009c.12.098.245.195.372.288a.075.075 0 01-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 00-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 00.084.028 19.963 19.963 0 006.002-2.981.076.076 0 00.032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 00-.031-.028z"/></svg>
+                            </div>
+                        </div>
+                        <div style="flex:1;min-width:200px;">
+                            <div class="contact-card-title" style="margin-bottom:.4rem;">Discord — Servidor Fluxionics</div>
+                            <div class="contact-note" style="margin-bottom:1rem;">Únete al servidor, chatea en tiempo real, ve el estado de los proyectos y conecta con la comunidad.</div>
+                            <div style="border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+                                <iframe src="https://discord.com/widget?id=1425923830454681653&theme=dark" width="100%" height="200" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                            </div>
+                        </div>
+                        <a href="https://discord.gg/fluxionics" target="_blank" class="contact-btn btn-discord-c" style="align-self:flex-start;">Unirse →</a>
+                    </div>
+                </div>
 
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
+                <!-- Facebook -->
+                <div class="contact-card facebook">
+                    <div class="contact-icon" style="background:rgba(24,119,242,.12);">
+                        <svg viewBox="0 0 24 24" fill="#1877f2" width="28" height="28"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </div>
+                    <div class="contact-card-title">Facebook</div>
+                    <div class="contact-handle">Guillermo Rafael</div>
+                    <div class="contact-note">Sígueme en Facebook para actualizaciones y noticias.</div>
+                    <a href="https://www.facebook.com/profile.php?id=61584062920442" target="_blank" class="contact-btn btn-fb">Ver perfil →</a>
+                </div>
 
-                    if (this.y < 0) {
-                        this.y = canvas.height;
-                        this.x = Math.random() * canvas.width;
-                    }
-                    if (this.x > canvas.width || this.x < 0) {
-                        this.speedX = -this.speedX;
-                    }
-                }
+                <!-- TikTok -->
+                <div class="contact-card tiktok">
+                    <div class="contact-icon" style="background:rgba(255,0,80,.1);">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+                    </div>
+                    <div class="contact-card-title">TikTok</div>
+                    <div class="contact-handle">@fluxionics</div>
+                    <div class="contact-note">Contenido sobre programación, proyectos y tecnología.</div>
+                    <a href="https://www.tiktok.com/@fluxionics" target="_blank" class="contact-btn btn-tt">Ver TikTok →</a>
+                </div>
 
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                }
-            }
+            </div>
+        </div>
+    </div>
+</div>
 
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
+<footer>
+    <div class="footer-inner">
+        <div class="footer-logo">&lt;GRSM /&gt; — <span>Fluxionics</span></div>
+        <div class="footer-links">
+            <a href="index.html">Inicio</a>
+            <a href="proyectos.html">Proyectos</a>
+            <a href="contacto.html">Contacto</a>
+            <a href="https://github.com/Fluxionics" target="_blank">GitHub</a>
+        </div>
+        <div class="footer-copy">© 2025 Guillermo Rafael S.M.</div>
+    </div>
+</footer>
 
-            const connectParticles = () => {
-                const maxDistance = 100;
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < maxDistance) {
-                            ctx.beginPath();
-                            ctx.strokeStyle = `rgba(103, 232, 249, ${0.1 - distance/maxDistance * 0.1})`;
-                            ctx.lineWidth = 1;
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            };
-
-            const animate = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                particles.forEach(particle => {
-                    particle.update();
-                    particle.draw();
-                });
-
-                connectParticles();
-
-                animationFrameId = requestAnimationFrame(animate);
-            };
-
-            animate();
-        });
-    </script>
+<script>
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+</script>
 </body>
 </html>
