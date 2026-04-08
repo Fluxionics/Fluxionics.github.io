@@ -169,8 +169,21 @@
         </div>
         <div class="post-f-num">01</div>
       </div>
+ 
+       <!-- POST GRID -->
+      <div class="posts-grid" id="postsGrid">
 
-      <!-- POST GRID -->
+        <div class="post-card" data-cat="Desarrollo" onclick="openPost(6)">
+          <span class="post-c-tag tag-log">DESAROLLO</span>
+          <div class="post-c-title">Addons de minecraft</div>
+          <div class="post-c-excerpt">Es Algo facinante con una comunidad llena me enseño demasiado sobre el Java Scrip</div>
+          <div class="post-c-meta">
+            <span class="post-date" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">10 ENE 2026</span>
+            <span class="post-read-time" style="font-family:var(--fm);font-size:.65rem;color:var(--muted);">3 min</span>
+          </div>
+        </div>
+
+      
       <div class="posts-grid" id="postsGrid">
 
         <div class="post-card" data-cat="log" onclick="openPost(1)">
@@ -290,6 +303,8 @@ document.querySelectorAll('.cat-btn').forEach(btn => {
 
 // Post content
 const posts = [
+
+  
   {
     tag:'DESARROLLO', tagClass:'tag-dev', date:'15 ENE 2025',
     title:'Cómo construí mi portafolio sin frameworks',
@@ -301,6 +316,17 @@ const posts = [
     <p>CSS es mucho más poderoso de lo que crees. Variables CSS, Grid, Flexbox y las pseudo-clases hacen el 90% de lo que necesitas sin una sola línea de JS.</p>
     <br><p>La API fetch es suficiente para conectar datos externos. La API de GitHub que uso en este portafolio es vanilla JS puro.</p>`,
   },
+  
+   {
+    tag:'DEV', tagClass:'tag-Desarrollo', date:'10 ENE 2026',
+    title:'Addons MC',
+    content:`<p>La Primera vez que empeze fue un reto intenso ya que era de aprender Java Script y JavaScript Object Notation ya que solo con ese lenguaje usa MC</p>
+    <br><h3 style="font-family:var(--fd);margin-bottom:.5rem;">Diseño</h3>
+    <p>Trabajar con <code>Java Script</code> 100% era complicado ya que antes solo tenia un 25% de aprendizaje en Java y cuando termine estaba muy feliz o contento</p>
+    <br><p>pero no me duro mucho ya que no sabia diseñar modelos ni dibujar en pixel art entonces fue algo tedioso no sabia si buscar los diseñor y tomarlos o perdir que lo hicieran y pagar entonces lo mas comun que hize</p>
+    <br><p><strong>Aprender:</strong> Empeze a aprender ilustracion ya que no es lo mismo de aprender ilustracion normal con pixer art al final no me quedo tan feo los pixel art pero es pasable lo pueden ver en los proyectos creados</p>`,
+  },
+  
   {
     tag:'DEV LOG', tagClass:'tag-log', date:'10 ENE 2025',
     title:'Paloma Migajera: semana 3 de desarrollo',
